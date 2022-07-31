@@ -4,7 +4,7 @@
 	height="24"
 	fill="currentColor"
 	viewBox="0 0 24 24"
-	style="width: 2em; height: 2em;"
+	style="width: 1em; height: 1em;"
 >
 	<path
 		d="M11.999 7.377a4.623 4.623 0 1 0 0 9.248 4.623 4.623 0 0 0 0-9.248zm0 7.627a3.004 3.004 0 1 1 0-6.008 3.004 3.004 0 0 1 0 6.008z"
