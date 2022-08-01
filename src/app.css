@@ -5,6 +5,12 @@
 @tailwind utilities;
 
 @layer base {
+	* {
+		-moz-osx-font-smoothing: grayscale;
+		-webkit-font-smoothing: antialiased;
+		-webkit-tap-highlight-color: transparent;
+	}
+
 	html {
 		@apply font-body bg-gray-900 text-white;
 	}
