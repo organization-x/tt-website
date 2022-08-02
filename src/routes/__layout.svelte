@@ -1,8 +1,7 @@
 <script lang="ts">
 	import "../app.css";
 
-	import Close from "../components/icons/Close.svelte";
-	import Menu from "../components/icons/Menu.svelte";
+	import Burger from "../components/icons/Burger.svelte";
 	import { slide } from "svelte/transition";
 
 	import Envelope from "../components/icons/Envelope.svelte";
@@ -25,8 +24,7 @@
 			class="cursor-pointer z-30 relative text-5xl"
 			on:click={() => (open = !open)}
 		>
-			<!-- TODO: make icon transition -->
-			<svelte:component this={open ? Close : Menu} />
+			<Burger {open} />
 		</button>
 		{#if open}
 			<nav
