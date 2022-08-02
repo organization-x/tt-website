@@ -1,15 +1,15 @@
 <script lang="ts">
 	import "../app.css";
 
-	import Burger from "../components/icons/Burger.svelte";
+	import Burger from "$lib/components/icons/Burger.svelte";
 	import { slide } from "svelte/transition";
 
-	import Envelope from "../components/icons/Envelope.svelte";
-	import Instagram from "../components/icons/Instagram.svelte";
-	import YouTube from "../components/icons/YouTube.svelte";
+	import Envelope from "$lib/components/icons/Envelope.svelte";
+	import Instagram from "$lib/components/icons/Instagram.svelte";
+	import YouTube from "$lib/components/icons/YouTube.svelte";
 
-	import Logo from "../components/Logo.svelte";
-	import NavLink from "../components/NavLink.svelte";
+	import Logo from "$lib/components/Logo.svelte";
+	import NavLink from "$lib/components/NavLink.svelte";
 
 	let open = false;
 </script>
