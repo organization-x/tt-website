@@ -1,13 +1,13 @@
 <script lang="ts">
 	export let href: string;
-	export let target: string;
+	export let target: string | undefined = undefined;
 </script>
 
 <a
 	on:click
 	{href}
 	{target}
-	rel={target ? "noopener noreferrer" : undefined}
+	rel="noopener noreferrer"
 	class="border-2 border-white px-4 py-1 rounded-full hover:bg-white hover:text-gray-800 transition-colors"
 >
 	<slot />
