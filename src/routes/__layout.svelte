@@ -3,6 +3,7 @@
 
 	import Burger from "$lib/components/icons/Burger.svelte";
 	import { slide } from "svelte/transition";
+	import { onMount } from "svelte";
 
 	import Envelope from "$lib/components/icons/Envelope.svelte";
 	import Instagram from "$lib/components/icons/Instagram.svelte";
@@ -13,6 +14,15 @@
 
 	let open = false;
 </script>
+
+<!-- weird spams empty style tags in header -->
+<!-- {#if open}
+	<style>
+		body {
+			overflow: hidden;
+		}
+	</style>
+{/if} -->
 
 <header class="bg-black font-heading">
 	<div class="px-4 py-2 max-w-screen-lg mx-auto flex justify-between">
@@ -74,3 +84,6 @@
 </header>
 
 <slot />
+
+<style>
+</style>

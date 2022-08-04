@@ -5,8 +5,7 @@ module.exports = {
 	content: ["./src/**/*.{html,js,svelte,ts}"],
 	theme: {
 		fontFamily: {
-			heading: ["Lato", ...defaultTheme.fontFamily.sans],
-			body: ["'Open Sans'", ...defaultTheme.fontFamily.sans]
+			main: ["Lato", ...defaultTheme.fontFamily.sans]
 		},
 		colors: {
 			transparent: "transparent",
@@ -40,7 +39,12 @@ module.exports = {
 				dark: "#069A6E"
 			}
 		},
-		extend: {}
+		extend: {
+			backgroundImage: {
+				"gradient-radial":
+					"radial-gradient(var(--tw-gradient-from) 30%, var(--tw-gradient-to))"
+			}
+		}
 	},
 	plugins: []
 };
