@@ -3,7 +3,6 @@
 
 	import Burger from "$lib/components/icons/Burger.svelte";
 	import { slide } from "svelte/transition";
-	import { onMount } from "svelte";
 
 	import Envelope from "$lib/components/icons/Envelope.svelte";
 	import Instagram from "$lib/components/icons/Instagram.svelte";
