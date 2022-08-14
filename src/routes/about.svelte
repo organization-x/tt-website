@@ -6,6 +6,10 @@
 	import Footer from "$lib/components/Footer.svelte";
 </script>
 
+<svelte:head>
+	<title>About</title>
+</svelte:head>
+
 <div class="mx-4">
 	<PageGradient />
 
