@@ -1,5 +1,5 @@
-<script>
-	export let open = false;
+<script lang="ts">
+	export let open: boolean;
 </script>
 
 <svg viewBox="0 0 38 25" fill="currentColor" class="w-8 h-8">

@@ -1,10 +1,15 @@
+<script lang="ts">
+	let className: string;
+
+	export { className as class };
+</script>
+
 <svg
-	xmlns="http://www.w3.org/2000/svg"
+	class={className}
 	width="24"
 	height="24"
 	fill="currentColor"
 	viewBox="0 0 24 24"
-	style="width: 1em; height: 1em;"
 >
 	<path
 		fill-rule="evenodd"
