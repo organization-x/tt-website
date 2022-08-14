@@ -10,9 +10,9 @@
 	<title>About</title>
 </svelte:head>
 
-<div class="mx-4">
-	<PageGradient />
+<PageGradient />
 
+<div class="mx-4">
 	<PageTitle class="from-green-light to-green-dark">
 		About Team Tomorrow and AI Camp.
 	</PageTitle>
@@ -25,6 +25,8 @@
 	<img
 		class="mt-6"
 		src="/about.webp"
+		height="263"
+		width="500"
 		alt="Brain shape made up of connected nodes"
 	/>
 

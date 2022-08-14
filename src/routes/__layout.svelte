@@ -58,7 +58,7 @@
 						<a
 							href="https://instagram.com/aicamp1"
 							target="_blank"
-							rel="noreferrer"
+							rel="noreferrer noopener"
 							title="AI Camp Instagram"
 						>
 							<Instagram class="w-10 h-10" />
@@ -66,7 +66,7 @@
 						<a
 							href="https://www.youtube.com/channel/UCUGJzo5EwViLGpAgYphNyzg"
 							target="_blank"
-							rel="noreferrer"
+							rel="noreferrer noopener"
 							title="AI Camp YouTube"
 						>
 							<YouTube class="w-12 h-12" />
@@ -74,7 +74,7 @@
 						<a
 							href="mailto:hello@ai-camp.org"
 							target="_blank"
-							rel="noreferrer"
+							rel="noreferrer noopener"
 							title="AI Camp Email"
 						>
 							<Envelope class="w-10 h-10" />

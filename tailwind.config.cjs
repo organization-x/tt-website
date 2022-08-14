@@ -42,7 +42,9 @@ module.exports = {
 		extend: {
 			backgroundImage: {
 				"gradient-radial":
-					"radial-gradient(var(--tw-gradient-from) 30%, var(--tw-gradient-to))"
+					"radial-gradient(var(--tw-gradient-from) 30%, var(--tw-gradient-to))",
+				"gradient-page":
+					"linear-gradient(var(--tw-gradient-from) 50%, var(--tw-gradient-to))"
 			}
 		}
 	},

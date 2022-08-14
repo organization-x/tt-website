@@ -3,7 +3,7 @@
 </script>
 
 <li>
-	<a {href} rel="noreferrer">
+	<a {href} rel="noreferrer noopener">
 		<slot />
 	</a>
 </li>

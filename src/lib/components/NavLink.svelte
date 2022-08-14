@@ -4,7 +4,7 @@
 </script>
 
 <li class="p-4">
-	<a {href} {target} rel="noreferrer">
+	<a {href} {target} rel="noreferrer noopener">
 		<slot />
 	</a>
 </li>
