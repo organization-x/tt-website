@@ -1,0 +1,11 @@
+<script lang="ts">
+	let className: string;
+
+	export { className as class };
+</script>
+
+<svg class={className} fill="currentColor" viewBox="0 0 24 24">
+	<path
+		d="M3.01259 6.91504L11.6139 2V22.1436L8.17691 20.1477V8.38133L3 11.3727L3.01259 6.91588V6.91504ZM20.9992 11.3727L20.9874 6.91588L12.3861 2V22.1436L15.8231 20.1477V14.4806L18.4183 15.9813L18.4032 12.1054L15.8231 10.6315V8.38133L21 11.3727H20.9992Z"
+	/>
+</svg>

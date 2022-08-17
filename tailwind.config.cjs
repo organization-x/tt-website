@@ -40,11 +40,27 @@ module.exports = {
 			}
 		},
 		extend: {
+			screens: {
+				sm: "425px",
+				md: "600px",
+				lg: "1024px"
+			},
 			backgroundImage: {
 				"gradient-radial":
 					"radial-gradient(var(--tw-gradient-from) 30%, var(--tw-gradient-to))",
+				"gradient-conic":
+					"conic-gradient(var(--tw-gradient-from), var(--tw-gradient-to))",
 				"gradient-page":
 					"linear-gradient(var(--tw-gradient-from) 50%, var(--tw-gradient-to))"
+			},
+			transitionProperty: {
+				// Ignore the dumbass names
+				transhadow: "filter, transform",
+				transborder: "border, transform",
+				"border-radius": "border-radius"
+			},
+			inset: {
+				0.5: "0.125rem"
 			}
 		}
 	},

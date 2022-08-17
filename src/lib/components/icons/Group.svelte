@@ -4,13 +4,7 @@
 	export { className as class };
 </script>
 
-<svg
-	class={className}
-	width="24"
-	height="24"
-	fill="currentColor"
-	viewBox="0 0 24 24"
->
+<svg class={className} fill="currentColor" viewBox="0 0 24 24">
 	<path
 		d="M16.604 11.048a5.67 5.67 0 0 0 .751-3.44c-.179-1.784-1.175-3.361-2.803-4.44l-1.105 1.666c1.119.742 1.8 1.799 1.918 2.974a3.693 3.693 0 0 1-1.072 2.986l-1.192 1.192 1.618.475C18.951 13.701 19 17.957 19 18h2c0-1.789-.956-5.285-4.396-6.952z"
 	/>

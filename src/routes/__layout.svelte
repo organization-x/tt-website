@@ -8,9 +8,10 @@
 	import Envelope from "$lib/components/icons/Envelope.svelte";
 	import Instagram from "$lib/components/icons/Instagram.svelte";
 	import YouTube from "$lib/components/icons/YouTube.svelte";
-
+	import AICamp from "$lib/components/AICamp.svelte";
 	import Logo from "$lib/components/Logo.svelte";
 	import NavLink from "$lib/components/NavLink.svelte";
+	import FootLink from "$lib/components/FootLink.svelte";
 
 	let open = false;
 
@@ -26,64 +27,132 @@
 {/if}
 
 <header class="bg-black font-heading">
-	<div class="p-4 max-w-screen-lg mx-auto flex justify-between">
+	<div
+		class="p-4 mx-auto max-w-screen-xl flex justify-between lg:items-center lg:px-6 xl:px-10"
+	>
 		<a href="/" class="z-30">
 			<Logo class="w-10 h-10" />
 		</a>
-		<button
-			type="button"
-			class="cursor-pointer z-30 relative text-5xl"
-			on:click={() => (open = !open)}
-		>
-			<Burger {open} />
-		</button>
-		{#if open}
-			<nav
-				transition:slide
-				class="z-20 absolute inset-0 overflow-y-auto bg-black"
+		<div class="lg:hidden">
+			<button
+				type="button"
+				class="cursor-pointer z-30 relative text-5xl"
+				on:click={() => {
+					open = !open;
+					window.scrollTo(0, 0);
+				}}
 			>
-				<div class="p-16 pt-24 max-w-screen-lg mx-auto">
-					<ul class="text-3xl divide-y">
-						<NavLink href="/">Home</NavLink>
-						<NavLink href="/about">About</NavLink>
-						<NavLink href="/contact">Contact Us</NavLink>
-						<NavLink href="/developers">Developers</NavLink>
-						<NavLink href="https://ai-camp.org" target="_blank"
-							>AI Camp</NavLink
+				<Burger {open} />
+			</button>
+			{#if open}
+				<nav
+					transition:slide
+					class="z-20 absolute inset-0 overflow-y-auto bg-black"
+				>
+					<div class="p-16 pt-24 max-w-screen-lg mx-auto">
+						<ul class="text-3xl divide-y max-w-md mx-auto">
+							<NavLink href="/">Home</NavLink>
+							<NavLink href="/about">About</NavLink>
+							<NavLink href="/contact">Contact Us</NavLink>
+							<NavLink href="/developers">Developers</NavLink>
+							<NavLink href="https://ai-camp.org" target="_blank"
+								>AI Camp</NavLink
+							>
+						</ul>
+						<div
+							class="mt-8 flex gap-4 text-4xl justify-center items-center"
 						>
-					</ul>
-					<div
-						class="mt-8 flex gap-4 text-4xl justify-center items-center"
-					>
-						<a
-							href="https://instagram.com/aicamp1"
-							target="_blank"
-							rel="noreferrer noopener"
-							title="AI Camp Instagram"
-						>
-							<Instagram class="w-10 h-10" />
-						</a>
-						<a
-							href="https://www.youtube.com/channel/UCUGJzo5EwViLGpAgYphNyzg"
-							target="_blank"
-							rel="noreferrer noopener"
-							title="AI Camp YouTube"
-						>
-							<YouTube class="w-12 h-12" />
-						</a>
-						<a
-							href="mailto:hello@ai-camp.org"
-							target="_blank"
-							rel="noreferrer noopener"
-							title="AI Camp Email"
-						>
-							<Envelope class="w-10 h-10" />
-						</a>
+							<a
+								href="https://instagram.com/aicamp1"
+								target="_blank"
+								rel="noreferrer noopener"
+								title="AI Camp Instagram"
+							>
+								<Instagram class="w-10 h-10" />
+							</a>
+							<a
+								href="https://www.youtube.com/channel/UCUGJzo5EwViLGpAgYphNyzg"
+								target="_blank"
+								rel="noreferrer noopener"
+								title="AI Camp YouTube"
+							>
+								<YouTube class="w-12 h-12" />
+							</a>
+							<a
+								href="mailto:hello@ai-camp.org"
+								target="_blank"
+								rel="noreferrer noopener"
+								title="AI Camp Email"
+							>
+								<Envelope class="w-10 h-10" />
+							</a>
+						</div>
 					</div>
-				</div>
-			</nav>
-		{/if}
+				</nav>
+			{/if}
+		</div>
+		<div class="hidden lg:block">
+			<ul class="flex gap-6 items-center">
+				<NavLink href="/">Home</NavLink>
+				<NavLink href="/about">About</NavLink>
+				<NavLink href="/developers">Developers</NavLink>
+				<NavLink href="https://ai-camp.org" target="_blank"
+					>AI Camp</NavLink
+				>
+				<a
+					href="/contact"
+					class="px-4 py-1 bg-white text-black rounded-3xl transition-border-radius hover:rounded-md"
+				>
+					Contact us
+				</a>
+			</ul>
+		</div>
 	</div>
 </header>
 
 <slot />
+
+<footer
+	class="bg-black flex flex-col justify-center gap-7 p-6 text-2xl mt-10 md:items-center xl:flex-row xl:gap-20"
+>
+	<ul class="flex flex-col gap-6 md:flex-row md:text-base md:justify-center">
+		<FootLink href="/">Home</FootLink>
+		<FootLink href="/about">About</FootLink>
+		<FootLink href="/contact">Contact Us</FootLink>
+		<FootLink href="/developers">Developers</FootLink>
+		<FootLink href="/projects">Projects</FootLink>
+		<FootLink href="https://ai-camp.org">AI Camp</FootLink>
+	</ul>
+	<div class="flex max-w-sm justify-center gap-12 xl:flex-row-reverse">
+		<div class="flex gap-4 items-center">
+			<Logo class="w-8 h-8" />
+			<AICamp class="w-8 h-8" />
+		</div>
+		<div class="flex gap-4 items-center">
+			<a
+				href="https://instagram.com/aicamp1"
+				target="_blank"
+				rel="noreferrer noopener"
+				title="AI Camp Instagram"
+			>
+				<Instagram class="w-8 h-8" />
+			</a>
+			<a
+				href="https://www.youtube.com/channel/UCUGJzo5EwViLGpAgYphNyzg"
+				target="_blank"
+				rel="noreferrer noopener"
+				title="AI Camp YouTube"
+			>
+				<YouTube class="w-10 h-10" />
+			</a>
+			<a
+				href="mailto:hello@ai-camp.org"
+				target="_blank"
+				rel="noreferrer noopener"
+				title="AI Camp Email"
+			>
+				<Envelope class="w-8 h-8" />
+			</a>
+		</div>
+	</div>
+</footer>

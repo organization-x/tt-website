@@ -3,7 +3,6 @@
 	import PageGradient from "$lib/components/PageGradient.svelte";
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
-	import Footer from "$lib/components/Footer.svelte";
 </script>
 
 <svelte:head>
@@ -12,7 +11,7 @@
 
 <PageGradient />
 
-<div class="mx-4">
+<div class="px-4">
 	<PageTitle class="from-green-light to-green-dark">
 		About Team Tomorrow and AI Camp.
 	</PageTitle>
@@ -23,7 +22,7 @@
 	</PageCaption>
 
 	<img
-		class="mt-6"
+		class="mt-6 mx-auto"
 		src="/about.webp"
 		height="263"
 		width="500"
@@ -57,5 +56,3 @@
 		mollitia dolores ipsum.
 	</p>
 </div>
-
-<Footer />

@@ -10,6 +10,20 @@
 	}
 
 	html {
-		@apply font-main bg-gray-900 text-white;
+		@apply font-main bg-gray-900 text-white text-base sm:text-lg lg:text-xl;
+	}
+
+	img {
+		@apply select-none;
+		user-drag: none;
+		-webkit-user-drag: none;
+	}
+
+	.scrollbar-hidden {
+		scrollbar-width: none;
+	}
+
+	.scrollbar-hidden::-webkit-scrollbar {
+		@apply hidden;
 	}
 }
