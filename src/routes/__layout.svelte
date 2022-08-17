@@ -28,7 +28,7 @@
 
 <header class="bg-black font-heading">
 	<div
-		class="p-4 mx-auto max-w-screen-xl flex justify-between lg:items-center lg:px-6 xl:px-10"
+		class="p-4 mx-auto max-w-screen-2xl flex justify-between lg:items-center lg:px-6 xl:px-10"
 	>
 		<a href="/" class="z-30">
 			<Logo class="w-10 h-10" />
