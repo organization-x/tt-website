@@ -409,53 +409,60 @@
 		developers={[
 			{
 				name: "Jackson",
-				role: "Designer",
+				role: "Engineering Manager",
 				src: "./jackson.webp",
 				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
+				href: "/jacksonchoyce"
 			},
 			{
-				name: "Jackson",
-				role: "Designer",
+				name: "Ray",
+				role: "Software Engineer",
 				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
+				alt: "Ray Flanagan from Team Tomorrow",
+				href: "/rayflanagan"
 			},
 			{
-				name: "Jackson",
-				role: "Designer",
+				name: "Zac",
+				role: "Software Engineer",
 				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
+				alt: "Zac Brammer from Team Tomorrow",
+				href: "/zacbrammer"
 			},
 			{
-				name: "Jackson",
-				role: "Designer",
+				name: "Alexander",
+				role: "Engineering Manager",
 				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
+				alt: "Alex Zhou from Team Tomorrow",
+				href: "/alexanderzhou"
 			},
 			{
-				name: "Jackson",
-				role: "Designer",
+				name: "Eegan",
+				role: "Designer", // Up
 				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
+				alt: "Eegan Ram from Team Tomorrow",
+				href: "/eeganram"
 			},
 			{
-				name: "Jackson",
-				role: "Designer",
+				name: "Ishaan",
+				role: "Designer", // up
 				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
+				alt: "Ishaan Variava from Team Tomorrow",
+				href: "/ishaanvariava"
+			},
+			{
+				name: "Blake",
+				role: "Software Engineer",
+				src: "./jackson.webp",
+				alt: "Blake Martin from Team Tomorrow",
+				href: "/blakemartin"
 			}
 		]}
 		icons={[Python, TensorFlow]}
 	>
-		Running a camp with 1,000+ students and multiple mentors is no easy
-		task. That's why our developers created a bot to automate huge data
-		collection and analytical tracking tasks to make sure AI Camp's summer
-		program can run without hurdles.
+		Hippo2 is our custom-built internal and customer-facing interface that
+		facilitates course registration, dashboard, automated communication,
+		back office, and other operations that are vital towards helping AI Camp
+		generate millions in revenue annually.
 		<ProjectImage
 			slot="img"
 			src="/bot.webp"
@@ -515,10 +522,10 @@
 		]}
 		icons={[Python, TensorFlow]}
 	>
-		Hippo2 is our custom-built internal and customer-facing interface that
-		facilitates course registration, dashboard, automated communication,
-		back office, and other operations that are vital towards helping AI Camp
-		generate millions in revenue annually.
+		Running a camp with 1,000+ students and multiple mentors is no easy
+		task. That's why our developers created a bot to automate huge data
+		collection and analytical tracking tasks to make sure AI Camp's summer
+		program can run without hurdles.
 		<ProjectImage
 			slot="img"
 			src="/bot.webp"

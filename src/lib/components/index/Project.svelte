@@ -12,7 +12,7 @@
 
 <div class="mt-20 lg:mt-32 lg:flex lg:gap-8 lg:even:flex-row-reverse">
 	<div
-		class="bg-gray-500/40 p-4 rounded-xl relative mx-auto max-w-lg lg:max-w-2xl lg:w-3/5"
+		class="bg-gray-500/40 p-4 rounded-xl relative mx-auto max-w-lg lg:max-w-2xl lg:w-3/5 lg:h-100"
 	>
 		<!-- svelte-ignore a11y-missing-attribute -->
 		<!-- Svelte doesnt recognize alt attribute being provided in spread -->
@@ -47,21 +47,19 @@
 		</div>
 	</div>
 
-	<div class="hidden lg:flex lg:flex-col lg:shrink-0 lg:w-1/3">
-		<h1 class="font-semibold mb-2">Developers</h1>
-		<div
-			class="bg-gray-500/40 relative rounded-xl
+	<div
+		class="hidden bg-gray-500/40 relative rounded-xl h-min lg:flex lg:flex-col lg:shrink-0 lg:w-1/3 lg:h-100
             
             before:z-10 before:absolute before:rounded-lg before:top-0 before:w-full before:h-8 before:bg-gradient-to-b before:from-gray-900 before:to-transparent before:pointer-events-none
             
             after:z-10 after:absolute after:rounded-lg after:bottom-0 after:w-full after:h-8 after:bg-gradient-to-t after:from-gray-900 after:to-transparent after:pointer-events-none"
-		>
-			<div class="p-4 flex flex-col gap-1 overflow-auto scrollbar-hidden">
-				<!-- TODO: Fix this height bs -->
-				{#each developers as developer}
-					<ProjectDev info={developer} />
-				{/each}
-			</div>
+	>
+		<div class="p-4 flex flex-col gap-1 overflow-auto scrollbar-hidden">
+			<h1 class="font-semibold mb-2">Developers</h1>
+			<!-- TODO: Fix this height bs -->
+			{#each developers as developer}
+				<ProjectDev info={developer} />
+			{/each}
 		</div>
 	</div>
 </div>
