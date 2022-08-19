@@ -1,9 +1,9 @@
 <script lang="ts">
+	import type { Developer } from "../../types";
+
 	import GradientText from "../GradientText.svelte";
 	import Plus from "../icons/Plus.svelte";
-	import { slide } from "svelte/transition";
-
-	import type { Developer } from "../types";
+	import { fade } from "svelte/transition";
 
 	export let info: Developer;
 
@@ -11,12 +11,12 @@
 </script>
 
 <div
-	class="snap-center shrink-0 w-fit xl:flex xl:even:flex-row-reverse xl:items-center xl:gap-14"
+	class="snap-center shrink-0 w-fit lg:flex lg:even:flex-row-reverse lg:items-center lg:gap-14"
 >
 	<div
-		class="bg-gray-500/40 p-10 rounded-xl relative text-center max-w-lg mx-auto xl:mx-0"
+		class="bg-gray-500/40 p-10 rounded-xl relative text-center max-w-lg mx-auto lg:mx-0 lg:p-8"
 	>
-		<div class="xl:flex xl:justify-center xl:gap-8">
+		<div class="lg:flex lg:justify-center lg:gap-8">
 			<img
 				height="200"
 				width="200"
@@ -36,35 +36,41 @@
 				</GradientText>
 			</div>
 		</div>
-		<p class="my-3 max-w-xs">
+		<p class="mt-2 mb-6 max-w-xs lg:mt-6 lg:mb-0">
 			<slot />
 		</p>
 		<div
-			class="absolute flex items-center justify-center bg-gray-700 mx-auto left-0 right-0 bottom-0 rounded-b-lg h-10 w-full
-                lg:hidden"
+			class:h-full={open}
+			class:rounded-t-lg={open}
+			class:h-11={!open}
+			class="absolute flex bg-gray-700 mx-auto transition-bright left-0 right-0 bottom-0 rounded-b-lg w-full lg:hidden"
 		>
-			<div class="flex gap-2" on:click={() => (open = !open)}>
-				<Plus class="w-6 h-6" />
+			<div
+				class="flex gap-2 items-center m-auto mb-2 cursor-pointer"
+				on:click={() => (open = !open)}
+			>
+				<Plus
+					class="w-6 h-6 transition-transform {open
+						? 'rotate-45'
+						: ''}"
+				/>
 				<p class="text-center my-auto">Show more</p>
 			</div>
 		</div>
-		<!-- Slide in from top etc -->
 		{#if open}
-			<div
-				transition:slide
-				class="bg-gray-700 absolute inset-0 h-full m-auto rounded-lg flex justify-center items-center"
+			<ul
+				transition:fade={{ duration: 100 }}
+				class="absolute pb-10 inset-0 left-4 m-auto h-fit w-fit list-disc lg:hidden"
 			>
-				<ul class="list-disc">
-					<li>Worked on 80000 projects.</li>
-					<li>Worked on 80000 projects.</li>
-					<li>Worked on 80000 projects.</li>
-					<li>Worked on 80000 projects.</li>
-				</ul>
-			</div>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+			</ul>
 		{/if}
 	</div>
 
-	<ul class="hidden xl:block xl:mx-auto xl:list-disc">
+	<ul class="hidden lg:block lg:mx-auto lg:shrink-0 lg:list-disc">
 		<li>Worked on 80000 projects.</li>
 		<li>Worked on 80000 projects.</li>
 		<li>Worked on 80000 projects.</li>

@@ -5,7 +5,7 @@
 </script>
 
 <h1
-	class="bg-clip-text text-transparent bg-gradient-to-r {className} inline-block font-semibold"
+	class="bg-clip-text text-transparent bg-gradient-to-r inline-block font-semibold xl:leading-norma {className}"
 >
 	<slot />
 </h1>

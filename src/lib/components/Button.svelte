@@ -7,7 +7,7 @@
 
 <a
 	{href}
-	class="block border border-solid border-white px-6 py-1 rounded-3xl w-fit transition-border-radius hover:rounded-md {className}"
+	class="block select-none border border-solid border-white px-6 py-1 rounded-3xl w-fit transition-border-radius hover:rounded-md {className}"
 >
 	<slot />
 </a>

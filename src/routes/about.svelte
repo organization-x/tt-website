@@ -1,34 +1,36 @@
 <script lang="ts">
 	import PageTitle from "$lib/components/PageTitle.svelte";
-	import PageGradient from "$lib/components/PageGradient.svelte";
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
+	import Hero from "$lib/components/Hero.svelte";
+	import Button from "$lib/components/Button.svelte";
+	import Section from "$lib/components/index/Section.svelte";
 </script>
 
 <svelte:head>
 	<title>About</title>
 </svelte:head>
 
-<PageGradient />
-
-<div class="px-4">
+<Hero>
 	<PageTitle class="from-green-light to-green-dark">
-		About Team Tomorrow and AI Camp.
+		Forming a new era of collaboration and teamwork.
 	</PageTitle>
 
 	<PageCaption>
-		Explore what acheivements we've <strong>accomplished</strong> and how we
-		did it.
+		Team Tomorrow isn't an ordinary name. Explore what acheivements we've
+		<strong>accomplished</strong> and how we did it.
 	</PageCaption>
 
 	<img
-		class="mt-6 mx-auto"
-		src="/about.webp"
+		slot="image"
 		height="263"
 		width="500"
-		alt="Brain shape made up of connected nodes"
+		src="/about.webp"
+		alt="Macbook slight cracked open eminating light"
 	/>
+</Hero>
 
+<Section>
 	<TextHeader>Where it all began.</TextHeader>
 
 	<p class="mt-4">
@@ -41,18 +43,11 @@
 		ut velit, dolore quod? Eius, maxime? Ipsum ex placeat tempora, beatae
 		nam delectus vero nihil odit consequuntur veritatis fugiat velit
 		molestias, autem laboriosam cupiditate? Eius officiis eaque asperiores
-		consequatur. Iste, fugit ipsa. Qui nulla fugiat quae sequi. Quae, hic.
-		Sapiente delectus facere quasi officia laudantium magnam fuga. Labore
-		eum magnam, expedita ad, voluptatibus dolore ducimus odit modi amet eos
-		sunt quam. Fugit quae dignissimos harum a rem? Perspiciatis temporibus
-		reiciendis unde amet nemo omnis deleniti rem odio blanditiis cupiditate
-		ducimus, pariatur necessitatibus iusto illo fugiat tenetur repellat et
-		aspernatur! Nam sapiente doloribus corrupti voluptatem ducimus eos
-		deserunt ex sed quasi corporis qui odit sequi id, vero explicabo error
-		dignissimos voluptates a repellat repudiandae cumque iste? Optio vitae
-		iure voluptatem quaerat doloremque illo sint vel, facilis beatae, nemo
-		dolores eligendi labore reiciendis voluptatibus obcaecati veniam
-		corrupti distinctio laborum adipisci impedit, repellat sequi? Ex laborum
-		mollitia dolores ipsum.
+		consequatur. Iste, fugit ipsa.
 	</p>
-</div>
+</Section>
+
+<Section filled={true}>
+	<TextHeader>A fully-fueled rocketship already blasting off.</TextHeader>
+	<!-- TODO: Stat counters seen on other sites, actual information to put on this page, board members -->
+</Section>

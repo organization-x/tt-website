@@ -1,8 +1,6 @@
 <script lang="ts">
 	import type { ComponentType } from "svelte/types/runtime/internal/dev.js";
-	import type { Image } from "../types";
 
-	export let img: Image;
 	export let icons: ComponentType[];
 </script>
 
@@ -11,7 +9,7 @@
 >
 	<!-- svelte-ignore a11y-missing-attribute -->
 	<!-- Svelte doesnt recognize alt attribute being provided in spread -->
-	<img class="w-48" loading="lazy" {...img} />
+	<slot name="img" />
 	<p class="my-4">
 		<slot />
 	</p>

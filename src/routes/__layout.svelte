@@ -101,7 +101,7 @@
 				>
 				<a
 					href="/contact"
-					class="px-4 py-1 bg-white text-black rounded-3xl transition-border-radius hover:rounded-md"
+					class="px-4 py-1 select-none bg-white text-black rounded-3xl transition-border-radius hover:rounded-md"
 				>
 					Contact us
 				</a>
@@ -113,7 +113,7 @@
 <slot />
 
 <footer
-	class="bg-black flex flex-col justify-center gap-7 p-6 text-2xl mt-10 md:items-center xl:flex-row xl:gap-20"
+	class="flex flex-col justify-center gap-7 p-6 text-2xl mt-10 md:items-center lg:justify-between lg:flex-row xl:gap-12 xl:justify-center"
 >
 	<ul class="flex flex-col gap-6 md:flex-row md:text-base md:justify-center">
 		<FootLink href="/">Home</FootLink>
@@ -123,7 +123,7 @@
 		<FootLink href="/projects">Projects</FootLink>
 		<FootLink href="https://ai-camp.org">AI Camp</FootLink>
 	</ul>
-	<div class="flex max-w-sm justify-center gap-12 xl:flex-row-reverse">
+	<div class="flex max-w-sm justify-center gap-8 lg:flex-row-reverse">
 		<div class="flex gap-4 items-center">
 			<Logo class="w-8 h-8" />
 			<AICamp class="w-8 h-8" />

@@ -1,18 +1,40 @@
 <script lang="ts">
-	import CarouselDot from "$lib/components/icons/CarouselDot.svelte";
-</script>
+	import Dot from "$lib/components/icons/Dot.svelte";
 
-<!-- TODO: Make dots actually change on scroll, Add automatic scrolling, for lg screens maybe add effect for cards that are only slightly visible -->
+	let current = 1;
+
+	const onScroll = ({ target }: Event) => {
+		const { scrollWidth, scrollLeft, children } = target as HTMLDivElement;
+
+		if (scrollLeft < scrollWidth - children[0].clientWidth * 3) {
+			current = 1;
+		} else if (scrollLeft < scrollWidth - children[0].clientWidth * 2) {
+			current = 2;
+		} else {
+			current = 3;
+		}
+	};
+</script>
 
 <div class="mt-10 px-2">
 	<div
-		class="flex gap-8 overflow-auto snap-mandatory snap-x scrollbar-hidden max-w-sm mx-auto lg:max-w-2xl lg:px-32 xl:px-20 xl:flex xl:flex-col xl:max-w-screen-xl"
+		on:scroll={onScroll}
+		class="flex gap-8 overflow-auto snap-mandatory snap-x scrollbar-hidden max-w-sm mx-auto lg:px-20 lg:flex lg:flex-col lg:max-w-screen-xl"
 	>
 		<slot />
 	</div>
-	<div class="flex gap-3 mt-6 justify-center xl:hidden">
-		<CarouselDot class="text-white w-2 h-2" />
-		<CarouselDot class="text-gray-500 w-2 h-2" />
-		<CarouselDot class="text-gray-500 w-2 h-2" />
+	<div class="flex gap-3 mt-6 justify-center text-gray-500 lg:hidden">
+		<Dot
+			class="w-2 h-2 transition-colors
+            {current === 1 ? 'text-white' : ''}"
+		/>
+		<Dot
+			class="w-2 h-2 transition-colors
+        {current === 2 ? 'text-white' : ''}"
+		/>
+		<Dot
+			class="w-2 h-2 transition-colors
+        {current === 3 ? 'text-white' : ''}"
+		/>
 	</div>
 </div>

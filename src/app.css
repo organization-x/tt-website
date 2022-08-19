@@ -10,7 +10,7 @@
 	}
 
 	html {
-		@apply font-main bg-gray-900 text-white text-base sm:text-lg lg:text-xl;
+		@apply font-main bg-black text-white text-base sm:text-lg lg:text-xl;
 	}
 
 	img {
@@ -25,5 +25,9 @@
 
 	.scrollbar-hidden::-webkit-scrollbar {
 		@apply hidden;
+	}
+
+	.section-clip {
+		clip-path: polygon(0 1%, 100% 0, 100% 99%, 0 100%);
 	}
 }
