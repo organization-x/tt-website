@@ -53,11 +53,12 @@
 						<ul class="text-3xl divide-y max-w-md mx-auto">
 							<NavLink href="/">Home</NavLink>
 							<NavLink href="/about">About</NavLink>
-							<NavLink href="/contact">Contact Us</NavLink>
 							<NavLink href="/developers">Developers</NavLink>
+							<NavLink href="/projects">Projects</NavLink>
 							<NavLink href="https://ai-camp.org" target="_blank"
 								>AI Camp</NavLink
 							>
+							<NavLink href="/contact">Contact Us</NavLink>
 						</ul>
 						<div
 							class="mt-8 flex gap-4 text-4xl justify-center items-center"
@@ -96,12 +97,13 @@
 				<NavLink href="/">Home</NavLink>
 				<NavLink href="/about">About</NavLink>
 				<NavLink href="/developers">Developers</NavLink>
+				<NavLink href="/projects">Projects</NavLink>
 				<NavLink href="https://ai-camp.org" target="_blank"
 					>AI Camp</NavLink
 				>
 				<a
 					href="/contact"
-					class="px-4 py-1 select-none bg-white text-black rounded-3xl transition-border-radius hover:rounded-md"
+					class="px-4 py-1 select-none bg-white text-black rounded-3xl transition-border hover:rounded-md"
 				>
 					Contact us
 				</a>

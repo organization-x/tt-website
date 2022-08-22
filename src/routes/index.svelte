@@ -13,8 +13,8 @@
 	import React from "$lib/components/icons/React.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import Project from "$lib/components/index/Project.svelte";
-	import MajorHeader from "$lib/components/index/MajorHeader.svelte";
-	import MajorCaption from "$lib/components/index/MajorCaption.svelte";
+	import MajorHeader from "$lib/components/MajorHeader.svelte";
+	import MajorCaption from "$lib/components/MajorCaption.svelte";
 	import Carousel from "$lib/components/index/Carousel.svelte";
 	import Annotation from "$lib/components/index/Annotation.svelte";
 	import DevCard from "$lib/components/index/DevCard.svelte";
@@ -34,8 +34,6 @@
 	<title>Home</title>
 </svelte:head>
 
-<!-- Landing with macbook and intro phrase -->
-
 <Hero>
 	<PageTitle class="from-teal-light to-teal-dark">
 		Industry professionals at your fingertips.
@@ -47,11 +45,12 @@
 	</PageCaption>
 
 	<Button href="/contact" class="hidden lg:block lg:mt-6">Contact Us</Button>
+
 	<img
-		slot="image"
+		slot="img"
 		height="850"
 		width="1200"
-		src="/landing.webp"
+		src="/index/landing.webp"
 		alt="Macbook slight cracked open eminating light"
 	/>
 </Hero>
@@ -82,8 +81,6 @@
 	takes to get a product done and polished fast.
 </p>
 
-<!-- Second section showcasing companies we have worked with/are currently working with -->
-
 <Section filled={true}>
 	<TextHeader>Top companies depend on us.</TextHeader>
 
@@ -91,7 +88,7 @@
 		<Company icons={[GoogleCloud, Python, TensorFlow, Pytorch]}>
 			<CompanyImage
 				slot="img"
-				src="/healthcare.webp"
+				src="/index/healthcare.webp"
 				alt="Generic healthcare brand logo"
 				width={575}
 				height={172}
@@ -103,7 +100,7 @@
 		<Company icons={[Python, TensorFlow]}>
 			<CompanyImage
 				slot="img"
-				src="/obico.webp"
+				src="/index/obico.webp"
 				alt="Obico logo"
 				width={574}
 				height={198}
@@ -116,7 +113,7 @@
 		<Company icons={[JavaScript, React]}>
 			<CompanyImage
 				slot="img"
-				src="/ethereum.webp"
+				src="/index/ethereum.webp"
 				alt="Ethereum logo"
 				width={574}
 				height={144}
@@ -129,7 +126,7 @@
 		<Company icons={[Python, Aws]}>
 			<CompanyImage
 				slot="img"
-				src="/imprint.webp"
+				src="/index/imprint.webp"
 				alt="Imprint logo"
 				width={574}
 				height={139}
@@ -164,9 +161,7 @@
 	<Button href="/contact" class="mt-8 mx-auto">Contact Us</Button>
 </Section>
 
-<!-- Showing off projects we have done, the people who worked on them, and the skills used in them -->
-<!-- TODO: Fill in correct project members and their respective photos, get 4th project to put here too, fill in correct skill icons -->
-<!-- TODO: Alphabetically organize developers to look proffesional -->
+<!-- TODO: Get 4th project to put here, fetch photos for developers from their profiles -->
 
 <Section>
 	<MajorHeader>
@@ -190,11 +185,18 @@
 		href="/projects/hippo2"
 		developers={[
 			{
-				name: "Zachary",
+				name: "Alex",
 				role: "Software Engineer",
 				src: "./jackson.webp",
-				alt: "Zachary Brammer from Team Tomorrow",
-				href: "/zacharybrammer"
+				alt: "Alex Nguyen from Team Tomorrow",
+				href: "/alexnguyen"
+			},
+			{
+				name: "Alexander",
+				role: "Engineering Manager",
+				src: "./jackson.webp",
+				alt: "Alexander Zhou from Team Tomorrow",
+				href: "/alexanderzhou"
 			},
 			{
 				name: "Bernice",
@@ -202,6 +204,55 @@
 				src: "./jackson.webp",
 				alt: "Bernice Lau from Team Tomorrow",
 				href: "/bernicelau"
+			},
+			{
+				name: "Hyrum",
+				role: "Software Engineer",
+				src: "./jackson.webp",
+				alt: "Hyrum Hansen from Team Tomorrow",
+				href: "/hryumhansen"
+			},
+			{
+				name: "Jackson",
+				role: "Engineering Manager",
+				src: "./jackson.webp",
+				alt: "Engineering Manager from Team Tomorrow",
+				href: "/jacksonchoyce"
+			},
+			{
+				name: "Joseph",
+				role: "Software Engineer",
+				src: "./jackson.webp",
+				alt: "Joseph Salinas from Team Tomorrow",
+				href: "/josephsalinas"
+			},
+			{
+				name: "Leo",
+				role: "Software Engineer",
+				src: "./jackson.webp",
+				alt: "Leo Du from Team Tomorrow",
+				href: "/leodu"
+			},
+			{
+				name: "Mathan",
+				role: "Software Engineer",
+				src: "./jackson.webp",
+				alt: "Mathan Xaysena from Team Tomorrow",
+				href: "/mathanxaysena"
+			},
+			{
+				name: "Matthew",
+				role: "Software Engineer",
+				src: "./jackson.webp",
+				alt: "Matthew Martono from Team Tomorrow",
+				href: "/matthewmartono"
+			},
+			{
+				name: "Ray",
+				role: "Software Engineer",
+				src: "./jackson.webp",
+				alt: "Ray Flanagan from Team Tomorrow",
+				href: "/rayflanagan"
 			},
 			{
 				name: "Sean",
@@ -218,70 +269,14 @@
 				href: "/sricharanguddanti"
 			},
 			{
-				name: "Mathan",
+				name: "Zachary",
 				role: "Software Engineer",
 				src: "./jackson.webp",
-				alt: "Mathan Xaysena from Team Tomorrow",
-				href: "/mathanxaysena"
-			},
-			{
-				name: "Alex",
-				role: "Software Engineer",
-				src: "./jackson.webp",
-				alt: "Alex Nguyen from Team Tomorrow",
-				href: "/alexnguyen"
-			},
-			{
-				name: "Alexander",
-				role: "Engineering Manager",
-				src: "./jackson.webp",
-				alt: "Alexander Zhou from Team Tomorrow",
-				href: "/alexanderzhou"
-			},
-			{
-				name: "Jackson",
-				role: "Engineering Manager",
-				src: "./jackson.webp",
-				alt: "Engineering Manager from Team Tomorrow",
-				href: "/jacksonchoyce"
-			},
-			{
-				name: "Leo",
-				role: "Software Engineer",
-				src: "./jackson.webp",
-				alt: "Leo Du from Team Tomorrow",
-				href: "/leodu"
-			},
-			{
-				name: "Hyrum",
-				role: "Software Engineer",
-				src: "./jackson.webp",
-				alt: "Hyrum Hansen from Team Tomorrow",
-				href: "/hryumhansen"
-			},
-			{
-				name: "Ray",
-				role: "Software Engineer",
-				src: "./jackson.webp",
-				alt: "Ray Flanagan from Team Tomorrow",
-				href: "/rayflanagan"
-			},
-			{
-				name: "Matthew",
-				role: "Software Engineer",
-				src: "./jackson.webp",
-				alt: "Matthew Martono from Team Tomorrow",
-				href: "/matthewmartono"
-			},
-			{
-				name: "Joseph",
-				role: "Software Engineer",
-				src: "./jackson.webp",
-				alt: "Joseph Salinas from Team Tomorrow",
-				href: "/josephsalinas"
+				alt: "Zachary Brammer from Team Tomorrow",
+				href: "/zacharybrammer"
 			}
 		]}
-		icons={[Python, TensorFlow]}
+		icons={[Python, React]}
 	>
 		Hippo2 is our custom-built internal and customer-facing interface that
 		facilitates course registration, dashboard, automated communication,
@@ -289,7 +284,7 @@
 		generate millions in revenue annually.
 		<ProjectImage
 			slot="img"
-			src="/hippo2.webp"
+			src="/index/hippo2.webp"
 			alt="Hippo emoji"
 			width={250}
 			height={159}
@@ -302,6 +297,20 @@
 		href="/projects/aiot"
 		developers={[
 			{
+				name: "Advay",
+				role: "Software Engineer",
+				src: "./jackson.webp",
+				alt: "Advay Aravind from Team Tomorrow",
+				href: "/advayaravind"
+			},
+			{
+				name: "Alex",
+				role: "Software Engineer",
+				src: "./jackson.webp",
+				alt: "Alex Fry from Team Tomorrow",
+				href: "/alexfry"
+			},
+			{
 				name: "Alexander",
 				role: "Engineering Manager",
 				src: "./jackson.webp",
@@ -309,11 +318,11 @@
 				href: "/alexanderzhou"
 			},
 			{
-				name: "Rohan",
-				role: "Software Engineer",
+				name: "Ansh",
+				role: "Design and Engineering",
 				src: "./jackson.webp",
-				alt: "Rohan Joshi from Team Tomorrow",
-				href: "/rohanjoshi"
+				alt: "Ansh Chaurasia from Team Tomorrow",
+				href: "/anshchaurasia"
 			},
 			{
 				name: "Axel",
@@ -321,6 +330,13 @@
 				src: "./jackson.webp",
 				alt: "Axel Mora from Team Tomorrow",
 				href: "/axelmora"
+			},
+			{
+				name: "Blake",
+				role: "Design and Engineering",
+				src: "./jackson.webp",
+				alt: "Blake Martin from Team Tomorrow",
+				href: "/blakemartin"
 			},
 			{
 				name: "Jackson",
@@ -337,18 +353,18 @@
 				href: "/mitchcutts"
 			},
 			{
-				name: "Zac",
-				role: "Software Engineer",
+				name: "Phakawat",
+				role: "Design and Engineering",
 				src: "./jackson.webp",
-				alt: "Zac Brammer from Team Tomorrow",
-				href: "/zacbrammer"
+				alt: "Phakawat Wangkriangkri from Team Tomorrow",
+				href: "/phakawatwangkriangkri"
 			},
 			{
-				name: "Alex",
+				name: "Rohan",
 				role: "Software Engineer",
 				src: "./jackson.webp",
-				alt: "Alex Fry from Team Tomorrow",
-				href: "/alexfry"
+				alt: "Rohan Joshi from Team Tomorrow",
+				href: "/rohanjoshi"
 			},
 			{
 				name: "Sanjay",
@@ -358,35 +374,14 @@
 				href: "/sanjaymanoj"
 			},
 			{
-				name: "Advay",
+				name: "Zac",
 				role: "Software Engineer",
 				src: "./jackson.webp",
-				alt: "Advay Aravind from Team Tomorrow",
-				href: "/advayaravind"
-			},
-			{
-				name: "Blake",
-				role: "Design and Engineering",
-				src: "./jackson.webp",
-				alt: "Blake Martin from Team Tomorrow",
-				href: "/blakemartin"
-			},
-			{
-				name: "Ansh",
-				role: "Design and Engineering",
-				src: "./jackson.webp",
-				alt: "Ansh Chaurasia from Team Tomorrow",
-				href: "/anshchaurasia"
-			},
-			{
-				name: "Phakawat",
-				role: "Design and Engineering",
-				src: "./jackson.webp",
-				alt: "Phakawat Wangkriangkri from Team Tomorrow",
-				href: "/phakawatwangkriangkri"
+				alt: "Zac Brammer from Team Tomorrow",
+				href: "/zacbrammer"
 			}
 		]}
-		icons={[Python, TensorFlow]}
+		icons={[React]}
 	>
 		Learning AI seems like an impossible task. In reality, it's not. AI On
 		Thumbs is a mobile app that provides an easy way to learn and interact
@@ -395,7 +390,7 @@
 		developers.
 		<ProjectImage
 			slot="img"
-			src="/aiot.webp"
+			src="/index/aiot.webp"
 			alt="AI On Thumbs green brain logo"
 			width={200}
 			height={200}
@@ -407,6 +402,34 @@
 		title="AI Camp Bot"
 		href="/projects/aicbot"
 		developers={[
+			{
+				name: "Alexander",
+				role: "Engineering Manager",
+				src: "./jackson.webp",
+				alt: "Alex Zhou from Team Tomorrow",
+				href: "/alexanderzhou"
+			},
+			{
+				name: "Blake",
+				role: "Software Engineer",
+				src: "./jackson.webp",
+				alt: "Blake Martin from Team Tomorrow",
+				href: "/blakemartin"
+			},
+			{
+				name: "Eegan",
+				role: "Designer", // Up
+				src: "./jackson.webp",
+				alt: "Eegan Ram from Team Tomorrow",
+				href: "/eeganram"
+			},
+			{
+				name: "Ishaan",
+				role: "Designer", // up
+				src: "./jackson.webp",
+				alt: "Ishaan Variava from Team Tomorrow",
+				href: "/ishaanvariava"
+			},
 			{
 				name: "Jackson",
 				role: "Engineering Manager",
@@ -427,37 +450,9 @@
 				src: "./jackson.webp",
 				alt: "Zac Brammer from Team Tomorrow",
 				href: "/zacbrammer"
-			},
-			{
-				name: "Alexander",
-				role: "Engineering Manager",
-				src: "./jackson.webp",
-				alt: "Alex Zhou from Team Tomorrow",
-				href: "/alexanderzhou"
-			},
-			{
-				name: "Eegan",
-				role: "Designer", // Up
-				src: "./jackson.webp",
-				alt: "Eegan Ram from Team Tomorrow",
-				href: "/eeganram"
-			},
-			{
-				name: "Ishaan",
-				role: "Designer", // up
-				src: "./jackson.webp",
-				alt: "Ishaan Variava from Team Tomorrow",
-				href: "/ishaanvariava"
-			},
-			{
-				name: "Blake",
-				role: "Software Engineer",
-				src: "./jackson.webp",
-				alt: "Blake Martin from Team Tomorrow",
-				href: "/blakemartin"
 			}
 		]}
-		icons={[Python, TensorFlow]}
+		icons={[Python]}
 	>
 		Hippo2 is our custom-built internal and customer-facing interface that
 		facilitates course registration, dashboard, automated communication,
@@ -465,7 +460,7 @@
 		generate millions in revenue annually.
 		<ProjectImage
 			slot="img"
-			src="/bot.webp"
+			src="/index/bot.webp"
 			alt="Green robot"
 			width={200}
 			height={200}
@@ -528,7 +523,7 @@
 		program can run without hurdles.
 		<ProjectImage
 			slot="img"
-			src="/bot.webp"
+			src="/index/bot.webp"
 			alt="Green robot"
 			width={200}
 			height={200}
@@ -540,8 +535,6 @@
 		>Uncover all our projects</Button
 	>
 </Section>
-
-<!-- Showcasing some of our top TT members and their skills and what theyve accomplished -->
 
 <Section filled={true}>
 	<TextHeader>Multiple ways to build your personal workforce.</TextHeader>
@@ -557,7 +550,7 @@
 		to best suite your needs
 	</MajorCaption>
 
-	<Carousel>
+	<Carousel amount={3}>
 		<DevCard
 			info={{
 				name: "Jackson Choyce",
@@ -598,7 +591,7 @@
 
 	<Button href="/developers" class="mx-auto mt-6 xl:mt-12">Discover</Button>
 
-	<!-- Blog post advert hopefully catching anyones attention, this could be swapped around with our most prized blog post for the time -->
+	<!-- TODO: Put actual important blog post here -->
 
 	<div class="my-8 lg:my-20">
 		<TextHeader
@@ -619,6 +612,8 @@
 		>
 			<img
 				src="/blog.webp"
+				width="500"
+				height="500"
 				alt="Random shapes and colors in the formation of a hallway"
 				loading="lazy"
 				class="rounded-lg sm:w-28"
@@ -634,8 +629,6 @@
 	</div>
 </Section>
 
-<!-- Instructions section on how to get building your team if you havent already clicked on of the previous buttons -->
-
 <MajorHeader>
 	Let's
 	<GradientText class="from-green-light to-green-dark">
@@ -650,7 +643,7 @@
 </MajorCaption>
 
 <div class="lg:hidden">
-	<Carousel>
+	<Carousel amount={3}>
 		<Step
 			num={1}
 			title="Choose your path"

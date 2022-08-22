@@ -14,8 +14,6 @@
 	<div
 		class="bg-gray-500/40 p-4 rounded-xl relative mx-auto max-w-lg lg:max-w-2xl lg:w-3/5 lg:h-100"
 	>
-		<!-- svelte-ignore a11y-missing-attribute -->
-		<!-- Svelte doesnt recognize alt attribute being provided in spread -->
 		<slot name="img" />
 		<h1
 			class="text-2xl sm:text-2xl md:text-3xl font-semibold text-center mt-10"
@@ -56,7 +54,6 @@
 	>
 		<div class="p-4 flex flex-col gap-1 overflow-auto scrollbar-hidden">
 			<h1 class="font-semibold mb-2">Developers</h1>
-			<!-- TODO: Fix this height bs -->
 			{#each developers as developer}
 				<ProjectDev info={developer} />
 			{/each}

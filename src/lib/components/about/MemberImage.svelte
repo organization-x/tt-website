@@ -5,4 +5,4 @@
 	export let height: number;
 </script>
 
-<img class="rounded-md" loading="lazy" {src} {alt} {width} {height} />
+<img class="rounded-md mb-2" loading="lazy" {src} {alt} {width} {height} />

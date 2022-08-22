@@ -56,8 +56,8 @@ module.exports = {
 			transitionProperty: {
 				// Ignore the dumbass names
 				transhadow: "filter, transform",
-				bright: "border-radius, height",
-				"border-radius": "border-radius"
+				bright: "height, border-radius",
+				border: "border, border-radius"
 			},
 			inset: {
 				0.5: "0.125rem"

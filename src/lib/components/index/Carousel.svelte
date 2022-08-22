@@ -1,40 +1,49 @@
 <script lang="ts">
-	import Dot from "$lib/components/icons/Dot.svelte";
+	import CarouselDot from "$lib/components/index/CarouselDot.svelte";
+	import { onMount } from "svelte/internal";
 
-	let current = 1;
+	export let amount: number;
+	let current = 0;
+	let items: HTMLDivElement[] = [];
+	let element: HTMLDivElement;
 
-	const onScroll = ({ target }: Event) => {
-		const { scrollWidth, scrollLeft, children } = target as HTMLDivElement;
-
-		if (scrollLeft < scrollWidth - children[0].clientWidth * 3) {
-			current = 1;
-		} else if (scrollLeft < scrollWidth - children[0].clientWidth * 2) {
-			current = 2;
-		} else {
-			current = 3;
-		}
+	const onClick = (i: number) => {
+		element.scrollTo({
+			left: element.children[0].clientWidth * i,
+			behavior: "smooth"
+		});
 	};
+
+	onMount(() => {
+		items = Array.from(element.children) as HTMLDivElement[];
+
+		const observer = new IntersectionObserver(
+			(e) => {
+				if (!e[0].isIntersecting || window.innerWidth >= 1024) return;
+				current = items.indexOf(e[0].target as HTMLDivElement);
+			},
+			{ root: element, threshold: 0.5 }
+		);
+
+		items.forEach((item) => observer.observe(item));
+
+		return () => observer.disconnect();
+	});
 </script>
 
 <div class="mt-10 px-2">
 	<div
-		on:scroll={onScroll}
+		bind:this={element}
 		class="flex gap-8 overflow-auto snap-mandatory snap-x scrollbar-hidden max-w-sm mx-auto lg:px-20 lg:flex lg:flex-col lg:max-w-screen-xl"
 	>
 		<slot />
 	</div>
 	<div class="flex gap-3 mt-6 justify-center text-gray-500 lg:hidden">
-		<Dot
-			class="w-2 h-2 transition-colors
-            {current === 1 ? 'text-white' : ''}"
-		/>
-		<Dot
-			class="w-2 h-2 transition-colors
-        {current === 2 ? 'text-white' : ''}"
-		/>
-		<Dot
-			class="w-2 h-2 transition-colors
-        {current === 3 ? 'text-white' : ''}"
-		/>
+		{#each { length: amount } as _, i}
+			<CarouselDot
+				isCurrent={current === i}
+				on:click={() => onClick(i)}
+			/>
+		{/each}
 	</div>
 </div>

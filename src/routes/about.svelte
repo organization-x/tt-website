@@ -3,7 +3,6 @@
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Hero from "$lib/components/Hero.svelte";
-	import Button from "$lib/components/Button.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import Stat from "$lib/components/about/Stat.svelte";
 	import Member from "$lib/components/about/Member.svelte";
@@ -14,6 +13,8 @@
 <svelte:head>
 	<title>About</title>
 </svelte:head>
+
+<!-- TODO: Stat counters seen on other sites, actual information to put on this page, board members -->
 
 <Hero>
 	<PageTitle class="from-green-light to-green-dark">
@@ -26,11 +27,11 @@
 	</PageCaption>
 
 	<img
-		slot="image"
-		height="263"
-		width="500"
-		src="/about.webp"
-		alt="Macbook slight cracked open eminating light"
+		slot="img"
+		height="1024"
+		width="1024"
+		src="/about/about.webp"
+		alt="Brain shape made up of connected neurons"
 	/>
 </Hero>
 
@@ -53,12 +54,13 @@
 
 <Section filled={true}>
 	<TextHeader>A fully-fueled rocketship already blasting off.</TextHeader>
-	<!-- TODO: Stat counters seen on other sites, actual information to put on this page, board members -->
 
 	<div class="flex flex-col gap-8 mt-8">
 		<Stat
 			title="Bountiful"
-			statAmount="10 Million"
+			statAmount={10}
+			statPostFix="M"
+			delay={1000}
 			statName="in revenue."
 			class="before:bg-pink-dark"
 		>
@@ -68,7 +70,9 @@
 		</Stat>
 		<Stat
 			title="Bountiful"
-			statAmount="10 Million"
+			statAmount={10}
+			statPostFix="M"
+			delay={1000}
 			statName="in revenue."
 			class="before:bg-pink-dark"
 			side="right"
@@ -79,7 +83,9 @@
 		</Stat>
 		<Stat
 			title="Bountiful"
-			statAmount="10 Million"
+			statAmount={100}
+			statPostFix="M"
+			delay={2000}
 			statName="in revenue."
 			class="before:bg-pink-dark"
 		>
@@ -89,7 +95,9 @@
 		</Stat>
 		<Stat
 			title="Bountiful"
-			statAmount="10 Million"
+			statAmount={10}
+			statPostFix="M"
+			delay={1000}
 			statName="in revenue."
 			class="before:bg-pink-dark"
 			side="right"
@@ -116,77 +124,42 @@
 		molestias, autem laboriosam cupiditate? Eius officiis eaque asperiores
 		consequatur. Iste, fugit ipsa.
 	</Text>
-
-	<!-- Image of michael -->
 </Section>
 
-<!-- TODO: Fix grid sizing -->
 <Section filled={true}>
 	<TextHeader>Meet the masters of their craft.</TextHeader>
 
 	<div
-		class="grid grid-cols-2 gap-6 pt-10 max-w-lg mx-auto md:gap-12 lg:grid-cols-4"
+		class="grid grid-cols-2 gap-6 pt-10 max-w-xl mx-auto md:gap-14 lg:grid-cols-4"
 	>
-		<Member name="Jackson Choyce" pos="Company Manager">
+		<Member name="Alex Duffy" pos="Head of Product">
 			<MemberImage
-				src="./jackson.webp"
+				src="./about/alex.webp"
+				alt="Alex Duffy from Team Tomorrow"
+				width={200}
+				height={200}
+			/>
+		</Member>
+		<Member name="Michael Ke Zhang" pos="Co Founder">
+			<MemberImage
+				src="./about/michael.webp"
+				alt="Michael Ke Zhang from Team Tomorrow"
+				width={200}
+				height={200}
+			/>
+		</Member>
+		<Member name="Richard Hsu" pos="Co Founder">
+			<MemberImage
+				src="./about/richard.webp"
 				alt="Jackson Choyce from Team Tomorrow"
 				width={200}
 				height={200}
 			/>
 		</Member>
-		<Member name="Jackson Choyce" pos="Company Manager">
+		<Member name="Ying Jiang" pos="Co Founder">
 			<MemberImage
-				src="./jackson.webp"
-				alt="Jackson Choyce from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Jackson Choyce" pos="Company Manager">
-			<MemberImage
-				src="./jackson.webp"
-				alt="Jackson Choyce from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Jackson Choyce" pos="Company Manager">
-			<MemberImage
-				src="./jackson.webp"
-				alt="Jackson Choyce from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Jackson Choyce" pos="Company Manager">
-			<MemberImage
-				src="./jackson.webp"
-				alt="Jackson Choyce from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Jackson Choyce" pos="Company Manager">
-			<MemberImage
-				src="./jackson.webp"
-				alt="Jackson Choyce from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Jackson Choyce" pos="Company Manager">
-			<MemberImage
-				src="./jackson.webp"
-				alt="Jackson Choyce from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Jackson Choyce" pos="Company Manager">
-			<MemberImage
-				src="./jackson.webp"
-				alt="Jackson Choyce from Team Tomorrow"
+				src="./about/ying.webp"
+				alt="Ying Jiang from Team Tomorrow"
 				width={200}
 				height={200}
 			/>
@@ -195,7 +168,7 @@
 </Section>
 
 <Section>
-	<TextHeader>In conclusion.</TextHeader>
+	<TextHeader>Innovation moves the world and we're all for it.</TextHeader>
 
 	<Text>
 		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magni fuga,
