@@ -1,33 +1,43 @@
 <script lang="ts">
-	import PageTitle from "$lib/components/PageTitle.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
-	import Button from "$lib/components/Button.svelte";
-	import TextHeader from "$lib/components/TextHeader.svelte";
-	import DrawnArrow from "$lib/components/index/DrawnArrow.svelte";
-	import Company from "$lib/components/index/Company.svelte";
-	import GoogleCloud from "$lib/components/icons/GoogleCloud.svelte";
-	import Python from "$lib/components/icons/Python.svelte";
-	import TensorFlow from "$lib/components/icons/TensorFlow.svelte";
-	import Pytorch from "$lib/components/icons/Pytorch.svelte";
-	import JavaScript from "$lib/components/icons/JavaScript.svelte";
-	import React from "$lib/components/icons/React.svelte";
-	import GradientText from "$lib/components/GradientText.svelte";
-	import Project from "$lib/components/index/Project.svelte";
-	import MajorHeader from "$lib/components/MajorHeader.svelte";
-	import MajorCaption from "$lib/components/MajorCaption.svelte";
-	import Carousel from "$lib/components/index/Carousel.svelte";
-	import Annotation from "$lib/components/index/Annotation.svelte";
-	import DevCard from "$lib/components/index/DevCard.svelte";
-	import Step from "$lib/components/index/Step.svelte";
-	import GitDeploy from "$lib/components/index/GitDeploy.svelte";
-	import GitMerge from "$lib/components/index/GitMerge.svelte";
-	import GitCommit from "$lib/components/index/GitCommit.svelte";
-	import StepTitle from "$lib/components/index/StepTitle.svelte";
-	import Section from "$lib/components/index/Section.svelte";
+	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
+	import Button from "$lib/components/Button.svelte";
+	import Aws from "$lib/components/icons/Aws.svelte";
+	import Step from "$lib/components/index/Step.svelte";
+	import React from "$lib/components/icons/React.svelte";
+	import PageTitle from "$lib/components/PageTitle.svelte";
+	import Python from "$lib/components/icons/Python.svelte";
+	import TextHeader from "$lib/components/TextHeader.svelte";
+	import Company from "$lib/components/index/Company.svelte";
+	import Pytorch from "$lib/components/icons/Pytorch.svelte";
+	import DevCard from "$lib/components/index/DevCard.svelte";
+	import Project from "$lib/components/index/Project.svelte";
+	import Section from "$lib/components/index/Section.svelte";
+	import PageCaption from "$lib/components/PageCaption.svelte";
+	import MajorHeader from "$lib/components/MajorHeader.svelte";
+	import Carousel from "$lib/components/index/Carousel.svelte";
+	import GitMerge from "$lib/components/index/GitMerge.svelte";
+	import GradientText from "$lib/components/GradientText.svelte";
+	import MajorCaption from "$lib/components/MajorCaption.svelte";
+	import GitDeploy from "$lib/components/index/GitDeploy.svelte";
+	import GitCommit from "$lib/components/index/GitCommit.svelte";
+	import DrawnArrow from "$lib/components/index/DrawnArrow.svelte";
+	import TensorFlow from "$lib/components/icons/TensorFlow.svelte";
+	import JavaScript from "$lib/components/icons/JavaScript.svelte";
+	import Annotation from "$lib/components/index/Annotation.svelte";
+	import GoogleCloud from "$lib/components/icons/GoogleCloud.svelte";
 	import ProjectImage from "$lib/components/index/ProjectImage.svelte";
 	import CompanyImage from "$lib/components/index/CompanyImage.svelte";
-	import Aws from "$lib/components/icons/Aws.svelte";
+
+	// TODO: Actually fetch/fill dev data
+	const placeholder = {
+		name: "Jackson Choyce",
+		pos: "Software Engineer",
+		bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione, repellendus.",
+		src: "./jackson.webp",
+		alt: "Jackson Choyce from Team Tomorrow",
+		href: "/jacksonchoyce"
+	};
 </script>
 
 <svelte:head>
@@ -44,10 +54,12 @@
 		<strong>A great team</strong>.
 	</PageCaption>
 
-	<Button href="/contact" class="hidden lg:block lg:mt-6">Contact Us</Button>
+	<Button href="/contact" class="hidden lg:block lg:mt-6 lg:mx-0">
+		Contact Us
+	</Button>
 
 	<img
-		slot="img"
+		slot="graphic"
 		height="850"
 		width="1200"
 		src="/index/landing.webp"
@@ -55,10 +67,8 @@
 	/>
 </Hero>
 
-<!-- First section outlining who we are and what we do -->
-
-<div class="flex flex-col mx-auto max-w-screen-lg items-center w-fit relative">
-	<Button href="/contact" class="mt-3 lg:hidden">Contact Us</Button>
+<div class="mx-auto max-w-screen-lg w-fit relative">
+	<Button href="/contact" class="lg:hidden">Contact Us</Button>
 	<TextHeader>
 		What is
 		<GradientText class="from-purple-light to-purple-dark">
@@ -143,7 +153,7 @@
 		<Annotation />
 	</div>
 
-	<p class="mt-8 max-w-lg mx-auto lg:text-center lg:max-w-2xl">
+	<Text>
 		Lots of companies nowadays have trouble lifting off the ground since
 		hiring expert software engineers normally is expensive, not here. We
 		look to empower others and
@@ -156,19 +166,17 @@
 			amazing projects and developers leveraging different skills in
 			different fields all the time.
 		</strong>
-	</p>
+	</Text>
 
-	<Button href="/contact" class="mt-8 mx-auto">Contact Us</Button>
+	<Button href="/contact">Contact Us</Button>
 </Section>
-
-<!-- TODO: Get 4th project to put here, fetch photos for developers from their profiles -->
 
 <Section>
 	<MajorHeader>
 		Uncover
-		<GradientText class="from-pink-light to-pink-dark"
-			>Projects</GradientText
-		>
+		<GradientText class="from-pink-light to-pink-dark">
+			Projects
+		</GradientText>
 	</MajorHeader>
 
 	<MajorCaption>
@@ -176,9 +184,9 @@
 		craft <strong>real experiences.</strong>
 	</MajorCaption>
 
-	<Button href="/projects" class="mt-6 mx-auto"
-		>Uncover all our projects</Button
-	>
+	<Button href="/projects" class="my-8">Uncover all our projects</Button>
+
+	<!-- TODO: Actual profile pictures for developers-->
 
 	<Project
 		title="Hippo2"
@@ -186,91 +194,104 @@
 		developers={[
 			{
 				name: "Alex",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Alex Nguyen from Team Tomorrow",
 				href: "/alexnguyen"
 			},
 			{
 				name: "Alexander",
-				role: "Engineering Manager",
+				pos: "Engineering Manager",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Alexander Zhou from Team Tomorrow",
 				href: "/alexanderzhou"
 			},
 			{
 				name: "Bernice",
-				role: "Product Designer",
+				pos: "Product Designer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Bernice Lau from Team Tomorrow",
 				href: "/bernicelau"
 			},
 			{
 				name: "Hyrum",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Hyrum Hansen from Team Tomorrow",
 				href: "/hryumhansen"
 			},
 			{
 				name: "Jackson",
-				role: "Engineering Manager",
+				pos: "Engineering Manager",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Engineering Manager from Team Tomorrow",
 				href: "/jacksonchoyce"
 			},
 			{
 				name: "Joseph",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Joseph Salinas from Team Tomorrow",
 				href: "/josephsalinas"
 			},
 			{
 				name: "Leo",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Leo Du from Team Tomorrow",
 				href: "/leodu"
 			},
 			{
 				name: "Mathan",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Mathan Xaysena from Team Tomorrow",
 				href: "/mathanxaysena"
 			},
 			{
 				name: "Matthew",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Matthew Martono from Team Tomorrow",
 				href: "/matthewmartono"
 			},
 			{
 				name: "Ray",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Ray Flanagan from Team Tomorrow",
 				href: "/rayflanagan"
 			},
 			{
 				name: "Sean",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Sean Kim from Team Tomorrow",
 				href: "/seankim"
 			},
 			{
 				name: "Sricharan",
-				role: "Product Manager",
+				pos: "Product Manager",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Sricharan Guddanti from Team Tomorrow",
 				href: "/sricharanguddanti"
 			},
 			{
 				name: "Zachary",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Zachary Brammer from Team Tomorrow",
 				href: "/zacharybrammer"
@@ -298,84 +319,96 @@
 		developers={[
 			{
 				name: "Advay",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Advay Aravind from Team Tomorrow",
 				href: "/advayaravind"
 			},
 			{
 				name: "Alex",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Alex Fry from Team Tomorrow",
 				href: "/alexfry"
 			},
 			{
 				name: "Alexander",
-				role: "Engineering Manager",
+				pos: "Engineering Manager",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Alexander Zhou from Team Tomorrow",
 				href: "/alexanderzhou"
 			},
 			{
 				name: "Ansh",
-				role: "Design and Engineering",
+				pos: "Design and Engineering",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Ansh Chaurasia from Team Tomorrow",
 				href: "/anshchaurasia"
 			},
 			{
 				name: "Axel",
-				role: "Lead Designer",
+				pos: "Lead Designer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Axel Mora from Team Tomorrow",
 				href: "/axelmora"
 			},
 			{
 				name: "Blake",
-				role: "Design and Engineering",
+				pos: "Design and Engineering",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Blake Martin from Team Tomorrow",
 				href: "/blakemartin"
 			},
 			{
 				name: "Jackson",
-				role: "Engineering Manager",
+				pos: "Engineering Manager",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Jackson Choyce from Team Tomorrow",
 				href: "/jacksonchoyce"
 			},
 			{
 				name: "Mitch",
-				role: "Product Manager",
+				pos: "Product Manager",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Mitch Cutts from Team Tomorrow",
 				href: "/mitchcutts"
 			},
 			{
 				name: "Phakawat",
-				role: "Design and Engineering",
+				pos: "Design and Engineering",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Phakawat Wangkriangkri from Team Tomorrow",
 				href: "/phakawatwangkriangkri"
 			},
 			{
 				name: "Rohan",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Rohan Joshi from Team Tomorrow",
 				href: "/rohanjoshi"
 			},
 			{
 				name: "Sanjay",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Sanjay Manoj from Team Tomorrow",
 				href: "/sanjaymanoj"
 			},
 			{
 				name: "Zac",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Zac Brammer from Team Tomorrow",
 				href: "/zacbrammer"
@@ -404,49 +437,56 @@
 		developers={[
 			{
 				name: "Alexander",
-				role: "Engineering Manager",
+				pos: "Engineering Manager",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Alex Zhou from Team Tomorrow",
 				href: "/alexanderzhou"
 			},
 			{
 				name: "Blake",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Blake Martin from Team Tomorrow",
 				href: "/blakemartin"
 			},
 			{
 				name: "Eegan",
-				role: "Designer", // Up
+				pos: "Designer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Eegan Ram from Team Tomorrow",
 				href: "/eeganram"
 			},
 			{
 				name: "Ishaan",
-				role: "Designer", // up
+				pos: "Designer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Ishaan Variava from Team Tomorrow",
 				href: "/ishaanvariava"
 			},
 			{
 				name: "Jackson",
-				role: "Engineering Manager",
+				pos: "Engineering Manager",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Jackson Choyce from Team Tomorrow",
 				href: "/jacksonchoyce"
 			},
 			{
 				name: "Ray",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Ray Flanagan from Team Tomorrow",
 				href: "/rayflanagan"
 			},
 			{
 				name: "Zac",
-				role: "Software Engineer",
+				pos: "Software Engineer",
+				bio: "placeholder",
 				src: "./jackson.webp",
 				alt: "Zac Brammer from Team Tomorrow",
 				href: "/zacbrammer"
@@ -468,52 +508,17 @@
 		/>
 	</Project>
 
+	<!-- TODO: Actual 4th project -->
 	<Project
 		title="AI Camp Bot"
 		href="/projects/aicbot"
 		developers={[
-			{
-				name: "Jackson",
-				role: "Designer",
-				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
-			},
-			{
-				name: "Jackson",
-				role: "Designer",
-				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
-			},
-			{
-				name: "Jackson",
-				role: "Designer",
-				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
-			},
-			{
-				name: "Jackson",
-				role: "Designer",
-				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
-			},
-			{
-				name: "Jackson",
-				role: "Designer",
-				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
-			},
-			{
-				name: "Jackson",
-				role: "Designer",
-				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
-			}
+			placeholder,
+			placeholder,
+			placeholder,
+			placeholder,
+			placeholder,
+			placeholder
 		]}
 		icons={[Python, TensorFlow]}
 	>
@@ -531,9 +536,9 @@
 		/>
 	</Project>
 
-	<Button href="/projects" class="my-14 mx-auto"
-		>Uncover all our projects</Button
-	>
+	<Button href="/projects" class="mb-12 mt-12">
+		Uncover all our projects
+	</Button>
 </Section>
 
 <Section filled={true}>
@@ -550,83 +555,87 @@
 		to best suite your needs
 	</MajorCaption>
 
+	<!-- TODO: Choose actual top 3 devs here -->
+
 	<Carousel amount={3}>
-		<DevCard
-			info={{
-				name: "Jackson Choyce",
-				role: "Designer",
-				src: "/jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
-			}}
-		>
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione,
-			repellendus.
+		<DevCard info={placeholder}>
+			<li>Worked on 80000 projects.</li>
+			<li>Worked on 80000 projects.</li>
+			<li>Worked on 80000 projects.</li>
+			<li>Worked on 80000 projects.</li>
 		</DevCard>
-		<DevCard
-			info={{
-				name: "Jackson Choyce",
-				role: "Designer",
-				src: "/jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
-			}}
-		>
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione,
-			repellendus.
+		<DevCard info={placeholder}>
+			<li>Worked on 80000 projects.</li>
+			<li>Worked on 80000 projects.</li>
+			<li>Worked on 80000 projects.</li>
+			<li>Worked on 80000 projects.</li>
 		</DevCard>
-		<DevCard
-			info={{
-				name: "Jackson Choyce",
-				role: "Designer",
-				src: "/jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/user/docker"
-			}}
-		>
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione,
-			repellendus.
+		<DevCard info={placeholder}>
+			<li>Worked on 80000 projects.</li>
+			<li>Worked on 80000 projects.</li>
+			<li>Worked on 80000 projects.</li>
+			<li>Worked on 80000 projects.</li>
 		</DevCard>
+
+		<div
+			slot="alt"
+			class="hidden lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:my-8 lg:max-w-screen-xl"
+		>
+			<DevCard info={placeholder}>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+			</DevCard>
+			<DevCard info={placeholder}>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+			</DevCard>
+			<DevCard info={placeholder}>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+			</DevCard>
+		</div>
 	</Carousel>
 
-	<Button href="/developers" class="mx-auto mt-6 xl:mt-12">Discover</Button>
+	<Button href="/developers" class="mt-6 xl:mt-12">Discover</Button>
 
 	<!-- TODO: Put actual important blog post here -->
 
-	<div class="my-8 lg:my-20">
-		<TextHeader
-			>Experience rapid takeoff with experience that fits.</TextHeader
-		>
+	<TextHeader>Experience rapid takeoff with experience that fits.</TextHeader>
 
-		<p class="mt-4 max-w-lg mx-auto text-center">
-			A team only works with experience that matters.
-			<strong>From DevOps to Deployment</strong>
-			we've got you covered with the most popular tools and technologies used
-			in workforces globally. Read a succesfull story of how we built a comprehensive
-			product for one of our clients, and how we did it behind th scenes.
-		</p>
+	<Text>
+		A team only works with experience that matters.
+		<strong>From DevOps to Deployment</strong>
+		we've got you covered with the most popular tools and technologies used in
+		workforces globally. Read a succesfull story of how we built a comprehensive
+		product for one of our clients, and how we did it behind th scenes.
+	</Text>
 
-		<a
-			href="/projects/something"
-			class="p-4 block gap-6 mx-auto rounded-lg bg-gray-700/60 max-w-xs mt-8 border-t-4 ease-in-out duration-200 transition-transform border-[#EFF24C] sm:hover:scale-105 sm:flex sm:items-center sm:max-w-lg"
-		>
-			<img
-				src="/blog.webp"
-				width="500"
-				height="500"
-				alt="Random shapes and colors in the formation of a hallway"
-				loading="lazy"
-				class="rounded-lg sm:w-28"
-			/>
-			<div>
-				<h1 class="font-semibold text-2xl mt-4">Blog Post</h1>
-				<p class="leading-5 mt-2 sm:text-sm md:text-lg md:leading-6">
-					Lorem ipsum dolor sit amet consectetur adipisicing elit. Com
-					qui rem et unde corporis placeat.
-				</p>
-			</div>
-		</a>
-	</div>
+	<a
+		href="/projects/something"
+		class="p-4 block mb-8 mx-auto rounded-lg bg-gray-700/60 max-w-xs mt-8 border-t-4 ease-in-out duration-200 transition-transform border-[#EFF24C] sm:hover:scale-105 sm:flex sm:gap-8 sm:items-center sm:max-w-lg"
+	>
+		<img
+			src="/blog.webp"
+			width="500"
+			height="500"
+			alt="Random shapes and colors in the formation of a hallway"
+			loading="lazy"
+			class="rounded-lg sm:w-28"
+		/>
+		<div>
+			<h1 class="font-semibold text-2xl mt-4">Blog Post</h1>
+			<p class="leading-5 mt-2 sm:text-sm md:text-lg md:leading-6">
+				Lorem ipsum dolor sit amet consectetur adipisicing elit. Com qui
+				rem et unde corporis placeat.
+			</p>
+		</div>
+	</a>
 </Section>
 
 <MajorHeader>
@@ -642,96 +651,85 @@
 	to make your product soar.
 </MajorCaption>
 
-<div class="lg:hidden">
-	<Carousel amount={3}>
-		<Step
-			num={1}
-			title="Choose your path"
-			class="text-purple-light from-purple-light to-purple-dark"
-		>
-			<span slot="text">
-				Lorem ipsum dolor sit amet consectetur adipisicing elit.
-				Temporibus, ipsum quibusdam earum aperiam debitis odit dolorem
-				veritatis qui praesentium voluptatem?
-			</span>
-			<GitCommit slot="svg" />
-		</Step>
-		<Step
-			num={2}
-			title="Evaluate options"
-			class="text-teal-light from-teal-light to-teal-dark"
-		>
-			<span slot="text">
-				Lorem ipsum dolor sit amet consectetur adipisicing elit.
-				Temporibus, ipsum quibusdam earum aperiam debitis odit dolorem
-				veritatis qui praesentium voluptatem?
-			</span>
-			<GitMerge slot="svg" />
-		</Step>
-		<Step
-			num={3}
-			title="Get speedy results"
-			class="text-pink-light from-pink-light to-pink-dark"
-		>
-			<span slot="text">
-				Lorem ipsum dolor sit amet consectetur adipisicing elit.
-				Temporibus, ipsum quibusdam earum aperiam debitis odit dolorem
-				veritatis qui praesentium voluptatem?
-			</span>
-			<GitDeploy slot="svg" />
-		</Step>
-	</Carousel>
-</div>
-
-<div
-	class="hidden lg:max-w-screen-lg lg:mx-auto lg:flex lg:flex-col lg:gap-6 lg:mt-10 lg:bg-gray-500/40 lg:py-6 lg:pl-28 lg:pr-6 lg:-z-20 lg:rounded-xl lg:relative"
->
-	<div>
-		<StepTitle
-			num={1}
-			title="Choose your path"
-			class="text-purple-light from-purple-light to-purple-dark"
-		/>
-		<p class="mt-3">
-			Figure out what you want to acheive and the skills needed to
-			accomplish such a task. Start by filtering through our team members
-			to pinpoint and/or discover your ideal candidates. Or contact us
-			immediatly to get reccomendations and an instant quote.
-		</p>
-	</div>
-	<div>
-		<StepTitle
-			num={2}
-			title="Evaluate options"
-			class="text-teal-light from-teal-light to-teal-dark"
-		/>
-		<p class="mt-3">
-			Look deep into the detailed information we provide on each of our
-			team members. Evaluate our developers' projects, skill sets, social
-			media, and more by clicking on their profile preview and exploring
-			what they have to offer.
-		</p>
-	</div>
-	<div>
-		<StepTitle
-			num={3}
-			title="Get speedy results"
-			class="text-pink-light from-pink-light to-pink-dark"
-		/>
-		<p class="mt-3">
-			Contact us to schedule a virtual meeting for more information on
-			pricing and next steps. We'll be happy to help you get started
-			quickly and neatly without skipping a beat. Then watch our
-			developers give the boost your project needs.
-		</p>
-	</div>
-	<div
-		class="absolute rotate-90 flex my-auto -left-48 top-0 bottom-0 h-[2.7rem]"
+<Carousel amount={3}>
+	<Step
+		num={1}
+		title="Choose your path"
+		class="text-purple-light from-purple-light to-purple-dark"
 	>
-		<GitCommit />
-		<GitMerge />
-		<GitDeploy />
+		Figure out what you want to acheive and the skills needed to accomplish
+		such a task. Start by filtering through our team members to pinpoint
+		and/or discover your ideal candidates. Or contact us immediatly to get
+		reccomendations and an instant quote.
+		<GitCommit slot="svg" />
+	</Step>
+	<Step
+		num={2}
+		title="Evaluate options"
+		class="text-teal-light from-teal-light to-teal-dark"
+	>
+		Look deep into the detailed information we provide on each of our team
+		members. Evaluate our developers' projects, skill sets, social media,
+		and more by clicking on their profile preview and exploring what they
+		have to offer.
+		<GitMerge slot="svg" />
+	</Step>
+	<Step
+		num={3}
+		title="Get speedy results"
+		class="text-pink-light from-pink-light to-pink-dark"
+	>
+		Contact us to schedule a virtual meeting for more information on pricing
+		and next steps. We'll be happy to help you get started quickly and
+		neatly without skipping a beat. Then watch our developers give the boost
+		your project needs.
+		<GitDeploy slot="svg" />
+	</Step>
+	<div
+		slot="alt"
+		class="hidden lg:max-w-2xl lg:mx-auto lg:flex lg:flex-col lg:gap-6 lg:mt-10 lg:bg-gray-500/40 lg:py-6 lg:pl-28 lg:pr-6 lg:-z-20 lg:rounded-xl lg:relative xl:max-w-screen-lg"
+	>
+		<div class="flex flex-col gap-4">
+			<Step
+				num={1}
+				title="Choose your path"
+				class="text-purple-light from-purple-light to-purple-dark"
+			>
+				Figure out what you want to acheive and the skills needed to
+				accomplish such a task. Start by filtering through our team
+				members to pinpoint and/or discover your ideal candidates. Or
+				contact us immediatly to get reccomendations and an instant
+				quote.
+			</Step>
+			<Step
+				num={2}
+				title="Evaluate options"
+				class="text-teal-light from-teal-light to-teal-dark"
+			>
+				Look deep into the detailed information we provide on each of
+				our team members. Evaluate our developers' projects, skill sets,
+				social media, and more by clicking on their profile preview and
+				exploring what they have to offer.
+			</Step>
+			<Step
+				num={3}
+				title="Evaluate options"
+				class="text-pink-light from-pink-light to-pink-dark"
+			>
+				Contact us to schedule a virtual meeting for more information on
+				pricing and next steps. We'll be happy to help you get started
+				quickly and neatly without skipping a beat. Then watch our
+				developers give the boost your project needs.
+			</Step>
+		</div>
+		<div
+			class="absolute rotate-90 flex my-auto -left-56 top-0 bottom-0 h-12"
+		>
+			<GitCommit />
+			<GitMerge />
+			<GitDeploy />
+		</div>
 	</div>
-</div>
+</Carousel>
 
-<Button href="/developers" class="mt-8 mx-auto">Explore Developers</Button>
+<Button href="/developers" class="mt-8">Explore Developers</Button>

@@ -2,11 +2,12 @@
 	import CarouselDot from "$lib/components/index/CarouselDot.svelte";
 	import { onMount } from "svelte/internal";
 
-	export let amount: number;
 	let current = 0;
+	export let amount: number;
 	let items: HTMLDivElement[] = [];
 	let element: HTMLDivElement;
 
+	// On a dot click, scroll to the element corresponding to that dot
 	const onClick = (i: number) => {
 		element.scrollTo({
 			left: element.children[0].clientWidth * i,
@@ -14,6 +15,7 @@
 		});
 	};
 
+	// Change the current dot based on what item is visible, utilizing the intersection observer
 	onMount(() => {
 		items = Array.from(element.children) as HTMLDivElement[];
 
@@ -31,10 +33,10 @@
 	});
 </script>
 
-<div class="mt-10 px-2">
+<div class="mt-10 px-2 lg:hidden">
 	<div
 		bind:this={element}
-		class="flex gap-8 overflow-auto snap-mandatory snap-x scrollbar-hidden max-w-sm mx-auto lg:px-20 lg:flex lg:flex-col lg:max-w-screen-xl"
+		class="flex gap-8 overflow-auto snap-mandatory snap-x scrollbar-hidden max-w-sm mx-auto"
 	>
 		<slot />
 	</div>
@@ -47,3 +49,5 @@
 		{/each}
 	</div>
 </div>
+
+<slot name="alt" />

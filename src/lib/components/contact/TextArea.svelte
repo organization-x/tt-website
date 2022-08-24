@@ -12,8 +12,10 @@
 
 	let isFilled = false;
 
+	// Only dispatch if the previous state of isFilled is different than the new state.
 	$: isFilled, dispatch("change", { isFilled });
 
+	// On input change check if the input is filled.
 	const onChange = ({ target }: Event) => {
 		const { value } = target as HTMLInputElement;
 		isFilled = value.length > 0;

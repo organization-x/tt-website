@@ -11,6 +11,7 @@
 	// 0 = none, 1 = left, 2 = right, 3 = both
 	let disabledArrows = 1;
 
+	// Scroll on arrow click
 	const scroller = (left: boolean) => {
 		element.scrollTo({
 			left: left
@@ -20,6 +21,7 @@
 		});
 	};
 
+	// Change disabeld arrows based on scroll position
 	const onScroll = () => {
 		if (element.scrollLeft === 0) {
 			disabledArrows = 1;
@@ -33,6 +35,7 @@
 		}
 	};
 
+	// Hide arrows when the content of the scrollable area is smaller than the scrollrow itself
 	onMount(() => {
 		const onResize = () => {
 			element.clientWidth === element.scrollWidth

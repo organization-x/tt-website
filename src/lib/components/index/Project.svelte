@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { ComponentType } from "svelte/types/runtime/internal/dev.js";
-	import type { Developer } from "../../types";
+	import type { Developer } from "../types";
 
 	import Button from "../Button.svelte";
 	import ProjectDev from "./ProjectDev.svelte";
@@ -36,7 +36,7 @@
             after:z-10 after:absolute after:rounded-lg after:top-0 after:right-0 after:w-8 after:h-full after:bg-gradient-to-r after:from-transparent after:to-gray-800 after:pointer-events-none"
 		>
 			<div
-				class="flex overflow-auto py-2 px-8 gap-8 snap-x snap-proximity scrollbar-hidden rounded-lg"
+				class="flex overflow-auto py-2 px-8 gap-8 snap-x snap-proximity rounded-lg"
 			>
 				{#each developers as developer}
 					<ProjectDev info={developer} />
@@ -52,7 +52,7 @@
             
             after:z-10 after:absolute after:rounded-lg after:bottom-0 after:w-full after:h-8 after:bg-gradient-to-t after:from-gray-900 after:to-transparent after:pointer-events-none"
 	>
-		<div class="p-4 flex flex-col gap-1 overflow-auto scrollbar-hidden">
+		<div class="p-4 flex flex-col gap-1 overflow-auto">
 			<h1 class="font-semibold mb-2">Developers</h1>
 			{#each developers as developer}
 				<ProjectDev info={developer} />

@@ -1,17 +1,16 @@
 <script lang="ts">
-	import Text from "$lib/components/about/Text.svelte";
-	import Contact from "$lib/components/contact/Contact.svelte";
-	import FormButton from "$lib/components/contact/FormButton.svelte";
+	import Text from "$lib/components/Text.svelte";
+	import Hero from "$lib/components/Hero.svelte";
 	import Page from "$lib/components/contact/Page.svelte";
 	import Field from "$lib/components/contact/Field.svelte";
-	import Hero from "$lib/components/Hero.svelte";
-	import Section from "$lib/components/index/Section.svelte";
-	import MajorHeader from "$lib/components/MajorHeader.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
+	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Select from "$lib/components/contact/Select.svelte";
+	import MajorHeader from "$lib/components/MajorHeader.svelte";
+	import PageCaption from "$lib/components/PageCaption.svelte";
 	import TextArea from "$lib/components/contact/TextArea.svelte";
+	import FormButton from "$lib/components/contact/FormButton.svelte";
 
 	const titles = [
 		"First, the basics.",
@@ -42,7 +41,7 @@
 	<title>Contact Us</title>
 </svelte:head>
 
-<Hero>
+<Hero src="contact/contact.webm">
 	<PageTitle class="from-purple-light to-purple-dark">
 		Let us get the party started for you.
 	</PageTitle>
@@ -51,8 +50,6 @@
 		Give us detailed information on what and who you want to start
 		<strong>your journey</strong>.
 	</PageCaption>
-
-	<Contact slot="img" />
 </Hero>
 
 <Section>

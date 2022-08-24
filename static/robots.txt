@@ -1,0 +1,3 @@
+# Temporary for demonstration purposes so the site doesnt get leaked
+User-agent: *
+Disallow: *

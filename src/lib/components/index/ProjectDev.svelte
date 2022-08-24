@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Developer } from "../../types";
+	import type { Developer } from "../types";
 
 	export let info: Developer;
 </script>
@@ -22,6 +22,6 @@
 	/>
 	<div>
 		<h4 class="leading-4">{info.name}</h4>
-		<p class="text-xs">{info.role}</p>
+		<p class="text-xs">{info.pos}</p>
 	</div>
 </a>

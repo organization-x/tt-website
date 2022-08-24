@@ -1,7 +1,6 @@
 <script lang="ts">
-	import type { Developer } from "../../types";
-
 	import GradientText from "../GradientText.svelte";
+	import type { Developer } from "../types";
 	import Plus from "../icons/Plus.svelte";
 	import { fade } from "svelte/transition";
 
@@ -27,7 +26,7 @@
 			/>
 			<div>
 				<h4 class="font-extrabold mt-2">
-					{info.role.toUpperCase()}
+					{info.pos.toUpperCase()}
 				</h4>
 				<GradientText
 					class="text-center from-green-light to-green-dark text-xl"
@@ -37,7 +36,7 @@
 			</div>
 		</div>
 		<p class="mt-2 mb-6 max-w-xs lg:mt-6 lg:mb-0">
-			<slot />
+			{info.bio}
 		</p>
 		<div
 			class:h-full={open}
@@ -62,18 +61,12 @@
 				transition:fade={{ duration: 100 }}
 				class="absolute pb-10 inset-0 left-4 m-auto h-fit w-fit list-disc lg:hidden"
 			>
-				<li>Worked on 80000 projects.</li>
-				<li>Worked on 80000 projects.</li>
-				<li>Worked on 80000 projects.</li>
-				<li>Worked on 80000 projects.</li>
+				<slot />
 			</ul>
 		{/if}
 	</div>
 
 	<ul class="hidden lg:block lg:mx-auto lg:shrink-0 lg:list-disc">
-		<li>Worked on 80000 projects.</li>
-		<li>Worked on 80000 projects.</li>
-		<li>Worked on 80000 projects.</li>
-		<li>Worked on 80000 projects.</li>
+		<slot />
 	</ul>
 </div>

@@ -14,10 +14,12 @@
 	let count = 0;
 	let element: HTMLHeadingElement;
 
+	// Easing function for numbers increasing.
 	const easing = (x: number): number => {
 		return Math.sqrt(1 - Math.pow(x - 1, 2));
 	};
 
+	// When the number counter enters the viewport, start the animation of it counting upwards.
 	onMount(() => {
 		const observer = new IntersectionObserver(
 			(e) => {

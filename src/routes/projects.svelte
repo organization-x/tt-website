@@ -1,27 +1,25 @@
 <script lang="ts">
-	import Text from "$lib/components/about/Text.svelte";
-	import SkillFilter from "$lib/components/SkillFilter.svelte";
-	import ScrollRow from "$lib/components/ScrollRow.svelte";
+	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
+	import ScrollRow from "$lib/components/ScrollRow.svelte";
 	import Python from "$lib/components/icons/Python.svelte";
-	import Section from "$lib/components/index/Section.svelte";
-	import MajorHeader from "$lib/components/MajorHeader.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
+	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
-	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
+	import MajorHeader from "$lib/components/MajorHeader.svelte";
+	import PageCaption from "$lib/components/PageCaption.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import ProjectBlog from "$lib/components/ProjectBlog.svelte";
-	import React from "$lib/components/icons/React.svelte";
-	import JavaScript from "$lib/components/icons/JavaScript.svelte";
+	import SkillFilter from "$lib/components/SkillFilter.svelte";
+	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
 </script>
 
 <svelte:head>
 	<title>Projects</title>
 </svelte:head>
 
-<Hero>
+<Hero src="/projects/projects.webm">
 	<PageTitle class="from-pink-light to-pink-dark">
 		Projects from personal to professional.
 	</PageTitle>
@@ -30,11 +28,6 @@
 		Find skills in action by <strong>uncovering</strong> our projects and the
 		team behind them.
 	</PageCaption>
-
-	<video slot="img" autoplay muted playsinline>
-		<source src="/projects/projects.webm" type="video/webm" />
-		<source src="/projects/projects.mp4" type="video/mp4" />
-	</video>
 </Hero>
 
 <Section>
@@ -103,26 +96,26 @@
 
 	<div class="flex flex-col gap-8 mt-12 lg:mt-20">
 		<ProjectBlog
-			title="Project"
-			class="border-[#EFF24C]"
-			img="./blog.webp"
-			icons={[React, JavaScript]}
-		>
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus
-			corporis unde veritatis, exercitationem beatae cumque voluptate
-			laborum earum corrupti reiciendis, omnis placeat architecto libero,
-			aspernatur rem dolor nesciunt com ea.
-		</ProjectBlog>
+			info={{
+				name: "Project",
+				desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus corporis unde veritatis, exercitationem beatae cumque voluptate laborum earum corrupti reiciendis, omnis placeat architecto libero, aspernatur rem dolor nesciunt com ea.",
+				href: "/projects/project",
+				src: "/blog.webp",
+				alt: "Random shapes and colors in the formation of a hallway",
+				color: "#EFF24C",
+				icons: ["react", "js"]
+			}}
+		/>
 		<ProjectBlog
-			title="Project"
-			class="border-[#EFF24C]"
-			img="./blog.webp"
-			icons={[React, JavaScript]}
-		>
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus
-			corporis unde veritatis, exercitationem beatae cumque voluptate
-			laborum earum corrupti reiciendis, omnis placeat architecto libero,
-			aspernatur rem dolor nesciunt com ea.
-		</ProjectBlog>
+			info={{
+				name: "Project",
+				desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus corporis unde veritatis, exercitationem beatae cumque voluptate laborum earum corrupti reiciendis, omnis placeat architecto libero, aspernatur rem dolor nesciunt com ea.",
+				href: "/projects/project",
+				src: "/blog.webp",
+				alt: "Random shapes and colors in the formation of a hallway",
+				color: "#EFF24C",
+				icons: ["react", "js"]
+			}}
+		/>
 	</div>
 </Section>

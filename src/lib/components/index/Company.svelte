@@ -7,8 +7,6 @@
 <div
 	class="bg-gray-800 p-4 rounded-xl flex flex-col max-w-lg mx-auto even:text-right even:items-end lg:transition-transhadow lg:hover:-translate-y-2 lg:hover:drop-shadow-lg"
 >
-	<!-- svelte-ignore a11y-missing-attribute -->
-	<!-- Svelte doesnt recognize alt attribute being provided in spread -->
 	<slot name="img" />
 	<p class="my-4">
 		<slot />

@@ -1,29 +1,39 @@
 <script lang="ts">
-	import Text from "$lib/components/about/Text.svelte";
-	import Developer from "$lib/components/developers/Developer.svelte";
-	import DeveloperFilter from "$lib/components/developers/DeveloperFilter.svelte";
-	import HireStep from "$lib/components/developers/HireStep.svelte";
-	import Seperator from "$lib/components/developers/Seperator.svelte";
-	import FilterTitle from "$lib/components/FilterTitle.svelte";
-
+	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
-	import Desktop from "$lib/components/icons/Desktop.svelte";
-	import Python from "$lib/components/icons/Python.svelte";
-	import Section from "$lib/components/index/Section.svelte";
-	import MajorHeader from "$lib/components/MajorHeader.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
 	import ScrollRow from "$lib/components/ScrollRow.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
-	import SkillFilter from "$lib/components/SkillFilter.svelte";
+	import Python from "$lib/components/icons/Python.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
+	import Desktop from "$lib/components/icons/Desktop.svelte";
+	import Section from "$lib/components/index/Section.svelte";
+	import FilterTitle from "$lib/components/FilterTitle.svelte";
+	import MajorHeader from "$lib/components/MajorHeader.svelte";
+	import PageCaption from "$lib/components/PageCaption.svelte";
+	import SkillFilter from "$lib/components/SkillFilter.svelte";
+	import HireStep from "$lib/components/developers/HireStep.svelte";
+	import StepImage from "$lib/components/developers/StepImage.svelte";
+	import Developer from "$lib/components/developers/Developer.svelte";
+	import Seperator from "$lib/components/developers/Seperator.svelte";
+	import DeveloperFilter from "$lib/components/developers/DeveloperFilter.svelte";
+
+	// TODO: Put actual search here
+	const placeholder = {
+		name: "Bernice Lau",
+		pos: "Designer",
+		bio: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolorum ex cumque quae! Eligendi labore atque excepturi maxime ducimus velit ipsam nobis aut!",
+		src: "./bernice.webp",
+		alt: "Bernice Lau from Team Tomorrow",
+		href: "/bernicelau"
+	};
 </script>
 
 <svelte:head>
 	<title>Developers</title>
 </svelte:head>
 
-<Hero>
+<Hero src="/developers/developers.webm">
 	<PageTitle class="from-blue-light to-blue-dark">
 		Discover who can push you forward.
 	</PageTitle>
@@ -32,14 +42,6 @@
 		See who fits your needs the most and <strong>propel</strong>
 		your product through our easy hiring process.
 	</PageCaption>
-
-	<img
-		slot="img"
-		height="1045"
-		width="1554"
-		src="/developers/developers.webp"
-		alt="Developers with their associated skills against a dotted background"
-	/>
 </Hero>
 
 <Section>
@@ -51,40 +53,38 @@
 		from Team Tommorow so you can hit the ground running.
 	</Text>
 
-	<div class="bg-gray-500/40 p-5 mt-4 rounded-lg flex flex-col gap-8 mb-12">
+	<div
+		class="bg-gray-500/40 p-5 mt-4 rounded-lg flex flex-col gap-8 mb-12 max-w-xl mx-auto"
+	>
 		<HireStep title="Search and discover.">
-			<img
-				slot="img"
-				height="500"
-				width="500"
+			<StepImage
+				slot="image"
 				src="/developers/find.webp"
-				loading="lazy"
-				alt="Developer profiles with an overlaying search icon"
+				alt="Developer profiles stacked ontop of eachother"
 			/>
 			Search for the perfect developer to fit your needs by filtering through
 			our team members below to pinpoint and/or discover your ideal candidates.
 		</HireStep>
+
 		<Seperator />
+
 		<HireStep title="Evaluate options." side="right">
-			<img
-				slot="img"
-				height="500"
-				width="500"
+			<StepImage
+				slot="image"
 				src="/developers/stats.webp"
-				loading="lazy"
 				alt="Developer profile with statistics bars"
 			/>
 			Evaluate each canditates projects, skill sets, social media, and more
-			by clicking on their profile preview.
+			by clicking on their profile preview. And figure out who intrigues you
+			most.
 		</HireStep>
+
 		<Seperator />
+
 		<HireStep title="Create a contract and blastoff.">
-			<img
-				slot="img"
-				height="500"
-				width="500"
+			<StepImage
+				slot="image"
 				src="/developers/send.webp"
-				loading="lazy"
 				alt="Developer profile with statistics bars"
 			/>
 			Contact us to schedule a virtual meeting for more information on pricing
@@ -125,7 +125,7 @@
 
 		<SearchBar />
 
-		<ScrollRow class="mt-6">
+		<ScrollRow class="mt-12">
 			<DeveloperFilter name="Bernice" current={true}>
 				<img
 					height="200"
@@ -158,20 +158,12 @@
 			</DeveloperFilter>
 		</ScrollRow>
 
-		<div class="overflow-auto scrollbar-hidden snap-x snap-mandatory my-12">
-			<Developer
-				info={{
-					name: "Bernice Lau",
-					role: "Designer",
-					src: "./bernice.webp",
-					alt: "Bernice Lau from Team Tomorrow",
-					href: "/bernicelau"
-				}}
-			>
-				Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-				Dolorum ex cumque quae! Eligendi labore atque excepturi maxime
-				ducimus velit ipsam nobis aut!
-			</Developer>
+		<div
+			class="flex gap-32 px-32 overflow-auto scrollbar-hidden snap-x snap-mandatory my-12"
+		>
+			<Developer info={placeholder} />
+			<Developer info={placeholder} />
+			<Developer info={placeholder} />
 		</div>
 	</div>
 </Section>

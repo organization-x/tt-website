@@ -1,3 +1,7 @@
+<script lang="ts">
+	export let src: string;
+</script>
+
 <div
 	class="px-4 mx-auto mb-10 max-w-screen-2xl lg:flex lg:mt-20 lg:justify-between lg:px-6 xl:px-10 lg:gap-8"
 >
@@ -6,6 +10,8 @@
 	</div>
 
 	<div class="w-full m-auto mt-12 max-w-lg lg:m-auto">
-		<slot name="img" />
+		<video autoplay muted playsinline>
+			<source {src} type="video/webm" />
+		</video>
 	</div>
 </div>

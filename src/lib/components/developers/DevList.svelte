@@ -14,7 +14,3 @@
 <div class="flex flex-col gap-4 mt-4">
 	<slot />
 </div>
-
-<!-- TODO: Add animated graphic to every page -->
-<!-- TODO: Create desktop version of developers page -->
-<!-- TODO: Add comments and/or finish other TODO's -->

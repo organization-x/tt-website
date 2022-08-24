@@ -1,22 +1,20 @@
 <script lang="ts">
-	import PageTitle from "$lib/components/PageTitle.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
-	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Hero from "$lib/components/Hero.svelte";
-	import Section from "$lib/components/index/Section.svelte";
+	import Text from "$lib/components/Text.svelte";
 	import Stat from "$lib/components/about/Stat.svelte";
+	import PageTitle from "$lib/components/PageTitle.svelte";
 	import Member from "$lib/components/about/Member.svelte";
+	import Section from "$lib/components/index/Section.svelte";
+	import TextHeader from "$lib/components/TextHeader.svelte";
+	import PageCaption from "$lib/components/PageCaption.svelte";
 	import MemberImage from "$lib/components/about/MemberImage.svelte";
-	import Text from "$lib/components/about/Text.svelte";
 </script>
 
 <svelte:head>
 	<title>About</title>
 </svelte:head>
 
-<!-- TODO: Stat counters seen on other sites, actual information to put on this page, board members -->
-
-<Hero>
+<Hero src="/about/about.webm">
 	<PageTitle class="from-green-light to-green-dark">
 		A new era of collaboration and teamwork.
 	</PageTitle>
@@ -25,14 +23,6 @@
 		Explore what acheivements we've
 		<strong>accomplished</strong> and how we did it.
 	</PageCaption>
-
-	<img
-		slot="img"
-		height="1024"
-		width="1024"
-		src="/about/about.webp"
-		alt="Brain shape made up of connected neurons"
-	/>
 </Hero>
 
 <Section>
@@ -54,6 +44,8 @@
 
 <Section filled={true}>
 	<TextHeader>A fully-fueled rocketship already blasting off.</TextHeader>
+
+	<!-- TODO: Put actual info in stat counters -->
 
 	<div class="flex flex-col gap-8 mt-8">
 		<Stat
