@@ -44,7 +44,9 @@
 	<title>Home</title>
 </svelte:head>
 
-<Hero>
+<!-- TODO: Put Adarsh's proper rendered video here-->
+
+<Hero src="/index/index.webm">
 	<PageTitle class="from-teal-light to-teal-dark">
 		Industry professionals at your fingertips.
 	</PageTitle>
