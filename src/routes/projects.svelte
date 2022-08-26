@@ -13,6 +13,7 @@
 	import ProjectBlog from "$lib/components/ProjectBlog.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
 	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
+	import Seperator from "$lib/components/developers/Seperator.svelte";
 </script>
 
 <svelte:head>
@@ -48,7 +49,9 @@
 	<div class="max-w-screen-lg mx-auto w-full">
 		<FilterTitle />
 
-		<ScrollRow class="mt-6">
+		<SearchBar />
+
+		<ScrollRow class="mt-6 mb-12">
 			<SkillFilter name="Python" current={true}>
 				<Python class="h-6 w-6" />
 			</SkillFilter>
@@ -60,7 +63,7 @@
 			</SkillFilter>
 		</ScrollRow>
 
-		<SearchBar />
+		<Seperator />
 
 		<ScrollRow class="mt-12 md:mt-20">
 			<ProjectFilter current={true}>

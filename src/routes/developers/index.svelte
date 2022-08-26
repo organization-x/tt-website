@@ -99,17 +99,7 @@
 	<div class="max-w-screen-lg mx-auto w-full">
 		<FilterTitle />
 
-		<ScrollRow class="mt-6">
-			<SkillFilter name="Python" current={true}>
-				<Python class="h-6 w-6" />
-			</SkillFilter>
-			<SkillFilter name="Python" current={false}>
-				<Python class="h-6 w-6" />
-			</SkillFilter>
-			<SkillFilter name="Python" current={false}>
-				<Python class="h-6 w-6" />
-			</SkillFilter>
-		</ScrollRow>
+		<SearchBar />
 
 		<ScrollRow class="mt-6">
 			<SkillFilter name="Frontend Developer" current={true}>
@@ -123,7 +113,19 @@
 			</SkillFilter>
 		</ScrollRow>
 
-		<SearchBar />
+		<ScrollRow class="mt-6 mb-12">
+			<SkillFilter name="Python" current={true}>
+				<Python class="h-6 w-6" />
+			</SkillFilter>
+			<SkillFilter name="Python" current={false}>
+				<Python class="h-6 w-6" />
+			</SkillFilter>
+			<SkillFilter name="Python" current={false}>
+				<Python class="h-6 w-6" />
+			</SkillFilter>
+		</ScrollRow>
+
+		<Seperator />
 
 		<ScrollRow class="mt-12">
 			<DeveloperFilter name="Bernice" current={true}>
@@ -159,7 +161,7 @@
 		</ScrollRow>
 
 		<div
-			class="flex gap-32 px-32 overflow-auto scrollbar-hidden snap-x snap-mandatory my-12"
+			class="flex gap-32 max-w-xl mx-auto overflow-auto scrollbar-hidden snap-x snap-mandatory my-12"
 		>
 			<Developer info={placeholder} />
 			<Developer info={placeholder} />

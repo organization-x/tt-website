@@ -69,7 +69,7 @@
 	/>
 </Hero>
 
-<div class="mx-auto max-w-screen-lg w-fit relative">
+<div class="mx-auto max-w-screen-lg w-fit relative lg:mt-32">
 	<Button href="/contact" class="lg:hidden">Contact Us</Button>
 	<TextHeader>
 		What is
