@@ -5,7 +5,8 @@
 
 <div
 	class:md:flex-row-reverse={side !== "left"}
-	class="md:flex md:gap-4 md:text-base md:items-center"
+	class:items-end={side !== "left"}
+	class="flex flex-col gap-4 md:text-base md:flex-row md:items-center"
 >
 	<slot name="image" />
 	<div class:text-right={side !== "left"} class="mt-4">

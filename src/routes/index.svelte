@@ -59,14 +59,6 @@
 	<Button href="/contact" class="hidden lg:block lg:mt-6 lg:mx-0">
 		Contact Us
 	</Button>
-
-	<img
-		slot="graphic"
-		height="850"
-		width="1200"
-		src="/index/landing.webp"
-		alt="Macbook slight cracked open eminating light"
-	/>
 </Hero>
 
 <div class="mx-auto max-w-screen-lg w-fit relative lg:mt-32">

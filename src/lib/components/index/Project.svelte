@@ -36,7 +36,7 @@
             after:z-10 after:absolute after:rounded-lg after:top-0 after:right-0 after:w-8 after:h-full after:bg-gradient-to-r after:from-transparent after:to-gray-800 after:pointer-events-none"
 		>
 			<div
-				class="flex overflow-auto py-2 px-8 gap-8 snap-x snap-proximity rounded-lg"
+				class="flex overflow-auto py-2 px-8 gap-8 snap-x snap-proximity rounded-lg scrollbar-hidden"
 			>
 				{#each developers as developer}
 					<ProjectDev info={developer} />
