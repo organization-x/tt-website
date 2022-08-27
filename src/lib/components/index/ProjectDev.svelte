@@ -21,7 +21,7 @@
 		class="rounded-full my-auto w-10"
 	/>
 	<div>
-		<h4 class="leading-4">{info.name}</h4>
+		<h1 class="leading-4">{info.name}</h1>
 		<p class="text-xs">{info.pos}</p>
 	</div>
 </a>

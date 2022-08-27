@@ -23,7 +23,7 @@
 		<p class="mt-6 text-center lg:text-base">
 			<slot />
 		</p>
-		<Button {href} class="mt-6 mx-auto lg:mt-10">Learn More</Button>
+		<Button {href} class="mt-6 mx-auto lg:mt-10">Uncover {title}</Button>
 		<div class="flex gap-2 items-center justify-center mt-4 lg:mt-8">
 			{#each icons as Icon}
 				<Icon class="w-10 h-10" />

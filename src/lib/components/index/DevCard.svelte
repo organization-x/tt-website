@@ -25,9 +25,9 @@
 				class="rounded-full mx-auto w-20 h-20 xl:mx-0"
 			/>
 			<div>
-				<h4 class="font-extrabold mt-2">
+				<h1 class="font-extrabold mt-3 mb-1 text-sm">
 					{info.pos.toUpperCase()}
-				</h4>
+				</h1>
 				<GradientText
 					class="text-center from-green-light to-green-dark text-xl"
 				>
