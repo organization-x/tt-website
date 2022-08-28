@@ -28,6 +28,8 @@
 	import GoogleCloud from "$lib/components/icons/GoogleCloud.svelte";
 	import ProjectImage from "$lib/components/index/ProjectImage.svelte";
 	import CompanyImage from "$lib/components/index/CompanyImage.svelte";
+	import Cog from "$lib/components/index/Cog.svelte";
+	import Crane from "$lib/components/index/Crane.svelte";
 
 	// TODO: Actually fetch/fill dev data
 	const placeholder = {
@@ -536,7 +538,11 @@
 </Section>
 
 <Section filled={true}>
-	<TextHeader>Multiple ways to build your personal workforce.</TextHeader>
+	<div class="relative my-12 w-fit mx-auto">
+		<Crane />
+		<TextHeader>Multiple ways to build your personal workforce.</TextHeader>
+		<Cog />
+	</div>
 
 	<MajorHeader>
 		Discover
