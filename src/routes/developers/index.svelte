@@ -25,7 +25,7 @@
 		bio: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolorum ex cumque quae! Eligendi labore atque excepturi maxime ducimus velit ipsam nobis aut!",
 		src: "./bernice.webp",
 		alt: "Bernice Lau from Team Tomorrow",
-		href: "/bernicelau"
+		href: "developers/bernicelau"
 	};
 </script>
 
