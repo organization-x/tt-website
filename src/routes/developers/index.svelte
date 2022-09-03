@@ -23,8 +23,16 @@
 	// TODO: Fetch data using prisma
 	const placeholder: DeveloperType = {
 		name: "Bernice Lau",
+<<<<<<< HEAD
 		position: "Designer",
 		iconurl: "/bernice.webp"
+=======
+		pos: "Designer",
+		bio: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolorum ex cumque quae! Eligendi labore atque excepturi maxime ducimus velit ipsam nobis aut!",
+		src: "./bernice.webp",
+		alt: "Bernice Lau from Team Tomorrow",
+		href: "developers/bernicelau"
+>>>>>>> 15f5b6dc57c426e8eff4d8d5b5fb7aaeadc793fa
 	};
 </script>
 
