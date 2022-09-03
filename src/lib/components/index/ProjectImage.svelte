@@ -1,9 +1,9 @@
 <script lang="ts">
+	let className: string;
 	export let src: string;
 	export let alt: string;
 	export let width: number;
 	export let height: number;
-	let className: string;
 
 	export { className as class };
 </script>

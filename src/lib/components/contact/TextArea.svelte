@@ -1,12 +1,11 @@
 <script lang="ts">
+	import Asterisk from "../icons/Asterisk.svelte";
 	import { createEventDispatcher } from "svelte/internal";
 
-	import Asterisk from "../icons/Asterisk.svelte";
-
-	export let placeholder: string;
 	export let title: string;
-	export let disabled: boolean;
 	export let required = true;
+	export let disabled: boolean;
+	export let placeholder: string;
 
 	const dispatch = createEventDispatcher();
 

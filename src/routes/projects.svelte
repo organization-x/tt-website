@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { Project } from "@prisma/client";
+
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import ScrollRow from "$lib/components/ScrollRow.svelte";
@@ -12,8 +14,20 @@
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import ProjectBlog from "$lib/components/ProjectBlog.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
-	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
 	import Seperator from "$lib/components/developers/Seperator.svelte";
+	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
+
+	// TODO: Fetch data using prisma
+	const placeholderProject: Project = {
+		id: "ttwebsiteontop", // cuid
+		title: "Project",
+		snippet:
+			"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus corporis unde veritatis, exercitationem beatae cumque voluptate laborum earum corrupti reiciendis, omnis placeat architecto libero, aspernatur rem dolor nesciunt com ea.",
+		theme: "#EFF24C",
+		bannerurl: "/blog.webp",
+		date: new Date(),
+		skills: ["JAVASCRIPT", "GCLOUD"]
+	};
 </script>
 
 <svelte:head>
@@ -98,27 +112,7 @@
 	</div>
 
 	<div class="flex flex-col gap-8 mt-12 lg:mt-20">
-		<ProjectBlog
-			info={{
-				name: "Project",
-				desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus corporis unde veritatis, exercitationem beatae cumque voluptate laborum earum corrupti reiciendis, omnis placeat architecto libero, aspernatur rem dolor nesciunt com ea.",
-				href: "/projects/project",
-				src: "/blog.webp",
-				alt: "Random shapes and colors in the formation of a hallway",
-				color: "#EFF24C",
-				icons: ["react", "js"]
-			}}
-		/>
-		<ProjectBlog
-			info={{
-				name: "Project",
-				desc: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus corporis unde veritatis, exercitationem beatae cumque voluptate laborum earum corrupti reiciendis, omnis placeat architecto libero, aspernatur rem dolor nesciunt com ea.",
-				href: "/projects/project",
-				src: "/blog.webp",
-				alt: "Random shapes and colors in the formation of a hallway",
-				color: "#EFF24C",
-				icons: ["react", "js"]
-			}}
-		/>
+		<ProjectBlog info={placeholderProject} />
+		<ProjectBlog info={placeholderProject} />
 	</div>
 </Section>

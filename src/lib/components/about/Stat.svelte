@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { onMount } from "svelte/internal";
 
+	let className: string;
 	export let title: string;
-	export let statAmount: number;
-	export let statPostFix: string;
-	export let statName: string;
 	export let delay: number;
 	export let side = "left";
-	let className: string;
+	export let statName: string;
+	export let statAmount: number;
+	export let statPostFix: string;
 
 	export { className as class };
 

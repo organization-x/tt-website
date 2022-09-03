@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte/internal";
-	import { onMount, onDestroy } from "svelte/internal";
+	import { onMount } from "svelte/internal";
 	import Asterisk from "../icons/Asterisk.svelte";
 	import Dropdown from "../icons/Dropdown.svelte";
 	import DropdownOption from "./DropdownOption.svelte";
+	import { createEventDispatcher } from "svelte/internal";
 
 	export let title: string;
-	export let placeholder: string;
+	export let required = true;
 	export let disabled: boolean;
 	export let options: string[];
-	export let required = true;
+	export let placeholder: string;
 
 	const dispatch = createEventDispatcher();
 

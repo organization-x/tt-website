@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { Developer as DeveloperType } from "$lib/types";
+
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
@@ -18,14 +20,11 @@
 	import Seperator from "$lib/components/developers/Seperator.svelte";
 	import DeveloperFilter from "$lib/components/developers/DeveloperFilter.svelte";
 
-	// TODO: Put actual search here
-	const placeholder = {
+	// TODO: Fetch data using prisma
+	const placeholder: DeveloperType = {
 		name: "Bernice Lau",
-		pos: "Designer",
-		bio: "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Dolorum ex cumque quae! Eligendi labore atque excepturi maxime ducimus velit ipsam nobis aut!",
-		src: "./bernice.webp",
-		alt: "Bernice Lau from Team Tomorrow",
-		href: "/bernicelau"
+		position: "Designer",
+		iconurl: "/bernice.webp"
 	};
 </script>
 
@@ -163,9 +162,24 @@
 		<div
 			class="flex gap-32 max-w-xl mx-auto overflow-auto scrollbar-hidden snap-x snap-mandatory my-12"
 		>
-			<Developer info={placeholder} />
-			<Developer info={placeholder} />
-			<Developer info={placeholder} />
+			<Developer info={placeholder}>
+				Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+				Repellat unde possimus expedita minima iusto excepturi vero
+				facere dolorem ducimus, iste minus velit, distinctio sed illum
+				labore quos libero impedit sequi.
+			</Developer>
+			<Developer info={placeholder}>
+				Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+				Repellat unde possimus expedita minima iusto excepturi vero
+				facere dolorem ducimus, iste minus velit, distinctio sed illum
+				labore quos libero impedit sequi.
+			</Developer>
+			<Developer info={placeholder}>
+				Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+				Repellat unde possimus expedita minima iusto excepturi vero
+				facere dolorem ducimus, iste minus velit, distinctio sed illum
+				labore quos libero impedit sequi.
+			</Developer>
 		</div>
 	</div>
 </Section>

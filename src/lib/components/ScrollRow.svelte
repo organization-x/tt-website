@@ -3,8 +3,8 @@
 
 	import CarouselArrow from "./icons/CarouselArrow.svelte";
 
-	let element: HTMLDivElement;
 	let className: string;
+	let element: HTMLDivElement;
 
 	export { className as class };
 

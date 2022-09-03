@@ -1,6 +1,6 @@
 <script lang="ts">
-	export let current: boolean;
 	export let name: string;
+	export let current: boolean;
 </script>
 
 <div

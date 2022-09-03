@@ -23,6 +23,7 @@
 	let element: HTMLFormElement;
 	let filledCount = 0;
 
+	// Scroll to next page of contact form
 	const scroll = (next: boolean) => {
 		pageNumber = next ? pageNumber + 1 : pageNumber - 1;
 
@@ -32,6 +33,7 @@
 		});
 	};
 
+	// Check if all required fields are filled
 	const onChange = ({ detail }: CustomEvent) => {
 		detail.isFilled ? filledCount++ : filledCount--;
 	};

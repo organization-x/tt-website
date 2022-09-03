@@ -1,11 +1,11 @@
 <script lang="ts">
-	import CarouselDot from "$lib/components/index/CarouselDot.svelte";
 	import { onMount } from "svelte/internal";
+	import CarouselDot from "$lib/components/index/CarouselDot.svelte";
 
 	let current = 0;
 	export let amount: number;
-	let items: HTMLDivElement[] = [];
 	let element: HTMLDivElement;
+	let items: HTMLDivElement[] = [];
 
 	// On a dot click, scroll to the element corresponding to that dot
 	const onClick = (i: number) => {

@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Developer } from "../types";
+	import type { Developer } from "../../types";
 
 	export let info: Developer;
 </script>
 
 <a
-	href={info.href}
+	href={`/developers/${info.name.toLowerCase().replace(" ", "")}`}
 	class="flex p-2 gap-2 items-center shrink-0 relative rounded-lg snap-center
     
     after:duration-200 after:transition-transform after:h-0.5 after:absolute after:right-4 after:-bottom-0.5 after:left-4 after:bg-white after:scale-x-0 hover:after:scale-x-100
@@ -15,13 +15,13 @@
 	<img
 		height="200"
 		width="200"
-		src={info.src}
-		alt={info.alt}
+		src={info.iconurl}
+		alt={`${info.name} from Team Tomorrow`}
 		loading="lazy"
 		class="rounded-full my-auto w-10"
 	/>
 	<div>
-		<h1 class="leading-4">{info.name}</h1>
-		<p class="text-xs">{info.pos}</p>
+		<h1 class="leading-4">{info.name.split(" ")[0]}</h1>
+		<p class="text-xs">{info.position}</p>
 	</div>
 </a>

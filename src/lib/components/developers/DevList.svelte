@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { ComponentType } from "svelte/types/runtime/internal/dev.js";
 
-	export let title: string;
 	let Icon: ComponentType;
+	export let title: string;
 
 	export { Icon as icon };
 </script>

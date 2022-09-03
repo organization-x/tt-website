@@ -1,8 +1,9 @@
 <script lang="ts">
-	import GradientText from "../GradientText.svelte";
-	import type { Developer } from "../types";
+	import type { Developer } from "../../types";
+
 	import Plus from "../icons/Plus.svelte";
 	import { fade } from "svelte/transition";
+	import GradientText from "../GradientText.svelte";
 
 	export let info: Developer;
 
@@ -19,14 +20,14 @@
 			<img
 				height="200"
 				width="200"
-				src={info.src}
-				alt={info.alt}
+				src={info.iconurl}
+				alt={`${info.name} from Team Tomorrow`}
 				loading="lazy"
 				class="rounded-full mx-auto w-20 h-20 xl:mx-0"
 			/>
 			<div>
 				<h1 class="font-extrabold mt-3 mb-1 text-sm">
-					{info.pos.toUpperCase()}
+					{info.position.toUpperCase()}
 				</h1>
 				<GradientText
 					class="text-center from-green-light to-green-dark text-xl"
@@ -35,9 +36,7 @@
 				</GradientText>
 			</div>
 		</div>
-		<p class="mt-2 mb-6 max-w-xs lg:mt-6 lg:mb-0">
-			{info.bio}
-		</p>
+		<slot name="about" />
 		<div
 			class:h-full={open}
 			class:rounded-t-lg={open}

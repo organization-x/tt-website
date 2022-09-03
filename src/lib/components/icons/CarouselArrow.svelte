@@ -1,7 +1,7 @@
 <script lang="ts">
 	let className: string = "";
-	export let disabled: boolean;
 	export let hidden: boolean;
+	export let disabled: boolean;
 
 	export { className as class };
 </script>

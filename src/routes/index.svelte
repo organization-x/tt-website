@@ -1,10 +1,14 @@
 <script lang="ts">
+	import type { Developer } from "$lib/types";
+
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Button from "$lib/components/Button.svelte";
 	import Aws from "$lib/components/icons/Aws.svelte";
+	import Cog from "$lib/components/index/Cog.svelte";
 	import Step from "$lib/components/index/Step.svelte";
 	import React from "$lib/components/icons/React.svelte";
+	import Crane from "$lib/components/index/Crane.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
 	import Python from "$lib/components/icons/Python.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
@@ -13,6 +17,7 @@
 	import DevCard from "$lib/components/index/DevCard.svelte";
 	import Project from "$lib/components/index/Project.svelte";
 	import Section from "$lib/components/index/Section.svelte";
+	import DevText from "$lib/components/index/DevText.svelte";
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
 	import Carousel from "$lib/components/index/Carousel.svelte";
@@ -28,17 +33,12 @@
 	import GoogleCloud from "$lib/components/icons/GoogleCloud.svelte";
 	import ProjectImage from "$lib/components/index/ProjectImage.svelte";
 	import CompanyImage from "$lib/components/index/CompanyImage.svelte";
-	import Cog from "$lib/components/index/Cog.svelte";
-	import Crane from "$lib/components/index/Crane.svelte";
 
 	// TODO: Actually fetch/fill dev data
-	const placeholder = {
+	const placeholder: Developer = {
 		name: "Jackson Choyce",
-		pos: "Software Engineer",
-		bio: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione, repellendus.",
-		src: "./jackson.webp",
-		alt: "Jackson Choyce from Team Tomorrow",
-		href: "/jacksonchoyce"
+		position: "Software Engineer",
+		iconurl: "./jackson.webp"
 	};
 </script>
 
@@ -189,108 +189,69 @@
 		href="/projects/hippo2"
 		developers={[
 			{
-				name: "Alex",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Alex Nguyen from Team Tomorrow",
-				href: "/alexnguyen"
+				name: "Alex Nguyen",
+				position: "Software Engineer",
+				iconurl: "./jackson.webp"
 			},
 			{
-				name: "Alexander",
-				pos: "Engineering Manager",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Alexander Zhou from Team Tomorrow",
-				href: "/alexanderzhou"
+				name: "Alexander Zhou",
+				position: "Engineering Manager",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Bernice",
-				pos: "Product Designer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Bernice Lau from Team Tomorrow",
-				href: "/bernicelau"
+				position: "Product Designer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Hyrum",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Hyrum Hansen from Team Tomorrow",
-				href: "/hryumhansen"
+				position: "Software Engineer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Jackson",
-				pos: "Engineering Manager",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Engineering Manager from Team Tomorrow",
-				href: "/jacksonchoyce"
+				position: "Engineering Manager",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Joseph",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Joseph Salinas from Team Tomorrow",
-				href: "/josephsalinas"
+				position: "Software Engineer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Leo",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Leo Du from Team Tomorrow",
-				href: "/leodu"
+				position: "Software Engineer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Mathan",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Mathan Xaysena from Team Tomorrow",
-				href: "/mathanxaysena"
+				position: "Software Engineer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Matthew",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Matthew Martono from Team Tomorrow",
-				href: "/matthewmartono"
+				position: "Software Engineer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Ray",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Ray Flanagan from Team Tomorrow",
-				href: "/rayflanagan"
+				position: "Software Engineer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Sean",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Sean Kim from Team Tomorrow",
-				href: "/seankim"
+				position: "Software Engineer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Sricharan",
-				pos: "Product Manager",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Sricharan Guddanti from Team Tomorrow",
-				href: "/sricharanguddanti"
+				position: "Product Manager",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Zachary",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Zachary Brammer from Team Tomorrow",
-				href: "/zacharybrammer"
+				position: "Software Engineer",
+				iconurl: "./jackson.webp"
 			}
 		]}
 		icons={[Python, React]}
@@ -315,99 +276,71 @@
 		developers={[
 			{
 				name: "Advay",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Advay Aravind from Team Tomorrow",
-				href: "/advayaravind"
+				position: "Software Engineer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Alex",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Alex Fry from Team Tomorrow",
-				href: "/alexfry"
+				position: "Software Engineer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Alexander",
-				pos: "Engineering Manager",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Alexander Zhou from Team Tomorrow",
-				href: "/alexanderzhou"
+				position: "Engineering Manager",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Ansh",
-				pos: "Design and Engineering",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Ansh Chaurasia from Team Tomorrow",
-				href: "/anshchaurasia"
+				position: "Design and Engineering",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Axel",
-				pos: "Lead Designer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Axel Mora from Team Tomorrow",
-				href: "/axelmora"
+				position: "Lead Desiner",
+
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Blake",
-				pos: "Design and Engineering",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Blake Martin from Team Tomorrow",
-				href: "/blakemartin"
+				position: "Design an Engineering",
+
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Jackson",
-				pos: "Engineering Manager",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/jacksonchoyce"
+				position: "Engineerig Manager",
+
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Mitch",
-				pos: "Product Manager",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Mitch Cutts from Team Tomorrow",
-				href: "/mitchcutts"
+				position: "Product Mnager",
+
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Phakawat",
-				pos: "Design and Engineering",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Phakawat Wangkriangkri from Team Tomorrow",
-				href: "/phakawatwangkriangkri"
+				position: "Design an Engineering",
+
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Rohan",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Rohan Joshi from Team Tomorrow",
-				href: "/rohanjoshi"
+				position: "Software ngineer",
+
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Sanjay",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Sanjay Manoj from Team Tomorrow",
-				href: "/sanjaymanoj"
+				position: "Software ngineer",
+
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Zac",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Zac Brammer from Team Tomorrow",
-				href: "/zacbrammer"
+				position: "Software ngineer",
+
+				iconurl: "./jackson.webp"
 			}
 		]}
 		icons={[React]}
@@ -433,59 +366,38 @@
 		developers={[
 			{
 				name: "Alexander",
-				pos: "Engineering Manager",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Alex Zhou from Team Tomorrow",
-				href: "/alexanderzhou"
+				position: "Engineering Maager",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Blake",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Blake Martin from Team Tomorrow",
-				href: "/blakemartin"
+				position: "Software Enginer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Eegan",
-				pos: "Designer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Eegan Ram from Team Tomorrow",
-				href: "/eeganram"
+				position: "Designer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Ishaan",
-				pos: "Designer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Ishaan Variava from Team Tomorrow",
-				href: "/ishaanvariava"
+				position: "Designer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Jackson",
-				pos: "Engineering Manager",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Jackson Choyce from Team Tomorrow",
-				href: "/jacksonchoyce"
+				position: "Engineering Maager",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Ray",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Ray Flanagan from Team Tomorrow",
-				href: "/rayflanagan"
+				position: "Software Enginer",
+				iconurl: "./jackson.webp"
 			},
 			{
 				name: "Zac",
-				pos: "Software Engineer",
-				bio: "placeholder",
-				src: "./jackson.webp",
-				alt: "Zac Brammer from Team Tomorrow",
-				href: "/zacbrammer"
+				position: "Software Enginer",
+				iconurl: "./jackson.webp"
 			}
 		]}
 		icons={[Python]}
@@ -563,18 +475,36 @@
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
+
+			<DevText slot="about">
+				Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+				Perferendis aspernatur distinctio at vero. Hic, possimus itaque
+				dolores minima totam quasi.
+			</DevText>
 		</DevCard>
 		<DevCard info={placeholder}>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
+
+			<DevText slot="about">
+				Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+				Perferendis aspernatur distinctio at vero. Hic, possimus itaque
+				dolores minima totam quasi.
+			</DevText>
 		</DevCard>
 		<DevCard info={placeholder}>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
+
+			<DevText slot="about">
+				Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+				Perferendis aspernatur distinctio at vero. Hic, possimus itaque
+				dolores minima totam quasi.
+			</DevText>
 		</DevCard>
 
 		<div
@@ -586,18 +516,36 @@
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
+
+				<DevText slot="about">
+					Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+					Perferendis aspernatur distinctio at vero. Hic, possimus
+					itaque dolores minima totam quasi.
+				</DevText>
 			</DevCard>
 			<DevCard info={placeholder}>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
+
+				<DevText slot="about">
+					Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+					Perferendis aspernatur distinctio at vero. Hic, possimus
+					itaque dolores minima totam quasi.
+				</DevText>
 			</DevCard>
 			<DevCard info={placeholder}>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
+
+				<DevText slot="about">
+					Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+					Perferendis aspernatur distinctio at vero. Hic, possimus
+					itaque dolores minima totam quasi.
+				</DevText>
 			</DevCard>
 		</div>
 	</Carousel>
@@ -723,7 +671,7 @@
 			</Step>
 		</div>
 		<div
-			class="absolute rotate-90 flex my-auto -left-56 top-0 bottom-0 h-12"
+			class="absolute rotate-90 flex my-auto -left-56 top-0 bottom-0 h-14"
 		>
 			<GitCommit />
 			<GitMerge />

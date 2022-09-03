@@ -1,5 +1,6 @@
 <script lang="ts">
 	import "../app.css";
+
 	import { navigating } from "$app/stores";
 	import { slide } from "svelte/transition";
 	import Logo from "$lib/components/Logo.svelte";
@@ -46,7 +47,7 @@
 			{#if open}
 				<nav
 					transition:slide
-					class="z-20 absolute inset-0 overflow-y-auto bg-black"
+					class="z-20 absolute inset-0 overflow-y-auto bg-black h-full"
 				>
 					<div class="p-16 pt-24 max-w-screen-lg mx-auto">
 						<ul class="text-3xl divide-y max-w-md mx-auto">
