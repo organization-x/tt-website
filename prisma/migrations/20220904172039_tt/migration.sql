@@ -40,16 +40,6 @@ CREATE TABLE "Project" (
 );
 
 -- CreateTable
-CREATE TABLE "Kudo" (
-    "id" TEXT NOT NULL,
-    "reason" TEXT NOT NULL,
-    "toId" TEXT NOT NULL,
-    "fromId" TEXT NOT NULL,
-
-    CONSTRAINT "Kudo_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "token" TEXT NOT NULL,
@@ -64,12 +54,6 @@ CREATE TABLE "User" (
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
--- CreateTable
-CREATE TABLE "_KudoToUser" (
-    "A" TEXT NOT NULL,
-    "B" TEXT NOT NULL
-);
-
 -- CreateIndex
 CREATE UNIQUE INDEX "SocialLink_link_key" ON "SocialLink"("link");
 
@@ -82,12 +66,6 @@ CREATE UNIQUE INDEX "User_token_key" ON "User"("token");
 -- CreateIndex
 CREATE INDEX "User_name_skills_positions_idx" ON "User"("name", "skills", "positions");
 
--- CreateIndex
-CREATE UNIQUE INDEX "_KudoToUser_AB_unique" ON "_KudoToUser"("A", "B");
-
--- CreateIndex
-CREATE INDEX "_KudoToUser_B_index" ON "_KudoToUser"("B");
-
 -- AddForeignKey
 ALTER TABLE "SocialLink" ADD CONSTRAINT "SocialLink_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -96,9 +74,3 @@ ALTER TABLE "ProjectAuthor" ADD CONSTRAINT "ProjectAuthor_userId_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "ProjectAuthor" ADD CONSTRAINT "ProjectAuthor_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_KudoToUser" ADD CONSTRAINT "_KudoToUser_A_fkey" FOREIGN KEY ("A") REFERENCES "Kudo"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "_KudoToUser" ADD CONSTRAINT "_KudoToUser_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
