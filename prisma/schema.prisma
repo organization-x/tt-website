@@ -77,15 +77,6 @@ model Project {
     @@index([title, skills])
 }
 
-// Kudo model including the to and from user id's for identification
-model Kudo {
-    id     String @id @default(cuid())
-    reason String
-    toId   String
-    fromId String
-    users  User[]
-}
-
 // The user model for storing tt members
 model User {
     id        String          @id
@@ -99,7 +90,6 @@ model User {
     skills    Skill[]
     socials   SocialLink[]
     projects  ProjectAuthor[]
-    kudos     Kudo[]
 
     @@index([name, skills, positions])
 }

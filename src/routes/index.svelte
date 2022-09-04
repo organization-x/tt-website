@@ -34,7 +34,7 @@
 	import ProjectImage from "$lib/components/index/ProjectImage.svelte";
 	import CompanyImage from "$lib/components/index/CompanyImage.svelte";
 
-	// TODO: Actually fetch/fill dev data
+	// TODO: Actually fill dev data
 	const placeholder: Developer = {
 		name: "Jackson Choyce",
 		position: "Software Engineer",
@@ -509,7 +509,7 @@
 
 		<div
 			slot="alt"
-			class="hidden lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:my-8 lg:max-w-screen-xl"
+			class="hidden lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:my-20 lg:max-w-screen-xl"
 		>
 			<DevCard info={placeholder}>
 				<li>Worked on 80000 projects.</li>
@@ -550,7 +550,7 @@
 		</div>
 	</Carousel>
 
-	<Button href="/developers" class="mt-6 xl:mt-12">Discover</Button>
+	<Button href="/developers">Discover</Button>
 
 	<!-- TODO: Put actual important blog post here -->
 
