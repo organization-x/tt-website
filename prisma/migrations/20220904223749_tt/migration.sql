@@ -42,12 +42,11 @@ CREATE TABLE "Project" (
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "token" TEXT NOT NULL,
     "iconurl" TEXT NOT NULL,
     "bannerurl" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "about" TEXT NOT NULL,
-    "team" "Team" NOT NULL,
+    "team" "Team",
     "positions" "Position"[],
     "skills" "Skill"[],
 
@@ -59,9 +58,6 @@ CREATE UNIQUE INDEX "SocialLink_link_key" ON "SocialLink"("link");
 
 -- CreateIndex
 CREATE INDEX "Project_title_skills_idx" ON "Project"("title", "skills");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_token_key" ON "User"("token");
 
 -- CreateIndex
 CREATE INDEX "User_name_skills_positions_idx" ON "User"("name", "skills", "positions");
