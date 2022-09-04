@@ -1,11 +1,14 @@
-// See https://kit.svelte.dev/docs/types#app
-// for information about these interfaces
-// and what to do when importing types
+// Docs: https://kit.svelte.dev/docs/types#app
+
 declare namespace App {
-	// interface Locals {}
+	interface Locals {
+		user: import("@prisma/client").User;
+	}
 	// interface Platform {}
 	// interface PrivateEnv {}
 	// interface PublicEnv {}
-	// interface Session {}
+	interface Session {
+		user: import("@prisma/client").User;
+	}
 	// interface Stuff {}
 }

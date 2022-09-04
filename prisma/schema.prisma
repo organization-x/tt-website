@@ -80,12 +80,11 @@ model Project {
 // The user model for storing tt members
 model User {
     id        String          @id
-    token     String          @unique
     iconurl   String
     bannerurl String
     name      String
     about     String
-    team      Team
+    team      Team?
     positions Position[]
     skills    Skill[]
     socials   SocialLink[]
