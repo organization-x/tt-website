@@ -1,0 +1,95 @@
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("PG_URL")
+}
+
+// Teams that users could be a part of
+enum Team {
+    MARKETING
+    ENGINEERING
+}
+
+// Positions that can be viewed and searched for linked to users
+enum Position {
+    FRONTEND
+    BACKEND
+    FULLSTACK
+    DESIGNER
+}
+
+// Enum for skills that can be "tagged" to users and projects
+enum Skill {
+    JAVASCRIPT
+    PYTHON
+    REACT
+    TENSORFLOW
+    PYTORCH
+    GCLOUD
+    AWS
+}
+
+// Enum for social platforms availible to be linked to users
+enum Social {
+    GITHUB
+    LINKEDIN
+    DEVTO
+    TWITTER
+    FACEBOOK
+    WEBSITE
+}
+
+// Social links on profiles
+model SocialLink {
+    social Social
+    link   String @unique
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+}
+
+// A seperate model referencing an author ob a project, this way the role the user played and other information can be stored
+model ProjectAuthor {
+    user      User    @relation(fields: [userId], references: [id])
+    userId    String
+    project   Project @relation(fields: [projectId], references: [id])
+    projectId String
+    role      String
+
+    @@id([userId, projectId])
+}
+
+// A project model for storing information about projects (blog posts)
+model Project {
+    id        String          @id @default(cuid())
+    title     String
+    snippet   String
+    theme     String // Hex code representing a common color pulled from the banner
+    bannerurl String
+    date      DateTime
+    skills    Skill[]
+    authors   ProjectAuthor[]
+
+    @@index([title, skills])
+}
+
+// The user model for storing tt members
+model User {
+    id        String          @id
+    token     String          @unique
+    iconurl   String
+    bannerurl String
+    name      String
+    about     String
+    team      Team
+    positions Position[]
+    skills    Skill[]
+    socials   SocialLink[]
+    projects  ProjectAuthor[]
+
+    @@index([name, skills, positions])
+}

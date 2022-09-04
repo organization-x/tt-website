@@ -1,38 +1,34 @@
 <script lang="ts">
+	import Hero from "$lib/components/Hero.svelte";
+	import Text from "$lib/components/Text.svelte";
+	import Stat from "$lib/components/about/Stat.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
-	import PageGradient from "$lib/components/PageGradient.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
+	import Member from "$lib/components/about/Member.svelte";
+	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
-	import Footer from "$lib/components/Footer.svelte";
+	import PageCaption from "$lib/components/PageCaption.svelte";
+	import MemberImage from "$lib/components/about/MemberImage.svelte";
 </script>
 
 <svelte:head>
 	<title>About</title>
 </svelte:head>
 
-<PageGradient />
-
-<div class="mx-4">
+<Hero src="/about/about.webm">
 	<PageTitle class="from-green-light to-green-dark">
-		About Team Tomorrow and AI Camp.
+		A new era of collaboration and teamwork.
 	</PageTitle>
 
 	<PageCaption>
-		Explore what acheivements we've <strong>accomplished</strong> and how we
-		did it.
+		Explore what acheivements we've
+		<strong>accomplished</strong> and how we did it.
 	</PageCaption>
+</Hero>
 
-	<img
-		class="mt-6"
-		src="/about.webp"
-		height="263"
-		width="500"
-		alt="Brain shape made up of connected nodes"
-	/>
-
+<Section>
 	<TextHeader>Where it all began.</TextHeader>
 
-	<p class="mt-4">
+	<Text>
 		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magni fuga,
 		animi voluptatem temporibus earum ea illum hic suscipit nisi, accusamus
 		molestiae aliquid minus similique facere vitae doloribus placeat
@@ -42,20 +38,140 @@
 		ut velit, dolore quod? Eius, maxime? Ipsum ex placeat tempora, beatae
 		nam delectus vero nihil odit consequuntur veritatis fugiat velit
 		molestias, autem laboriosam cupiditate? Eius officiis eaque asperiores
-		consequatur. Iste, fugit ipsa. Qui nulla fugiat quae sequi. Quae, hic.
-		Sapiente delectus facere quasi officia laudantium magnam fuga. Labore
-		eum magnam, expedita ad, voluptatibus dolore ducimus odit modi amet eos
-		sunt quam. Fugit quae dignissimos harum a rem? Perspiciatis temporibus
-		reiciendis unde amet nemo omnis deleniti rem odio blanditiis cupiditate
-		ducimus, pariatur necessitatibus iusto illo fugiat tenetur repellat et
-		aspernatur! Nam sapiente doloribus corrupti voluptatem ducimus eos
-		deserunt ex sed quasi corporis qui odit sequi id, vero explicabo error
-		dignissimos voluptates a repellat repudiandae cumque iste? Optio vitae
-		iure voluptatem quaerat doloremque illo sint vel, facilis beatae, nemo
-		dolores eligendi labore reiciendis voluptatibus obcaecati veniam
-		corrupti distinctio laborum adipisci impedit, repellat sequi? Ex laborum
-		mollitia dolores ipsum.
-	</p>
-</div>
+		consequatur. Iste, fugit ipsa.
+	</Text>
+</Section>
 
-<Footer />
+<Section filled={true}>
+	<TextHeader>A fully-fueled rocketship already blasting off.</TextHeader>
+
+	<!-- TODO: Put actual info in stat counters -->
+
+	<div class="flex flex-col gap-8 mt-8">
+		<Stat
+			title="Bountiful"
+			statAmount={10}
+			statPostFix="M"
+			delay={1000}
+			statName="in revenue."
+			class="before:bg-pink-dark"
+		>
+			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
+			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
+			quas neque laboriosam?
+		</Stat>
+		<Stat
+			title="Bountiful"
+			statAmount={10}
+			statPostFix="M"
+			delay={1000}
+			statName="in revenue."
+			class="before:bg-pink-dark"
+			side="right"
+		>
+			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
+			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
+			quas neque laboriosam?
+		</Stat>
+		<Stat
+			title="Bountiful"
+			statAmount={100}
+			statPostFix="M"
+			delay={2000}
+			statName="in revenue."
+			class="before:bg-pink-dark"
+		>
+			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
+			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
+			quas neque laboriosam?
+		</Stat>
+		<Stat
+			title="Bountiful"
+			statAmount={10}
+			statPostFix="M"
+			delay={1000}
+			statName="in revenue."
+			class="before:bg-pink-dark"
+			side="right"
+		>
+			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
+			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
+			quas neque laboriosam?
+		</Stat>
+	</div>
+</Section>
+
+<Section>
+	<TextHeader>The mission that brought us here.</TextHeader>
+
+	<Text>
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magni fuga,
+		animi voluptatem temporibus earum ea illum hic suscipit nisi, accusamus
+		molestiae aliquid minus similique facere vitae doloribus placeat
+		aspernatur ullam quo dolore excepturi nostrum delectus consequatur?
+		Vitae, earum repellendus ipsum facilis quisquam possimus delectus
+		doloribus eius veritatis iste voluptatum consequuntur odit et, esse at
+		ut velit, dolore quod? Eius, maxime? Ipsum ex placeat tempora, beatae
+		nam delectus vero nihil odit consequuntur veritatis fugiat velit
+		molestias, autem laboriosam cupiditate? Eius officiis eaque asperiores
+		consequatur. Iste, fugit ipsa.
+	</Text>
+</Section>
+
+<Section filled={true}>
+	<TextHeader>Meet the masters of their craft.</TextHeader>
+
+	<div
+		class="grid grid-cols-2 gap-6 pt-10 max-w-xl mx-auto md:gap-14 lg:grid-cols-4"
+	>
+		<Member name="Alex Duffy" pos="Head of Product">
+			<MemberImage
+				src="./about/alex.webp"
+				alt="Alex Duffy from Team Tomorrow"
+				width={200}
+				height={200}
+			/>
+		</Member>
+		<Member name="Michael Ke Zhang" pos="Co Founder">
+			<MemberImage
+				src="./about/michael.webp"
+				alt="Michael Ke Zhang from Team Tomorrow"
+				width={200}
+				height={200}
+			/>
+		</Member>
+		<Member name="Richard Hsu" pos="Co Founder">
+			<MemberImage
+				src="./about/richard.webp"
+				alt="Jackson Choyce from Team Tomorrow"
+				width={200}
+				height={200}
+			/>
+		</Member>
+		<Member name="Ying Jiang" pos="Co Founder">
+			<MemberImage
+				src="./about/ying.webp"
+				alt="Ying Jiang from Team Tomorrow"
+				width={200}
+				height={200}
+			/>
+		</Member>
+	</div>
+</Section>
+
+<Section>
+	<TextHeader>Innovation moves the world and we're all for it.</TextHeader>
+
+	<Text>
+		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magni fuga,
+		animi voluptatem temporibus earum ea illum hic suscipit nisi, accusamus
+		molestiae aliquid minus similique facere vitae doloribus placeat
+		aspernatur ullam quo dolore excepturi nostrum delectus consequatur?
+		Vitae, earum repellendus ipsum facilis quisquam possimus delectus
+		doloribus eius veritatis iste voluptatum consequuntur odit et, esse at
+		ut velit, dolore quod? Eius, maxime? Ipsum ex placeat tempora, beatae
+		nam delectus vero nihil odit consequuntur veritatis fugiat velit
+		molestias, autem laboriosam cupiditate? Eius officiis eaque asperiores
+		consequatur. Iste, fugit ipsa.
+	</Text>
+</Section>

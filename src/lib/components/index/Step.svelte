@@ -1,0 +1,19 @@
+<script lang="ts">
+	import StepTitle from "./StepTitle.svelte";
+
+	let className: string;
+	export let num: number;
+	export let title: string;
+
+	export { className as class };
+</script>
+
+<div
+	class="bg-gray-500/40 flex flex-col justify-between p-4 pt-2 -z-20 shrink-0 w-fit snap-center rounded-xl max-w-lg mx-auto lg:bg-transparent lg:mx-0 lg:max-w-none lg:p-0"
+>
+	<StepTitle {num} {title} class={className} />
+	<p class="mt-3">
+		<slot />
+	</p>
+	<slot name="svg" />
+</div>

@@ -10,7 +10,8 @@
 	/>
 	<path
 		d="M0 15V11H37.5V15H0Z"
-		class="origin-center transition-opacity {open ? 'opacity-0' : ''}"
+		class:opacity-0={open}
+		class="origin-center transition-opacity"
 	/>
 	<path
 		d="M0 4.5V0.5H37.5V4.5H0Z"

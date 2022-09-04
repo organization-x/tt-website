@@ -4,13 +4,7 @@
 	export { className as class };
 </script>
 
-<svg
-	class={className}
-	width="24"
-	height="24"
-	fill="currentColor"
-	viewBox="0 0 24 24"
->
+<svg class={className} fill="currentColor" viewBox="0 0 24 24">
 	<path
 		fill-rule="evenodd"
 		clip-rule="evenodd"

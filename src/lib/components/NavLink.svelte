@@ -3,7 +3,7 @@
 	export let target: string | undefined = undefined;
 </script>
 
-<li class="p-4">
+<li class="p-4 lg:p-0">
 	<a {href} {target} rel="noreferrer noopener">
 		<slot />
 	</a>
