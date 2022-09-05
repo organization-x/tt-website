@@ -71,7 +71,7 @@ model Project {
     // Hex code representing a common color pulled from the banner
     theme   String
     // Contains the projects url basis (name-of-project), structured as /projects/{name-of-project}.
-    // For banners we can do /projects/{name-of-project/banner}.webp
+    // For banners we can do /projects/{name-of-project}/banner.webp
     url     String          @unique
     date    DateTime
     skills  Skill[]
