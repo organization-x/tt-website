@@ -70,7 +70,7 @@ model Project {
     snippet String
     // Hex code representing a common color pulled from the banner
     theme   String
-    // Contains the projects url basis (name-of-project), structured as /projects/{name-of-project}, with firstlast being the url binding of the user who made it.
+    // Contains the projects url basis (name-of-project), structured as /projects/{name-of-project}.
     // For banners we can do /projects/{name-of-project/banner}.webp
     url     String          @unique
     date    DateTime
