@@ -1,5 +1,3 @@
-# Title of PR
-
 Here, describe a basic high level overview of your changes and what they effect.
 
 -   List

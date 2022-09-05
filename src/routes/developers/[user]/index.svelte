@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { page } from "$app/stores";
+	import { session, page } from "$app/stores";
 
 	import GitHub from "$lib/components/icons/GitHub.svelte";
 	import Group from "$lib/components/icons/Group.svelte";
@@ -7,7 +7,11 @@
 	import LinkedIn from "$lib/components/icons/LinkedIn.svelte";
 	import Wrench from "$lib/components/icons/Wrench.svelte";
 
-	const user = $page.params.user;
+	// User data will only be availible if the user is logged in, otherwise its null
+	// A redirect could occur if the user is not logged in but the page requires it,
+	// this can be set per-page.
+	const loggedIn = $session.user; // Information of logged in user
+	const user = $page.params.user; // Slug passed in for retrieving user data
 </script>
 
 <img

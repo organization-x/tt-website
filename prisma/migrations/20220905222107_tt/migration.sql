@@ -32,7 +32,7 @@ CREATE TABLE "Project" (
     "title" TEXT NOT NULL,
     "snippet" TEXT NOT NULL,
     "theme" TEXT NOT NULL,
-    "bannerurl" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "skills" "Skill"[],
 
@@ -40,14 +40,21 @@ CREATE TABLE "Project" (
 );
 
 -- CreateTable
+CREATE TABLE "Session" (
+    "token" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Session_pkey" PRIMARY KEY ("token")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "token" TEXT NOT NULL,
-    "iconurl" TEXT NOT NULL,
-    "bannerurl" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "about" TEXT NOT NULL,
-    "team" "Team" NOT NULL,
+    "team" "Team",
     "positions" "Position"[],
     "skills" "Skill"[],
 
@@ -58,10 +65,13 @@ CREATE TABLE "User" (
 CREATE UNIQUE INDEX "SocialLink_link_key" ON "SocialLink"("link");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Project_url_key" ON "Project"("url");
+
+-- CreateIndex
 CREATE INDEX "Project_title_skills_idx" ON "Project"("title", "skills");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_token_key" ON "User"("token");
+CREATE UNIQUE INDEX "User_url_key" ON "User"("url");
 
 -- CreateIndex
 CREATE INDEX "User_name_skills_positions_idx" ON "User"("name", "skills", "positions");
@@ -74,3 +84,6 @@ ALTER TABLE "ProjectAuthor" ADD CONSTRAINT "ProjectAuthor_userId_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "ProjectAuthor" ADD CONSTRAINT "ProjectAuthor_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
