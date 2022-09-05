@@ -1,27 +1,24 @@
 import type { GetSession, Handle } from "@sveltejs/kit";
+import { prisma } from "$lib/prisma";
 import { parse, serialize } from "cookie";
-
-// ! The worry here is that this could be insecure, but it isn't. Since the cookie is CORS enabled and the cookie is httpOnly,
-// ! it can't be accessed by the client or set by it, and it cant be set by another server because of CORS. The way we verify the user
-// ! is through their username at login, which is unique, so we know its them.
 
 // Intercept connections
 export const handle: Handle = async ({ event, resolve }) => {
-	// Get user from cookies
-	const user = parse(event.request.headers.get("cookie") || "").user;
+	// Get session token from cookies
+	const session = parse(event.request.headers.get("cookie") || "").session;
 
 	// Set locals to whatever is in the cookie, or null
-	event.locals.user = user ? JSON.parse(user) : null;
+	event.locals.session = session || null;
 
 	// Resolve the request
 	const res = await resolve(event);
 
-	// Set the cookie to the locals, if the user just went through the auth process, the cookie will be set to the user info,
+	// Set the cookie to the locals, if the user just went through the auth process, the cookie will be set to the session token,
 	// otherwise it will remain the same
-	if (event.locals.user) {
+	if (event.locals.session) {
 		res.headers.set(
 			"set-cookie",
-			serialize("user", JSON.stringify(event.locals.user), {
+			serialize("session", event.locals.session, {
 				// Send cookie on every page
 				path: "/",
 				// Only allows server to write to cookie
@@ -40,8 +37,20 @@ export const handle: Handle = async ({ event, resolve }) => {
 };
 
 // Every page gets access to the currently logged in users information
+// If a page requests the session, it most likely needs currently active user info,
+// so it fetches it here
 export const getSession: GetSession = async (request) => {
-	return {
-		user: request.locals.user
-	};
+	// If there isn't a session, return user as null
+	if (!request.locals.session) return { user: null };
+
+	// Find the user with the provided session token, if not found, return null
+	const user = await prisma.user
+		.findFirst({ where: { sessions: { has: request.locals.session } } })
+		.then((user) => user)
+		.catch(() => null);
+
+	// If null unset the cookie
+	if (!user) request.locals.session = null;
+
+	return { user };
 };

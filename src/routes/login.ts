@@ -1,6 +1,8 @@
-import { prisma } from "$lib/prisma";
 import { Octokit } from "octokit";
+import { prisma } from "$lib/prisma";
+import { randomBytes } from "crypto";
 import type { RequestHandler } from "@sveltejs/kit";
+import type { User } from "@prisma/client";
 
 const id = import.meta.env.VITE_CLIENT_ID;
 
@@ -43,44 +45,48 @@ export const GET: RequestHandler = async (req) => {
 				}
 			};
 
-		// Check if the user exists in the database
-		const existingUser = await prisma.user.findUnique({
-			where: { id: user.login }
-		});
+		let session: string | null = null;
 
-		// If user exists log them in, its verified that its them since usernames are unique
+		const userCheck = async (): Promise<User> => {
+			// Create secure session token
+			session = randomBytes(16).toString("hex");
+
+			// If the user exists, update their profile and push this session, otherwise create the user
+			return await prisma.user
+				.upsert({
+					where: {
+						id: user.login
+					},
+					create: {
+						id: user.login,
+						sessions: [session],
+						iconurl: user.avatar_url,
+						bannerurl: "/developers/user/banner.webp",
+						name: user.name || user.login,
+						about: user.bio || "I'm a TT member!",
+						team: null,
+						positions: [],
+						skills: []
+					},
+					update: {
+						sessions: {
+							push: session
+						}
+					}
+				})
+				.then((user) => user)
+				.catch(userCheck); // If an error occurs, like the session token somehow being the same, run the function again
+		};
+
+		const prismaUser = await userCheck();
+
+		// Set locals to session token and redirect to the users profile
 		// TODO: Change redirect to the users dashboard
-		if (existingUser) {
-			req.locals.user = existingUser;
-			return {
-				status: 302,
-				headers: {
-					location: `/developers/${existingUser.id}`
-				}
-			};
-		}
-
-		// Create new user in postgres with github information as autofill
-		const newUser = await prisma.user.create({
-			data: {
-				id: user.login,
-				iconurl: user.avatar_url,
-				bannerurl: "/developers/user/banner.webp",
-				name: user.name || user.login,
-				about: user.bio || "I'm a TT member!",
-				team: null,
-				positions: [],
-				skills: []
-			}
-		});
-
-		// Set locals to user id and redirect to their profile
-		// TODO: Change redirect to the users dashboard
-		req.locals.user = newUser;
+		req.locals.session = session;
 		return {
 			status: 302,
 			headers: {
-				location: `/developers/${newUser.id}`
+				location: `/developers/${prismaUser.id}`
 			}
 		};
 	} else {
