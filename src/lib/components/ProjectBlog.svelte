@@ -37,9 +37,17 @@
 	class="rounded-lg border-t-4 border-solid max-w-xl mx-auto overflow-hidden bg-gray-500/40 border-[{info.theme}]"
 >
 	<div
-		class="h-20 sm:h-44 bg-center bg-no-repeat bg-cover"
+		class="h-32 sm:h-44 bg-center bg-no-repeat bg-cover relative"
 		style="background-image: url({info.bannerurl});"
-	/>
+	>
+		<img
+			width="200"
+			height="200"
+			src="/bernice.webp"
+			alt="Bernice Lau from Team Tomorrow"
+			class="absolute top-2 right-2 w-10 h-10 rounded-full border-2 border-[{info.theme}] sm:w-14 sm:h-14 sm:border-4 md:top-3 md:right-3"
+		/>
+	</div>
 	<div class="py-4 px-3">
 		<h1 class="font-semibold text-2xl">{info.title}</h1>
 		<p class="mt-2">{info.snippet}</p>

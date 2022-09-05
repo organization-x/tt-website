@@ -111,7 +111,7 @@
 		</ScrollRow>
 	</div>
 
-	<div class="flex flex-col gap-8 mt-12 lg:mt-20">
+	<div class="flex flex-col gap-14 my-12 lg:my-20">
 		<ProjectBlog info={placeholderProject} />
 		<ProjectBlog info={placeholderProject} />
 	</div>
