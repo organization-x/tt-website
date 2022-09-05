@@ -1,8 +1,6 @@
 import { Octokit } from "octokit";
 import { prisma } from "$lib/prisma";
-import { randomBytes } from "crypto";
 import type { RequestHandler } from "@sveltejs/kit";
-import type { User } from "@prisma/client";
 
 const id = import.meta.env.VITE_CLIENT_ID;
 
@@ -55,8 +53,7 @@ export const GET: RequestHandler = async (req) => {
 			prismaUser = await prisma.user.create({
 				data: {
 					id: user.login,
-					iconurl: user.avatar_url,
-					bannerurl: "/developers/user/banner.webp",
+					url: user.login,
 					name: user.name || user.login,
 					about: user.bio || "I'm a TT member!",
 					team: null,
