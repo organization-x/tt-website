@@ -32,7 +32,7 @@ CREATE TABLE "Project" (
     "title" TEXT NOT NULL,
     "snippet" TEXT NOT NULL,
     "theme" TEXT NOT NULL,
-    "bannerurl" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "skills" "Skill"[],
 
@@ -51,8 +51,7 @@ CREATE TABLE "Session" (
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "iconurl" TEXT NOT NULL,
-    "bannerurl" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "about" TEXT NOT NULL,
     "team" "Team",
@@ -66,7 +65,13 @@ CREATE TABLE "User" (
 CREATE UNIQUE INDEX "SocialLink_link_key" ON "SocialLink"("link");
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Project_url_key" ON "Project"("url");
+
+-- CreateIndex
 CREATE INDEX "Project_title_skills_idx" ON "Project"("title", "skills");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_url_key" ON "User"("url");
 
 -- CreateIndex
 CREATE INDEX "User_name_skills_positions_idx" ON "User"("name", "skills", "positions");

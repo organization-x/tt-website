@@ -65,14 +65,17 @@ model ProjectAuthor {
 
 // A project model for storing information about projects (blog posts)
 model Project {
-    id        String          @id @default(cuid())
-    title     String
-    snippet   String
-    theme     String // Hex code representing a common color pulled from the banner
-    bannerurl String
-    date      DateTime
-    skills    Skill[]
-    authors   ProjectAuthor[]
+    id      String          @id @default(cuid())
+    title   String
+    snippet String
+    // Hex code representing a common color pulled from the banner
+    theme   String
+    // Contains the projects url basis (name-of-project), structured as /projects/{name-of-project}, with firstlast being the url binding of the user who made it.
+    // For banners we can do /projects/{name-of-project/banner}.webp
+    url     String          @unique
+    date    DateTime
+    skills  Skill[]
+    authors ProjectAuthor[]
 
     @@index([title, skills])
 }
@@ -89,8 +92,9 @@ model Session {
 model User {
     id        String          @id
     sessions  Session[]
-    iconurl   String
-    bannerurl String
+    // Contains the users url basis (firstlast), structured as /users/{firstlast}.
+    // For banners and icons we can do /users/{firstlast}/banner.webp and /users/{firstlast}/icon.webp
+    url       String          @unique
     name      String
     about     String
     team      Team?
