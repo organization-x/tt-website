@@ -40,9 +40,17 @@ CREATE TABLE "Project" (
 );
 
 -- CreateTable
+CREATE TABLE "Session" (
+    "token" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+    "created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Session_pkey" PRIMARY KEY ("token")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "sessions" TEXT[],
     "iconurl" TEXT NOT NULL,
     "bannerurl" TEXT NOT NULL,
     "name" TEXT NOT NULL,
@@ -61,9 +69,6 @@ CREATE UNIQUE INDEX "SocialLink_link_key" ON "SocialLink"("link");
 CREATE INDEX "Project_title_skills_idx" ON "Project"("title", "skills");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_sessions_key" ON "User"("sessions");
-
--- CreateIndex
 CREATE INDEX "User_name_skills_positions_idx" ON "User"("name", "skills", "positions");
 
 -- AddForeignKey
@@ -74,3 +79,6 @@ ALTER TABLE "ProjectAuthor" ADD CONSTRAINT "ProjectAuthor_userId_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "ProjectAuthor" ADD CONSTRAINT "ProjectAuthor_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -77,10 +77,18 @@ model Project {
     @@index([title, skills])
 }
 
+// Model for storing session tokens
+model Session {
+    token   String   @id @default(cuid())
+    user    User     @relation(fields: [userId], references: [id])
+    userId  String
+    created DateTime @default(now())
+}
+
 // The user model for storing tt members
 model User {
     id        String          @id
-    sessions  String[]        @unique
+    sessions  Session[]
     iconurl   String
     bannerurl String
     name      String

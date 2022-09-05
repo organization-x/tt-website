@@ -45,40 +45,55 @@ export const GET: RequestHandler = async (req) => {
 				}
 			};
 
-		let session: string | null = null;
+		// Check if the user exists already
+		let prismaUser = await prisma.user.findUnique({
+			where: { id: user.login }
+		});
 
-		const userCheck = async (): Promise<User> => {
-			// Create secure session token
-			session = randomBytes(16).toString("hex");
+		if (!prismaUser) {
+			// If the user doesnt exist, create them
+			prismaUser = await prisma.user.create({
+				data: {
+					id: user.login,
+					iconurl: user.avatar_url,
+					bannerurl: "/developers/user/banner.webp",
+					name: user.name || user.login,
+					about: user.bio || "I'm a TT member!",
+					team: null,
+					positions: [],
+					skills: []
+				}
+			});
+		} else {
+			// Otherwise, if they do exists, do some cleanup and check if they have any expired session
+			// tokens inside postgres, if they do, remove them
+			await prisma.session
+				.findMany({ where: { userId: user.login } })
+				.then((sessions) => {
+					sessions.forEach(async (session) => {
+						// Add a week to the session expiry date
+						session.created.setDate(session.created.getDate() + 7);
 
-			// If the user exists, update their profile and push this session, otherwise create the user
-			return await prisma.user
-				.upsert({
-					where: {
-						id: user.login
-					},
-					create: {
-						id: user.login,
-						sessions: [session],
-						iconurl: user.avatar_url,
-						bannerurl: "/developers/user/banner.webp",
-						name: user.name || user.login,
-						about: user.bio || "I'm a TT member!",
-						team: null,
-						positions: [],
-						skills: []
-					},
-					update: {
-						sessions: {
-							push: session
+						// Check if its been a week since the token has been created
+						if (session.created <= new Date()) {
+							await prisma.session.delete({
+								where: { token: session.token }
+							});
 						}
-					}
+					});
 				})
-				.then((user) => user)
-				.catch(userCheck); // If an error occurs, like the session token somehow being the same, run the function again
+				.catch(); // If there are no sessions, ignore it
+		}
+
+		// Create a new session for the user, if the session token somehow already exists, recursively generate a new one
+		const createSession = async (): Promise<string> => {
+			return await prisma.session
+				.create({ data: { userId: user.login } })
+				.then((session) => session.token)
+				.catch(() => createSession());
 		};
 
-		const prismaUser = await userCheck();
+		const session = await createSession();
 
 		// Set locals to session token and redirect to the users profile
 		// TODO: Change redirect to the users dashboard

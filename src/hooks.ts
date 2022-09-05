@@ -44,12 +44,11 @@ export const getSession: GetSession = async (request) => {
 	if (!request.locals.session) return { user: null };
 
 	// Find the user with the provided session token, if not found, return null
-	const user = await prisma.user
-		.findFirst({ where: { sessions: { has: request.locals.session } } })
-		.then((user) => user)
-		.catch(() => null);
+	const user = await prisma.session
+		.findUnique({ where: { token: request.locals.session } })
+		.user();
 
-	// If null unset the cookie
+	// If null unset the local
 	if (!user) request.locals.session = null;
 
 	return { user };
