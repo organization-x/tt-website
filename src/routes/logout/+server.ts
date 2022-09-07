@@ -18,14 +18,11 @@ export const GET: RequestHandler = async (req) => {
 	}
 
 	req.locals.session = null;
-	throw new Error(
-		"@migration task: Migrate this return statement (https://github.com/sveltejs/kit/discussions/5774#discussioncomment-3292701)"
-	);
-	return {
+	return new Response(undefined, {
 		status: 302,
 		headers: {
 			location: "/",
 			"set-cookie": serialize("session", "", { expires: new Date(0) })
 		}
-	};
+	});
 };
