@@ -36,12 +36,12 @@ export const GET: RequestHandler = async (req) => {
 
 		// If an error occurs fetching the user data, its most likely an expired token, so redirect to github oauth page
 		if (!user)
-			return {
+			return new Response(undefined, {
 				status: 302,
 				headers: {
 					location: "/auth"
 				}
-			};
+			});
 
 		// Check if the user exists already
 		let prismaUser = await prisma.user.findUnique({
@@ -95,18 +95,18 @@ export const GET: RequestHandler = async (req) => {
 		// Set locals to session token and redirect to the users profile
 		// TODO: Change redirect to the users dashboard
 		req.locals.session = session;
-		return {
+		return new Response(undefined, {
 			status: 302,
 			headers: {
 				location: `/developers/${prismaUser.id}`
 			}
-		};
+		});
 	} else {
-		return {
+		return new Response(undefined, {
 			status: 302,
 			headers: {
 				location: `https://github.com/login/oauth/authorize?client_id=${id}&scope=read:user`
 			}
-		};
+		});
 	}
 };
