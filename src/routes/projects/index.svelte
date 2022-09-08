@@ -29,7 +29,7 @@
 		skills: ["JAVASCRIPT", "GCLOUD"]
 	};
 
-	const projects = [
+	const projects: Project[][] = [
 		[placeholder, placeholder],
 		[placeholder, placeholder]
 	];

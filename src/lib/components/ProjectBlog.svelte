@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Project, ProjectAuthor, Skill } from "@prisma/client";
+	import type { Project, ProjectAuthor, Skill, User } from "@prisma/client";
 
 	import Aws from "./icons/Aws.svelte";
 	import React from "./icons/React.svelte";
@@ -42,7 +42,7 @@
 	];
 
 	// This represents the singular user data that would be fetched using the project author user id
-	const userPlaceholder = {
+	const userPlaceholder: User = {
 		id: "githubusername",
 		url: "placeholder",
 		name: "Bernice Lau",
