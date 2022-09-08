@@ -13,6 +13,7 @@ datasource db {
 enum Team {
     MARKETING
     ENGINEERING
+    DESIGN
 }
 
 // Positions that can be viewed and searched for linked to users

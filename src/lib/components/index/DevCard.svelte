@@ -20,7 +20,7 @@
 			<img
 				height="200"
 				width="200"
-				src={info.iconurl}
+				src={`/developers/user/${info.url}/icon.webp`}
 				alt={`${info.name} from Team Tomorrow`}
 				loading="lazy"
 				class="rounded-full mx-auto w-20 h-20 xl:mx-0"

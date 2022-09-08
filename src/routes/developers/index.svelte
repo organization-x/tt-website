@@ -1,8 +1,9 @@
 <script lang="ts">
-	import type { Developer as DeveloperType } from "$lib/types";
+	import type { User } from "@prisma/client";
 
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
+	import Seperator from "$lib/components/Seperator.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
 	import ScrollRow from "$lib/components/ScrollRow.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
@@ -14,17 +15,20 @@
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
-	import HireStep from "$lib/components/developers/HireStep.svelte";
-	import StepImage from "$lib/components/developers/StepImage.svelte";
-	import Developer from "$lib/components/developers/Developer.svelte";
-	import Seperator from "$lib/components/developers/Seperator.svelte";
-	import DeveloperFilter from "$lib/components/developers/DeveloperFilter.svelte";
+	import HireStep from "$lib/components/developers/index/HireStep.svelte";
+	import StepImage from "$lib/components/developers/index/StepImage.svelte";
+	import Developer from "$lib/components/developers/index/Developer.svelte";
+	import DeveloperFilter from "$lib/components/developers/index/DeveloperFilter.svelte";
 
 	// TODO: Fetch data using prisma
-	const placeholder: DeveloperType = {
+	const placeholder: User = {
+		id: "githubusername",
+		url: "placeholder",
 		name: "Bernice Lau",
-		position: "Designer",
-		iconurl: "./bernice.webp"
+		about: "I'm bernice!",
+		team: "DESIGN",
+		positions: ["DESIGNER"],
+		skills: ["JAVASCRIPT", "GCLOUD"]
 	};
 </script>
 
@@ -32,7 +36,7 @@
 	<title>Developers</title>
 </svelte:head>
 
-<Hero src="/developers/developers.webm">
+<Hero src="/developers/index/developers.webm">
 	<PageTitle class="from-blue-light to-blue-dark">
 		Discover who can push you forward.
 	</PageTitle>
@@ -58,7 +62,7 @@
 		<HireStep title="Search and discover.">
 			<StepImage
 				slot="image"
-				src="/developers/find.webp"
+				src="/developers/index/find.webp"
 				alt="Developer profiles stacked ontop of eachother"
 			/>
 			Search for the perfect developer to fit your needs by filtering through
@@ -70,7 +74,7 @@
 		<HireStep title="Evaluate options." side="right">
 			<StepImage
 				slot="image"
-				src="/developers/stats.webp"
+				src="/developers/index/stats.webp"
 				alt="Developer profile with statistics bars"
 			/>
 			Evaluate each canditates projects, skill sets, social media, and more
@@ -83,7 +87,7 @@
 		<HireStep title="Create a contract and blastoff.">
 			<StepImage
 				slot="image"
-				src="/developers/send.webp"
+				src="/developers/index/send.webp"
 				alt="Developer profile with statistics bars"
 			/>
 			Contact us to schedule a virtual meeting for more information on pricing
@@ -127,36 +131,9 @@
 		<Seperator />
 
 		<ScrollRow class="mt-12">
-			<DeveloperFilter name="Bernice" current={true}>
-				<img
-					height="200"
-					width="200"
-					src="/bernice.webp"
-					loading="lazy"
-					alt="Bernice Lau from Team Tomorrow"
-					class="rounded-full w-10"
-				/>
-			</DeveloperFilter>
-			<DeveloperFilter name="Bernice" current={false}>
-				<img
-					height="200"
-					width="200"
-					src="/bernice.webp"
-					loading="lazy"
-					alt="Bernice Lau from Team Tomorrow"
-					class="rounded-full w-10"
-				/>
-			</DeveloperFilter>
-			<DeveloperFilter name="Bernice" current={false}>
-				<img
-					height="200"
-					width="200"
-					src="/bernice.webp"
-					loading="lazy"
-					alt="Bernice Lau from Team Tomorrow"
-					class="rounded-full w-10"
-				/>
-			</DeveloperFilter>
+			<DeveloperFilter current={true} info={placeholder} />
+			<DeveloperFilter current={true} info={placeholder} />
+			<DeveloperFilter current={true} info={placeholder} />
 		</ScrollRow>
 
 		<div

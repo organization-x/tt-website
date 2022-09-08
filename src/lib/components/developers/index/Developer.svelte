@@ -1,16 +1,16 @@
 <script lang="ts">
-	import type { Developer } from "../../types";
+	import type { User } from "@prisma/client";
 
 	import DevPos from "./DevPos.svelte";
-	import Button from "../Button.svelte";
-	import Bulb from "../icons/Bulb.svelte";
 	import DevList from "./DevList.svelte";
-	import Wrench from "../icons/Wrench.svelte";
-	import Python from "../icons/Python.svelte";
-	import Desktop from "../icons/Desktop.svelte";
-	import GradientText from "../GradientText.svelte";
+	import Button from "../../Button.svelte";
+	import Bulb from "../../icons/Bulb.svelte";
+	import Wrench from "../../icons/Wrench.svelte";
+	import Python from "../../icons/Python.svelte";
+	import Desktop from "../../icons/Desktop.svelte";
+	import GradientText from "../../GradientText.svelte";
 
-	export let info: Developer;
+	export let info: User;
 </script>
 
 <div
@@ -20,13 +20,15 @@
 		<img
 			height="200"
 			width="200"
-			src={info.iconurl}
+			src={`/developers/user/${info.url}/icon.webp`}
 			alt={`${info.name} from Team Tomorrow`}
 			loading="lazy"
 			class="rounded-full my-auto w-20"
 		/>
 		<div>
-			<h1 class="font-bold">{info.position.toUpperCase()}</h1>
+			<h1 class="font-bold">
+				{info.team ? info.team.toUpperCase() : "UNKNOWN"}
+			</h1>
 			<GradientText class="from-green-light to-green-dark text-3xl">
 				{info.name}
 			</GradientText>
@@ -43,8 +45,7 @@
 		<DevPos name="Python" icon={Python} />
 		<DevPos name="Python" icon={Python} />
 	</DevList>
-	<Button
-		href={`/developers/${info.name.toLowerCase().replace(" ", "")}`}
-		class="mt-8 mx-auto">View Profile</Button
+	<Button href={`/developers/${info.url}`} class="mt-8 mx-auto"
+		>View Profile</Button
 	>
 </div>

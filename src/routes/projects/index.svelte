@@ -3,6 +3,7 @@
 
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
+	import Seperator from "$lib/components/Seperator.svelte";
 	import ScrollRow from "$lib/components/ScrollRow.svelte";
 	import Python from "$lib/components/icons/Python.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
@@ -14,27 +15,31 @@
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import ProjectBlog from "$lib/components/ProjectBlog.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
-	import Seperator from "$lib/components/developers/Seperator.svelte";
-	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
+	import ProjectFilter from "$lib/components/projects/index/ProjectFilter.svelte";
 
 	// TODO: Fetch data using prisma
-	const placeholderProject: Project = {
+	const placeholder: Project = {
 		id: "ttwebsiteontop", // cuid
 		title: "Project",
 		snippet:
 			"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus corporis unde veritatis, exercitationem beatae cumque voluptate laborum earum corrupti reiciendis, omnis placeat architecto libero, aspernatur rem dolor nesciunt com ea.",
-		theme: "#EFF24C",
-		bannerurl: "/blog.webp",
+		theme: "#3B84D6",
+		url: "placeholder",
 		date: new Date(),
 		skills: ["JAVASCRIPT", "GCLOUD"]
 	};
+
+	const projects = [
+		[placeholder, placeholder],
+		[placeholder, placeholder]
+	];
 </script>
 
 <svelte:head>
 	<title>Projects</title>
 </svelte:head>
 
-<Hero src="/projects/projects.webm">
+<Hero src="/projects/index/projects.webm">
 	<PageTitle class="from-pink-light to-pink-dark">
 		Projects from personal to professional.
 	</PageTitle>
@@ -80,39 +85,14 @@
 		<Seperator />
 
 		<ScrollRow class="mt-12 md:mt-20">
-			<ProjectFilter current={true}>
-				<img
-					src="/blog.webp"
-					alt="Random shapes and colors in the formation of a hallway"
-					loading="lazy"
-					class="rounded-full w-10"
-				/>
-				<img
-					src="/blog.webp"
-					alt="Random shapes and colors in the formation of a hallway"
-					loading="lazy"
-					class="rounded-full w-10"
-				/>
-			</ProjectFilter>
-			<ProjectFilter current={false}>
-				<img
-					src="/blog.webp"
-					alt="Random shapes and colors in the formation of a hallway"
-					loading="lazy"
-					class="rounded-full w-10"
-				/>
-				<img
-					src="/blog.webp"
-					alt="Random shapes and colors in the formation of a hallway"
-					loading="lazy"
-					class="rounded-full w-10"
-				/>
-			</ProjectFilter>
+			{#each projects as projectPair, i}
+				<ProjectFilter {projectPair} current={i === 0 ? true : false} />
+			{/each}
 		</ScrollRow>
 	</div>
 
 	<div class="flex flex-col gap-14 my-12 lg:my-20">
-		<ProjectBlog info={placeholderProject} />
-		<ProjectBlog info={placeholderProject} />
+		<ProjectBlog project={placeholder} />
+		<ProjectBlog project={placeholder} />
 	</div>
 </Section>
