@@ -4,7 +4,7 @@
 	import LinkedIn from "$lib/components/icons/LinkedIn.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import Instagram from "$lib/components/icons/Instagram.svelte";
-	import Panel from "$lib/components/developers/user/Panel.svelte";
+	import Panel from "$lib/components/developers/user/index/Panel.svelte";
 
 	// User data will only be availible if the user is logged in, otherwise its null
 	// A redirect could occur if the user is not logged in but the page requires it,

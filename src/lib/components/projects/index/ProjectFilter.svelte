@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Project } from "@prisma/client";
 
-	export let projectPair: Project[];
 	export let current: boolean;
+	export let projectPair: Project[];
 </script>
 
 <div
