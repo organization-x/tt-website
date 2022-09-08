@@ -132,8 +132,8 @@
 
 		<ScrollRow class="mt-12">
 			<DeveloperFilter current={true} info={placeholder} />
-			<DeveloperFilter current={true} info={placeholder} />
-			<DeveloperFilter current={true} info={placeholder} />
+			<DeveloperFilter current={false} info={placeholder} />
+			<DeveloperFilter current={false} info={placeholder} />
 		</ScrollRow>
 
 		<div

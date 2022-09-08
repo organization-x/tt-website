@@ -9,7 +9,7 @@
 	on:click
 	class:grayscale={!current}
 	class:cursor-pointer={!current}
-	class="font-semibold flex jsutify-center gap-4 items-center h-14 bg-gray-500/40 rounded-lg px-4 snap-center shrink-0"
+	class="font-semibold flex jsutify-center gap-4 items-center h-14 bg-gray-500/40 rounded-lg px-4 snap-center shrink-0 select-none"
 >
 	<img
 		height="200"
