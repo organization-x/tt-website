@@ -5,5 +5,5 @@
 export type Developer = {
 	name: string;
 	position: string;
-	iconurl: string;
+	url: string;
 };

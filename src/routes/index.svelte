@@ -38,7 +38,7 @@
 	const placeholder: Developer = {
 		name: "Jackson Choyce",
 		position: "Software Engineer",
-		iconurl: "./jackson.webp"
+		url: "placeholder"
 	};
 </script>
 
@@ -191,67 +191,67 @@
 			{
 				name: "Alex Nguyen",
 				position: "Software Engineer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Alexander Zhou",
 				position: "Engineering Manager",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Bernice",
 				position: "Product Designer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Hyrum",
 				position: "Software Engineer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Jackson",
 				position: "Engineering Manager",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Joseph",
 				position: "Software Engineer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Leo",
 				position: "Software Engineer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Mathan",
 				position: "Software Engineer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Matthew",
 				position: "Software Engineer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Ray",
 				position: "Software Engineer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Sean",
 				position: "Software Engineer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Sricharan",
 				position: "Product Manager",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Zachary",
 				position: "Software Engineer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			}
 		]}
 		icons={[Python, React]}
@@ -277,70 +277,70 @@
 			{
 				name: "Advay",
 				position: "Software Engineer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Alex",
 				position: "Software Engineer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Alexander",
 				position: "Engineering Manager",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Ansh",
 				position: "Design and Engineering",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Axel",
 				position: "Lead Desiner",
 
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Blake",
 				position: "Design an Engineering",
 
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Jackson",
 				position: "Engineerig Manager",
 
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Mitch",
 				position: "Product Mnager",
 
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Phakawat",
 				position: "Design an Engineering",
 
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Rohan",
 				position: "Software ngineer",
 
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Sanjay",
 				position: "Software ngineer",
 
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Zac",
 				position: "Software ngineer",
 
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			}
 		]}
 		icons={[React]}
@@ -367,37 +367,37 @@
 			{
 				name: "Alexander",
 				position: "Engineering Maager",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Blake",
 				position: "Software Enginer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Eegan",
 				position: "Designer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Ishaan",
 				position: "Designer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Jackson",
 				position: "Engineering Maager",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Ray",
 				position: "Software Enginer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			},
 			{
 				name: "Zac",
 				position: "Software Enginer",
-				iconurl: "./jackson.webp"
+				url: "placeholder"
 			}
 		]}
 		icons={[Python]}
@@ -566,15 +566,11 @@
 
 	<a
 		href="/projects/something"
-		class="p-4 block mb-8 mx-auto rounded-lg bg-gray-700/60 max-w-xs mt-8 border-t-4 ease-in-out duration-200 transition-transform border-[#EFF24C] sm:hover:scale-105 sm:flex sm:gap-8 sm:items-center sm:max-w-lg"
+		class="p-4 block mb-8 mx-auto rounded-lg bg-gray-700/60 max-w-xs mt-8 border-t-4 ease-in-out duration-200 transition-transform border-[#3B84D6] sm:hover:scale-105 sm:flex sm:gap-8 sm:items-center sm:max-w-lg"
 	>
-		<img
-			src="/blog.webp"
-			width="500"
-			height="500"
-			alt="Random shapes and colors in the formation of a hallway"
-			loading="lazy"
-			class="rounded-lg sm:w-28"
+		<div
+			class="rounded-lg bg-center bg-no-repeat bg-cover w-full shrink-0 aspect-square sm:w-28"
+			style="background-image: url(/projects/project/placeholder/banner.webp);"
 		/>
 		<div>
 			<h1 class="font-semibold text-2xl mt-4">Blog Post</h1>

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte/internal";
 	import Asterisk from "../icons/Asterisk.svelte";
+	import { createEventDispatcher } from "svelte/internal";
 
 	export let type: string;
 	export let title: string;
