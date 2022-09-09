@@ -33,7 +33,7 @@
 		name={title.toLowerCase()}
 		class:border-green-light={isFilled}
 		class:border-transparent={!isFilled}
-		class="w-full h-96 px-2 bg-gray-800 resize-none flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
+		class="w-full h-96 bg-gray-800 resize-none flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
 		{disabled}
 		{placeholder}
 	/>

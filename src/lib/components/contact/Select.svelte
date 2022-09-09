@@ -22,7 +22,7 @@
 	$: isFilled, dispatch("change", { isFilled });
 
 	// On input change check if the input is filled.
-	const onChange = ({ detail }: CustomEvent) => {
+	const onChange = ({ detail }: CustomEvent<{ isSelected: boolean }>) => {
 		detail.isSelected ? count++ : count--;
 		isFilled = count > 0;
 	};
