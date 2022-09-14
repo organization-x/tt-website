@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte/internal";
+	import { onMount } from "svelte";
 
 	let className: string;
 	export let title: string;

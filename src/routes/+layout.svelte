@@ -32,11 +32,11 @@
 		<a href="/" class="z-30" aria-label="Home">
 			<Logo class="w-10 h-10" />
 		</a>
-		<div class="lg:hidden">
+		<div class="lg:hidden flex items-center">
 			<button
 				type="button"
 				aria-label="Menu"
-				class="cursor-pointer z-30 relative text-5xl"
+				class="z-30 relative"
 				on:click={() => {
 					open = !open;
 					window.scrollTo(0, 0);
@@ -55,9 +55,9 @@
 							<NavLink href="/about">About</NavLink>
 							<NavLink href="/developers">Developers</NavLink>
 							<NavLink href="/projects">Projects</NavLink>
-							<NavLink href="https://ai-camp.org" target="_blank"
-								>AI Camp</NavLink
-							>
+							<NavLink href="https://ai-camp.org" target="_blank">
+								AI Camp
+							</NavLink>
 							<NavLink href="/contact">Contact Us</NavLink>
 						</ul>
 						<div
@@ -98,9 +98,9 @@
 				<NavLink href="/about">About</NavLink>
 				<NavLink href="/developers">Developers</NavLink>
 				<NavLink href="/projects">Projects</NavLink>
-				<NavLink href="https://ai-camp.org" target="_blank"
-					>AI Camp</NavLink
-				>
+				<NavLink href="https://ai-camp.org" target="_blank">
+					AI Camp
+				</NavLink>
 				<a
 					href="/contact"
 					class="px-4 py-1 select-none bg-white text-black rounded-3xl transition-border hover:rounded-md"
@@ -125,7 +125,7 @@
 		<FootLink href="/projects">Projects</FootLink>
 		<FootLink href="https://ai-camp.org">AI Camp</FootLink>
 	</ul>
-	<div class="flex max-w-sm justify-center gap-8 lg:flex-row-reverse">
+	<div class="flex justify-center gap-8 lg:flex-row-reverse">
 		<div class="flex gap-4 items-center">
 			<Logo class="w-8 h-8" />
 			<AICamp class="w-8 h-8" />

@@ -1,6 +1,6 @@
 import { Octokit } from "octokit";
 import { prisma } from "$lib/prisma";
-import type { RequestHandler } from "@sveltejs/kit";
+import { redirect, type RequestHandler } from "@sveltejs/kit";
 
 const id = import.meta.env.VITE_CLIENT_ID;
 
@@ -35,13 +35,7 @@ export const GET: RequestHandler = async (req) => {
 			.catch(() => null);
 
 		// If an error occurs fetching the user data, its most likely an expired token, so redirect to github oauth page
-		if (!user)
-			return {
-				status: 302,
-				headers: {
-					location: "/auth"
-				}
-			};
+		if (!user) throw redirect(302, "/login");
 
 		// Check if the user exists already
 		let prismaUser = await prisma.user.findUnique({
@@ -55,12 +49,15 @@ export const GET: RequestHandler = async (req) => {
 					id: user.login,
 					url: user.login,
 					name: user.name || user.login,
-					about: user.bio || "I'm a TT member!",
-					team: null,
-					positions: [],
-					skills: []
+					about: user.bio || "I'm a member of Team Tomorrow!",
+					positions: ["Fullstack", "Designer"],
+					techSkills: ["JavaScript", "Python"],
+					softSkills: ["Teamwork", "Leadership"]
 				}
 			});
+
+			// Create empty links object for the user
+			await prisma.links.create({ data: { userId: user.login } });
 		} else {
 			// Otherwise, if they do exists, do some cleanup and check if they have any expired session
 			// tokens inside postgres, if they do, remove them
@@ -93,20 +90,13 @@ export const GET: RequestHandler = async (req) => {
 		const session = await createSession();
 
 		// Set locals to session token and redirect to the users profile
-		// TODO: Change redirect to the users dashboard
+		// TODO: Change redirect to the users main dashboard
 		req.locals.session = session;
-		return {
-			status: 302,
-			headers: {
-				location: `/developers/${prismaUser.id}`
-			}
-		};
+		throw redirect(302, "/dashboard/profile");
 	} else {
-		return {
-			status: 302,
-			headers: {
-				location: `https://github.com/login/oauth/authorize?client_id=${id}&scope=read:user`
-			}
-		};
+		throw redirect(
+			302,
+			`https://github.com/login/oauth/authorize?client_id=${id}&scope=read:user`
+		);
 	}
 };

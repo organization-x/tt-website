@@ -1,6 +1,6 @@
-import type { GetSession, Handle } from "@sveltejs/kit";
-import { prisma } from "$lib/prisma";
 import { parse, serialize } from "cookie";
+
+import type { Handle } from "@sveltejs/kit";
 
 // Intercept connections
 export const handle: Handle = async ({ event, resolve }) => {
@@ -34,22 +34,4 @@ export const handle: Handle = async ({ event, resolve }) => {
 	}
 
 	return res;
-};
-
-// Every page gets access to the currently logged in users information
-// If a page requests the session, it most likely needs currently active user info,
-// so it fetches it here
-export const getSession: GetSession = async (request) => {
-	// If there isn't a session, return user as null
-	if (!request.locals.session) return { user: null };
-
-	// Find the user with the provided session token, if not found, return null
-	const user = await prisma.session
-		.findUnique({ where: { token: request.locals.session } })
-		.user();
-
-	// If null unset the local
-	if (!user) request.locals.session = null;
-
-	return { user };
 };

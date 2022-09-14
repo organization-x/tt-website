@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { User } from "@prisma/client";
-
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
@@ -20,15 +18,18 @@
 	import Developer from "$lib/components/developers/index/Developer.svelte";
 	import DeveloperFilter from "$lib/components/developers/index/DeveloperFilter.svelte";
 
+	import type { User } from "@prisma/client";
+
 	// TODO: Fetch data using prisma
 	const placeholder: User = {
 		id: "githubusername",
 		url: "placeholder",
 		name: "Bernice Lau",
 		about: "I'm bernice!",
-		team: "DESIGN",
-		positions: ["DESIGNER"],
-		skills: ["JAVASCRIPT", "GCLOUD"]
+		team: "Design",
+		positions: ["Designer", "Fullstack"],
+		techSkills: ["Google_Cloud", "AWS"],
+		softSkills: ["Leadership", "Proactive"]
 	};
 </script>
 
