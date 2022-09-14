@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { ComponentType } from "svelte/types/runtime/internal/dev.js";
+	import type { ComponentType } from "svelte";
 
 	let icon: ComponentType;
 	export let title: string;
