@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { page } from "$app/stores";
+	import type { PageData } from "./$types";
 
-	console.log($page.params.project);
+	export let data: PageData;
+
+	const { title, theme, date, skills } = data.project;
 </script>
 
 <h1>Project</h1>
