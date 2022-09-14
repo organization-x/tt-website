@@ -8,7 +8,7 @@ import { redirect } from "@sveltejs/kit";
 
 // This looks bad its just importing typing from where it's supposed to be
 import type { Links, User } from "@prisma/client";
-import type { PageServerLoad } from ".svelte-kit/types/src/routes/dashboard/$types";
+import type { PageServerLoad } from "../routes/dashboard/$types";
 
 // If a user tries to access the dashboard without being logged in, redirect them to the login page.
 // If they are logged in, grab the users main data, links, and project authors

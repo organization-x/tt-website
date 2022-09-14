@@ -10,16 +10,17 @@ CREATE TYPE "TechSkill" AS ENUM ('JavaScript', 'Python', 'React', 'TensorFlow', 
 -- CreateEnum
 CREATE TYPE "SoftSkill" AS ENUM ('Teamwork', 'Leadership', 'Writing', 'Proactive');
 
--- CreateEnum
-CREATE TYPE "Social" AS ENUM ('GitHub', 'LinkedIn', 'Devto', 'Twitter', 'Facebook', 'Website');
-
 -- CreateTable
-CREATE TABLE "Link" (
-    "social" "Social" NOT NULL,
-    "url" TEXT NOT NULL,
+CREATE TABLE "Links" (
+    "GitHub" TEXT,
+    "LinkedIn" TEXT,
+    "Devto" TEXT,
+    "Twitter" TEXT,
+    "Facebook" TEXT,
+    "Website" TEXT,
     "userId" TEXT NOT NULL,
 
-    CONSTRAINT "Link_pkey" PRIMARY KEY ("social","userId")
+    CONSTRAINT "Links_pkey" PRIMARY KEY ("userId")
 );
 
 -- CreateTable
@@ -68,9 +69,6 @@ CREATE TABLE "User" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Link_url_key" ON "Link"("url");
-
--- CreateIndex
 CREATE UNIQUE INDEX "Project_url_key" ON "Project"("url");
 
 -- CreateIndex
@@ -83,7 +81,7 @@ CREATE UNIQUE INDEX "User_url_key" ON "User"("url");
 CREATE INDEX "User_name_techSkills_softSkills_positions_idx" ON "User"("name", "techSkills", "softSkills", "positions");
 
 -- AddForeignKey
-ALTER TABLE "Link" ADD CONSTRAINT "Link_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Links" ADD CONSTRAINT "Links_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProjectAuthor" ADD CONSTRAINT "ProjectAuthor_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -8,8 +8,15 @@
 
 	export { className as class };
 
+	const enum disabledState {
+		None,
+		Left,
+		Right,
+		Both
+	}
+
 	// 0 = none, 1 = left, 2 = right, 3 = both
-	let disabledArrows = 1;
+	let disabledArrows = disabledState.Left;
 
 	// Scroll on arrow click
 	const scroller = (left: boolean) => {
@@ -24,14 +31,14 @@
 	// Change disabeld arrows based on scroll position
 	const onScroll = () => {
 		if (element.scrollLeft === 0) {
-			disabledArrows = 1;
+			disabledArrows = disabledState.Left;
 		} else if (
 			element.scrollLeft - (element.scrollWidth - element.clientWidth) >=
 			-0.5
 		) {
-			disabledArrows = 2;
+			disabledArrows = disabledState.Right;
 		} else {
-			disabledArrows = 0;
+			disabledArrows = disabledState.None;
 		}
 	};
 
@@ -39,13 +46,14 @@
 	onMount(() => {
 		const onResize = () => {
 			element.clientWidth === element.scrollWidth
-				? (disabledArrows = 3)
+				? (disabledArrows = disabledState.Both)
 				: onScroll();
 		};
 
 		addEventListener("resize", onResize, { passive: true });
 
-		if (element.clientWidth === element.scrollWidth) disabledArrows = 3;
+		if (element.clientWidth === element.scrollWidth)
+			disabledArrows = disabledState.Both;
 
 		return () => removeEventListener("resize", onResize);
 	});
@@ -54,8 +62,8 @@
 <div class="flex gap-4 h-14 {className}">
 	<CarouselArrow
 		on:click={() => scroller(true)}
-		disabled={disabledArrows === 1}
-		hidden={disabledArrows === 3}
+		disabled={disabledArrows === disabledState.Left}
+		hidden={disabledArrows === disabledState.Both}
 	/>
 	<div
 		class="relative overflow-hidden w-full
@@ -67,7 +75,7 @@
 		<div
 			on:scroll={onScroll}
 			bind:this={element}
-			class:justify-center={disabledArrows === 3}
+			class:justify-center={disabledArrows === disabledState.Both}
 			class="flex gap-6 overflow-auto scrollbar-hidden px-6 snap-x snap-proximity"
 		>
 			<slot />
@@ -75,8 +83,8 @@
 	</div>
 	<CarouselArrow
 		on:click={() => scroller(false)}
-		disabled={disabledArrows === 2}
-		hidden={disabledArrows === 3}
+		disabled={disabledArrows === disabledState.Right}
+		hidden={disabledArrows === disabledState.Both}
 		class="rotate-180"
 	/>
 </div>

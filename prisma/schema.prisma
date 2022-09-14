@@ -24,6 +24,15 @@ enum Position {
     Designer
 }
 
+// Roles for project authors
+enum Role {
+    Project_Manager
+    Lead_Engineer
+    Software_Engineer
+    Lead_Designer
+    Designer
+}
+
 // Enum for skills that can be "tagged" to users and projects
 enum TechSkill {
     JavaScript
@@ -61,7 +70,7 @@ model ProjectAuthor {
     userId    String
     project   Project @relation(fields: [projectId], references: [id])
     projectId String
-    role      String
+    role      Role
 
     @@id([userId, projectId])
 }

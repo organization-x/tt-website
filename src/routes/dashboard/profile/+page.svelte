@@ -55,12 +55,11 @@
 		"TensorFlow"
 	];
 
-	// 0 = none, 1 = cancel, 2 = save, 3 = both
-	let disabledButtons = 3;
+	let disableButtons = true;
 	let disableForm = false;
 
 	const onSave = async () => {
-		disabledButtons = 3;
+		disableButtons = true;
 		disableForm = true;
 
 		// Send an update request to the API
@@ -89,7 +88,7 @@
 
 	// On cancel, revert the values to their originals and disable the save/cancel buttons
 	const onCancel = () => {
-		disabledButtons = 3;
+		disableButtons = true;
 		links = JSON.parse(JSON.stringify(original.links));
 		user = JSON.parse(JSON.stringify(original.user));
 	};
@@ -132,7 +131,7 @@
 		const target = event.target! as HTMLInputElement;
 		const { detail } = event as CustomEvent;
 
-		disabledButtons = 3;
+		disableButtons = true;
 
 		switch (id) {
 			case "about":
@@ -215,7 +214,7 @@
 			!arrayEquality(user.softSkills, original.user.softSkills) ||
 			!arrayEquality(user.techSkills, original.user.techSkills)
 		)
-			disabledButtons = 0; // Enable save/cancel button
+			disableButtons = false; // Enable save/cancel button
 	};
 </script>
 
@@ -228,11 +227,11 @@
 			class="absolute inset-0 bg-black/40 flex justify-center items-center gap-2"
 		>
 			<Pencil class="w-6 h-6 lg:w-8 lg:h-8" />
-			<h1 class="text-xl font-semibold lg:text-2xl">Edit</h1>
+			<h1 class="text-xl select-none font-semibold lg:text-2xl">Edit</h1>
 		</div>
 	</div>
 
-	<div class="lg:flex lg:gap-12 xl:justify-center">
+	<div class="lg:flex lg:gap-12 lg:justify-center">
 		<div
 			class="flex flex-col gap-4 lg:shrink-0 lg:sticky lg:h-min lg:mt-10 lg:top-6"
 		>
@@ -270,7 +269,7 @@
 			disabled={disableForm}
 			class:pointer-events-none={disableForm}
 			class:opacity-60={disableForm}
-			class="flex flex-col mt-8 gap-12 max-w-screen-2xl mx-auto transition-opacity duration-300 lg:mt-40 xl:mx-0 2xl:grid 2xl:grid-cols-2 2xl:text-sm"
+			class="flex flex-col mt-8 gap-12 max-w-screen-2xl mx-auto transition-opacity duration-300 lg:mt-40 lg:mx-0 3xl:grid 3xl:grid-cols-2 3xl:text-sm"
 		>
 			<div class="flex flex-col gap-12 justify-between">
 				<ProfileSection direction="bg-gradient-to-br" title="About Me">
@@ -394,14 +393,14 @@
 				<DashButton
 					on:click={onCancel}
 					class="bg-gray-500"
-					disabled={disabledButtons === 1 || disabledButtons === 3}
+					disabled={disableButtons}
 				>
 					Cancel
 				</DashButton>
 				<DashButton
 					on:click={onSave}
 					class="bg-blue-light"
-					disabled={disabledButtons === 2 || disabledButtons === 3}
+					disabled={disableButtons}
 				>
 					Save
 				</DashButton>

@@ -23,17 +23,15 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 
 	const data: App.UserUpdateRequest = await request.json();
 
-	console.log(data);
-
 	// If the token isn't the same as for the user they are updating, throw unauthorized
 	if (data.where.id !== session.userId) throw error(401, "Unauthorized");
 
 	// Input validation
 	if (
 		!(
-			data.user.positions.length > 2 ||
-			data.user.softSkills.length > 2 ||
-			data.user.techSkills.length > 2
+			data.user.positions.length >= 2 ||
+			data.user.softSkills.length >= 2 ||
+			data.user.techSkills.length >= 2
 		)
 	)
 		throw error(400, "Bad Request");

@@ -43,7 +43,8 @@ module.exports = {
 			screens: {
 				sm: "425px",
 				md: "600px",
-				lg: "1024px"
+				lg: "1024px",
+				"3xl": "1600px"
 			},
 			backgroundImage: {
 				"gradient-radial":
