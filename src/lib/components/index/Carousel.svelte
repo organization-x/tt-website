@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte/internal";
+	import { onMount } from "svelte";
 	import CarouselDot from "$lib/components/index/CarouselDot.svelte";
 
 	let current = 0;
@@ -33,7 +33,7 @@
 	});
 </script>
 
-<div class="mt-10 px-2 lg:hidden">
+<div class="my-10 px-2 lg:hidden">
 	<div
 		bind:this={element}
 		class="flex gap-8 overflow-auto snap-mandatory snap-x scrollbar-hidden max-w-sm mx-auto"

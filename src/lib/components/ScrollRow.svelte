@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte/internal";
+	import { onMount } from "svelte";
 
 	import CarouselArrow from "./icons/CarouselArrow.svelte";
 

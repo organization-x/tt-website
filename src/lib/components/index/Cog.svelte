@@ -1,5 +1,5 @@
 <svg
-	class="absolute pointer-events-none w-8 right-0 -top-2 md:-right-8 lg:top-4 lg:-right-12"
+	class="absolute pointer-events-none w-8 right-0 -top-2 md:-right-4 lg:top-4 lg:-right-12"
 	viewBox="0 0 29 29"
 	fill="none"
 >

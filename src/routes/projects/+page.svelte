@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { Project } from "@prisma/client";
-
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
@@ -17,6 +15,8 @@
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
 	import ProjectFilter from "$lib/components/projects/index/ProjectFilter.svelte";
 
+	import type { Project } from "@prisma/client";
+
 	// TODO: Fetch data using prisma
 	const placeholder: Project = {
 		id: "ttwebsiteontop", // cuid
@@ -26,7 +26,7 @@
 		theme: "#3B84D6",
 		url: "placeholder",
 		date: new Date(),
-		skills: ["JAVASCRIPT", "GCLOUD"]
+		skills: ["JavaScript", "Google_Cloud"]
 	};
 
 	const projects: Project[][] = [

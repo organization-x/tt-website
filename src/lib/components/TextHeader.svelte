@@ -1,5 +1,5 @@
 <h1
-	class="font-semibold text-xl text-center mt-8 w-full lg:text-2xl lg:mt-10 xl:text-3xl"
+	class="font-semibold text-xl sm:text-2xl text-center mt-8 w-full lg:text-2xl lg:mt-10 xl:text-3xl"
 >
 	<slot />
 </h1>

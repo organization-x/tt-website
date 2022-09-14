@@ -1,14 +1,13 @@
 <script lang="ts">
-	import type { Developer } from "../../types";
-	import type { ComponentType } from "svelte/types/runtime/internal/dev.js";
-
 	import Button from "../Button.svelte";
 	import ProjectDev from "./ProjectDev.svelte";
+
+	import type { ComponentType } from "svelte/types/runtime/internal/dev.js";
 
 	export let href: string;
 	export let title: string;
 	export let icons: ComponentType[];
-	export let developers: Developer[];
+	export let developers: App.Developer[];
 </script>
 
 <div class="mt-20 lg:mt-32 lg:flex lg:gap-8 lg:even:flex-row-reverse">

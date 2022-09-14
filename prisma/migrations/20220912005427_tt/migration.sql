@@ -1,20 +1,25 @@
 -- CreateEnum
-CREATE TYPE "Team" AS ENUM ('MARKETING', 'ENGINEERING', 'DESIGN');
+CREATE TYPE "Team" AS ENUM ('Marketing', 'Engineering', 'Design');
 
 -- CreateEnum
-CREATE TYPE "Position" AS ENUM ('FRONTEND', 'BACKEND', 'FULLSTACK', 'DESIGNER');
+CREATE TYPE "Position" AS ENUM ('Frontend', 'Backend', 'Fullstack', 'Designer');
 
 -- CreateEnum
-CREATE TYPE "Skill" AS ENUM ('JAVASCRIPT', 'PYTHON', 'REACT', 'TENSORFLOW', 'PYTORCH', 'GCLOUD', 'AWS');
+CREATE TYPE "TechSkill" AS ENUM ('JavaScript', 'Python', 'React', 'TensorFlow', 'Pytorch', 'Google_Cloud', 'AWS');
 
 -- CreateEnum
-CREATE TYPE "Social" AS ENUM ('GITHUB', 'LINKEDIN', 'DEVTO', 'TWITTER', 'FACEBOOK', 'WEBSITE');
+CREATE TYPE "SoftSkill" AS ENUM ('Teamwork', 'Leadership', 'Writing', 'Proactive');
+
+-- CreateEnum
+CREATE TYPE "Social" AS ENUM ('GitHub', 'LinkedIn', 'Devto', 'Twitter', 'Facebook', 'Website');
 
 -- CreateTable
-CREATE TABLE "SocialLink" (
+CREATE TABLE "Link" (
     "social" "Social" NOT NULL,
-    "link" TEXT NOT NULL,
-    "userId" TEXT NOT NULL
+    "url" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "Link_pkey" PRIMARY KEY ("social","userId")
 );
 
 -- CreateTable
@@ -34,7 +39,7 @@ CREATE TABLE "Project" (
     "theme" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
-    "skills" "Skill"[],
+    "skills" "TechSkill"[],
 
     CONSTRAINT "Project_pkey" PRIMARY KEY ("id")
 );
@@ -56,13 +61,14 @@ CREATE TABLE "User" (
     "about" TEXT NOT NULL,
     "team" "Team",
     "positions" "Position"[],
-    "skills" "Skill"[],
+    "softSkills" "SoftSkill"[],
+    "techSkills" "TechSkill"[],
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "SocialLink_link_key" ON "SocialLink"("link");
+CREATE UNIQUE INDEX "Link_url_key" ON "Link"("url");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Project_url_key" ON "Project"("url");
@@ -74,10 +80,10 @@ CREATE INDEX "Project_title_skills_idx" ON "Project"("title", "skills");
 CREATE UNIQUE INDEX "User_url_key" ON "User"("url");
 
 -- CreateIndex
-CREATE INDEX "User_name_skills_positions_idx" ON "User"("name", "skills", "positions");
+CREATE INDEX "User_name_techSkills_softSkills_positions_idx" ON "User"("name", "techSkills", "softSkills", "positions");
 
 -- AddForeignKey
-ALTER TABLE "SocialLink" ADD CONSTRAINT "SocialLink_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Link" ADD CONSTRAINT "Link_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "ProjectAuthor" ADD CONSTRAINT "ProjectAuthor_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

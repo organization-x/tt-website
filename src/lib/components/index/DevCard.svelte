@@ -1,11 +1,9 @@
 <script lang="ts">
-	import type { Developer } from "../../types";
-
 	import Plus from "../icons/Plus.svelte";
 	import { fade } from "svelte/transition";
 	import GradientText from "../GradientText.svelte";
 
-	export let info: Developer;
+	export let info: App.Developer;
 
 	let open = false;
 </script>

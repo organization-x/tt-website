@@ -1,7 +1,5 @@
 <script lang="ts">
-	import type { Developer } from "../../types";
-
-	export let info: Developer;
+	export let info: App.Developer;
 </script>
 
 <a

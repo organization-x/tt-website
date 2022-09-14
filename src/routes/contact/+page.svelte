@@ -2,8 +2,8 @@
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Page from "$lib/components/contact/Page.svelte";
-	import Field from "$lib/components/contact/Field.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
+	import Field from "$lib/components/contact/Field.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Select from "$lib/components/contact/Select.svelte";

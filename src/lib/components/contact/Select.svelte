@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { onMount } from "svelte/internal";
+	import { onMount, createEventDispatcher } from "svelte";
+
 	import Asterisk from "../icons/Asterisk.svelte";
 	import Dropdown from "../icons/Dropdown.svelte";
 	import DropdownOption from "./DropdownOption.svelte";
-	import { createEventDispatcher } from "svelte/internal";
 
 	export let title: string;
 	export let required = true;
@@ -19,10 +19,10 @@
 	let dropdownParent: HTMLDivElement;
 
 	// Only dispatch if the previous state of isFilled is different than the new state.
-	$: isFilled, dispatch("change", { isFilled });
+	$: dispatch("change", { isFilled });
 
 	// On input change check if the input is filled.
-	const onChange = ({ detail }: CustomEvent) => {
+	const onChange = ({ detail }: CustomEvent<{ isSelected: boolean }>) => {
 		detail.isSelected ? count++ : count--;
 		isFilled = count > 0;
 	};
@@ -46,7 +46,7 @@
 			<Asterisk class="w-3 h-3" />
 		{/if}
 	</div>
-	<div bind:this={dropdownParent} class="relative">
+	<div bind:this={dropdownParent} class="relative cursor-pointer">
 		<div
 			on:click={() => (open = !open)}
 			class:pointer-events-none={disabled}
@@ -54,7 +54,9 @@
 			class="w-full flex items-center justify-between p-4 bg-gray-800 mt-4 duration-100 transition-border rounded-t-lg select-none"
 		>
 			<h1>{count} {placeholder} selected</h1>
-			<Dropdown class="w-6 h-6" />
+			<Dropdown
+				class="w-6 h-6 transition-transform{open ? ' rotate-180' : ''}"
+			/>
 		</div>
 		<div
 			class:flex={open}

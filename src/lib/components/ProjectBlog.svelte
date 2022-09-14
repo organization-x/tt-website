@@ -1,35 +1,9 @@
 <script lang="ts">
-	import type { Project, ProjectAuthor, Skill, User } from "@prisma/client";
+	import { getIcon } from "$lib/components/icons/getIcon";
 
-	import Aws from "./icons/Aws.svelte";
-	import React from "./icons/React.svelte";
-	import Python from "./icons/Python.svelte";
-	import Pytorch from "./icons/Pytorch.svelte";
-	import JavaScript from "./icons/JavaScript.svelte";
-	import TensorFlow from "./icons/TensorFlow.svelte";
-	import GoogleCloud from "./icons/GoogleCloud.svelte";
+	import type { Project, ProjectAuthor, User } from "@prisma/client";
 
 	export let project: Project;
-
-	// TODO: Make a better system for this
-	const getSkillIcon = (name: Skill) => {
-		switch (name) {
-			case "JAVASCRIPT":
-				return JavaScript;
-			case "PYTHON":
-				return Python;
-			case "REACT":
-				return React;
-			case "TENSORFLOW":
-				return TensorFlow;
-			case "PYTORCH":
-				return Pytorch;
-			case "GCLOUD":
-				return GoogleCloud;
-			case "AWS":
-				return Aws;
-		}
-	};
 
 	// TODO: Fetch relational data for project authors
 	// This represents all the project authors that would be fetched
@@ -47,9 +21,10 @@
 		url: "placeholder",
 		name: "Bernice Lau",
 		about: "I'm bernice!",
-		team: "DESIGN",
-		positions: ["DESIGNER"],
-		skills: ["JAVASCRIPT", "GCLOUD"]
+		team: "Design",
+		positions: ["Designer"],
+		softSkills: ["Leadership"],
+		techSkills: ["JavaScript"]
 	};
 </script>
 
@@ -76,7 +51,7 @@
 		<p class="mt-2">{project.snippet}</p>
 		<div class="flex gap-2 mt-4">
 			{#each project.skills as icon}
-				<svelte:component this={getSkillIcon(icon)} class="w-8 h-8" />
+				<svelte:component this={getIcon(icon)} class="w-8 h-8" />
 			{/each}
 		</div>
 	</div>

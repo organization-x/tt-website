@@ -11,46 +11,48 @@ datasource db {
 
 // Teams that users could be a part of
 enum Team {
-    MARKETING
-    ENGINEERING
-    DESIGN
+    Marketing
+    Engineering
+    Design
 }
 
 // Positions that can be viewed and searched for linked to users
 enum Position {
-    FRONTEND
-    BACKEND
-    FULLSTACK
-    DESIGNER
+    Frontend
+    Backend
+    Fullstack
+    Designer
 }
 
 // Enum for skills that can be "tagged" to users and projects
-enum Skill {
-    JAVASCRIPT
-    PYTHON
-    REACT
-    TENSORFLOW
-    PYTORCH
-    GCLOUD
+enum TechSkill {
+    JavaScript
+    Python
+    React
+    TensorFlow
+    Pytorch
+    Google_Cloud
     AWS
 }
 
-// Enum for social platforms availible to be linked to users
-enum Social {
-    GITHUB
-    LINKEDIN
-    DEVTO
-    TWITTER
-    FACEBOOK
-    WEBSITE
+// Enum for soft skills which are only used on users
+enum SoftSkill {
+    Teamwork
+    Leadership
+    Writing
+    Proactive
 }
 
 // Social links on profiles
-model SocialLink {
-    social Social
-    link   String @unique
-    user   User   @relation(fields: [userId], references: [id])
-    userId String
+model Links {
+    GitHub   String?
+    LinkedIn String?
+    Devto    String?
+    Twitter  String?
+    Facebook String?
+    Website  String?
+    user     User    @relation(fields: [userId], references: [id])
+    userId   String  @id
 }
 
 // A seperate model referencing an author ob a project, this way the role the user played and other information can be stored
@@ -75,7 +77,7 @@ model Project {
     // For banners we can do /projects/{name-of-project}/banner.webp
     url     String          @unique
     date    DateTime
-    skills  Skill[]
+    skills  TechSkill[]
     authors ProjectAuthor[]
 
     @@index([title, skills])
@@ -91,18 +93,19 @@ model Session {
 
 // The user model for storing tt members
 model User {
-    id        String          @id
-    sessions  Session[]
+    id         String          @id
+    sessions   Session[]
     // Contains the users url basis (firstlast), structured as /users/{firstlast}.
     // For banners and icons we can do /users/{firstlast}/banner.webp and /users/{firstlast}/icon.webp
-    url       String          @unique
-    name      String
-    about     String
-    team      Team?
-    positions Position[]
-    skills    Skill[]
-    socials   SocialLink[]
-    projects  ProjectAuthor[]
+    url        String          @unique
+    name       String
+    about      String
+    team       Team?
+    links      Links?
+    positions  Position[]
+    softSkills SoftSkill[]
+    techSkills TechSkill[]
+    projects   ProjectAuthor[]
 
-    @@index([name, skills, positions])
+    @@index([name, techSkills, softSkills, positions])
 }

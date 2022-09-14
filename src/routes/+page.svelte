@@ -1,6 +1,4 @@
 <script lang="ts">
-	import type { Developer } from "$lib/types";
-
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Button from "$lib/components/Button.svelte";
@@ -35,7 +33,7 @@
 	import CompanyImage from "$lib/components/index/CompanyImage.svelte";
 
 	// TODO: Actually fill dev data
-	const placeholder: Developer = {
+	const placeholder: App.Developer = {
 		name: "Jackson Choyce",
 		position: "Software Engineer",
 		url: "placeholder"
@@ -297,49 +295,41 @@
 			{
 				name: "Axel",
 				position: "Lead Desiner",
-
 				url: "placeholder"
 			},
 			{
 				name: "Blake",
 				position: "Design an Engineering",
-
 				url: "placeholder"
 			},
 			{
 				name: "Jackson",
 				position: "Engineerig Manager",
-
 				url: "placeholder"
 			},
 			{
 				name: "Mitch",
 				position: "Product Mnager",
-
 				url: "placeholder"
 			},
 			{
 				name: "Phakawat",
 				position: "Design an Engineering",
-
 				url: "placeholder"
 			},
 			{
 				name: "Rohan",
 				position: "Software ngineer",
-
 				url: "placeholder"
 			},
 			{
 				name: "Sanjay",
 				position: "Software ngineer",
-
 				url: "placeholder"
 			},
 			{
 				name: "Zac",
 				position: "Software ngineer",
-
 				url: "placeholder"
 			}
 		]}

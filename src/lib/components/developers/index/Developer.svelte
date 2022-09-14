@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { User } from "@prisma/client";
+	import { getIcon } from "$lib/components/icons/getIcon";
 
-	import DevPos from "./DevPos.svelte";
+	import DevTag from "./DevTag.svelte";
 	import DevList from "./DevList.svelte";
 	import Button from "../../Button.svelte";
 	import Bulb from "../../icons/Bulb.svelte";
 	import Wrench from "../../icons/Wrench.svelte";
-	import Python from "../../icons/Python.svelte";
-	import Desktop from "../../icons/Desktop.svelte";
 	import GradientText from "../../GradientText.svelte";
+
+	import type { User } from "@prisma/client";
 
 	export let info: User;
 </script>
@@ -38,14 +38,16 @@
 		<slot />
 	</p>
 	<DevList title="Positions" icon={Bulb}>
-		<DevPos name="Frontend Developer" icon={Desktop} />
-		<DevPos name="Frontend Developer" icon={Desktop} />
+		{#each info.positions as position}
+			<DevTag name={position} icon={getIcon(position)} />
+		{/each}
 	</DevList>
 	<DevList title="Skills" icon={Wrench}>
-		<DevPos name="Python" icon={Python} />
-		<DevPos name="Python" icon={Python} />
+		{#each info.techSkills as skill}
+			<DevTag name={skill} icon={getIcon(skill)} />
+		{/each}
 	</DevList>
-	<Button href={`/developers/${info.url}`} class="mt-8 mx-auto"
-		>View Profile</Button
-	>
+	<Button href={`/developers/${info.url}`} class="mt-8 mx-auto">
+		View Profile
+	</Button>
 </div>
