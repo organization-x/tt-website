@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Devto from "$lib/components/icons/Devto.svelte";
 	import Group from "$lib/components/icons/Group.svelte";
+	import Dropdown from "$lib/components/Dropdown.svelte";
 	import GitHub from "$lib/components/icons/GitHub.svelte";
 	import Pencil from "$lib/components/icons/Pencil.svelte";
 	import Twitter from "$lib/components/icons/Twitter.svelte";
@@ -13,7 +14,6 @@
 	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 	import { teams, positions, softSkills, techSkills } from "$lib/enums";
-	import DropdownField from "$lib/components/dashboard/profile/DropdownField.svelte";
 	import ProfileSection from "$lib/components/dashboard/profile/ProfileSection.svelte";
 
 	// TODO: Add proper profile picture and banner stuff using cloudflare images
@@ -252,14 +252,17 @@
 						placeholder="Include previous projects, skills, and your experience level..."
 						max={150}
 					/>
-					<DropdownField
+					<Dropdown
+						i={0}
+						z={10}
+						radio={true}
 						options={teams}
-						requiredThreshold={0}
+						required={false}
 						selectedItems={[user.team]}
 						on:change={(e) => onChange("team", e)}
 					>
 						<Group class="w-8 h-8 shrink-0" />
-					</DropdownField>
+					</Dropdown>
 				</ProfileSection>
 
 				<ProfileSection
@@ -319,9 +322,11 @@
 					title="Positions"
 				>
 					{#each { length: 4 } as _, i}
-						<DropdownField
+						<Dropdown
 							{i}
 							z={30 - i}
+							radio={true}
+							required={i < 2}
 							options={positions}
 							selectedItems={user.positions}
 							on:change={(e) => onChange("positions", e)}
@@ -337,9 +342,11 @@
 					<div class="flex flex-col gap-6">
 						<h1 class="font-semibold text-xl text-center">Soft</h1>
 						{#each { length: 5 } as _, i}
-							<DropdownField
+							<Dropdown
 								{i}
 								z={25 - i}
+								radio={true}
+								required={i < 2}
 								options={softSkills}
 								selectedItems={user.softSkills}
 								on:change={(e) => onChange("softSkills", e)}
@@ -351,9 +358,11 @@
 							Technical
 						</h1>
 						{#each { length: 5 } as _, i}
-							<DropdownField
+							<Dropdown
 								{i}
 								z={19 - i}
+								radio={true}
+								required={i < 2}
 								options={techSkills}
 								selectedItems={user.techSkills}
 								on:change={(e) => onChange("techSkills", e)}

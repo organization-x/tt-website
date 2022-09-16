@@ -43,9 +43,7 @@
 			class="w-10 h-10 rounded-full"
 		/>
 		<h1 class="text-lg">{user.name}</h1>
-		<DropArrow
-			class="w-7 h-7 transition-transform{open ? ' rotate-180' : ''}"
-		/>
+		<DropArrow {open} class="w-7 h-7 transition-transform" />
 	</button>
 	{#if open}
 		<div class="p-4" transition:slide={{ duration: 200 }}>
