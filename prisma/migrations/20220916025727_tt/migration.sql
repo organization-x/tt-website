@@ -27,7 +27,7 @@ CREATE TABLE "Links" (
 CREATE TABLE "ProjectAuthor" (
     "userId" TEXT NOT NULL,
     "projectId" TEXT NOT NULL,
-    "role" TEXT NOT NULL,
+    "position" "Position" NOT NULL,
 
     CONSTRAINT "ProjectAuthor_pkey" PRIMARY KEY ("userId","projectId")
 );
@@ -41,6 +41,8 @@ CREATE TABLE "Project" (
     "url" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "skills" "TechSkill"[],
+    "ownerId" TEXT NOT NULL,
+    "content" JSONB NOT NULL,
 
     CONSTRAINT "Project_pkey" PRIMARY KEY ("id")
 );
@@ -70,6 +72,9 @@ CREATE TABLE "User" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Project_url_key" ON "Project"("url");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Project_ownerId_key" ON "Project"("ownerId");
 
 -- CreateIndex
 CREATE INDEX "Project_title_skills_idx" ON "Project"("title", "skills");

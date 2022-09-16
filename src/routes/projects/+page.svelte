@@ -23,10 +23,12 @@
 		title: "Project",
 		snippet:
 			"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus corporis unde veritatis, exercitationem beatae cumque voluptate laborum earum corrupti reiciendis, omnis placeat architecto libero, aspernatur rem dolor nesciunt com ea.",
-		theme: "#3B84D6",
+		theme: "3B84D6",
 		url: "placeholder",
 		date: new Date(),
-		skills: ["JavaScript", "Google_Cloud"]
+		skills: ["JavaScript", "Google_Cloud"],
+		ownerId: "",
+		content: ""
 	};
 
 	const projects: Project[][] = [

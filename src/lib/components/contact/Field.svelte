@@ -9,7 +9,7 @@
 	export let disabled: boolean;
 	export let placeholder: string;
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{ change: { isFilled: boolean } }>();
 
 	let isFilled = false;
 

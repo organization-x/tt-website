@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from "../Button.svelte";
-	import ProjectDev from "./ProjectDev.svelte";
+	import ProjectDev from "../ProjectDev.svelte";
 
 	import type { ComponentType } from "svelte/types/runtime/internal/dev.js";
 
@@ -39,7 +39,7 @@
 				class="flex overflow-auto py-2 px-8 gap-8 snap-x snap-proximity rounded-lg scrollbar-hidden"
 			>
 				{#each developers as developer}
-					<ProjectDev info={developer} />
+					<ProjectDev user={developer} />
 				{/each}
 			</div>
 		</div>
@@ -48,14 +48,14 @@
 	<div
 		class="hidden bg-gray-500/40 relative rounded-xl h-min lg:flex lg:flex-col lg:shrink-0 lg:w-1/3 lg:h-100
             
-            before:z-10 before:absolute before:rounded-lg before:top-0 before:w-full before:h-8 before:bg-gradient-to-b before:from-gray-900 before:to-transparent before:pointer-events-none
+            before:z-10 before:absolute before:rounded-t-xl before:top-0 before:w-full before:h-8 before:bg-gradient-to-b before:from-gray-900 before:to-transparent before:pointer-events-none
             
-            after:z-10 after:absolute after:rounded-lg after:bottom-0 after:w-full after:h-8 after:bg-gradient-to-t after:from-gray-900 after:to-transparent after:pointer-events-none"
+            after:z-10 after:absolute after:rounded-b-xl after:bottom-0 after:w-full after:h-8 after:bg-gradient-to-t after:from-gray-900 after:to-transparent after:pointer-events-none"
 	>
-		<div class="p-4 flex flex-col gap-1 overflow-auto">
+		<div class="p-4 flex flex-col gap-1 overflow-auto scrollbar">
 			<h1 class="font-semibold mb-2">Developers</h1>
 			{#each developers as developer}
-				<ProjectDev info={developer} />
+				<ProjectDev user={developer} />
 			{/each}
 		</div>
 	</div>

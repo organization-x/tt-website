@@ -11,7 +11,7 @@
 		{
 			userId: "githubusername",
 			projectId: "placeholder",
-			role: "DESIGN"
+			position: "Designer"
 		}
 	];
 
@@ -29,20 +29,22 @@
 </script>
 
 <a
-	href={`projects/${project.id}`}
-	class="rounded-lg border-t-4 border-solid max-w-xl mx-auto overflow-hidden bg-gray-500/40 border-[{project.theme}]"
+	href="projects/{project.id}"
+	class="rounded-lg border-t-4 border-solid max-w-xl mx-auto overflow-hidden bg-gray-500/40"
+	style="border-color: #{project.theme}"
 >
 	<div
 		class="h-32 sm:h-44 bg-center bg-no-repeat bg-cover relative"
-		style="background-image: url({`/projects/project/${project.url}/banner.webp`});"
+		style="background-image: url(/projects/project/{project.url}/banner.webp);"
 	>
 		{#each authors as author}
 			<img
 				width="200"
 				height="200"
-				src={`/developers/user/${userPlaceholder.url}/icon.webp`}
-				alt="Bernice Lau from Team Tomorrow"
-				class="absolute top-2 right-2 w-10 h-10 rounded-full border-2 border-[{project.theme}] sm:w-14 sm:h-14 sm:border-4 md:top-3 md:right-3"
+				src="/developers/user/{userPlaceholder.url}/icon.webp"
+				alt="Bernice Lau's avatar"
+				class="absolute top-2 right-2 w-10 h-10 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4 md:top-3 md:right-3"
+				style="border-color: #{project.theme}"
 			/>
 		{/each}
 	</div>

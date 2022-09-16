@@ -10,7 +10,9 @@
 
 	import type { User } from "@prisma/client";
 
-	export let info: User;
+	export let user: User;
+
+	const { name, url, team, positions, softSkills, techSkills } = user;
 </script>
 
 <div
@@ -20,17 +22,17 @@
 		<img
 			height="200"
 			width="200"
-			src={`/developers/user/${info.url}/icon.webp`}
-			alt={`${info.name} from Team Tomorrow`}
+			src="/developers/user/{url}/icon.webp"
+			alt="{name}'s avatar"
 			loading="lazy"
 			class="rounded-full my-auto w-20"
 		/>
 		<div>
 			<h1 class="font-bold">
-				{info.team ? info.team.toUpperCase() : "UNKNOWN"}
+				{team ? team.toUpperCase() : "UNKNOWN"}
 			</h1>
 			<GradientText class="from-green-light to-green-dark text-3xl">
-				{info.name}
+				{name}
 			</GradientText>
 		</div>
 	</div>
@@ -38,16 +40,14 @@
 		<slot />
 	</p>
 	<DevList title="Positions" icon={Bulb}>
-		{#each info.positions as position}
+		{#each positions as position}
 			<DevTag name={position} icon={getIcon(position)} />
 		{/each}
 	</DevList>
 	<DevList title="Skills" icon={Wrench}>
-		{#each info.techSkills as skill}
+		{#each techSkills as skill}
 			<DevTag name={skill} icon={getIcon(skill)} />
 		{/each}
 	</DevList>
-	<Button href={`/developers/${info.url}`} class="mt-8 mx-auto">
-		View Profile
-	</Button>
+	<Button href="/developers/{url}" class="mt-8 mx-auto">View Profile</Button>
 </div>

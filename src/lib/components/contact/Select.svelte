@@ -2,7 +2,7 @@
 	import { onMount, createEventDispatcher } from "svelte";
 
 	import Asterisk from "../icons/Asterisk.svelte";
-	import Dropdown from "../icons/Dropdown.svelte";
+	import DropArrow from "../icons/DropArrow.svelte";
 	import DropdownOption from "./DropdownOption.svelte";
 
 	export let title: string;
@@ -54,7 +54,7 @@
 			class="w-full flex items-center justify-between p-4 bg-gray-800 mt-4 duration-100 transition-border rounded-t-lg select-none"
 		>
 			<h1>{count} {placeholder} selected</h1>
-			<Dropdown
+			<DropArrow
 				class="w-6 h-6 transition-transform{open ? ' rotate-180' : ''}"
 			/>
 		</div>

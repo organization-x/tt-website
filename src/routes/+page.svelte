@@ -48,11 +48,12 @@
 
 <Hero src="/index/index.webm">
 	<PageTitle class="from-teal-light to-teal-dark">
-		Industry professionals at your fingertips.
+		Grasp the top 1% of junior developers.
 	</PageTitle>
 
 	<PageCaption>
-		Develop something exciting with the backing you need.
+		Develop something exciting with skills from low-level mastery to
+		maticulous design. Accelerate progress with the backing you need.
 		<strong>A great team</strong>.
 	</PageCaption>
 
@@ -460,7 +461,7 @@
 	<!-- TODO: Choose actual top 3 devs here -->
 
 	<Carousel amount={3}>
-		<DevCard info={placeholder}>
+		<DevCard user={placeholder}>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -472,7 +473,7 @@
 				dolores minima totam quasi.
 			</DevText>
 		</DevCard>
-		<DevCard info={placeholder}>
+		<DevCard user={placeholder}>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -484,7 +485,7 @@
 				dolores minima totam quasi.
 			</DevText>
 		</DevCard>
-		<DevCard info={placeholder}>
+		<DevCard user={placeholder}>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -501,7 +502,7 @@
 			slot="alt"
 			class="hidden lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:my-20 lg:max-w-screen-xl"
 		>
-			<DevCard info={placeholder}>
+			<DevCard user={placeholder}>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
@@ -513,7 +514,7 @@
 					itaque dolores minima totam quasi.
 				</DevText>
 			</DevCard>
-			<DevCard info={placeholder}>
+			<DevCard user={placeholder}>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
@@ -525,7 +526,7 @@
 					itaque dolores minima totam quasi.
 				</DevText>
 			</DevCard>
-			<DevCard info={placeholder}>
+			<DevCard user={placeholder}>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
@@ -556,7 +557,8 @@
 
 	<a
 		href="/projects/something"
-		class="p-4 block mb-8 mx-auto rounded-lg bg-gray-700/60 max-w-xs mt-8 border-t-4 ease-in-out duration-200 transition-transform border-[#3B84D6] sm:hover:scale-105 sm:flex sm:gap-8 sm:items-center sm:max-w-lg"
+		class="p-4 block mb-8 mx-auto rounded-lg bg-gray-700/60 max-w-xs mt-8 border-t-4 ease-in-out duration-200 transition-transform sm:hover:scale-105 sm:flex sm:gap-8 sm:items-center sm:max-w-lg"
+		style="border-color: #3B84D6"
 	>
 		<div
 			class="rounded-lg bg-center bg-no-repeat bg-cover w-full shrink-0 aspect-square sm:w-28"

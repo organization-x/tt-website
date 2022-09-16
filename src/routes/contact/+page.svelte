@@ -34,7 +34,7 @@
 	};
 
 	// Check if all required fields are filled
-	const onChange = ({ detail }: CustomEvent) => {
+	const onChange = ({ detail }: CustomEvent<{ isFilled: boolean }>) => {
 		detail.isFilled ? filledCount++ : filledCount--;
 	};
 </script>

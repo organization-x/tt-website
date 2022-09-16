@@ -1,8 +1,10 @@
 <script lang="ts">
 	import type { User } from "@prisma/client";
 
-	export let info: User;
+	export let user: User;
 	export let current: boolean;
+
+	const { url, name } = user;
 </script>
 
 <div
@@ -14,10 +16,10 @@
 	<img
 		height="200"
 		width="200"
-		src={`/developers/user/${info.url}/icon.webp`}
+		src="/developers/user/{url}/icon.webp"
 		loading="lazy"
-		alt={`${info.name} from Team Tomorrow`}
+		alt="{name}'s avatar"
 		class="rounded-full w-10"
 	/>
-	<h1>{info.name}</h1>
+	<h1>{name}</h1>
 </div>

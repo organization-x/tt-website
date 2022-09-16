@@ -132,27 +132,27 @@
 		<Seperator />
 
 		<ScrollRow class="mt-12">
-			<DeveloperFilter current={true} info={placeholder} />
-			<DeveloperFilter current={false} info={placeholder} />
-			<DeveloperFilter current={false} info={placeholder} />
+			<DeveloperFilter current={true} user={placeholder} />
+			<DeveloperFilter current={false} user={placeholder} />
+			<DeveloperFilter current={false} user={placeholder} />
 		</ScrollRow>
 
 		<div
 			class="flex gap-32 max-w-xl mx-auto overflow-auto scrollbar-hidden snap-x snap-mandatory my-12"
 		>
-			<Developer info={placeholder}>
+			<Developer user={placeholder}>
 				Lorem ipsum dolor sit amet consectetur, adipisicing elit.
 				Repellat unde possimus expedita minima iusto excepturi vero
 				facere dolorem ducimus, iste minus velit, distinctio sed illum
 				labore quos libero impedit sequi.
 			</Developer>
-			<Developer info={placeholder}>
+			<Developer user={placeholder}>
 				Lorem ipsum dolor sit amet consectetur, adipisicing elit.
 				Repellat unde possimus expedita minima iusto excepturi vero
 				facere dolorem ducimus, iste minus velit, distinctio sed illum
 				labore quos libero impedit sequi.
 			</Developer>
-			<Developer info={placeholder}>
+			<Developer user={placeholder}>
 				Lorem ipsum dolor sit amet consectetur, adipisicing elit.
 				Repellat unde possimus expedita minima iusto excepturi vero
 				facere dolorem ducimus, iste minus velit, distinctio sed illum

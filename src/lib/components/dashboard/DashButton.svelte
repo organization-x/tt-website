@@ -1,6 +1,6 @@
 <script lang="ts">
 	let className: string;
-	export let disabled: boolean;
+	export let disabled = false;
 
 	export { className as class };
 </script>

@@ -1,14 +1,15 @@
 import { prisma } from "$lib/prisma";
 import { redirect } from "@sveltejs/kit";
 
-import type { Project, Role, User } from "@prisma/client";
+import type { Project } from "@prisma/client";
 import type { PageServerLoad } from "./$types";
 
-// Grab project data using slug, if the project doesn't exist, redirect to the projects page
+// Grab project data using slug, if the project doesn't exist, redirect to the projects page.
 export const load: PageServerLoad<{
 	project: Project;
-	authors: (User & { role: Role })[];
-}> = async ({ params }) => {
+	authors: App.ProjectAuthor[];
+	previous: string;
+}> = async ({ params, request }) => {
 	const project = await prisma.project.findUnique({
 		where: { url: params.project }
 	});
@@ -26,12 +27,14 @@ export const load: PageServerLoad<{
 			...(await prisma.user.findUnique({
 				where: { id: author.userId }
 			}))!,
-			role: author.role
+			position: author.position
 		}))
 	);
 
 	return {
 		project,
-		authors
+		authors,
+		previous:
+			request.referrer === "about:client" ? "/projects" : request.referrer
 	};
 };

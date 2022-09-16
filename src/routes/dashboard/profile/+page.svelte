@@ -4,56 +4,27 @@
 	import GitHub from "$lib/components/icons/GitHub.svelte";
 	import Pencil from "$lib/components/icons/Pencil.svelte";
 	import Twitter from "$lib/components/icons/Twitter.svelte";
+	import Input from "$lib/components/dashboard/Input.svelte";
 	import LinkedIn from "$lib/components/icons/LinkedIn.svelte";
 	import Facebook from "$lib/components/icons/Facebook.svelte";
 	import LinkIcon from "$lib/components/icons/LinkIcon.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
-	import LinkInput from "$lib/components/dashboard/profile/LinkInput.svelte";
+	import TextBox from "$lib/components/dashboard/TextBox.svelte";
+	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
+	import { teams, positions, softSkills, techSkills } from "$lib/enums";
 	import DropdownField from "$lib/components/dashboard/profile/DropdownField.svelte";
 	import ProfileSection from "$lib/components/dashboard/profile/ProfileSection.svelte";
 
 	// TODO: Add proper profile picture and banner stuff using cloudflare images
 
 	import type { PageData } from "./$types";
-	import type {
-		Position,
-		SoftSkill,
-		TechSkill,
-		Links,
-		Team
-	} from "@prisma/client";
-	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
+	import type { Position, SoftSkill, TechSkill, Links } from "@prisma/client";
 
 	// Use fetched user data and store an original copy for comparison and revertion
 	export let data: PageData;
 	let { user, links } = data;
 	let original = JSON.parse(JSON.stringify(data)) as PageData; // This is a way to deep clone the object easily
-
-	// These arrays are for filling out dropdown menus with options.
-	// They should always stay synced with the enum defined in the schema and in alphabetical order
-	const teams: Team[] = ["Design", "Engineering", "Marketing"];
-	const positions: Position[] = [
-		"Backend",
-		"Designer",
-		"Frontend",
-		"Fullstack"
-	];
-	const softSkills: SoftSkill[] = [
-		"Leadership",
-		"Proactive",
-		"Teamwork",
-		"Writing"
-	];
-	const techSkills: TechSkill[] = [
-		"AWS",
-		"Google_Cloud",
-		"JavaScript",
-		"Python",
-		"Pytorch",
-		"React",
-		"TensorFlow"
-	];
 
 	let disableButtons = true;
 	let disableForm = false;
@@ -219,9 +190,11 @@
 </script>
 
 <div class="relative pt-[4.5rem] px-8 lg:px-12">
+	<!-- TODO: Switch banner/profile pictures to correct sources  -->
+
 	<div
 		class="h-32 absolute inset-0 bottom-auto bg-cover bg-center -z-10 lg:h-44"
-		style="background-image: url(/projects/project/placeholder/banner.webp);"
+		style="background-image: url(/developers/user/placeholder/banner.webp)"
 	>
 		<div
 			class="absolute inset-0 bg-black/40 flex justify-center items-center gap-2"
@@ -239,8 +212,8 @@
 				class="rounded-full w-fit border-4 mt-4 border-black mx-auto relative lg:mx-0"
 			>
 				<img
-					src="/projects/project/placeholder/banner.webp"
-					alt="Profile"
+					src="/developers/user/placeholder/icon.webp"
+					alt="{user.name}'s avatar"
 					class="w-28 h-28 rounded-full lg:w-32 lg:h-32"
 				/>
 				<div class="absolute inset-0 bg-black/40 rounded-full flex">
@@ -273,13 +246,11 @@
 		>
 			<div class="flex flex-col gap-12 justify-between">
 				<ProfileSection direction="bg-gradient-to-br" title="About Me">
-					<textarea
+					<TextBox
 						on:input={(e) => onChange("about", e)}
 						value={user.about}
-						type="text"
-						class="w-full h-72 bg-gray-500/40 resize-none flex p-4 rounded-lg select-none focus:outline-none"
 						placeholder="Include previous projects, skills, and your experience level..."
-						maxlength="150"
+						max={150}
 					/>
 					<DropdownField
 						options={teams}
@@ -296,48 +267,48 @@
 					largeGrid={true}
 					title="Links"
 				>
-					<LinkInput
+					<Input
 						on:input={(e) => onChange("GitHub", e)}
 						value={links["GitHub"]}
 						placeholder="GitHub username"
 					>
-						<GitHub class="w-6 h-6 mx-auto" />
-					</LinkInput>
-					<LinkInput
+						<GitHub class="w-6 h-6 mx-auto" slot="icon" />
+					</Input>
+					<Input
 						on:input={(e) => onChange("LinkedIn", e)}
 						value={links["LinkedIn"]}
 						placeholder="LinkedIn username"
 					>
-						<LinkedIn class="w-6 h-6 mx-auto" />
-					</LinkInput>
-					<LinkInput
+						<LinkedIn class="w-6 h-6 mx-auto" slot="icon" />
+					</Input>
+					<Input
 						on:input={(e) => onChange("Devto", e)}
 						value={links["Devto"]}
 						placeholder="Dev.to username"
 					>
-						<Devto class="w-6 h-6 mx-auto" />
-					</LinkInput>
-					<LinkInput
+						<Devto class="w-6 h-6 mx-auto" slot="icon" />
+					</Input>
+					<Input
 						on:input={(e) => onChange("Twitter", e)}
 						value={links["Twitter"]}
 						placeholder="Twitter username"
 					>
-						<Twitter class="w-6 h-6 mx-auto" />
-					</LinkInput>
-					<LinkInput
+						<Twitter class="w-6 h-6 mx-auto" slot="icon" />
+					</Input>
+					<Input
 						on:input={(e) => onChange("Facebook", e)}
 						value={links["Facebook"]}
 						placeholder="Facebook username"
 					>
-						<Facebook class="w-6 h-6 mx-auto" />
-					</LinkInput>
-					<LinkInput
+						<Facebook class="w-6 h-6 mx-auto" slot="icon" />
+					</Input>
+					<Input
 						on:input={(e) => onChange("Website", e)}
 						value={links["Website"]}
 						placeholder="Website link"
 					>
-						<LinkIcon class="w-6 h-6 mx-auto" />
-					</LinkInput>
+						<LinkIcon class="w-6 h-6 mx-auto" slot="icon" />
+					</Input>
 				</ProfileSection>
 			</div>
 
@@ -350,6 +321,7 @@
 					{#each { length: 4 } as _, i}
 						<DropdownField
 							{i}
+							z={30 - i}
 							options={positions}
 							selectedItems={user.positions}
 							on:change={(e) => onChange("positions", e)}
@@ -367,6 +339,7 @@
 						{#each { length: 5 } as _, i}
 							<DropdownField
 								{i}
+								z={25 - i}
 								options={softSkills}
 								selectedItems={user.softSkills}
 								on:change={(e) => onChange("softSkills", e)}
@@ -380,6 +353,7 @@
 						{#each { length: 5 } as _, i}
 							<DropdownField
 								{i}
+								z={19 - i}
 								options={techSkills}
 								selectedItems={user.techSkills}
 								on:change={(e) => onChange("techSkills", e)}

@@ -20,6 +20,22 @@
 		-webkit-user-drag: none;
 	}
 
+	.scrollbar {
+		scrollbar-width: thin;
+	}
+
+	.scrollbar::-webkit-scrollbar {
+		@apply w-3;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb {
+		@apply bg-gray-800 invisible border-y-8 border-solid border-transparent bg-clip-padding rounded-full;
+	}
+
+	.scrollbar:hover::-webkit-scrollbar-thumb {
+		@apply visible;
+	}
+
 	.scrollbar-hidden {
 		scrollbar-width: none;
 	}

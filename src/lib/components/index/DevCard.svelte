@@ -3,9 +3,11 @@
 	import { fade } from "svelte/transition";
 	import GradientText from "../GradientText.svelte";
 
-	export let info: App.Developer;
+	export let user: App.Developer;
 
 	let open = false;
+
+	const { url, name, position } = user;
 </script>
 
 <div
@@ -18,19 +20,19 @@
 			<img
 				height="200"
 				width="200"
-				src={`/developers/user/${info.url}/icon.webp`}
-				alt={`${info.name} from Team Tomorrow`}
+				src="/developers/user/{url}/icon.webp"
+				alt="{name}'s avatar"
 				loading="lazy"
 				class="rounded-full mx-auto w-20 h-20 xl:mx-0"
 			/>
 			<div>
 				<h1 class="font-extrabold mt-3 mb-1 text-sm">
-					{info.position.toUpperCase()}
+					{position.toUpperCase()}
 				</h1>
 				<GradientText
 					class="text-center from-green-light to-green-dark text-xl"
 				>
-					{info.name}
+					{name}
 				</GradientText>
 			</div>
 		</div>

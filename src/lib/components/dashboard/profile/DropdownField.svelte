@@ -1,22 +1,25 @@
 <script lang="ts">
 	import { getIcon } from "$lib/components/icons/getIcon";
-	import { onMount, createEventDispatcher } from "svelte";
+	import { createEventDispatcher } from "svelte";
 
-	import DropdownItem from "./DropdownItem.svelte";
-	import Dropdown from "../../icons/Dropdown.svelte";
+	import DropdownItem from "../../DropdownItem.svelte";
+	import DropArrow from "../../icons/DropArrow.svelte";
+	import Dropdown from "$lib/components/Dropdown.svelte";
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{
+		change: { selected: string; previous: string };
+	}>();
 
 	// Selected items is from the parent element and is used for determining which other elements to hide to prevent double selection.
 	// It also determines on updates what items will be selected.
 	// The index is used for determining which dropdown has what selected, the threshold is how many dropdowns are required to have a value
 	export let i = 0;
+	export let z = 10; // z-index to prevent dropdowns from being cutoff by eachother
 	export let options: string[];
 	export let requiredThreshold = 2; // 2 is most common
 	export let selectedItems: (string | null)[];
 
 	let open = false;
-	let dropdownParent: HTMLDivElement;
 	let selected = i >= requiredThreshold ? options.length : 0; // The options length represents the "None" value, its positioned as the end of the array
 	let placeholder: string | null = options[selected];
 
@@ -47,25 +50,10 @@
 		selected = index;
 		placeholder = options[index];
 	};
-
-	// Check if click is outside of the dropdown, if so, close it
-	onMount(() => {
-		const onClick = ({ target }: Event) => {
-			if (!dropdownParent.contains(target as Node)) open = false;
-		};
-
-		addEventListener("click", onClick);
-
-		return () => removeEventListener("click", onClick);
-	});
 </script>
 
-<div bind:this={dropdownParent} class="relative">
-	<div
-		on:click={() => (open = !open)}
-		class:rounded-b-lg={!open}
-		class="w-full flex items-center gap-4 p-4 bg-gray-800 duration-100 transition-border rounded-t-lg select-none cursor-pointer"
-	>
+<Dropdown {z} bind:open>
+	<svelte:fragment slot="button">
 		{#if !$$slots.default}
 			<svelte:component
 				this={getIcon(placeholder || "None")}
@@ -73,35 +61,32 @@
 			/>
 		{/if}
 		<slot />
-		<dib class="flex items-center justify-between w-full">
+		<div class="flex items-center justify-between w-full">
 			<h1>{(placeholder || "None").replaceAll("_", " ")}</h1>
-			<Dropdown
+			<DropArrow
 				class="w-6 h-6 transition-transform{open ? ' rotate-180' : ''}"
 			/>
-		</dib>
-	</div>
-	<div
-		class:flex={open}
-		class:hidden={!open}
-		class="absolute w-full h-fit flex-col inset-0 top-16 bg-gray-800 z-10 rounded-b-lg max-h-[15rem] overflow-auto"
-	>
-		{#if i >= requiredThreshold}
+		</div>
+	</svelte:fragment>
+
+	{#if i >= requiredThreshold}
+		<DropdownItem
+			radio={true}
+			on:click={() => onClick(options.length)}
+			selected={selected === options.length}
+		>
+			None
+		</DropdownItem>
+	{/if}
+	{#each options as option, i}
+		{#if !(selectedItems.includes(option) && i !== selected)}
 			<DropdownItem
-				on:click={() => onClick(options.length)}
-				selected={selected === options.length}
+				radio={true}
+				on:click={() => onClick(i)}
+				selected={selected === i}
 			>
-				None
+				{option.replaceAll("_", " ")}
 			</DropdownItem>
 		{/if}
-		{#each options as option, i}
-			{#if !(selectedItems.includes(option) && i !== selected)}
-				<DropdownItem
-					on:click={() => onClick(i)}
-					selected={selected === i}
-				>
-					{option.replaceAll("_", " ")}
-				</DropdownItem>
-			{/if}
-		{/each}
-	</div>
-</div>
+	{/each}
+</Dropdown>
