@@ -185,9 +185,9 @@
 	disabled={disableForm}
 	class:pointer-events-none={disableForm}
 	class:opacity-60={disableForm}
-	class="p-4 flex flex-col gap-5 max-w-screen-lg mx-auto transition-opacity mt-2"
+	class="p-4 flex flex-col gap-5 max-w-xl mx-auto transition-opacity mt-2 lg:max-w-screen-2xl lg:px-8"
 >
-	<div class="lg:grid lg:grid-rows-2 lg:grid-flow-col lg:gap-x-8">
+	<div>
 		<Input
 			title="Title"
 			value={project.title}
@@ -199,15 +199,17 @@
 				Title already in use, please user another!
 			</p>
 		{/if}
+	</div>
 
-		<TextBox
-			title="Description"
-			value={project.description}
-			placeholder="Write a short description of your project..."
-			max={300}
-			on:input={(e) => onInput("description", e)}
-		/>
+	<TextBox
+		title="Description"
+		value={project.description}
+		placeholder="Write a short description of your project..."
+		max={300}
+		on:input={(e) => onInput("description", e)}
+	/>
 
+	<div class="lg:flex lg:justify-between lg:gap-14">
 		<InputSection title="Authors">
 			{#each data.authors as author}
 				<Collaborator

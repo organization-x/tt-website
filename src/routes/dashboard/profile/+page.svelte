@@ -205,13 +205,13 @@
 			<GradientText
 				class="from-green-light to-green-dark font-bold text-3xl text-center w-full lg:text-start"
 			>
-				Jackson Choyce
+				{user.name}
 			</GradientText>
 
 			<a
 				target="_blank"
 				rel="noopener noreferrer"
-				href="/developers/placeholder"
+				href="/developers/{user.url}"
 				class="px-4 py-3 select-none rounded-lg bg-gray-500 flex items-center justify-center mx-auto w-full gap-4 max-w-xl lg:mx-0"
 			>
 				View Profile
