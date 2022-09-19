@@ -10,15 +10,15 @@
 
 	const dispatch = createEventDispatcher();
 
-	let isFilled = false;
+	let isValid = false;
 
-	// Only dispatch if the previous state of isFilled is different than the new state.
-	$: isFilled, dispatch("change", { isFilled });
+	// Only dispatch if the previous state of isValid is different than the new state.
+	$: dispatch("change", { isValid });
 
 	// On input change check if the input is filled.
 	const onChange = ({ target }: Event) => {
 		const { value } = target as HTMLInputElement;
-		isFilled = value.length > 0;
+		isValid = value.length > 0;
 	};
 </script>
 
@@ -32,8 +32,8 @@
 	<textarea
 		on:input={onChange}
 		name={title.toLowerCase()}
-		class:border-green-light={isFilled}
-		class:border-transparent={!isFilled}
+		class:border-green-light={isValid}
+		class:border-transparent={!isValid}
 		class="w-full h-96 bg-gray-800 resize-none flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
 		{disabled}
 		{placeholder}

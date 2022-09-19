@@ -15,16 +15,16 @@
 
 	let open = false;
 	let count = 0;
-	let isFilled = false;
+	let isValid = false;
 	let dropdownParent: HTMLDivElement;
 
-	// Only dispatch if the previous state of isFilled is different than the new state.
-	$: dispatch("change", { isFilled });
+	// Only dispatch if the previous state of isValid is different than the new state.
+	$: dispatch("change", { isValid });
 
 	// On input change check if the input is filled.
 	const onChange = ({ detail }: CustomEvent<{ isSelected: boolean }>) => {
 		detail.isSelected ? count++ : count--;
-		isFilled = count > 0;
+		isValid = count > 0;
 	};
 
 	// Check if click is outside of the dropdown, if so, close it.
