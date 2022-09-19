@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Checkbox from "./icons/Checkbox.svelte";
-	import RadioSelect from "./icons/RadioSelect.svelte";
+	import Checkbox from "$lib/components/icons/Checkbox.svelte";
+	import RadioSelect from "$lib/components/icons/RadioSelect.svelte";
 
 	export let radio = false;
 	export let selected: boolean;

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getIcon } from "$lib/components/icons/getIcon";
+	import { getIcon } from "$lib/getIcon";
 
 	import type { Project, ProjectAuthor, User } from "@prisma/client";
 
@@ -50,7 +50,7 @@
 	</div>
 	<div class="py-4 px-3">
 		<h1 class="font-semibold text-2xl">{project.title}</h1>
-		<p class="mt-2">{project.snippet}</p>
+		<p class="mt-2">{project.description}</p>
 		<div class="flex gap-2 mt-4">
 			{#each project.skills as icon}
 				<svelte:component this={getIcon(icon)} class="w-8 h-8" />

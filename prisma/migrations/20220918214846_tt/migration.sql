@@ -36,7 +36,7 @@ CREATE TABLE "ProjectAuthor" (
 CREATE TABLE "Project" (
     "id" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "snippet" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
     "theme" TEXT NOT NULL,
     "url" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,

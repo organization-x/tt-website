@@ -2,7 +2,7 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {import("tailwindcss").Config} */
 module.exports = {
-	content: ["./src/**/*.{html,svelte}"],
+	content: ["./src/**/*.{html,svelte}", "./src/lib/tiptapExtensions.ts"],
 	theme: {
 		fontFamily: {
 			main: ["Lato", ...defaultTheme.fontFamily.sans]
@@ -13,10 +13,15 @@ module.exports = {
 			black: "#000",
 			white: "#FFF",
 			gray: {
+				400: "#707680",
 				500: "#2F2E2E",
 				700: "#222222",
 				800: "#1A1A1A",
 				900: "#151515"
+			},
+			red: {
+				light: "#F83737",
+				dark: "#C61111"
 			},
 			pink: {
 				light: "#F837CE",
@@ -58,7 +63,8 @@ module.exports = {
 				// Ignore the dumbass names
 				transhadow: "filter, transform",
 				bright: "height, border-radius",
-				border: "border, border-radius"
+				border: "border, border-radius",
+				widpad: "width, padding"
 			},
 			inset: {
 				0.5: "0.125rem"

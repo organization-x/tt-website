@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
+
 	import Text from "$lib/components/Text.svelte";
 	import Button from "$lib/components/Button.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";

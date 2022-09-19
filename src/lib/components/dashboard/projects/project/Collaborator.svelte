@@ -3,9 +3,9 @@
 	import { onMount, createEventDispatcher } from "svelte";
 
 	import { positions } from "$lib/enums";
-	import DashButton from "../../DashButton.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
 	import RadioSelect from "$lib/components/icons/RadioSelect.svelte";
+	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 
 	export let cantRemove: boolean;
 	export let user: App.ProjectAuthor;
@@ -13,7 +13,10 @@
 	let open = false;
 	let parent: HTMLDivElement;
 
-	const dispatch = createEventDispatcher<{ click: { id: string } }>();
+	const dispatch = createEventDispatcher<{
+		click: { id: string };
+		change: undefined;
+	}>();
 
 	// Close menu when clicking outside of it
 	onMount(() => {
@@ -51,7 +54,10 @@
 			<div class="flex flex-col gap-4 mt-4">
 				{#each positions as position}
 					<button
-						on:click={() => (user.position = position)}
+						on:click={() => {
+							user.position = position;
+							dispatch("change");
+						}}
 						class="flex items-center gap-2"
 					>
 						<RadioSelect
@@ -64,7 +70,7 @@
 			</div>
 			{#if !cantRemove}
 				<DashButton
-					class="mt-8 bg-blue-light"
+					class="mt-8 bg-red-light"
 					on:click={() => dispatch("click", { id: user.id })}
 				>
 					Remove

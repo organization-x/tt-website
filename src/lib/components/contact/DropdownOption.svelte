@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
 
-	import Checkbox from "../icons/Checkbox.svelte";
+	import Checkbox from "$lib/components/icons/Checkbox.svelte";
 
 	const dispatch = createEventDispatcher<{
 		change: { isSelected: boolean };

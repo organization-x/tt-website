@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Plus from "../icons/Plus.svelte";
 	import { fade } from "svelte/transition";
-	import GradientText from "../GradientText.svelte";
+	import Plus from "$lib/components/icons/Plus.svelte";
+	import GradientText from "$lib/components/GradientText.svelte";
 
 	export let user: App.Developer;
 

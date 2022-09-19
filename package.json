@@ -39,9 +39,21 @@
 	"dependencies": {
 		"@prisma/client": "4.3.1",
 		"@tiptap/core": "^2.0.0-beta.195",
+		"@tiptap/extension-code-block": "^2.0.0-beta.195",
+		"@tiptap/extension-code-block-lowlight": "^2.0.0-beta.195",
+		"@tiptap/extension-dropcursor": "^2.0.0-beta.195",
+		"@tiptap/extension-gapcursor": "^2.0.0-beta.195",
+		"@tiptap/extension-image": "^2.0.0-beta.195",
+		"@tiptap/extension-link": "^2.0.0-beta.195",
+		"@tiptap/extension-placeholder": "^2.0.0-beta.195",
+		"@tiptap/extension-typography": "^2.0.0-beta.195",
+		"@tiptap/extension-underline": "^2.0.0-beta.195",
+		"@tiptap/extension-youtube": "^2.0.0-beta.195",
 		"@tiptap/html": "^2.0.0-beta.195",
 		"@tiptap/starter-kit": "^2.0.0-beta.195",
 		"cookie": "^0.5.0",
+		"highlight.js": "^11.6.0",
+		"lowlight": "^2.7.0",
 		"octokit": "^2.0.7",
 		"prisma": "^4.2.1"
 	}

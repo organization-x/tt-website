@@ -11,8 +11,8 @@
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
-	import ProjectBlog from "$lib/components/ProjectBlog.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
+	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
 	import ProjectFilter from "$lib/components/projects/index/ProjectFilter.svelte";
 
 	import type { Project } from "@prisma/client";
@@ -21,7 +21,7 @@
 	const placeholder: Project = {
 		id: "ttwebsiteontop", // cuid
 		title: "Project",
-		snippet:
+		description:
 			"Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus corporis unde veritatis, exercitationem beatae cumque voluptate laborum earum corrupti reiciendis, omnis placeat architecto libero, aspernatur rem dolor nesciunt com ea.",
 		theme: "3B84D6",
 		url: "placeholder",
@@ -94,7 +94,7 @@
 	</div>
 
 	<div class="flex flex-col gap-14 my-12 lg:my-20">
-		<ProjectBlog project={placeholder} />
-		<ProjectBlog project={placeholder} />
+		<ProjectPreview project={placeholder} />
+		<ProjectPreview project={placeholder} />
 	</div>
 </Section>

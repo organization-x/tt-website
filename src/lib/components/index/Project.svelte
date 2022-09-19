@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Button from "../Button.svelte";
-	import ProjectDev from "../ProjectDev.svelte";
+	import Button from "$lib/components/Button.svelte";
+	import ProjectDev from "$lib/components/ProjectDev.svelte";
 
 	import type { ComponentType } from "svelte/types/runtime/internal/dev.js";
 

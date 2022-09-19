@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 
-	import CarouselArrow from "./icons/CarouselArrow.svelte";
+	import CarouselArrow from "$lib/components/icons/CarouselArrow.svelte";
 
 	let className: string;
 	let element: HTMLDivElement;

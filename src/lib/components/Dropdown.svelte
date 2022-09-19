@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { getIcon } from "$lib/components/icons/getIcon";
+	import { getIcon } from "$lib/getIcon";
 	import { onMount, createEventDispatcher } from "svelte";
 
-	import DropdownItem from "./DropdownItem.svelte";
-	import DropArrow from "./icons/DropArrow.svelte";
+	import DropdownItem from "$lib/components/DropdownItem.svelte";
+	import DropArrow from "$lib/components/icons/DropArrow.svelte";
 
 	const dispatch = createEventDispatcher<{
 		change: { selected: string; previous: string };
@@ -13,7 +13,6 @@
 	// Along with an index to auto select values, since dropdowns normally are near other dropdowns with the same vlues.
 	// Also has options for radio selectors
 	export let i = 0;
-	export let z = 10;
 	export let radio: boolean;
 	export let required: boolean;
 	export let options: string[];
@@ -84,8 +83,7 @@
 	<div
 		class:flex={open}
 		class:hidden={!open}
-		class="absolute w-full h-fit flex-col inset-0 top-16 shadow-lg bg-gray-800 rounded-b-lg max-h-[15rem] overflow-auto"
-		style="z-index: {z}"
+		class="absolute w-full h-fit flex-col inset-0 top-16 shadow-lg bg-gray-800 rounded-b-lg max-h-[15rem] overflow-auto z-50"
 	>
 		{#if !required}
 			<DropdownItem

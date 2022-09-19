@@ -10,6 +10,10 @@
 		scrollbar-width: thin;
 	}
 
+	*::placeholder {
+		@apply text-gray-400;
+	}
+
 	html {
 		@apply font-main bg-black text-white text-base sm:text-lg lg:text-xl;
 	}

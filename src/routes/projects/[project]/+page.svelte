@@ -1,9 +1,13 @@
 <script lang="ts">
-	import { generateHTML } from "@tiptap/html";
-	import StarterKit from "@tiptap/starter-kit";
+	import "$lib/hljsTheme.css";
 
+	import HLJS from "highlight.js";
+	import { generateHTML } from "@tiptap/html";
+
+	import { onMount } from "svelte";
+	import { getIcon } from "$lib/getIcon";
+	import { extensions } from "$lib/tiptapExtensions";
 	import Button from "$lib/components/Button.svelte";
-	import { getIcon } from "$lib/components/icons/getIcon.js";
 	import ProjectDev from "$lib/components/ProjectDev.svelte";
 
 	import type { PageData } from "./$types";
@@ -11,11 +15,12 @@
 
 	export let data: PageData;
 
-	const html = generateHTML(data.project.content as JSONContent, [
-		StarterKit
-	]);
+	const html = generateHTML(data.project.content as JSONContent, extensions);
 
 	const { title, theme, date, skills } = data.project;
+
+	// Syntax highlighting
+	onMount(HLJS.highlightAll);
 </script>
 
 <div
@@ -80,7 +85,7 @@
 		</div>
 	{/if}
 
-	<div class="my-12">
+	<div class="my-12 [&>p:empty]:h-6">
 		{@html html}
 	</div>
 

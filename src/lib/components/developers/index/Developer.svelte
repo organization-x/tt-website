@@ -1,18 +1,19 @@
 <script lang="ts">
-	import { getIcon } from "$lib/components/icons/getIcon";
+	import { getIcon } from "$lib/getIcon";
 
-	import DevTag from "./DevTag.svelte";
-	import DevList from "./DevList.svelte";
-	import Button from "../../Button.svelte";
-	import Bulb from "../../icons/Bulb.svelte";
-	import Wrench from "../../icons/Wrench.svelte";
-	import GradientText from "../../GradientText.svelte";
+	import Button from "$lib/components/Button.svelte";
+	import Bulb from "$lib/components/icons/Bulb.svelte";
+	import Wrench from "$lib/components/icons/Wrench.svelte";
+	import GradientText from "$lib/components/GradientText.svelte";
+	import DevTag from "$lib/components/developers/index/DevTag.svelte";
+	import DevList from "$lib/components/developers/index/DevList.svelte";
 
 	import type { User } from "@prisma/client";
 
 	export let user: User;
 
-	const { name, url, team, positions, softSkills, techSkills } = user;
+	// TODO: possibly include soft skills on the developer cards?
+	const { name, url, team, positions, techSkills } = user;
 </script>
 
 <div

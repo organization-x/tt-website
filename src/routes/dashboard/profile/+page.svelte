@@ -82,12 +82,6 @@
 		return true;
 	};
 
-	// Compare 2 unequal length arrays for equality
-	const arrayEquality = (a: any[], b: any[]) =>
-		Array.from(Array(Math.max(b.length, a.length))).every(
-			(_, i) => a[i] === b[i]
-		);
-
 	// Handle dropdown selection and input changes
 	const onChange = (
 		id:
@@ -170,21 +164,8 @@
 		)
 			return;
 
-		// Also check if the data has changed from the original utilizing sets and equality.
-		// This may seem like it's pointless or silly, but it's so the save/cancel buttons only activate when the data has changed
-		// and provides for a nice UX
-
-		if (
-			user.about !== original.user.about ||
-			user.team !== original.user.team ||
-			!arrayEquality(
-				Object.values(links),
-				Object.values(original.links)
-			) ||
-			!arrayEquality(user.positions, original.user.positions) ||
-			!arrayEquality(user.softSkills, original.user.softSkills) ||
-			!arrayEquality(user.techSkills, original.user.techSkills)
-		)
+		// Check if the data has changed from its original content
+		if (JSON.stringify(original) !== JSON.stringify(data))
 			disableButtons = false; // Enable save/cancel button
 	};
 </script>
@@ -254,7 +235,6 @@
 					/>
 					<Dropdown
 						i={0}
-						z={10}
 						radio={true}
 						options={teams}
 						required={false}
@@ -275,42 +255,42 @@
 						value={links["GitHub"]}
 						placeholder="GitHub username"
 					>
-						<GitHub class="w-6 h-6 mx-auto" slot="icon" />
+						<GitHub class="w-6 h-6 mx-auto" />
 					</Input>
 					<Input
 						on:input={(e) => onChange("LinkedIn", e)}
 						value={links["LinkedIn"]}
 						placeholder="LinkedIn username"
 					>
-						<LinkedIn class="w-6 h-6 mx-auto" slot="icon" />
+						<LinkedIn class="w-6 h-6 mx-auto" />
 					</Input>
 					<Input
 						on:input={(e) => onChange("Devto", e)}
 						value={links["Devto"]}
 						placeholder="Dev.to username"
 					>
-						<Devto class="w-6 h-6 mx-auto" slot="icon" />
+						<Devto class="w-6 h-6 mx-auto" />
 					</Input>
 					<Input
 						on:input={(e) => onChange("Twitter", e)}
 						value={links["Twitter"]}
 						placeholder="Twitter username"
 					>
-						<Twitter class="w-6 h-6 mx-auto" slot="icon" />
+						<Twitter class="w-6 h-6 mx-auto" />
 					</Input>
 					<Input
 						on:input={(e) => onChange("Facebook", e)}
 						value={links["Facebook"]}
 						placeholder="Facebook username"
 					>
-						<Facebook class="w-6 h-6 mx-auto" slot="icon" />
+						<Facebook class="w-6 h-6 mx-auto" />
 					</Input>
 					<Input
 						on:input={(e) => onChange("Website", e)}
 						value={links["Website"]}
 						placeholder="Website link"
 					>
-						<LinkIcon class="w-6 h-6 mx-auto" slot="icon" />
+						<LinkIcon class="w-6 h-6 mx-auto" />
 					</Input>
 				</ProfileSection>
 			</div>
@@ -324,7 +304,6 @@
 					{#each { length: 4 } as _, i}
 						<Dropdown
 							{i}
-							z={30 - i}
 							radio={true}
 							required={i < 2}
 							options={positions}
@@ -344,7 +323,6 @@
 						{#each { length: 5 } as _, i}
 							<Dropdown
 								{i}
-								z={25 - i}
 								radio={true}
 								required={i < 2}
 								options={softSkills}
@@ -360,7 +338,6 @@
 						{#each { length: 5 } as _, i}
 							<Dropdown
 								{i}
-								z={19 - i}
 								radio={true}
 								required={i < 2}
 								options={techSkills}
@@ -375,15 +352,15 @@
 			<div class="flex gap-6 mx-auto lg:mr-0 xl:col-span-2">
 				<DashButton
 					on:click={onCancel}
-					class="bg-gray-500"
 					disabled={disableButtons}
+					class="bg-gray-500"
 				>
 					Cancel
 				</DashButton>
 				<DashButton
 					on:click={onSave}
-					class="bg-blue-light"
 					disabled={disableButtons}
+					class="bg-blue-light"
 				>
 					Save
 				</DashButton>

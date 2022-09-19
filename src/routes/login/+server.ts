@@ -1,6 +1,8 @@
 import { Octokit } from "octokit";
 import { prisma } from "$lib/prisma";
-import { redirect, type RequestHandler } from "@sveltejs/kit";
+import { redirect } from "@sveltejs/kit";
+
+import type { RequestHandler } from "./$types";
 
 const id = import.meta.env.VITE_CLIENT_ID;
 

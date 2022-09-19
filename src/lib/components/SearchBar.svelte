@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Search from "./icons/Search.svelte";
+	import Search from "$lib/components/icons/Search.svelte";
 </script>
 
 <div class="bg-gray-500/40 flex p-4 rounded-lg mt-8 select-none">
