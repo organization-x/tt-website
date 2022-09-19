@@ -37,7 +37,11 @@ module.exports = {
 			green: {
 				light: "#1FBD67",
 				dark: "#069A6E"
-			}
+			},
+			red: {
+                light: "#F83737",
+                dark: "#C61111"
+            },
 		},
 		extend: {
 			screens: {
