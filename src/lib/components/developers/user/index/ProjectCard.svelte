@@ -10,7 +10,7 @@
 </script>
 
 <a
-	class="block bg-gray-500/40 rounded border-t-4 border-t-pink-dark hover:bg-gray-500/50 transition-colors"
+	class="block bg-gray-500/40 rounded border-t-4 border-t-blue-dark hover:bg-gray-500/50 transition-colors"
 	{href}
 >
 	<div class="relative isolate h-20">
@@ -25,7 +25,7 @@
 				<img
 					src="https://avatars.githubusercontent.com/u/251288?v=4"
 					alt={developer.name}
-					class="w-10 h-10 rounded-full border-2 border-pink-dark -ml-4"
+					class="w-10 h-10 rounded-full border-2 border-blue-dark -ml-4"
 				/>
 			{/each}
 		</div>
