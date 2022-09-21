@@ -9,18 +9,14 @@
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 	import TipTap from "$lib/components/dashboard/projects/project/TipTap.svelte";
-	import Collaborator from "$lib/components/dashboard/projects/project/Collaborator.svelte";
 	import InputSection from "$lib/components/dashboard/projects/project/InputSection.svelte";
-	import CollabSearch from "$lib/components/dashboard/projects/project/CollabSearch.svelte";
+	import AuthorSection from "$lib/components/dashboard/projects/project/AuthorSection.svelte";
 
 	import type { PageData } from "./$types";
 	import type { TechSkill } from "@prisma/client";
 	import type { Content, Editor } from "@tiptap/core";
 
 	export let data: PageData;
-
-	// Extract content from fetched project
-	let { project } = data;
 
 	// Store an original copy of the data with typing
 	let original = JSON.parse(JSON.stringify(data)) as PageData;
@@ -32,76 +28,12 @@
 	let disableForm = false;
 	let disableButtons = true;
 
-	// Remove collaborators
-	const onClick = ({ detail }: CustomEvent<{ id: string }>) => {
-		// If the user is the owner, ignore
-		if (detail.id === data.user.id) return;
-
-		data.authors.splice(
-			data.authors.findIndex((author) => author.id === detail.id),
-			1
-		);
-
-		// Force re-render
-		data.authors = data.authors;
-	};
-
-	const onInput = (
-		id: "title" | "description" | "authors" | "skills" | "content",
-		event: Event
-	) => {
-		const target = event.target as HTMLInputElement;
-		const { detail } = event as CustomEvent;
-
-		disableButtons = true;
-
-		// Authors isn't handled since the change is handled by the child component.
-		// This function is called as to update the UI
-		switch (id) {
-			case "title":
-				titleError = false;
-				project.title = target.value.trim();
-				project.url = project.title.replaceAll(" ", "-").toLowerCase();
-
-				break;
-			case "description":
-				data.project.description = target.value.trim();
-
-				break;
-
-			case "skills":
-				const index = project.skills.indexOf(
-					detail.previous as TechSkill
-				);
-
-				// If the newly selected value is the same ignore
-				if (project.skills[index] === detail.selected) return;
-
-				// If there is a found value for that dropdown, and a selected value then update it, otherwise delete it.
-				// If there isn't a found value for that dropdown then push it to the array.
-				if (index !== -1) {
-					detail.selected
-						? (project.skills[index] = detail.selected as TechSkill)
-						: project.skills.splice(index, 1);
-				} else if (detail.selected)
-					project.skills.push(detail.selected as TechSkill);
-
-				project.skills = project.skills; // Reassignment to re-render
-
-				break;
-
-			case "content":
-				// This is so we can detect if the user has made any changes
-				project.content = editor.getJSON();
-
-				break;
-		}
-
+	const checkConstraints = () => {
 		// Check to make sure the title and description arent empty
 		if (
-			project.title.length < 1 ||
-			project.description.length < 1 ||
-			project.skills.length < 2
+			data.project.title.length < 1 ||
+			data.project.description.length < 1 ||
+			data.project.skills.length < 2
 		)
 			return;
 
@@ -110,11 +42,49 @@
 			disableButtons = false;
 	};
 
+	const updateSkills = ({
+		detail
+	}: CustomEvent<{ selected: string; previous: string }>) => {
+		const index = data.project.skills.indexOf(detail.previous as TechSkill);
+
+		// If the newly selected value is the same ignore
+		if (data.project.skills[index] === detail.selected) return;
+
+		// If there is a found value for that dropdown, and a selected value then update it, otherwise delete it.
+		// If there isn't a found value for that dropdown then push it to the array.
+		if (index !== -1) {
+			detail.selected
+				? (data.project.skills[index] = detail.selected as TechSkill)
+				: data.project.skills.splice(index, 1);
+		} else if (detail.selected)
+			data.project.skills.push(detail.selected as TechSkill);
+
+		data.project.skills = data.project.skills;
+
+		checkConstraints();
+	};
+
+	$: data.authors, (disableButtons = true), checkConstraints();
+
+	$: data.project.title,
+		(disableButtons = true),
+		(titleError = false),
+		(data.project.title = data.project.title.trim()),
+		(data.project.url = data.project.title
+			.replaceAll(" ", "-")
+			.toLowerCase()),
+		checkConstraints();
+
+	$: data.project.description,
+		(disableButtons = true),
+		(data.project.description = data.project.description.trim()),
+		checkConstraints();
+
 	// On cancel, revert the values to their originals and disable the save/cancel buttons
 	const onCancel = () => {
 		disableButtons = true;
 		editor.commands.setContent(original.project.content as Content);
-		project = JSON.parse(JSON.stringify(original.project));
+		data.project = JSON.parse(JSON.stringify(original.project));
 		data.authors = JSON.parse(JSON.stringify(original.authors));
 	};
 
@@ -136,7 +106,7 @@
 				project: {
 					...data.project,
 					date: new Date(),
-					content: project.content
+					content: data.project.content
 				},
 				authors: data.authors
 			} as App.ProjectUpdateRequest)
@@ -145,12 +115,12 @@
 			if (!res.ok && (await res.json()).message === "SAME_TITLE")
 				titleError = true;
 			// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading
-			else if (project.url !== original.project.url)
+			else if (data.project.url !== original.project.url)
 				history.replaceState(
 					{},
 					"",
 					new URL(
-						`/dashboard/projects/${project.url}`,
+						`/dashboard/projects/${data.project.url}`,
 						document.location.href
 					)
 				);
@@ -167,7 +137,7 @@
 <div
 	class="h-32 bg-cover bg-center border-b-4 relative"
 	style="
-    border-color: #{project.theme};
+    border-color: #{data.project.theme};
     background-image: url(/projects/project/placeholder/banner.webp);
     "
 >
@@ -179,8 +149,6 @@
 	</div>
 </div>
 
-<!-- TODO: Desktop design and done! -->
-
 <div
 	disabled={disableForm}
 	class:pointer-events-none={disableForm}
@@ -190,9 +158,8 @@
 	<div>
 		<Input
 			title="Title"
-			value={project.title}
+			bind:value={data.project.title}
 			placeholder="Name your project..."
-			on:input={(e) => onInput("title", e)}
 		/>
 		{#if titleError}
 			<p transition:slide class="text-red-light text-sm mt-2 italic">
@@ -203,24 +170,13 @@
 
 	<TextBox
 		title="Description"
-		value={project.description}
+		bind:value={data.project.description}
 		placeholder="Write a short description of your project..."
 		max={300}
-		on:input={(e) => onInput("description", e)}
 	/>
 
 	<div class="lg:flex lg:justify-between lg:gap-14">
-		<InputSection title="Authors">
-			{#each data.authors as author}
-				<Collaborator
-					cantRemove={author.id === data.user.id}
-					user={author}
-					on:click={onClick}
-					on:change={(e) => onInput("authors", e)}
-				/>
-			{/each}
-			<CollabSearch authors={data.authors} />
-		</InputSection>
+		<AuthorSection bind:authors={data.authors} user={data.user} />
 
 		<InputSection title="Skills">
 			{#each { length: 4 } as _, i}
@@ -229,8 +185,8 @@
 					radio={true}
 					required={i < 2}
 					options={techSkills}
-					selectedItems={project.skills}
-					on:change={(e) => onInput("skills", e)}
+					selectedItems={data.project.skills}
+					on:change={updateSkills}
 				/>
 			{/each}
 		</InputSection>
@@ -256,13 +212,14 @@
 	<Seperator class="mt-6 mb-2" />
 
 	<TipTap
-		content={project.content}
+		bind:content={data.project.content}
 		on:editor={({ detail }) => {
+			// For some reason tiptap re-orders some data once it's lodaded into the editor, so we need to change the original to that
+			original.project.content = JSON.parse(
+				JSON.stringify(detail.getJSON())
+			);
+
 			editor = detail;
-			// We re-assign the content of the original since the editor re-arranges the JSON.
-			// Not sure why tiptap reorders the generated content
-			original.project.content = detail.state.doc.toJSON();
 		}}
-		on:input={(e) => onInput("content", e)}
 	/>
 </div>

@@ -2,7 +2,7 @@
 	import Button from "$lib/components/Button.svelte";
 	import ProjectDev from "$lib/components/ProjectDev.svelte";
 
-	import type { ComponentType } from "svelte/types/runtime/internal/dev.js";
+	import type { ComponentType } from "svelte";
 
 	export let href: string;
 	export let title: string;

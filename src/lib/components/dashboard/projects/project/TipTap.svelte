@@ -2,9 +2,10 @@
 	import "highlight.js/styles/atom-one-dark.css";
 
 	import { Editor } from "@tiptap/core";
+	import { onMount, onDestroy } from "svelte";
 	import { extensions } from "$lib/tiptapExtensions";
-	import { onMount, onDestroy, createEventDispatcher } from "svelte";
 
+	import { createEventDispatcher } from "svelte";
 	import OrList from "$lib/components/icons/OrList.svelte";
 	import UnList from "$lib/components/icons/UnList.svelte";
 	import LinkButton from "$lib/components/dashboard/projects/project/LinkButton.svelte";
@@ -16,16 +17,13 @@
 	import type { Prisma } from "@prisma/client";
 	import type { Content } from "@tiptap/core";
 
-	const dispatch = createEventDispatcher<{
-		editor: Editor;
-		input: undefined;
-	}>();
+	const dispatch = createEventDispatcher<{ editor: Editor }>();
 
-	// Get saved content from the parent
+	// Gget the stored content from the parent, this is also bound to for comparison
 	export let content: Prisma.JsonValue;
 
-	let element: HTMLDivElement;
 	let editor: Editor;
+	let element: HTMLDivElement;
 
 	// Reassigning the editor variable doesnt update svelte, so this is a workaround
 	const isActive: { [key: string]: boolean } = {
@@ -67,19 +65,19 @@
 					(key) => (isActive[key] = editor.isActive(key))
 				);
 
-				// Send the text content to the parent for constraint checking
-				dispatch("input");
+				// Get the content for comparison
+				content = editor.getJSON();
 			},
 			extensions
 		});
 
-		// Dispatch a reference to the editor for the parent components use
 		dispatch("editor", editor);
 	});
 
 	onDestroy(() => editor && editor.destroy());
 
 	// TODO: Add image upload implementation with cloudflare images
+	// TODO: Fix weird bullet point behavoir
 </script>
 
 <div class="relative">

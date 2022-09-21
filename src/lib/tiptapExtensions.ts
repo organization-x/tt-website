@@ -1,4 +1,5 @@
 import { lowlight } from "lowlight";
+import { Extension } from "@tiptap/core";
 import { Text } from "@tiptap/extension-text";
 import { Bold } from "@tiptap/extension-bold";
 import { Code } from "@tiptap/extension-code";
@@ -29,10 +30,25 @@ import typescript from "highlight.js/lib/languages/typescript";
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 
 import { ListItem } from "$lib/listItem";
-import { TabShortcut } from "$lib/tabShortcut";
 
 // Generating HTML using Tiptap requires me to re-define all the HTML attributes for every extension.
 // It's super annoying but if we want SSR there's no workaround so I decided to just host them all in one file
+
+// Tab shortcut extenstion, insert tab on tab press.
+// This is in here since it's such minimal code
+const TabShortcut = Extension.create({
+	name: "tabShortcut",
+
+	addKeyboardShortcuts() {
+		return {
+			Tab: ({ editor }) => {
+				editor.chain().insertContent("	").run();
+
+				return true;
+			}
+		};
+	}
+});
 
 // These languages were picked based off of the most common languages at tt.
 // We don't want to import everything since that will send 3MB+ of data to the client

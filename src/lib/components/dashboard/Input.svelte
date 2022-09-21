@@ -11,11 +11,10 @@
 		<h1 class="font-semibold text-xl">{title}</h1>
 		<div class="bg-gray-500/40 flex rounded-lg select-none mt-2">
 			<input
-				on:input
+				bind:value
 				type="text"
 				class="w-full h-full px-2 bg-transparent focus:outline-none p-4 my-auto"
 				{placeholder}
-				{value}
 			/>
 		</div>
 	</div>
@@ -25,11 +24,10 @@
 			<slot />
 		</div>
 		<input
-			on:input
+			bind:value
 			type="text"
 			class="w-full h-full px-2 py-4 bg-transparent focus:outline-none my-auto"
 			{placeholder}
-			{value}
 		/>
 	</div>
 {/if}
