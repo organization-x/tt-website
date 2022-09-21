@@ -120,9 +120,6 @@
 				options={[
 					"Design",
 					"Engineering",
-					"Management",
-					"Design",
-					"Engineering",
 					"Management"
 				]}
 			/>
