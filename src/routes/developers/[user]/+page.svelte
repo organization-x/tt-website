@@ -42,7 +42,7 @@
 <div
 	class="max-w-screen-md lg:max-w-screen-2xl mx-auto flex flex-col lg:flex-row gap-4"
 >
-	<div class="pt-16 px-4">
+	<div class="mt-16 px-4 lg:max-w-sm">
 		<img
 			src="/projects/project/placeholder/banner.webp"
 			alt="Profile"
@@ -134,7 +134,7 @@
 				>
 					{#each positions as position}
 						<div
-							class="bg-gray-500/40 flex gap-2 items-center p-4 rounded"
+							class="bg-gray-500/40 flex gap-2 items-center p-2 rounded"
 						>
 							<svelte:component
 								this={getIcon(position)}
@@ -156,7 +156,7 @@
 					<div class="mt-2 grid grid-cols-2 gap-2">
 						{#each softSkills as softSkill}
 							<div
-								class="bg-gray-500/40 flex gap-2 items-center p-4 rounded"
+								class="bg-gray-500/40 flex gap-2 items-center p-2 rounded"
 							>
 								<svelte:component
 									this={getIcon(softSkill)}
@@ -175,7 +175,7 @@
 					<div class="mt-2 grid grid-cols-2 gap-4">
 						{#each techSkills as techSkill}
 							<div
-								class="bg-gray-500/40 flex gap-2 items-center p-4 rounded"
+								class="bg-gray-500/40 flex gap-2 items-center p-2 rounded"
 							>
 								<svelte:component
 									this={getIcon(techSkill)}
