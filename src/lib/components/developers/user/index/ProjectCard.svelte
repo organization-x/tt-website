@@ -4,6 +4,9 @@
 	export let href: string;
 	export let img: string;
 	export let developers: App.Developer[];
+	export let skills: string[];
+
+	import { getIcon } from "$lib/components/icons/getIcon";
 </script>
 
 <a
@@ -28,11 +31,22 @@
 		</div>
 	</div>
 
-	<div class="p-4">
+	<div class="p-4 flex flex-col gap-1">
 		<h2 class="font-semibold text-lg lg:text-xl">{name}</h2>
 
 		<p class="w-full overflow-hidden text-sm">
 			{description}
 		</p>
+
+		<div class="flex gap-2 mt-2">
+			{#each skills as skill}
+				<div class="relative flex gap-1 items-center">
+					<svelte:component
+						this={getIcon(skill)}
+						class="w-6 h-6 shrink-0"
+					/>
+				</div>
+			{/each}
+		</div>
 	</div>
 </a>

@@ -118,6 +118,7 @@
 								position: "Developer"
 							}
 						]}
+						skills={["React", "Python", "JavaScript"]}
 					/>
 					<ProjectCard
 						name="AI Camp Discord Bot"
@@ -136,6 +137,7 @@
 								position: "Developer"
 							}
 						]}
+						skills={["React", "AWS", "JavaScript"]}
 					/>
 
 					<Button href="./{user}/projects">View More</Button>
