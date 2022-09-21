@@ -135,18 +135,23 @@
 </script>
 
 <div
-	class="h-32 bg-cover bg-center border-b-4 relative"
-	style="
-    border-color: #{data.project.theme};
-    background-image: url(/projects/project/placeholder/banner.webp);
-    "
+	class="grid border-b-4 overflow-hidden"
+	style="border-color: #{data.project.theme}"
 >
-	<div
-		class="absolute inset-0 bg-black/40 flex justify-center items-center gap-2"
+	<img
+		src="/projects/project/placeholder/banner.webp"
+		width="1920"
+		height="1080"
+		alt="{data.user.name}'s avatar"
+		class="object-cover object-center h-32 row-start-1 col-start-1"
+	/>
+
+	<button
+		class="w-full h-full bg-black/40 flex justify-center items-center gap-2 row-start-1 col-start-1"
 	>
 		<Pencil class="w-6 h-6 lg:w-8 lg:h-8" />
 		<h1 class="text-xl select-none font-semibold lg:text-2xl">Edit</h1>
-	</div>
+	</button>
 </div>
 
 <div

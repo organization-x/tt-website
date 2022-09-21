@@ -8,7 +8,7 @@
 	class:border-transparent={!active}
 	class="flex rounded-lg bg-gray-500/40 border-2 shrink-0"
 >
-	<button on:click class="flex gap-4 shrink-0 p-4 w-16 aspect-square">
+	<button on:click class="flex gap-4 shrink-0 w-14 aspect-square">
 		<slot name="button" />
 	</button>
 	<div

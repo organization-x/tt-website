@@ -39,10 +39,46 @@ import { ListItem } from "$lib/listItem";
 const TabShortcut = Extension.create({
 	name: "tabShortcut",
 
+	addStorage() {
+		return {
+			wasListItem: false
+		};
+	},
+
 	addKeyboardShortcuts() {
 		return {
 			Tab: ({ editor }) => {
+				if (
+					editor.isActive("listItem") &&
+					editor.can().sinkListItem("listItem")
+				)
+					return editor.commands.sinkListItem("listItem");
+
 				editor.chain().insertContent("	").run();
+
+				return true;
+			},
+			Backspace: ({ editor }) => {
+				// Override backspace so that list items behave as expected
+
+				if (
+					editor.isActive("listItem") &&
+					editor.state.selection.$from.parentOffset === 0 &&
+					editor.state.selection.empty
+				) {
+					this.storage.wasListItem = true;
+					editor.commands.liftListItem("listItem");
+					return true;
+				}
+
+				if (this.storage.wasListItem) {
+					this.storage.wasListItem = false;
+
+					editor.commands.deleteRange({
+						from: this.editor.state.selection.$from.pos,
+						to: this.editor.state.selection.$to.pos
+					});
+				}
 
 				return true;
 			}
