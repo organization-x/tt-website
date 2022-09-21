@@ -71,9 +71,15 @@
 			direction="bg-gradient-to-br"
 			class="mt-4 flex gap-4 justify-center"
 		>
-			<GitHub class="h-6 w-6" />
-			<Instagram class="h-6 w-6" />
-			<LinkedIn class="h-6 w-6" />
+			<a href="https://github.com/cubedhuang">
+				<GitHub class="h-6 w-6" />
+			</a>
+			<a href="https://instagram.com/cubedhuang/">
+				<Instagram class="h-6 w-6" />
+			</a>
+			<a href="https://www.linkedin.com/in/cubedhuang/">
+				<LinkedIn class="h-6 w-6" />
+			</a>
 		</Panel>
 	</div>
 
