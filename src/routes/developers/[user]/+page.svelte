@@ -71,13 +71,22 @@
 			direction="bg-gradient-to-br"
 			class="mt-4 flex gap-4 justify-center"
 		>
-			<a href="https://github.com/cubedhuang">
+			<a
+				href="https://github.com/cubedhuang"
+				class="hover:opacity-80 transition-opacity"
+			>
 				<GitHub class="h-6 w-6" />
 			</a>
-			<a href="https://instagram.com/cubedhuang/">
+			<a
+				href="https://instagram.com/cubedhuang/"
+				class="hover:opacity-80 transition-opacity"
+			>
 				<Instagram class="h-6 w-6" />
 			</a>
-			<a href="https://www.linkedin.com/in/cubedhuang/">
+			<a
+				href="https://www.linkedin.com/in/cubedhuang/"
+				class="hover:opacity-80 transition-opacity"
+			>
 				<LinkedIn class="h-6 w-6" />
 			</a>
 		</Panel>
