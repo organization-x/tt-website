@@ -15,6 +15,7 @@
 
 	import type { Prisma } from "@prisma/client";
 	import type { Content } from "@tiptap/core";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	const dispatch = createEventDispatcher<{ editor: Editor }>();
 
@@ -87,11 +88,11 @@
 	// TODO: intersection observer sticky scroll
 </script>
 
-<div class="flex flex-col relative gap-4 bg-gray- p-4 mt-28 rounded-lg">
+<div class="flex flex-col relative gap-4p-4 rounded-lg xl:min-w-full">
 	{#if editor}
 		<div class="absolute inset-0 pointer-events-none">
-			<div
-				class="sticky bg pointer-events-auto scrollbar-hidden top-0 py-3 px-2 overflow-auto z-20 flex gap-4 border-b-2 border-gray-500/40"
+			<Scrollable
+				class="sticky bg-black pointer-events-auto top-0 z-20 border-b-2 border-gray-500/40 before:from-black after:to-black"
 			>
 				<HeadButton active={isActive.heading} {editor} />
 				<EditorButton
@@ -139,7 +140,7 @@
 				</EditorButton>
 				<LinkButton active={isActive.link} {editor} />
 				<ImageButton active={isActive.image} {editor} />
-			</div>
+			</Scrollable>
 		</div>
 	{/if}
 

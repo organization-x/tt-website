@@ -148,12 +148,13 @@
 	class="grid border-b-4 overflow-hidden"
 	style="border-color: #{data.project.theme}"
 >
+	<!-- TODO: Replace placeholder -->
 	<img
 		src="/projects/project/placeholder/banner.webp"
 		width="1920"
 		height="1080"
 		alt="{data.user.name}'s avatar"
-		class="object-cover object-center h-32 row-start-1 col-start-1"
+		class="object-cover object-center w-full h-32 row-start-1 col-start-1"
 	/>
 
 	<button
@@ -168,9 +169,9 @@
 	disabled={disableForm}
 	class:pointer-events-none={disableForm}
 	class:opacity-60={disableForm}
-	class="flex flex-col gap-8 p-4 max-w-xl mx-auto transition-opacity mt-2 lg:px-12"
+	class="flex flex-col gap-8 p-4 max-w-xl mx-auto transition-opacity mt-2 lg:px-12 lg:max-w-screen-3xl xl:items-center"
 >
-	<div class="flex flex-col gap-5 lg:max-w-screen-xl">
+	<div class="flex flex-col gap-5 lg:max-w-screen-xl xl:min-w-full">
 		<div>
 			<Input
 				bind:value={data.project.title}
@@ -225,7 +226,7 @@
 		</div>
 	</div>
 
-	<Seperator />
+	<Seperator class="max-w-screen-xl" />
 
 	<TipTap
 		bind:content={data.project.content}

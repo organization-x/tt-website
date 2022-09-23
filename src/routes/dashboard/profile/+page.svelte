@@ -171,10 +171,10 @@
 </script>
 
 <div class="relative pt-[4.5rem] px-8 lg:px-12">
-	<!-- TODO: Switch banner/profile pictures to correct sources  -->
+	<!-- TODO: Replace placeholders -->
 
 	<div
-		class="h-32 absolute inset-0 bottom-auto bg-cover bg-center -z-10 lg:h-44"
+		class="h-32 w-full absolute inset-0 bottom-auto bg-cover bg-center -z-10 lg:h-44"
 		style="background-image: url(/developers/user/placeholder/banner.webp)"
 	>
 		<div

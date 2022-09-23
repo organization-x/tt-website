@@ -11,7 +11,7 @@
 </script>
 
 <div class="relative pt-[4.5rem] px-4">
-	<!-- TODO: Switch banner/icon to proper defaults. Right now its set to the banner because its bright and easy to differentiate -->
+	<!-- TODO: Replace placeholders -->
 
 	<div
 		class="h-32 absolute inset-0 bottom-auto bg-cover bg-center -z-10"

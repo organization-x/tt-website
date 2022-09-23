@@ -7,14 +7,11 @@
 
 	import type { User } from "@prisma/client";
 
-	export let authors: App.ProjectAuthor[];
 	export let user: User;
+	export let authors: App.ProjectAuthor[];
 
-	let search = "";
+	let search: string;
 	let results: User[] = [];
-
-	// Store the id of the most recently removed user for animation
-	let recentlyRemoved: string;
 
 	// Update search value on input
 	const onInput = () => {
@@ -129,7 +126,8 @@
 								in:fly={{ y: 20, duration: 200 }}
 								class="flex gap-3 items-center"
 							>
-								<!-- TODO: swithc from placeholder -->
+								<!-- TODO: Replace placeholder -->
+
 								<img
 									src="/developers/user/placeholder/icon.webp"
 									alt="{user.name}'s avatar"

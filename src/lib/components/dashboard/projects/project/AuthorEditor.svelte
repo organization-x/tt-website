@@ -62,6 +62,7 @@
 		class="flex justify-between items-center p-4"
 	>
 		<!-- TODO: Replace placeholder -->
+
 		<img
 			src="/developers/user/placeholder/icon.webp"
 			alt="{author.name}'s avatar"

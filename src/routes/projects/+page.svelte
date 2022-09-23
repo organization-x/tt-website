@@ -2,12 +2,12 @@
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
-	import ScrollRow from "$lib/components/ScrollRow.svelte";
 	import Python from "$lib/components/icons/Python.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
@@ -67,12 +67,15 @@
 <Section filled={true}>
 	<MajorHeader>Our Projects</MajorHeader>
 
-	<div class="max-w-screen-lg mx-auto w-full">
+	<div class="flex flex-col gap-4 max-w-screen-lg mx-auto w-full">
 		<FilterTitle />
 
-		<SearchBar />
+		<SearchBar placeholder="Search projects..." />
 
-		<ScrollRow class="mt-6 mb-12">
+		<Scrollable
+			class="before:from-gray-900 after:to-gray-900"
+			arrows={true}
+		>
 			<SkillFilter name="Python" current={true}>
 				<Python class="h-6 w-6" />
 			</SkillFilter>
@@ -82,15 +85,18 @@
 			<SkillFilter name="Python" current={false}>
 				<Python class="h-6 w-6" />
 			</SkillFilter>
-		</ScrollRow>
+		</Scrollable>
 
 		<Seperator />
 
-		<ScrollRow class="mt-12 md:mt-20">
+		<Scrollable
+			class="before:from-gray-900 after:to-gray-900"
+			arrows={true}
+		>
 			{#each projects as projectPair, i}
 				<ProjectFilter {projectPair} current={i === 0 ? true : false} />
 			{/each}
-		</ScrollRow>
+		</Scrollable>
 	</div>
 
 	<div class="flex flex-col gap-14 my-12 lg:my-20">

@@ -9,11 +9,11 @@
 	import { extensions } from "$lib/tiptapExtensions";
 	import Button from "$lib/components/Button.svelte";
 	import Author from "$lib/components/Author.svelte";
+	import Seperator from "$lib/components/Seperator.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	import type { PageData } from "./$types";
 	import type { JSONContent } from "@tiptap/core";
-	import Seperator from "$lib/components/Seperator.svelte";
-	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	export let data: PageData;
 
@@ -25,12 +25,14 @@
 	onMount(HLJS.highlightAll);
 </script>
 
+<!-- TODO: Replace placeholder -->
+
 <img
 	src="/projects/project/placeholder/banner.webp"
 	width="1920"
 	height="1080"
 	alt="Banner for '{data.project.title}'"
-	class="object-cover object-center h-32 border-b-4 lg:h-44 lg:border-b-8"
+	class="object-cover object-center w-full h-32 border-b-4 lg:h-44 lg:border-b-8"
 	style="border-color: #{theme}"
 />
 
@@ -46,7 +48,7 @@
 
 	<h1 class="font-bold text-3xl my-6" style="color: #{theme}">{title}</h1>
 
-	<Scrollable>
+	<Scrollable class="before:from-black after:to-black">
 		{#each data.authors as author}
 			<Author
 				{theme}
