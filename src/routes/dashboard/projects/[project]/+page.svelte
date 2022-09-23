@@ -8,8 +8,8 @@
 	import Input from "$lib/components/dashboard/Input.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
+	import InputSection from "$lib/components/dashboard/InputSection.svelte";
 	import TipTap from "$lib/components/dashboard/projects/project/TipTap.svelte";
-	import InputSection from "$lib/components/dashboard/projects/project/InputSection.svelte";
 	import AuthorSection from "$lib/components/dashboard/projects/project/AuthorSection.svelte";
 
 	import type { PageData } from "./$types";
@@ -29,10 +29,15 @@
 	let disableButtons = true;
 
 	const checkConstraints = () => {
-		// Check to make sure the title and description arent empty
+		const title = data.project.title.trim();
+		const description = data.project.description.trim();
+
 		if (
-			data.project.title.length < 1 ||
-			data.project.description.length < 1 ||
+			title.length < 1 ||
+			title.length > 50 ||
+			description.length < 1 ||
+			description.length > 300 ||
+			data.project.description.trim().length < 1 ||
 			data.project.skills.length < 2
 		)
 			return;
@@ -69,7 +74,7 @@
 	$: data.project.title,
 		(disableButtons = true),
 		(titleError = false),
-		(data.project.title = data.project.title.trim()),
+		(data.project.title = data.project.title),
 		(data.project.url = data.project.title
 			.replaceAll(" ", "-")
 			.toLowerCase()),
@@ -77,7 +82,7 @@
 
 	$: data.project.description,
 		(disableButtons = true),
-		(data.project.description = data.project.description.trim()),
+		(data.project.description = data.project.description),
 		checkConstraints();
 
 	// On cancel, revert the values to their originals and disable the save/cancel buttons
@@ -92,6 +97,10 @@
 		disableButtons = true;
 		disableForm = true;
 		editor.setEditable(false);
+
+		// Trim title and description whitespace
+		data.project.title = data.project.title.trim();
+		data.project.description = data.project.description.trim();
 
 		// Send an update request to the API
 		await fetch("/api/project", {
@@ -126,6 +135,7 @@
 				);
 
 			disableForm = false;
+			disableButtons = true;
 			editor.setEditable(true);
 
 			// If successful, update the original data
@@ -158,29 +168,30 @@
 	disabled={disableForm}
 	class:pointer-events-none={disableForm}
 	class:opacity-60={disableForm}
-	class="p-4 flex flex-col gap-5 max-w-xl mx-auto transition-opacity mt-2 lg:max-w-screen-2xl lg:px-8"
+	class="flex flex-col gap-8 p-4 max-w-xl mx-auto transition-opacity mt-2 lg:px-12"
 >
-	<div>
-		<Input
-			title="Title"
-			bind:value={data.project.title}
-			placeholder="Name your project..."
+	<div class="flex flex-col gap-5 lg:max-w-screen-xl">
+		<div>
+			<Input
+				bind:value={data.project.title}
+				title="Title"
+				placeholder="Name your project..."
+				max={50}
+			/>
+			{#if titleError}
+				<p transition:slide class="text-red-light text-sm mt-2 italic">
+					Title already in use, please user another!
+				</p>
+			{/if}
+		</div>
+
+		<TextBox
+			title="Description"
+			bind:value={data.project.description}
+			placeholder="Write a short description of your project..."
+			max={300}
 		/>
-		{#if titleError}
-			<p transition:slide class="text-red-light text-sm mt-2 italic">
-				Title already in use, please user another!
-			</p>
-		{/if}
-	</div>
 
-	<TextBox
-		title="Description"
-		bind:value={data.project.description}
-		placeholder="Write a short description of your project..."
-		max={300}
-	/>
-
-	<div class="lg:flex lg:justify-between lg:gap-14">
 		<AuthorSection bind:authors={data.authors} user={data.user} />
 
 		<InputSection title="Skills">
@@ -195,26 +206,26 @@
 				/>
 			{/each}
 		</InputSection>
+
+		<div class="flex gap-6 mx-auto mt-6">
+			<DashButton
+				on:click={onCancel}
+				disabled={disableButtons}
+				class="bg-gray-500"
+			>
+				Cancel
+			</DashButton>
+			<DashButton
+				on:click={onSave}
+				disabled={disableButtons}
+				class="bg-blue-light"
+			>
+				Save
+			</DashButton>
+		</div>
 	</div>
 
-	<div class="flex gap-6 mx-auto mt-6">
-		<DashButton
-			on:click={onCancel}
-			disabled={disableButtons}
-			class="bg-gray-500"
-		>
-			Cancel
-		</DashButton>
-		<DashButton
-			on:click={onSave}
-			disabled={disableButtons}
-			class="bg-blue-light"
-		>
-			Save
-		</DashButton>
-	</div>
-
-	<Seperator class="mt-6 mb-2" />
+	<Seperator />
 
 	<TipTap
 		bind:content={data.project.content}

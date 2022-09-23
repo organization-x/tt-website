@@ -36,7 +36,7 @@ export const GET: RequestHandler = async (req) => {
 			.then((res) => res.data)
 			.catch(() => null);
 
-		// If an error occurs fetching the user data, its most likely an expired token, so redirect to github oauth page
+		// If an error occurs fetching the user data, its most likely an expired token (code parameter), so redirect to github oauth page
 		if (!user) throw redirect(302, "/login");
 
 		// Check if the user exists already

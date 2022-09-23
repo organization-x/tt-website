@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { slide, fly } from "svelte/transition";
 
-	import Author from "./Author.svelte";
 	import { debounce } from "$lib/debounce";
+	import AuthorEditor from "./AuthorEditor.svelte";
 	import Search from "$lib/components/icons/Search.svelte";
 
 	import type { User } from "@prisma/client";
@@ -12,6 +12,9 @@
 
 	let search = "";
 	let results: User[] = [];
+
+	// Store the id of the most recently removed user for animation
+	let recentlyRemoved: string;
 
 	// Update search value on input
 	const onInput = () => {
@@ -51,9 +54,11 @@
 <div class="lg:flex lg:justify-between lg:gap-14">
 	<div class="lg:w-full">
 		<h1 class="font-semibold text-xl">Authors</h1>
-		<div class=" bg-gray-500/40 p-4 mt-3 rounded-lg">
+		<div
+			class="bg-gray-500/40 p-4 mt-3 rounded-lg lg:grid lg:grid-cols-2 lg:gap-x-4 lg:transition-[height]"
+		>
 			{#each authors as author}
-				<Author
+				<AuthorEditor
 					bind:author
 					cantRemove={author.id === user.id}
 					on:click={() => {
@@ -70,74 +75,79 @@
 				/>
 			{/each}
 
-			<div
-				class:rounded-t-lg={search.length}
-				class:rounded-lg={!search.length}
-				class="bg-gray-500/40 flex select-none"
-			>
-				<div
-					class:w-0={search.length}
-					class:px-0={search.length}
-					class:px-4={!search.length}
-					class:w-14={!search.length}
-					class="bg-gray-500/40 py-4 rounded-l-lg overflow-hidden transition-widpad"
-				>
-					<Search class="w-6 h-6 mx-auto" />
+			<div class="bg-gray-500/40 rounded-lg lg:col-span-2">
+				<div class="flex select-none lg:col-span-2">
+					<div
+						class:w-0={search.length}
+						class:px-0={search.length}
+						class:px-4={!search.length}
+						class:w-14={!search.length}
+						class="bg-gray-500/40 py-4 rounded-l-lg overflow-hidden transition-widpad"
+					>
+						<Search class="w-6 h-6 mx-auto" />
+					</div>
+					<input
+						bind:value={search}
+						use:debounce={{
+							bind: search,
+							func: onInput,
+							delay: 200
+						}}
+						type="text"
+						class="w-full h-full px-4 py-4 bg-transparent focus:outline-none my-auto"
+						placeholder="Search for collaborators..."
+					/>
 				</div>
-				<input
-					bind:value={search}
-					use:debounce={{ bind: search, func: onInput, delay: 200 }}
-					type="text"
-					class="w-full h-full px-4 py-4 bg-transparent focus:outline-none my-auto"
-					placeholder="Search for collaborators..."
-				/>
-			</div>
 
-			{#if search.length}
-				<div
-					transition:slide={{ duration: 200 }}
-					class="h-32 bg-gray-500/40 flex flex-col gap-4 rounded-b-lg p-4"
-				>
-					{#each results as user}
-						<button
-							on:click={() => {
-								// If the user is already in the authors, ignore
-								if (
-									authors.find(
-										(author) => author.id === user.id
+				{#if search.length}
+					<div
+						transition:slide={{ duration: 200 }}
+						class="h-32 flex flex-col gap-4 p-4"
+					>
+						{#each results as user}
+							<button
+								on:click={() => {
+									// If the user is already in the authors, ignore
+									if (
+										authors.find(
+											(author) => author.id === user.id
+										)
 									)
-								)
-									return;
+										return;
 
-								// Default position is backend since it's at the top
-								authors.push({ position: "Backend", ...user });
+									// Default position is backend since it's at the top
+									authors.push({
+										position: "Backend",
+										...user
+									});
 
-								authors = authors;
+									authors = authors;
 
-								// Requery the search
-								onInput();
-							}}
-							in:fly={{ y: 20, duration: 200 }}
-							class="flex gap-3 items-center"
-						>
-							<!-- TODO: swithc from placeholder -->
-							<img
-								src="/developers/user/placeholder/icon.webp"
-								alt="{user.name}'s avatar"
-								class="w-10 h-10 rounded-full"
-							/>
-							<h1 class="text-lg">{user.name}</h1>
-						</button>
-					{:else}
-						<h1
-							in:fly={{ y: 20, duration: 200 }}
-							class="text-center"
-						>
-							No results
-						</h1>
-					{/each}
-				</div>
-			{/if}
+									// Requery the search
+									onInput();
+								}}
+								in:fly={{ y: 20, duration: 200 }}
+								class="flex gap-3 items-center"
+							>
+								<!-- TODO: swithc from placeholder -->
+								<img
+									src="/developers/user/placeholder/icon.webp"
+									alt="{user.name}'s avatar"
+									class="w-10 h-10 rounded-full"
+								/>
+								<h1 class="text-lg">{user.name}</h1>
+							</button>
+						{:else}
+							<h1
+								in:fly={{ y: 20, duration: 200 }}
+								class="text-center"
+							>
+								No results
+							</h1>
+						{/each}
+					</div>
+				{/if}
+			</div>
 		</div>
 	</div>
 </div>

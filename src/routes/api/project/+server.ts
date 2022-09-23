@@ -29,13 +29,13 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 
 	// Input validation
 	if (
-		!(
-			data.project.skills.length >= 2 ||
-			data.project.title.length > 0 ||
-			data.project.description.length > 0 ||
-			data.authors.length > 0 ||
-			data.authors.some((author) => author.id === data.project.ownerId)
-		)
+		data.project.title.length < 1 ||
+		data.project.title.length > 50 ||
+		data.project.description.length < 1 ||
+		data.project.description.length > 300 ||
+		data.project.skills.length < 2 ||
+		data.authors.length < 1 ||
+		!data.authors.some((author) => author.id === data.project.ownerId)
 	)
 		throw error(400, "Bad Request");
 

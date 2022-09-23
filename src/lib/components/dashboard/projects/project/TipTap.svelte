@@ -12,7 +12,6 @@
 	import HeadButton from "$lib/components/dashboard/projects/project/HeadButton.svelte";
 	import ImageButton from "$lib/components/dashboard/projects/project/ImageButton.svelte";
 	import EditorButton from "$lib/components/dashboard/projects/project/EditorButton.svelte";
-	import YouTubeButton from "$lib/components/dashboard/projects/project/YouTubeButton.svelte";
 
 	import type { Prisma } from "@prisma/client";
 	import type { Content } from "@tiptap/core";
@@ -23,7 +22,7 @@
 	export let content: Prisma.JsonValue;
 
 	let editor: Editor;
-	let element: HTMLDivElement;
+	let editorElement: HTMLDivElement;
 
 	// Reassigning the editor variable doesnt update svelte, so this is a workaround
 	const isActive: { [key: string]: boolean } = {
@@ -41,7 +40,7 @@
 
 	onMount(() => {
 		editor = new Editor({
-			element,
+			element: editorElement,
 			content: Object.keys(content!).length
 				? (content as Content)
 				: undefined,
@@ -51,14 +50,20 @@
 				}
 			},
 			onTransaction: ({ editor }) => {
-				// Add bottom padding to the editor by measuring the height off all child nodes and adding to it
-				let height = 0;
+				// Add bottom padding to the editor by measuring the height off all child nodes and adding to it.
+				// The reason it's done this way instead of padding is it allows the editor to be clicked on in this
+				// virtual padding.
 
-				Array.from(editor.view.dom.children).forEach((child) => {
-					height += child.clientHeight;
-				});
+				// Hacky fix since clientHeight and getBoundingClientRect don't seem to get the correct height immediately
+				setTimeout(() => {
+					let height = 0;
 
-				editor.view.dom.style.height = `calc(20rem + ${height}px)`;
+					Array.from(editor.view.dom.children).forEach((child) => {
+						height += child.clientHeight;
+					});
+
+					editor.view.dom.style.height = `calc(20rem + ${height}px)`;
+				}, 1);
 
 				// Update active items
 				Object.keys(isActive).forEach(
@@ -68,23 +73,25 @@
 				// Get the content for comparison
 				content = editor.getJSON();
 			},
+			onCreate: () => {
+				dispatch("editor", editor);
+				content = editor.getJSON();
+			},
 			extensions
 		});
-
-		dispatch("editor", editor);
 	});
 
 	onDestroy(() => editor && editor.destroy());
 
 	// TODO: Add image upload implementation with cloudflare images
-	// TODO: Fix weird bullet point behavoir
+	// TODO: intersection observer sticky scroll
 </script>
 
-<div class="relative">
+<div class="flex flex-col relative gap-4 bg-gray- p-4 mt-28 rounded-lg">
 	{#if editor}
 		<div class="absolute inset-0 pointer-events-none">
 			<div
-				class="flex gap-4 overflow-auto scrollbar-hidden sticky pointer-events-auto top-0 py-4 z-20 bg-black"
+				class="sticky bg pointer-events-auto scrollbar-hidden top-0 py-3 px-2 overflow-auto z-20 flex gap-4 border-b-2 border-gray-500/40"
 			>
 				<HeadButton active={isActive.heading} {editor} />
 				<EditorButton
@@ -132,12 +139,9 @@
 				</EditorButton>
 				<LinkButton active={isActive.link} {editor} />
 				<ImageButton active={isActive.image} {editor} />
-				<YouTubeButton active={isActive.youtube} {editor} />
 			</div>
 		</div>
 	{/if}
 
-	<div class="flex flex-col gap-4 bg-gray-500/40 p-4 mt-28 rounded-lg">
-		<div bind:this={element} />
-	</div>
+	<div class="mt-20" bind:this={editorElement} />
 </div>

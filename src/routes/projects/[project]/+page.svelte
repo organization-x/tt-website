@@ -2,16 +2,18 @@
 	import "$lib/hljsTheme.css";
 
 	import HLJS from "highlight.js";
+	import { onMount } from "svelte";
 	import { generateHTML } from "@tiptap/html";
 
-	import { onMount } from "svelte";
 	import { getIcon } from "$lib/getIcon";
 	import { extensions } from "$lib/tiptapExtensions";
 	import Button from "$lib/components/Button.svelte";
-	import ProjectDev from "$lib/components/ProjectDev.svelte";
+	import Author from "$lib/components/Author.svelte";
 
 	import type { PageData } from "./$types";
 	import type { JSONContent } from "@tiptap/core";
+	import Seperator from "$lib/components/Seperator.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	export let data: PageData;
 
@@ -23,15 +25,16 @@
 	onMount(HLJS.highlightAll);
 </script>
 
-<div
-	class="h-32 bg-cover bg-center border-b-4"
-	style="
-    border-color: #{theme};
-    background-image: url(/projects/project/placeholder/banner.webp);
-    "
+<img
+	src="/projects/project/placeholder/banner.webp"
+	width="1920"
+	height="1080"
+	alt="Banner for '{data.project.title}'"
+	class="object-cover object-center h-32 border-b-4 lg:h-44 lg:border-b-8"
+	style="border-color: #{theme}"
 />
 
-<div class="p-4 max-w-screen-lg mx-auto">
+<div class="p-4 max-w-2xl mx-auto lg:max-w-3xl">
 	<div class="flex justify-between items-center">
 		<p>{date.toLocaleDateString("en-US")}</p>
 		<div class="flex gap-2">
@@ -40,52 +43,35 @@
 			{/each}
 		</div>
 	</div>
-	<h1 class="font-bold text-3xl mt-3" style="color: #{theme}">{title}</h1>
-	<!-- TODO: Switch to using actual profile pictures/banners -->
-	{#if data.authors.length > 2}
-		<div
-			class="bg-gray-800 rounded-lg drop-shadow-lg mt-4 relative mx-auto
-            before:z-10 before:absolute before:rounded-l-lg before:top-0 before:left-0 before:w-8 before:h-full before:bg-gradient-to-r before:from-gray-800 before:to-transparent before:pointer-events-none
-            
-            after:z-10 after:absolute after:rounded-r-lg after:top-0 after:right-0 after:w-8 after:h-full after:bg-gradient-to-r after:from-transparent after:to-gray-800 after:pointer-events-none"
-		>
-			<div
-				class="flex overflow-auto py-2 px-4 gap-8 snap-x snap-proximity rounded-lg scrollbar-hidden"
-			>
-				{#each data.authors as author}
-					<ProjectDev
-						{theme}
-						user={{
-							name: author.name,
-							position: author.position,
-							url: "placeholder"
-						}}
-					/>
-				{/each}
-			</div>
-		</div>
-	{:else}
-		<div class="flex gap-4">
-			{#each data.authors as author}
-				<a
-					href="/developers/{author.url}"
-					class="flex mt-4 items-center gap-3 w-fit"
-				>
-					<img
-						width="200"
-						height="200"
-						alt="{author.name}'s avatar"
-						src="/developers/user/placeholder/icon.webp"
-						class="w-12 h-12 rounded-full border-4"
-						style="border-color: #{theme}"
-					/>
-					<h1 class="font-semibold">{author.name}</h1>
-				</a>
-			{/each}
-		</div>
-	{/if}
 
-	<div class="my-12 [&>p:empty]:h-6">
+	<h1 class="font-bold text-3xl my-6" style="color: #{theme}">{title}</h1>
+
+	<Scrollable>
+		{#each data.authors as author}
+			<Author
+				{theme}
+				user={{
+					name: author.name,
+					position: author.position,
+					url: "placeholder"
+				}}
+			/>
+		{/each}
+		{#each data.authors as author}
+			<Author
+				{theme}
+				user={{
+					name: author.name,
+					position: author.position,
+					url: "placeholder"
+				}}
+			/>
+		{/each}
+	</Scrollable>
+
+	<Seperator class="mt-4 mb-10" />
+
+	<div class="mb-12 [&>p:empty]:h-6">
 		{@html html}
 	</div>
 

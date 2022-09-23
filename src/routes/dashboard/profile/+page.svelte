@@ -234,7 +234,6 @@
 						max={150}
 					/>
 					<Dropdown
-						i={0}
 						radio={true}
 						options={teams}
 						required={false}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Button from "$lib/components/Button.svelte";
-	import ProjectDev from "$lib/components/ProjectDev.svelte";
+	import Author from "$lib/components/Author.svelte";
 
 	import type { ComponentType } from "svelte";
 
@@ -39,7 +39,7 @@
 				class="flex overflow-auto py-2 px-8 gap-8 snap-x snap-proximity rounded-lg scrollbar-hidden"
 			>
 				{#each developers as developer}
-					<ProjectDev user={developer} />
+					<Author user={developer} />
 				{/each}
 			</div>
 		</div>
@@ -55,7 +55,7 @@
 		<div class="p-4 flex flex-col gap-1 overflow-auto scrollbar">
 			<h1 class="font-semibold mb-2">Developers</h1>
 			{#each developers as developer}
-				<ProjectDev user={developer} />
+				<Author user={developer} />
 			{/each}
 		</div>
 	</div>
