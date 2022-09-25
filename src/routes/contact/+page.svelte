@@ -25,7 +25,11 @@
 
 	// Scroll to next page of contact form
 	const scroll = (next: boolean) => {
-		pageNumber = next ? pageNumber + 1 : pageNumber - 1;
+		if (next) {
+			pageNumber++;
+		} else {
+			pageNumber--;
+		}
 
 		element.scrollTo({
 			left: element.children[0].clientWidth * pageNumber,
@@ -33,10 +37,50 @@
 		});
 	};
 
+	let boxes: {}[] = [
+		// page 1
+		{
+			"First Name": false,
+			"Last Name": false,
+			Email: false,
+			"Phone Number": true,
+			Company: false
+		},
+		// page 2
+		{
+			"What Talent Do You Need?": false,
+			"Company Website": true,
+			"What are we doing?": false,
+			"How Did You Hear About Us?": true
+		},
+		// page 3
+		{
+			Subject: false,
+			Message: false
+		}
+	];
+
 	// Check if all required fields are filled
 	const onChange = ({ detail }: CustomEvent) => {
-		detail.isValid ? filledCount++ : filledCount--;
+		let page: number = detail.page - 1;
+		let title: string = detail.title;
+		let valid = detail.isValid;
+		boxes[page][title] = valid;
+		currentPageValid();
 	};
+
+	let isValid = false;
+
+	function currentPageValid(): void {
+		for (let title in boxes[pageNumber]) {
+			if (boxes[pageNumber][title] == false) {
+				console.log(boxes[pageNumber]);
+				isValid = false;
+				return;
+			}
+		}
+		isValid = true;
+	}
 </script>
 
 <svelte:head>
@@ -81,6 +125,7 @@
 				disabled={pageNumber !== 0}
 				on:change={onChange}
 				placeholder="First goes here"
+				page="1"
 			/>
 			<Field
 				type="text"
@@ -88,6 +133,7 @@
 				on:change={onChange}
 				disabled={pageNumber !== 0}
 				placeholder="And now for the last"
+				page="1"
 			/>
 			<Field
 				type="email"
@@ -95,13 +141,16 @@
 				on:change={onChange}
 				disabled={pageNumber !== 0}
 				placeholder="Where should we send our pigeon?"
+				page="1"
 			/>
 			<Field
 				type="text"
 				title="Phone Number"
 				required={false}
+				on:change={onChange}
 				disabled={pageNumber !== 0}
 				placeholder="Your digits, please"
+				page="1"
 			/>
 			<Field
 				type="text"
@@ -109,6 +158,7 @@
 				on:change={onChange}
 				disabled={pageNumber !== 0}
 				placeholder="What company are you working for?"
+				page="1"
 			/>
 		</Page>
 		<Page>
@@ -117,18 +167,17 @@
 				placeholder="skill(s)"
 				on:change={onChange}
 				disabled={pageNumber !== 1}
-				options={[
-					"Design",
-					"Engineering",
-					"Management"
-				]}
+				options={["Design", "Engineering", "Management"]}
+				page="2"
 			/>
 			<Field
 				type="text"
 				title="Company Website"
 				required={false}
+				on:change={onChange}
 				disabled={pageNumber !== 1}
 				placeholder="https://company.com..."
+				page="2"
 			/>
 			<Select
 				title="What are we doing?"
@@ -140,13 +189,16 @@
 					"Building on an existing project",
 					"Deploying a new product"
 				]}
+				page="2"
 			/>
 			<Field
 				type="text"
 				title="How Did You Hear About Us?"
 				required={false}
+				on:change={onChange}
 				disabled={pageNumber !== 1}
 				placeholder="Friends, Family?"
+				page="2"
 			/>
 		</Page>
 		<Page>
@@ -156,6 +208,7 @@
 				on:change={onChange}
 				disabled={pageNumber !== 2}
 				placeholder="Give yourself a title"
+				page="3"
 			/>
 
 			<TextArea
@@ -163,6 +216,7 @@
 				on:change={onChange}
 				disabled={pageNumber !== 2}
 				placeholder="Elaborate on how we can help..."
+				page="3"
 			/>
 		</Page>
 		<Page>
@@ -187,10 +241,7 @@
 			Back
 		</FormButton>
 		<FormButton
-			disabled={(pageNumber === 0 && !(filledCount >= 4)) ||
-				(pageNumber === 1 && !(filledCount >= 6)) ||
-				(pageNumber === 2 && !(filledCount >= 8)) ||
-				pageNumber === 3}
+			disabled={!isValid || pageNumber === 3}
 			hidden={pageNumber === 3}
 			on:click={() => scroll(true)}
 		>

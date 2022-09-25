@@ -8,6 +8,7 @@
 	export let required = true;
 	export let disabled: boolean;
 	export let placeholder: string;
+	export let page: string;
 
 	const dispatch = createEventDispatcher();
 
@@ -19,17 +20,24 @@
 		"((http(s)?)://[(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))+$"
 	);
 
-	let isValid = false;
+	let isValid = !required;
+	let changed = false;
 	let isFilled = false;
 
 	// Only dispatch if the previous state of isFilled is different than the new state.
-	$: dispatch("change", { isValid });
+	$: dispatch("change", { page, title, isValid });
 
 	// On input check if the input is filled.
 	const onChange = ({ target }: Event) => {
 		const { value, name } = target as HTMLInputElement;
 		isFilled = value.length > 0;
+		changed = true;
 		if (!isFilled) {
+			if (required) {
+				isValid = false;
+			} else {
+				isValid = true;
+			}
 			return;
 		}
 		switch (name) {
@@ -69,8 +77,8 @@
 		on:input={onChange}
 		name={title.toLowerCase()}
 		class:border-green-light={isFilled && isValid}
-		class:border-red-light={isFilled && !isValid}
-		class:border-transparent={!isFilled}
+		class:border-red-light={changed && !isValid}
+		class:border-transparent={!changed || (!isFilled && isValid)}
 		class="w-full h-full px-2 bg-gray-800 flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
 		{type}
 		{disabled}

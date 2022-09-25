@@ -10,21 +10,24 @@
 	export let disabled: boolean;
 	export let options: string[];
 	export let placeholder: string;
+	export let page: string;
 
 	const dispatch = createEventDispatcher();
 
 	let open = false;
 	let count = 0;
+	let changed = false;
 	let isValid = false;
 	let dropdownParent: HTMLDivElement;
 
 	// Only dispatch if the previous state of isValid is different than the new state.
-	$: dispatch("change", { isValid });
+	$: dispatch("change", { page, title, isValid });
 
 	// On input change check if the input is filled.
 	const onChange = ({ detail }: CustomEvent<{ isSelected: boolean }>) => {
 		detail.isSelected ? count++ : count--;
 		isValid = count > 0;
+		changed = true;
 	};
 
 	// Check if click is outside of the dropdown, if so, close it.
@@ -51,7 +54,12 @@
 			on:click={() => (open = !open)}
 			class:pointer-events-none={disabled}
 			class:rounded-b-lg={!open}
-			class="w-full flex items-center justify-between p-4 bg-gray-800 mt-4 duration-100 transition-border rounded-t-lg select-none"
+			class="w-full flex items-center justify-between p-4 bg-gray-800 mt-4 duration-100 transition-border rounded-t-lg select-none border-2 z-20 relative"
+			class:border-green-light={isValid}
+			class:border-red-light={changed && !isValid && required}
+			class:border-transparent={!changed ||
+				(!isValid && !required) ||
+				(isValid && count < 1)}
 		>
 			<h1>{count} {placeholder} selected</h1>
 			<Dropdown

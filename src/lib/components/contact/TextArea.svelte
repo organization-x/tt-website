@@ -7,13 +7,14 @@
 	export let required = true;
 	export let disabled: boolean;
 	export let placeholder: string;
+	export let page: string;
 
 	const dispatch = createEventDispatcher();
 
 	let isValid = false;
 
 	// Only dispatch if the previous state of isValid is different than the new state.
-	$: dispatch("change", { isValid });
+	$: dispatch("change", { page, title, isValid });
 
 	// On input change check if the input is filled.
 	const onChange = ({ target }: Event) => {
