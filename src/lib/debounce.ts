@@ -10,6 +10,7 @@ export const debounce: Action<
 	return {
 		update() {
 			clearTimeout(timer);
+
 			timer = setTimeout(params!.func, params!.delay);
 		},
 

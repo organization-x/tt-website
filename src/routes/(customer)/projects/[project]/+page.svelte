@@ -17,9 +17,11 @@
 
 	export let data: PageData;
 
-	const html = generateHTML(data.project.content as JSONContent, extensions);
+	console.log(data.content);
 
-	const { title, theme, date, skills } = data.project;
+	const html = generateHTML(data.content as JSONContent, extensions);
+
+	const { title, theme, date, skills } = data;
 
 	// Syntax highlighting
 	onMount(HLJS.highlightAll);
@@ -31,7 +33,7 @@
 	src="/projects/project/placeholder/banner.webp"
 	width="1920"
 	height="1080"
-	alt="Banner for '{data.project.title}'"
+	alt="Banner for '{data.title}'"
 	class="object-cover object-center w-full h-32 border-b-4 lg:h-44 lg:border-b-8"
 	style="border-color: #{theme}"
 />
@@ -50,24 +52,7 @@
 
 	<Scrollable class="before:from-black after:to-black">
 		{#each data.authors as author}
-			<Author
-				{theme}
-				user={{
-					name: author.name,
-					position: author.position,
-					url: "placeholder"
-				}}
-			/>
-		{/each}
-		{#each data.authors as author}
-			<Author
-				{theme}
-				user={{
-					name: author.name,
-					position: author.position,
-					url: "placeholder"
-				}}
-			/>
+			<Author {theme} user={author} />
 		{/each}
 	</Scrollable>
 
@@ -77,5 +62,5 @@
 		{@html html}
 	</div>
 
-	<Button href={data.previous}>More projects</Button>
+	<Button href="/projects">More projects</Button>
 </div>

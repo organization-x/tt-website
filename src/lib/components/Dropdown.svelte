@@ -66,7 +66,7 @@
 	<button
 		on:click={() => (open = !open)}
 		class:rounded-b-lg={!open}
-		class="w-full flex items-center gap-4 p-4 bg-gray-800 duration-100 transition-border rounded-t-lg select-none"
+		class="w-full flex items-center gap-4 p-4 bg-gray-800 duration-100 transition-border rounded-t-lg"
 	>
 		{#if !$$slots.default}
 			<svelte:component

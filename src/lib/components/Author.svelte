@@ -11,10 +11,12 @@
     
     after:duration-200 after:transition-transform after:h-0.5 after:absolute after:right-4 after:-bottom-0.5 after:left-4 after:bg-white after:scale-x-0 hover:after:scale-x-100"
 >
+	<!-- TODO: Replace placeholder -->
+
 	<img
 		height="200"
 		width="200"
-		src="/developers/user/{url}/icon.webp"
+		src="/developers/user/placeholder/icon.webp"
 		alt="{name}'s avatar"
 		loading="lazy"
 		class:border-4={theme.length}

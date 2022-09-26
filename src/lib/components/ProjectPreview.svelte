@@ -1,57 +1,45 @@
 <script lang="ts">
+	import { fly } from "svelte/transition";
+
 	import { getIcon } from "$lib/getIcon";
 
-	import type { Project, ProjectAuthor, User } from "@prisma/client";
-
-	export let project: Project;
-
-	// TODO: Fetch relational data for project authors
-	// This represents all the project authors that would be fetched
-	const authors: ProjectAuthor[] = [
-		{
-			userId: "githubusername",
-			projectId: "placeholder",
-			position: "Designer"
-		}
-	];
-
-	// This represents the singular user data that would be fetched using the project author user id
-	const userPlaceholder: User = {
-		id: "githubusername",
-		url: "placeholder",
-		name: "Bernice Lau",
-		about: "I'm bernice!",
-		team: "Design",
-		positions: ["Designer"],
-		softSkills: ["Leadership"],
-		techSkills: ["JavaScript"]
-	};
+	export let project: App.ProjectWithAuthors;
 </script>
 
 <a
-	href="projects/{project.id}"
-	class="rounded-lg border-t-4 border-solid max-w-xl mx-auto overflow-hidden bg-gray-500/40"
+	in:fly={{ duration: 300, y: 50 }}
+	href="/projects/{project.url}"
+	rel="noreferrer noopener"
+	class="rounded-lg border-t-4 max-w-xl overflow-hidden bg-gray-500/40 w-full"
 	style="border-color: #{project.theme}"
 >
-	<div
-		class="h-32 sm:h-44 bg-center bg-no-repeat bg-cover relative"
-		style="background-image: url(/projects/project/{project.url}/banner.webp);"
-	>
-		{#each authors as author}
+	<div class="relative">
+		<!-- TODO: Replace placeholders -->
+
+		<img
+			src="/projects/project/placeholder/banner.webp"
+			width="1920"
+			height="1080"
+			alt="Banner for '{project.title}'"
+			class="object-cover object-center w-full h-32 row-start-1 col-start-1"
+		/>
+
+		{#each project.authors as author}
 			<img
 				width="200"
 				height="200"
-				src="/developers/user/{userPlaceholder.url}/icon.webp"
-				alt="Bernice Lau's avatar"
+				src="/developers/user/placeholder/icon.webp"
+				alt="{author.name}'s avatar"
 				class="absolute top-2 right-2 w-10 h-10 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4 md:top-3 md:right-3"
 				style="border-color: #{project.theme}"
 			/>
 		{/each}
 	</div>
-	<div class="py-4 px-3">
+
+	<div class="flex flex-col py-4 px-3 min-h-72">
 		<h1 class="font-semibold text-2xl">{project.title}</h1>
 		<p class="mt-2">{project.description}</p>
-		<div class="flex gap-2 mt-4">
+		<div class="flex gap-2 mt-auto pt-4">
 			{#each project.skills as icon}
 				<svelte:component this={getIcon(icon)} class="w-8 h-8" />
 			{/each}

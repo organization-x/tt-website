@@ -12,7 +12,7 @@ export const checkSession = async ({ session }: App.Locals) => {
 
 // Check if session token even exists and if it does grab the user from it.
 // This is used for loading user data with a +page.server.ts file
-export const grabUser = async ({ session }: App.Locals) => {
+export const userAuth = async ({ session }: App.Locals) => {
 	if (!session) return false;
 	const sesh = prisma.session.findUnique({ where: { token: session } });
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let title = "";
-	export let value = "";
 	export let placeholder = "";
+	export let value: string | null = "";
 	export let max: number | null = null;
 </script>
 

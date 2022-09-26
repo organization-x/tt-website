@@ -1,5 +1,5 @@
 <script lang="ts">
-	import "../app.css";
+	import "../../app.css";
 
 	import { navigating } from "$app/stores";
 	import { slide } from "svelte/transition";
@@ -17,26 +17,18 @@
 	$: if ($navigating) open = false;
 </script>
 
-{#if open}
-	<style>
-		body {
-			overflow: hidden;
-		}
-	</style>
-{/if}
-
 <header class="bg-black font-heading">
 	<div
 		class="p-4 mx-auto max-w-screen-2xl flex justify-between lg:items-center lg:px-6 xl:px-10"
 	>
-		<a href="/" class="z-30" aria-label="Home">
+		<a href="/" class="z-50" aria-label="Home">
 			<Logo class="w-10 h-10" />
 		</a>
 		<div class="lg:hidden flex items-center">
 			<button
 				type="button"
 				aria-label="Menu"
-				class="z-30 relative"
+				class="z-50 relative"
 				on:click={() => {
 					open = !open;
 					window.scrollTo(0, 0);
@@ -47,7 +39,7 @@
 			{#if open}
 				<nav
 					transition:slide
-					class="z-20 absolute inset-0 overflow-y-auto bg-black h-full"
+					class="z-40 absolute inset-0 top-18 overflow-y-auto bg-black h-full"
 				>
 					<div class="p-16 pt-24 max-w-screen-lg mx-auto">
 						<ul class="text-3xl divide-y max-w-md mx-auto">
@@ -93,7 +85,7 @@
 			{/if}
 		</div>
 		<div class="hidden lg:block">
-			<ul class="flex gap-6 items-center">
+			<ul class="flex gap-2 items-center">
 				<NavLink href="/">Home</NavLink>
 				<NavLink href="/about">About</NavLink>
 				<NavLink href="/developers">Developers</NavLink>
@@ -103,7 +95,7 @@
 				</NavLink>
 				<a
 					href="/contact"
-					class="px-4 py-1 select-none bg-white text-black rounded-3xl transition-border hover:rounded-md"
+					class="px-4 py-1 bg-white text-black rounded-3xl transition-border hover:rounded-md"
 				>
 					Contact us
 				</a>
@@ -158,3 +150,11 @@
 		</div>
 	</div>
 </footer>
+
+{#if open}
+	<style>
+		body {
+			overflow: hidden;
+		}
+	</style>
+{/if}

@@ -67,13 +67,17 @@ module.exports = {
 				widpad: "width, padding"
 			},
 			inset: {
-				0.5: "0.125rem"
+				0.5: "0.125rem",
+				18: "4.5rem"
 			},
 			lineHeight: {
 				14: "3.5rem"
 			},
 			height: {
 				100: "25rem"
+			},
+			minHeight: {
+				72: "18rem"
 			}
 		}
 	},

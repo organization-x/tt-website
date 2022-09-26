@@ -5,22 +5,30 @@
 	export let projectPair: Project[];
 </script>
 
-<div
+<button
 	on:click
 	class:grayscale={!current}
-	class:cursor-pointer={!current}
 	class="h-14 flex items-center gap-4 justify-center bg-gray-500/40 rounded-lg py-4 px-6 snap-center shrink-0"
 >
-	<img
-		src="/projects/project/{projectPair[0].url}/banner.webp"
-		alt="Random shapes and colors in the formation of a hallway"
-		loading="lazy"
-		class="rounded-full w-10"
-	/>
-	<img
-		src="/projects/project/{projectPair[1].url}/banner.webp"
-		alt="Random shapes and colors in the formation of a hallway"
-		loading="lazy"
-		class="rounded-full w-10"
-	/>
-</div>
+	<!-- TODO: Replace placeholders -->
+
+	<div class="rounded-full w-10 h-10 overflow-hidden">
+		<img
+			src="/projects/project/placeholder/banner.webp"
+			alt="Random shapes and colors in the formation of a hallway"
+			loading="lazy"
+			class="object-cover object-center w-full h-full"
+		/>
+	</div>
+
+	{#if projectPair.length > 1}
+		<div class="rounded-full w-10 h-10 overflow-hidden">
+			<img
+				src="/projects/project/placeholder/banner.webp"
+				alt="Random shapes and colors in the formation of a hallway"
+				loading="lazy"
+				class="object-cover object-center w-full h-full"
+			/>
+		</div>
+	{/if}
+</button>

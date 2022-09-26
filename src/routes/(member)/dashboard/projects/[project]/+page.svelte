@@ -18,7 +18,7 @@
 
 	export let data: PageData;
 
-	// Store an original copy of the data with typing
+	// Store an original copy of the data
 	let original = JSON.parse(JSON.stringify(data)) as PageData;
 
 	// Store a reference to the editor for generation of the content
@@ -29,6 +29,8 @@
 	let disableButtons = true;
 
 	const checkConstraints = () => {
+		disableButtons = true;
+
 		const title = data.project.title.trim();
 		const description = data.project.description.trim();
 
@@ -69,31 +71,23 @@
 		checkConstraints();
 	};
 
-	$: data.authors, (disableButtons = true), checkConstraints();
+	$: data.project.authors, checkConstraints();
 
-	$: data.project.title,
-		(disableButtons = true),
-		(titleError = false),
-		(data.project.title = data.project.title),
-		(data.project.url = data.project.title
-			.replaceAll(" ", "-")
-			.toLowerCase()),
-		checkConstraints();
+	$: data.project.title, (titleError = false), checkConstraints();
 
-	$: data.project.description,
-		(disableButtons = true),
-		(data.project.description = data.project.description),
-		checkConstraints();
+	$: data.project.description, checkConstraints();
 
 	// On cancel, revert the values to their originals and disable the save/cancel buttons
-	const onCancel = () => {
+	const cancel = () => {
 		disableButtons = true;
 		editor.commands.setContent(original.project.content as Content);
 		data.project = JSON.parse(JSON.stringify(original.project));
-		data.authors = JSON.parse(JSON.stringify(original.authors));
+		data.project.authors = JSON.parse(
+			JSON.stringify(original.project.authors)
+		);
 	};
 
-	const onSave = async () => {
+	const save = async () => {
 		disableButtons = true;
 		disableForm = true;
 		editor.setEditable(false);
@@ -101,6 +95,10 @@
 		// Trim title and description whitespace
 		data.project.title = data.project.title.trim();
 		data.project.description = data.project.description.trim();
+
+		// Split the authors property from the project since thats not how it's stored in postgres.
+		// That's added for ease of use within this codebase
+		const { authors, ...project } = data.project;
 
 		// Send an update request to the API
 		await fetch("/api/project", {
@@ -113,26 +111,30 @@
 					id: data.project.id
 				},
 				project: {
-					...data.project,
+					...project,
 					date: new Date(),
 					content: data.project.content
 				},
-				authors: data.authors
+				authors
 			} as App.ProjectUpdateRequest)
 		}).then(async (res) => {
+			const json = await res.json();
+
 			// If an error occurs and it's the title, tell the user
-			if (!res.ok && (await res.json()).message === "SAME_TITLE")
-				titleError = true;
-			// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading
-			else if (data.project.url !== original.project.url)
+			if (!res.ok && json.message === "SAME_TITLE") titleError = true;
+			// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading and update the local copy of the project
+			else if (json.url !== original.project.url) {
+				data.project.url = json.url;
+
 				history.replaceState(
 					{},
 					"",
 					new URL(
-						`/dashboard/projects/${data.project.url}`,
+						`/dashboard/projects/${json.url}`,
 						document.location.href
 					)
 				);
+			}
 
 			disableForm = false;
 			disableButtons = true;
@@ -144,16 +146,13 @@
 	};
 </script>
 
-<div
-	class="grid border-b-4 overflow-hidden"
-	style="border-color: #{data.project.theme}"
->
+<div class="grid border-b-4" style="border-color: #{data.project.theme}">
 	<!-- TODO: Replace placeholder -->
 	<img
 		src="/projects/project/placeholder/banner.webp"
 		width="1920"
 		height="1080"
-		alt="{data.user.name}'s avatar"
+		alt="Banner for '{data.project.title}'"
 		class="object-cover object-center w-full h-32 row-start-1 col-start-1"
 	/>
 
@@ -171,7 +170,7 @@
 	class:opacity-60={disableForm}
 	class="flex flex-col gap-8 p-4 max-w-xl mx-auto transition-opacity mt-2 lg:px-12 lg:max-w-screen-3xl xl:items-center"
 >
-	<div class="flex flex-col gap-5 lg:max-w-screen-xl xl:min-w-full">
+	<div class="flex flex-col gap-5 w-full lg:max-w-screen-xl">
 		<div>
 			<Input
 				bind:value={data.project.title}
@@ -193,7 +192,7 @@
 			max={300}
 		/>
 
-		<AuthorSection bind:authors={data.authors} user={data.user} />
+		<AuthorSection bind:authors={data.project.authors} user={data.user} />
 
 		<InputSection title="Skills">
 			{#each { length: 4 } as _, i}
@@ -210,14 +209,14 @@
 
 		<div class="flex gap-6 mx-auto mt-6">
 			<DashButton
-				on:click={onCancel}
+				on:click={cancel}
 				disabled={disableButtons}
 				class="bg-gray-500"
 			>
 				Cancel
 			</DashButton>
 			<DashButton
-				on:click={onSave}
+				on:click={save}
 				disabled={disableButtons}
 				class="bg-blue-light"
 			>

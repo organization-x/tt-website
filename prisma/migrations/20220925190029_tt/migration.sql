@@ -35,14 +35,15 @@ CREATE TABLE "ProjectAuthor" (
 -- CreateTable
 CREATE TABLE "Project" (
     "id" TEXT NOT NULL,
+    "url" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "theme" TEXT NOT NULL,
-    "url" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL,
     "skills" "TechSkill"[],
     "ownerId" TEXT NOT NULL,
     "content" JSONB NOT NULL,
+    "visible" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "Project_pkey" PRIMARY KEY ("id")
 );
@@ -72,9 +73,6 @@ CREATE TABLE "User" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Project_url_key" ON "Project"("url");
-
--- CreateIndex
-CREATE UNIQUE INDEX "Project_ownerId_key" ON "Project"("ownerId");
 
 -- CreateIndex
 CREATE INDEX "Project_title_skills_idx" ON "Project"("title", "skills");

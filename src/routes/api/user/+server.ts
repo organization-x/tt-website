@@ -1,4 +1,5 @@
 import { error } from "@sveltejs/kit";
+import { getUsers } from "$lib/getters";
 import { prisma, checkSession } from "$lib/prisma";
 
 import type { RequestHandler } from "./$types";
@@ -29,11 +30,15 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 
 	// Input validation
 	if (
-		!(
-			data.user.positions.length >= 2 ||
-			data.user.softSkills.length >= 2 ||
-			data.user.techSkills.length >= 2
-		)
+		(data.user.positions &&
+			(data.user.positions.length < 2 ||
+				data.user.positions.length > 4)) ||
+		(data.user.softSkills &&
+			(data.user.softSkills.length < 2 ||
+				data.user.softSkills.length > 5)) ||
+		(data.user.techSkills &&
+			(data.user.techSkills.length < 2 ||
+				data.user.techSkills.length > 5))
 	)
 		throw error(400, "Bad Request");
 
@@ -53,19 +58,21 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			throw error(400, "Bad Request");
 		});
 
-	// Omit userId from links update, we don't want people to update the userId
-	const { userId, ...links } = data.links;
-
-	// Update the links or create them, if provided
 	if (data.links) {
-		await prisma.links
-			.update({
-				where: { userId: data.where.id },
-				data: links
-			})
-			.catch(() => {
-				throw error(400, "Bad Request");
-			});
+		// Omit userId from links update, we don't want people to update the userId
+		const { userId, ...links } = data.links;
+
+		// Update the links or create them, if provided
+		if (data.links) {
+			await prisma.links
+				.update({
+					where: { userId: data.where.id },
+					data: links
+				})
+				.catch(() => {
+					throw error(400, "Bad Request");
+				});
+		}
 	}
 
 	return new Response(undefined, { status: 200 });
@@ -78,8 +85,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const data: App.UserSearchRequest = await request.json();
 
 	// Grab users using request, if an error occurs throw a bad request
-	const users = await prisma.user
-		.findMany({ where: data.where })
+	const users = await getUsers(data.where)
 		.then((users) => users)
 		.catch(() => {
 			throw error(400, "Bad Request");

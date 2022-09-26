@@ -19,9 +19,14 @@
 	}
 
 	img {
-		@apply select-none;
 		user-drag: none;
 		-webkit-user-drag: none;
+	}
+
+	a,
+	img,
+	button {
+		@apply select-none;
 	}
 
 	.scrollbar {

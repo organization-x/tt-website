@@ -1,14 +1,14 @@
 <script lang="ts">
 	export let name: string;
-	export let current: boolean;
+	export let active: boolean;
+	export let onClick: () => boolean;
 </script>
 
-<div
-	on:click
-	class:opacity-50={!current}
-	class:cursor-pointer={!current}
-	class="font-semibold h-14 shrink-0 flex items-center gap-2 justify-center bg-gray-500/40 rounded-lg py-4 px-6 snap-center select-none"
+<button
+	on:click={() => (active = onClick())}
+	class:opacity-50={!active}
+	class="font-semibold h-14 transition-opacity w-48 shrink-0 flex items-center gap-2 justify-center bg-gray-500/40 rounded-lg py-4 px-6 snap-center select-none"
 >
 	<slot />
 	{name}
-</div>
+</button>

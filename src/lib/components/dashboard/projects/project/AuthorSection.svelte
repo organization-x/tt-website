@@ -10,42 +10,43 @@
 	export let user: User;
 	export let authors: App.ProjectAuthor[];
 
-	let search: string;
-	let results: User[] = [];
+	let search = "";
+	let request: Promise<User[]> = new Promise(() => {});
 
 	// Update search value on input
-	const onInput = () => {
-		const req = search.trim();
+	const onSearch = () =>
+		(request = new Promise((res, rej) => {
+			const req = search.trim();
 
-		// If the request is empty then reset the results and ignore the search
-		if (!req.length) {
-			results = [];
-			return;
-		}
+			// Avoid uncaught rejects
+			if (!req.length && search.length) return rej();
+			else if (!req.length) return;
 
-		fetch("/api/user", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify({
-				where: {
-					name: {
-						contains: search.trim(),
-						mode: "insensitive"
+			fetch("/api/user", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					where: {
+						name: {
+							contains: search.trim(),
+							mode: "insensitive"
+						}
 					}
-				}
-			} as App.UserSearchRequest)
-		})
-			.then((res) => res.json())
-			.then((data: User[]) => {
-				// Filter users out who are already collaborators
-				results = data.filter(
-					(result) =>
-						!authors.some((author) => author.id === result.id)
-				);
-			});
-	};
+				} as App.UserSearchRequest)
+			})
+				.then((res) => res.json())
+				.then((data: User[]) => {
+					// Filter users out who are already collaborators
+					let results = data.filter(
+						(result) =>
+							!authors.some((author) => author.id === result.id)
+					);
+
+					results.length ? res(results) : rej();
+				});
+		}));
 </script>
 
 <div class="lg:flex lg:justify-between lg:gap-14">
@@ -67,7 +68,7 @@
 						authors = authors;
 
 						// Requery the search
-						onInput();
+						onSearch();
 					}}
 				/>
 			{/each}
@@ -85,10 +86,11 @@
 					</div>
 					<input
 						bind:value={search}
+						on:input={() => (request = new Promise(() => {}))}
 						use:debounce={{
 							bind: search,
-							func: onInput,
-							delay: 200
+							func: onSearch,
+							delay: 300
 						}}
 						type="text"
 						class="w-full h-full px-4 py-4 bg-transparent focus:outline-none my-auto"
@@ -99,50 +101,70 @@
 				{#if search.length}
 					<div
 						transition:slide={{ duration: 200 }}
-						class="h-32 flex flex-col gap-4 p-4"
+						class="h-32 flex flex-col gap-4 p-4 overflow-auto"
 					>
-						{#each results as user}
-							<button
-								on:click={() => {
-									// If the user is already in the authors, ignore
-									if (
-										authors.find(
-											(author) => author.id === user.id
-										)
-									)
-										return;
-
-									// Default position is backend since it's at the top
-									authors.push({
-										position: "Backend",
-										...user
-									});
-
-									authors = authors;
-
-									// Requery the search
-									onInput();
-								}}
-								in:fly={{ y: 20, duration: 200 }}
-								class="flex gap-3 items-center"
-							>
-								<!-- TODO: Replace placeholder -->
-
-								<img
-									src="/developers/user/placeholder/icon.webp"
-									alt="{user.name}'s avatar"
-									class="w-10 h-10 rounded-full"
+						{#await request}
+							<div class="animate-pulse flex gap-3 items-center">
+								<div
+									class="rounded-full w-10 h-10 bg-gray-500"
 								/>
-								<h1 class="text-lg">{user.name}</h1>
-							</button>
-						{:else}
+								<div
+									class="rounded-full w-32 h-4 bg-gray-500"
+								/>
+							</div>
+							<div class="animate-pulse flex gap-3 items-center">
+								<div
+									class="rounded-full w-10 h-10 bg-gray-500"
+								/>
+								<div
+									class="rounded-full w-32 h-4 bg-gray-500"
+								/>
+							</div>
+						{:then users}
+							{#each users as user}
+								<button
+									on:click={() => {
+										// If the user is already in the authors, ignore
+										if (
+											authors.find(
+												(author) =>
+													author.id === user.id
+											)
+										)
+											return;
+
+										// Default position is backend since it's at the top
+										authors.push({
+											position: "Backend",
+											...user
+										});
+
+										authors = authors;
+
+										// Requery the search
+										onSearch();
+									}}
+									in:fly={{ y: 20, duration: 200 }}
+									class="flex gap-3 items-center"
+								>
+									<!-- TODO: Replace placeholder -->
+
+									<img
+										src="/developers/user/placeholder/icon.webp"
+										alt="{user.name}'s avatar"
+										class="w-10 h-10 rounded-full"
+									/>
+									<h1 class="text-lg">{user.name}</h1>
+								</button>
+							{/each}
+						{:catch}
 							<h1
 								in:fly={{ y: 20, duration: 200 }}
 								class="text-center"
 							>
 								No results
 							</h1>
-						{/each}
+						{/await}
 					</div>
 				{/if}
 			</div>

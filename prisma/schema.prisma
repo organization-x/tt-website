@@ -69,18 +69,19 @@ model ProjectAuthor {
 // A project model for storing information about projects (blog posts)
 model Project {
     id          String          @id @default(cuid())
+    url         String          @unique
     title       String
     description String
     // Hex code representing a common color pulled from the banner
     theme       String
     // Contains the projects url basis (name-of-project), structured as /projects/{name-of-project}.
     // For banners we can do /projects/{name-of-project}/banner.webp
-    url         String          @unique
     date        DateTime
     skills      TechSkill[]
     authors     ProjectAuthor[]
     ownerId     String
     content     Json // Contains generated tiptap json
+    visible     Boolean         @default(true)
 
     @@index([title, skills])
 }

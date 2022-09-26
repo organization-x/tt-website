@@ -52,8 +52,8 @@
 <svelte:window on:click={onClick} bind:innerWidth />
 
 <div
-	in:slide={{ duration: 200 }}
-	out:transition
+	in:slide|local={{ duration: 200 }}
+	out:transition|local
 	bind:this={parent}
 	class="flex flex-col bg-gray-500/40 rounded-lg mb-4"
 >

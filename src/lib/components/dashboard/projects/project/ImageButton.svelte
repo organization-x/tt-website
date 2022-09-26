@@ -9,6 +9,12 @@
 	export let editor: Editor;
 	export let active: boolean;
 
+	const enum Action {
+		Confirm,
+		Open,
+		Delete
+	}
+
 	let open = false;
 	let input: HTMLInputElement;
 	let value = editor.getAttributes("image").src || "";
@@ -17,15 +23,15 @@
 	$: open, active, (value = editor.getAttributes("image").src || "");
 
 	// Delete, change src, or add image
-	const onClick = (id: "confirm" | "open" | "delete") => {
+	const onAction = (action: Action) => {
 		const value = input.value.trim();
 
-		switch (id) {
-			case "open":
+		switch (action) {
+			case Action.Open:
 				open = true;
 
 				break;
-			case "confirm":
+			case Action.Confirm:
 				if (value.length) {
 					// Make the link valid if it doesn't have a protocol
 					value.startsWith("http://") || value.startsWith("https://")
@@ -42,7 +48,7 @@
 				open = false;
 
 				break;
-			case "delete":
+			case Action.Delete:
 				editor.commands.deleteSelection();
 
 				open = false;
@@ -51,7 +57,7 @@
 </script>
 
 <ExpandButton
-	on:click={() => onClick(open ? "confirm" : "open")}
+	on:click={() => onAction(open ? Action.Confirm : Action.Open)}
 	{open}
 	{active}
 >
@@ -65,13 +71,17 @@
 
 	<svelte:fragment slot="expanded">
 		{#if active}
-			<button on:click={() => onClick("delete")} class="my-auto shrink-0">
+			<button
+				on:click={() => onAction(Action.Delete)}
+				class="my-auto shrink-0"
+			>
 				<Trash class="w-5 h-5" />
 			</button>
 		{/if}
 		<input
 			bind:this={input}
-			on:keyup={(e) => (e.key === "Enter" ? onClick("confirm") : null)}
+			on:keyup={(e) =>
+				e.key === "Enter" ? onAction(Action.Confirm) : null}
 			type="text"
 			class="bg-transparent px-2 focus:outline-none"
 			placeholder="https://example.com"

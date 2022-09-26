@@ -3,7 +3,6 @@
 	import Hero from "$lib/components/Hero.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
-	import ScrollRow from "$lib/components/ScrollRow.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import Python from "$lib/components/icons/Python.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
