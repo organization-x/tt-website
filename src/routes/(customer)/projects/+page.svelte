@@ -31,8 +31,6 @@
 	$: search, (request = new Promise(() => {}));
 
 	const onSearch = () => {
-		const filterArray = Array.from(filters);
-
 		request = new Promise((res, rej) =>
 			fetch("/api/project", {
 				method: "POST",
@@ -46,8 +44,8 @@
 							mode: "insensitive"
 						},
 						visible: true,
-						skills: filterArray.length
-							? { hasEvery: filterArray }
+						skills: filters.size
+							? { hasEvery: Array.from(filters) }
 							: undefined
 					}
 				} as App.ProjectSearchRequest)
@@ -139,7 +137,6 @@
 
 		<Seperator />
 
-		<!-- Stop CLS when search results are changing -->
 		<div class="h-[70rem]">
 			<Scrollable
 				class="before:from-gray-900 after:to-gray-900"

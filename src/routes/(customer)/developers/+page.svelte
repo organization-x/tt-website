@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { fly } from "svelte/transition";
+
+	import { getIcon } from "$lib/getIcon";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import { softSkills, techSkills } from "$lib/enums";
@@ -17,21 +20,19 @@
 	import Developer from "$lib/components/developers/index/Developer.svelte";
 	import DeveloperFilter from "$lib/components/developers/index/DeveloperFilter.svelte";
 
-	import { getIcon } from "$lib/getIcon";
-	import type { SoftSkill, TechSkill } from "@prisma/client";
+	import type { SoftSkill, TechSkill, User } from "@prisma/client";
 
-	let request: Promise<App.ProjectWithAuthors[][]> = new Promise(() => {});
+	let request: Promise<User[]> = new Promise(() => {});
 
 	let page = 0;
 	let search = "";
-	let filters = new Set<SoftSkill | TechSkill>();
+	let softSkillFilter = new Set<SoftSkill>();
+	let techSkillFilter = new Set<TechSkill>();
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
 	$: search, (request = new Promise(() => {}));
 
 	const onSearch = () => {
-		const filterArray = Array.from(filters);
-
 		request = new Promise((res, rej) =>
 			fetch("/api/user", {
 				method: "POST",
@@ -44,29 +45,17 @@
 							contains: search.trim(),
 							mode: "insensitive"
 						},
-						skills: filterArray.length
-							? { hasEvery: filterArray }
+						softSkills: softSkillFilter.size
+							? { hasEvery: Array.from(softSkillFilter) }
+							: undefined,
+						techSkills: techSkillFilter.size
+							? { hasEvery: Array.from(techSkillFilter) }
 							: undefined
 					}
 				} as App.UserSearchRequest)
 			})
 				.then((res) => res.json())
-				.then((data: App.ProjectWithAuthors[]) => {
-					// Put projects into pairs of 2 or reject if there's no results
-					data.length
-						? res(
-								data
-									.map((project, i) => {
-										if (i % 2 === 0)
-											return i === data.length - 1
-												? [project]
-												: [project, data[i + 1]];
-										else return [];
-									})
-									.filter((project) => project.length)
-						  )
-						: rej();
-				})
+				.then((data: User[]) => (data.length ? res(data) : rej()))
 		);
 	};
 </script>
@@ -138,10 +127,15 @@
 <Section filled={true}>
 	<MajorHeader>Search Developers</MajorHeader>
 
-	<div class="max-w-screen-lg mx-auto w-full">
+	<div class="max-w-screen-lg mx-auto w-full flex flex-col gap-4">
 		<FilterTitle />
 
-		<SearchBar bind:search placeholder="Search developers..." />
+		<SearchBar
+			bind:search
+			on:input={() => (request = new Promise(() => {}))}
+			on:search={onSearch}
+			placeholder="Search developers..."
+		/>
 
 		<Scrollable
 			class="before:from-gray-900 after:to-gray-900"
@@ -152,14 +146,16 @@
 					on:click={() => {
 						// Add a filter if its not there and delete it if it's not, then tell
 						// the component whether it's active or or not based off the initial has value
-						const has = filters.has(skill);
-						has ? filters.delete(skill) : filters.add(skill);
-						filters = filters;
+						const has = softSkillFilter.has(skill);
+						has
+							? softSkillFilter.delete(skill)
+							: softSkillFilter.add(skill);
+						softSkillFilter = softSkillFilter;
 
 						onSearch();
 					}}
 					name={skill.replace("_", " ")}
-					active={filters.has(skill)}
+					active={softSkillFilter.has(skill)}
 				>
 					<svelte:component this={getIcon(skill)} class="h-6 w-6" />
 				</SkillFilter>
@@ -175,14 +171,16 @@
 					on:click={() => {
 						// Add a filter if its not there and delete it if it's not, then tell
 						// the component whether it's active or or not based off the initial has value
-						const has = filters.has(skill);
-						has ? filters.delete(skill) : filters.add(skill);
-						filters = filters;
+						const has = techSkillFilter.has(skill);
+						has
+							? techSkillFilter.delete(skill)
+							: techSkillFilter.add(skill);
+						techSkillFilter = techSkillFilter;
 
 						onSearch();
 					}}
 					name={skill.replace("_", " ")}
-					active={filters.has(skill)}
+					active={techSkillFilter.has(skill)}
 				>
 					<svelte:component this={getIcon(skill)} class="h-6 w-6" />
 				</SkillFilter>
@@ -191,33 +189,95 @@
 
 		<Seperator />
 
-		<Scrollable class="before:from-gray-900 after:to-gray-900">
-			<DeveloperFilter current={true} user={placeholder} />
-			<DeveloperFilter current={false} user={placeholder} />
-			<DeveloperFilter current={false} user={placeholder} />
-		</Scrollable>
+		<div class="h-[70rem]">
+			<Scrollable
+				class="before:from-gray-900 after:to-gray-900"
+				arrows={true}
+			>
+				{#await request}
+					<div
+						class="h-14 flex animate-pulse items-center gap-4 justify-center bg-gray-500 rounded-lg py-4 px-6 shrink-0"
+					>
+						<div class="rounded-full bg-gray-400 w-10 h-10" />
+						<div class="rounded-full bg-gray-400 w-20 h-5" />
+					</div>
+				{:then users}
+					{#each users as user, i}
+						<DeveloperFilter
+							{user}
+							current={page === i}
+							on:click={() => (page = i)}
+						/>
+					{/each}
+				{:catch}
+					<!-- Not catching this throws an error in the console, since slot will never be used here it's being used as an empty element -->
+					<slot />
+				{/await}
+			</Scrollable>
 
-		<div
-			class="flex gap-32 max-w-xl mx-auto overflow-auto scrollbar-hidden snap-x snap-mandatory my-12"
-		>
-			<Developer user={placeholder}>
-				Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-				Repellat unde possimus expedita minima iusto excepturi vero
-				facere dolorem ducimus, iste minus velit, distinctio sed illum
-				labore quos libero impedit sequi.
-			</Developer>
-			<Developer user={placeholder}>
-				Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-				Repellat unde possimus expedita minima iusto excepturi vero
-				facere dolorem ducimus, iste minus velit, distinctio sed illum
-				labore quos libero impedit sequi.
-			</Developer>
-			<Developer user={placeholder}>
-				Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-				Repellat unde possimus expedita minima iusto excepturi vero
-				facere dolorem ducimus, iste minus velit, distinctio sed illum
-				labore quos libero impedit sequi.
-			</Developer>
+			<div
+				class="flex flex-col items-center max-w-xl mx-auto gap-14 my-12 lg:my-20"
+			>
+				{#await request}
+					<div
+						class="bg-gray-500 rounded-lg w-full h-full py-6 px-4 max-w-xl mx-auto shrink-0 animate-pulse"
+					>
+						<div class="flex items-center gap-4">
+							<div
+								class="bg-gray-400 rounded-full w-20 h-20 shrink-0"
+							/>
+							<div class="rounded-full bg-gray-400 w-20 h-5" />
+						</div>
+						<div class="flex flex-col gap-1 ml-24">
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-32 bg-gray-400" />
+						</div>
+						<div class="grid grid-cols-2 gap-4 my-4">
+							<div
+								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
+							/>
+							<div
+								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
+							/>
+							<div
+								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
+							/>
+							<div
+								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
+							/>
+						</div>
+						<div class="grid grid-cols-2 gap-4">
+							<div
+								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
+							/>
+							<div
+								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
+							/>
+							<div
+								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
+							/>
+							<div
+								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
+							/>
+						</div>
+					</div>
+				{:then users}
+					{#each users as user, i}
+						{#if page === i}
+							<Developer {user} />
+						{/if}
+					{/each}
+				{:catch}
+					<h1
+						in:fly={{ duration: 300, y: 30 }}
+						class="text-center font-semibold text-2xl"
+					>
+						No results
+					</h1>
+				{/await}
+			</div>
 		</div>
 	</div>
 </Section>

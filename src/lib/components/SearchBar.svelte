@@ -4,13 +4,13 @@
 	import { debounce } from "$lib/debounce";
 	import Search from "$lib/components/icons/Search.svelte";
 
-	const dispatch = createEventDispatcher<{ search: string }>();
+	const dispatch = createEventDispatcher<{ search: undefined }>();
 
 	export let search = "";
 	export let placeholder: string;
 
 	// Dispatch an initial search on page load so content is loaded
-	onMount(() => dispatch("search", search.trim()));
+	onMount(() => dispatch("search"));
 </script>
 
 <div class="bg-gray-500/40 flex p-4 rounded-lg select-none w-full items-center">
@@ -20,7 +20,7 @@
 		on:input
 		use:debounce={{
 			bind: search,
-			func: () => dispatch("search", search.trim()),
+			func: () => dispatch("search"),
 			delay: 300
 		}}
 		type="text"

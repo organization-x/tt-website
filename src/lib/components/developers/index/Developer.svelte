@@ -11,44 +11,56 @@
 	import type { User } from "@prisma/client";
 
 	export let user: User;
-
-	// TODO: possibly include soft skills on the developer cards?
-	const { name, url, team, positions, techSkills } = user;
 </script>
 
-<div
-	class="bg-gray-500/40 rounded-lg w-full h-full snap-center py-6 px-4 max-w-xl mx-auto shrink-0"
+<a
+	href="/developers/{user.url}"
+	rel="noreferrer noopener"
+	class="bg-gray-500/40 flex flex-col rounded-lg w-full snap-center py-6 px-4 max-w-xl mx-auto shrink-0 h-[55rem]"
 >
-	<div class="flex items-center gap-4">
+	<div class="flex items-center justify-center gap-4 mb-4">
+		<!-- TODO: Replace placeholder -->
+
 		<img
 			height="200"
 			width="200"
-			src="/assets/developers/user/{url}/icon.webp"
-			alt="{name}'s avatar"
+			src="/assets/developers/user/placeholder/icon.webp"
+			alt="{user.name}'s avatar"
 			loading="lazy"
-			class="rounded-full my-auto w-20"
+			class="rounded-full w-20"
 		/>
 		<div>
-			<h1 class="font-bold">
-				{team ? team.toUpperCase() : "UNKNOWN"}
+			<h1 class="font-semibold">
+				{user.team ? user.team.toUpperCase() : "UNKNOWN"}
 			</h1>
 			<GradientText class="from-green-light to-green-dark text-3xl">
-				{name}
+				{user.name}
 			</GradientText>
 		</div>
 	</div>
-	<p class="mt-4">
-		<slot />
-	</p>
-	<DevList title="Positions" icon={Bulb}>
-		{#each positions as position}
-			<DevTag name={position} icon={getIcon(position)} />
-		{/each}
-	</DevList>
-	<DevList title="Skills" icon={Wrench}>
-		{#each techSkills as skill}
-			<DevTag name={skill} icon={getIcon(skill)} />
-		{/each}
-	</DevList>
-	<Button href="/developers/{url}" class="mt-8 mx-auto">View Profile</Button>
-</div>
+
+	<p class="text-center my-auto">{user.about}</p>
+
+	<div>
+		<DevList title="Positions" icon={Bulb}>
+			{#each user.positions as position, i}
+				{#if i <= 4}
+					<DevTag name={position} icon={getIcon(position)} />
+				{/if}
+			{/each}
+		</DevList>
+
+		<DevList title="Skills" icon={Wrench}>
+			{#each user.techSkills as skill, i}
+				{#if i <= 2}
+					<DevTag name={skill} icon={getIcon(skill)} />
+				{/if}
+			{/each}
+			{#each user.softSkills as skill, i}
+				{#if i <= 2}
+					<DevTag name={skill} icon={getIcon(skill)} />
+				{/if}
+			{/each}
+		</DevList>
+	</div>
+</a>
