@@ -51,7 +51,7 @@
 				break;
 			}
 			case "phone number": {
-				isValid = all_nums.test(value) && value.length <= 15;
+				isValid = all_nums.test(value) && 8 <= value.length && value.length <= 15;
 				break;
 			}
 			case "company website": {
