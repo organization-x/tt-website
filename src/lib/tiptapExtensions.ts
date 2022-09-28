@@ -60,7 +60,7 @@ export const extensions = [
 		HTMLAttributes: {
 			target: "_blank",
 			// This is so a link icon can be after a link element to indicate it's a link
-			class: "underline cursor-pointer relative mr-7 after:content-[url(/dashboard/projects/project/link.svg)] after:w-5 after:h-5 after:top-0.5 after:absolute after:left-full after:ml-1 after:pointer-events-none"
+			class: "underline cursor-pointer relative mr-7 after:content-[url(/assets/dashboard/projects/project/link.svg)] after:w-5 after:h-5 after:top-0.5 after:absolute after:left-full after:ml-1 after:pointer-events-none"
 		}
 	}),
 	OrderedList.extend({

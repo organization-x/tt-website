@@ -5,7 +5,7 @@
 	import LinkedIn from "$lib/components/icons/LinkedIn.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import Instagram from "$lib/components/icons/Instagram.svelte";
-	import Panel from "$lib/components/developers/user/index/Panel.svelte";
+	import Panel from "$lib/components/developers/user/Panel.svelte";
 
 	const user = $page.params.user; // Slug passed in for retrieving user data
 </script>
@@ -19,7 +19,9 @@
 	/>
 
 	<img
-		src="/projects/project/placeholder/banner.webp"
+		width="200"
+		height="200"
+		src="/assets/projects/project/placeholder/banner.webp"
 		alt="Profile"
 		class="w-28 h-28 rounded-full border-4 border-black mx-auto"
 	/>

@@ -20,7 +20,7 @@
 			<img
 				height="200"
 				width="200"
-				src="/developers/user/{url}/icon.webp"
+				src="/assets/developers/user/{url}/icon.webp"
 				alt="{name}'s avatar"
 				loading="lazy"
 				class="rounded-full mx-auto w-20 h-20 xl:mx-0"

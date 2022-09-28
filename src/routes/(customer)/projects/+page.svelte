@@ -16,7 +16,7 @@
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
-	import ProjectFilter from "$lib/components/projects/index/ProjectFilter.svelte";
+	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
 
 	import type { TechSkill } from "@prisma/client";
 	import ProjectLoader from "$lib/components/ProjectLoader.svelte";
@@ -25,7 +25,7 @@
 
 	let page = 0;
 	let search = "";
-	const filters = new Set<TechSkill>();
+	let filters = new Set<TechSkill>();
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
 	$: search, (request = new Promise(() => {}));
@@ -77,7 +77,7 @@
 	<title>Projects</title>
 </svelte:head>
 
-<Hero src="/projects/index/projects.webm">
+<Hero src="/assets/projects/index/projects.webm">
 	<PageTitle class="from-pink-light to-pink-dark">
 		Projects from personal to professional.
 	</PageTitle>
@@ -119,7 +119,7 @@
 		>
 			{#each techSkills as skill}
 				<SkillFilter
-					onClick={() => {
+					on:click={() => {
 						// Add a filter if its not there and delete it if it's not, then tell
 						// the component whether it's active or or not based off the initial has value
 						const has = filters.has(skill);
@@ -127,7 +127,7 @@
 
 						onSearch();
 
-						return !has;
+						filters = filters;
 					}}
 					name={skill.replace("_", " ")}
 					active={filters.has(skill)}
@@ -166,7 +166,9 @@
 				{/await}
 			</Scrollable>
 
-			<div class="flex flex-col items-center gap-14 my-12 lg:my-20">
+			<div
+				class="flex flex-col items-center max-w-xl mx-auto gap-14 my-12 lg:my-20"
+			>
 				{#await request}
 					<ProjectLoader />
 				{:then projects}

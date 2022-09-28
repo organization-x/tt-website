@@ -43,7 +43,7 @@
 	<title>Contact Us</title>
 </svelte:head>
 
-<Hero src="contact/contact.webm">
+<Hero src="/assets/contact/contact.webm">
 	<PageTitle class="from-purple-light to-purple-dark">
 		Let us get the party started for you.
 	</PageTitle>

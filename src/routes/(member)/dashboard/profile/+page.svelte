@@ -37,6 +37,9 @@
 	let disableButtons = true;
 
 	const checkConstraints = () => {
+		// If the form is disabled ignore since the reactive statements fire due to the fetch call
+		if (disableForm) return;
+
 		disableButtons = true;
 
 		const about = data.user.about.trim();
@@ -49,7 +52,6 @@
 		)
 			return;
 
-		console.log(original.user.about, data.user.about);
 		// Check if the data has changed from its original content
 		if (JSON.stringify(original) !== JSON.stringify(data))
 			disableButtons = false;
@@ -127,17 +129,14 @@
 		}).then(() => {
 			disableForm = false;
 
-			// TODO: Original and data are somehow synced
-			// TODO: Polish up dashboard experience
-
 			// If successful, update the original data.
-			// The reason it's done manually like this is so the original object is then still used across all dashboard pages
-			// original.user.about = data.user.about;
-			// original.user.team = data.user.team;
-			// original.user.positions = data.user.positions;
-			// original.user.softSkills = data.user.softSkills;
-			// original.user.techSkills = data.user.techSkills;
-			// original.links = data.links;
+			// The reason it's done manually like this is so the original object is presevered and is then used across all dashboard pages
+			original.user.about = data.user.about;
+			original.user.team = data.user.team;
+			original.user.positions = data.user.positions;
+			original.user.softSkills = data.user.softSkills;
+			original.user.techSkills = data.user.techSkills;
+			original.links = data.links;
 		});
 	};
 </script>
@@ -146,7 +145,7 @@
 	<div class="grid absolute top-0 inset-x-0 -z-10">
 		<!-- TODO: Replace placeholder -->
 		<img
-			src="/projects/project/placeholder/banner.webp"
+			src="/assets/projects/project/placeholder/banner.webp"
 			width="1920"
 			height="1080"
 			alt="{data.user.name}'s banner"
@@ -169,7 +168,9 @@
 				class="rounded-full w-fit border-4 mt-4 border-black mx-auto grid lg:mx-0"
 			>
 				<img
-					src="/developers/user/placeholder/icon.webp"
+					width="200"
+					height="200"
+					src="/assets/developers/user/placeholder/icon.webp"
 					alt="{data.user.name}'s avatar"
 					class="w-28 h-28 rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
 				/>

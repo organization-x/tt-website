@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getIcon } from "$lib/getIcon";
-	import { onMount, createEventDispatcher } from "svelte";
+	import { createEventDispatcher } from "svelte";
 
 	import DropdownItem from "$lib/components/DropdownItem.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
@@ -30,15 +30,9 @@
 	}
 
 	// Check if click is outside of the dropdown, if so, close it
-	onMount(() => {
-		const onClick = ({ target }: Event) => {
-			if (!parent.contains(target as Node)) open = false;
-		};
-
-		addEventListener("click", onClick);
-
-		return () => removeEventListener("click", onClick);
-	});
+	const windowClick = ({ target }: Event) => {
+		if (open && !parent.contains(target as Node)) open = false;
+	};
 
 	// Update the the selected item index when an item in the dropdown is selected and tell the parent about the new selection
 	const onClick = (index: number) => {
@@ -62,11 +56,13 @@
 		(placeholder = options[selected]);
 </script>
 
+<svelte:window on:click={windowClick} />
+
 <div bind:this={parent} class="relative">
 	<button
 		on:click={() => (open = !open)}
 		class:rounded-b-lg={!open}
-		class="w-full flex items-center gap-4 p-4 bg-gray-800 duration-100 transition-border rounded-t-lg"
+		class="w-full flex items-center gap-4 p-4 bg-gray-800 rounded-t-lg"
 	>
 		{#if !$$slots.default}
 			<svelte:component
@@ -80,30 +76,31 @@
 			<DropArrow {open} class="w-6 h-6" />
 		</div>
 	</button>
-	<div
-		class:flex={open}
-		class:hidden={!open}
-		class="absolute w-full h-fit flex-col inset-0 top-16 shadow-lg bg-gray-800 rounded-b-lg max-h-[15rem] overflow-auto z-50"
-	>
-		{#if !required}
-			<DropdownItem
-				{radio}
-				on:click={() => onClick(options.length)}
-				selected={selected === options.length}
-			>
-				None
-			</DropdownItem>
-		{/if}
-		{#each options as option, i}
-			{#if !(selectedItems.includes(option) && i !== selected)}
+
+	{#if open}
+		<div
+			class="absolute w-full h-fit flex flex-col inset-0 top-16 shadow-lg bg-gray-800 rounded-b-lg max-h-[15rem] overflow-auto z-50"
+		>
+			{#if !required}
 				<DropdownItem
 					{radio}
-					on:click={() => onClick(i)}
-					selected={selected === i}
+					on:click={() => onClick(options.length)}
+					selected={selected === options.length}
 				>
-					{option.replaceAll("_", " ")}
+					None
 				</DropdownItem>
 			{/if}
-		{/each}
-	</div>
+			{#each options as option, i}
+				{#if !(selectedItems.includes(option) && i !== selected)}
+					<DropdownItem
+						{radio}
+						on:click={() => onClick(i)}
+						selected={selected === i}
+					>
+						{option.replaceAll("_", " ")}
+					</DropdownItem>
+				{/if}
+			{/each}
+		</div>
+	{/if}
 </div>

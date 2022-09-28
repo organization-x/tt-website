@@ -16,7 +16,7 @@
 	<img
 		height="200"
 		width="200"
-		src="/developers/user/placeholder/icon.webp"
+		src="/assets/developers/user/placeholder/icon.webp"
 		alt="{name}'s avatar"
 		loading="lazy"
 		class:border-4={theme.length}

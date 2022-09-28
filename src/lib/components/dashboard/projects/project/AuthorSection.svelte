@@ -150,7 +150,9 @@
 									<!-- TODO: Replace placeholder -->
 
 									<img
-										src="/developers/user/placeholder/icon.webp"
+										width="200"
+										height="200"
+										src="/assets/developers/user/placeholder/icon.webp"
 										alt="{user.name}'s avatar"
 										class="w-10 h-10 rounded-full"
 									/>

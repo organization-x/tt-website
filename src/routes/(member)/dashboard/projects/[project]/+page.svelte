@@ -149,7 +149,7 @@
 <div class="grid border-b-4" style="border-color: #{data.project.theme}">
 	<!-- TODO: Replace placeholder -->
 	<img
-		src="/projects/project/placeholder/banner.webp"
+		src="/assets/projects/project/placeholder/banner.webp"
 		width="1920"
 		height="1080"
 		alt="Banner for '{data.project.title}'"

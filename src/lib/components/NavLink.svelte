@@ -4,11 +4,11 @@
 	export let target: string | undefined = undefined;
 </script>
 
-<li class="p-4 lg:p-0">
+<li class="px-4 py-3 rounded-lg {active ? ' bg-gray-500/40' : ''}">
 	<a
 		{href}
 		{target}
-		class="lg:rounded-lg lg:py-3 lg:px-4{active ? ' bg-gray-500/40' : ''}"
+		class="lg:flex lg:items-center lg:gap-2"
 		rel="noreferrer noopener"
 	>
 		<slot />

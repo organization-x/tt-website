@@ -17,8 +17,6 @@
 
 	export let data: PageData;
 
-	console.log(data.content);
-
 	const html = generateHTML(data.content as JSONContent, extensions);
 
 	const { title, theme, date, skills } = data;
@@ -30,7 +28,7 @@
 <!-- TODO: Replace placeholder -->
 
 <img
-	src="/projects/project/placeholder/banner.webp"
+	src="/assets/projects/project/placeholder/banner.webp"
 	width="1920"
 	height="1080"
 	alt="Banner for '{data.title}'"

@@ -190,8 +190,7 @@ export const PUT: RequestHandler = async ({ locals }) => {
 				content: { type: "doc", content: [{ type: "paragraph" }] }
 			}
 		})
-		.catch((e) => {
-			console.log(e);
+		.catch(() => {
 			throw error(400, "Bad Request");
 		});
 

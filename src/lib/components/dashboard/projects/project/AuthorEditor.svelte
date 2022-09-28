@@ -23,7 +23,7 @@
 
 	// Close menu when clicking outside of it
 	const onClick = ({ target }: Event) => {
-		if (!parent.contains(target as Node)) open = false;
+		if (open && !parent.contains(target as Node)) open = false;
 	};
 
 	// Change variable on dropdown selection.
@@ -64,7 +64,9 @@
 		<!-- TODO: Replace placeholder -->
 
 		<img
-			src="/developers/user/placeholder/icon.webp"
+			width="200"
+			height="200"
+			src="/assets/developers/user/placeholder/icon.webp"
 			alt="{author.name}'s avatar"
 			class="w-10 h-10 rounded-full"
 		/>

@@ -14,7 +14,7 @@
 	<title>About</title>
 </svelte:head>
 
-<Hero src="/about/about.webm">
+<Hero src="/assets/about/about.webm">
 	<PageTitle class="from-green-light to-green-dark">
 		A new era of collaboration and teamwork.
 	</PageTitle>
@@ -126,7 +126,7 @@
 	>
 		<Member name="Alex Duffy" pos="Head of Product">
 			<MemberImage
-				src="./about/alex.webp"
+				src="/assets/about/alex.webp"
 				alt="Alex Duffy from Team Tomorrow"
 				width={200}
 				height={200}
@@ -134,7 +134,7 @@
 		</Member>
 		<Member name="Michael Ke Zhang" pos="Co Founder">
 			<MemberImage
-				src="./about/michael.webp"
+				src="/assets/about/michael.webp"
 				alt="Michael Ke Zhang from Team Tomorrow"
 				width={200}
 				height={200}
@@ -142,7 +142,7 @@
 		</Member>
 		<Member name="Richard Hsu" pos="Co Founder">
 			<MemberImage
-				src="./about/richard.webp"
+				src="/assets/about/richard.webp"
 				alt="Jackson Choyce from Team Tomorrow"
 				width={200}
 				height={200}
@@ -150,7 +150,7 @@
 		</Member>
 		<Member name="Ying Jiang" pos="Co Founder">
 			<MemberImage
-				src="./about/ying.webp"
+				src="/assets/about/ying.webp"
 				alt="Ying Jiang from Team Tomorrow"
 				width={200}
 				height={200}

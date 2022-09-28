@@ -8,7 +8,6 @@ import type { PageServerLoad } from "./$types";
 export const load: PageServerLoad<App.ProjectWithAuthors> = async ({
 	params
 }) => {
-	console.log(params.project);
 	return await getProjects({ url: params.project }).then((projects) => {
 		if (!projects.length) throw redirect(302, "/projects");
 		return projects[0];

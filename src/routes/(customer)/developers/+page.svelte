@@ -1,12 +1,12 @@
 <script lang="ts">
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
+	import { softSkills, techSkills } from "$lib/enums";
 	import Seperator from "$lib/components/Seperator.svelte";
 	import PageTitle from "$lib/components/PageTitle.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
-	import Python from "$lib/components/icons/Python.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
-	import Desktop from "$lib/components/icons/Desktop.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
@@ -17,18 +17,57 @@
 	import Developer from "$lib/components/developers/index/Developer.svelte";
 	import DeveloperFilter from "$lib/components/developers/index/DeveloperFilter.svelte";
 
-	import type { User } from "@prisma/client";
+	import { getIcon } from "$lib/getIcon";
+	import type { SoftSkill, TechSkill } from "@prisma/client";
 
-	// TODO: Fetch data using prisma
-	const placeholder: User = {
-		id: "githubusername",
-		url: "placeholder",
-		name: "Bernice Lau",
-		about: "I'm bernice!",
-		team: "Design",
-		positions: ["Designer", "Fullstack"],
-		techSkills: ["Google_Cloud", "AWS"],
-		softSkills: ["Leadership", "Proactive"]
+	let request: Promise<App.ProjectWithAuthors[][]> = new Promise(() => {});
+
+	let page = 0;
+	let search = "";
+	let filters = new Set<SoftSkill | TechSkill>();
+
+	// On search set request to never resolve so the loading animation is shown before the debounce
+	$: search, (request = new Promise(() => {}));
+
+	const onSearch = () => {
+		const filterArray = Array.from(filters);
+
+		request = new Promise((res, rej) =>
+			fetch("/api/user", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({
+					where: {
+						name: {
+							contains: search.trim(),
+							mode: "insensitive"
+						},
+						skills: filterArray.length
+							? { hasEvery: filterArray }
+							: undefined
+					}
+				} as App.UserSearchRequest)
+			})
+				.then((res) => res.json())
+				.then((data: App.ProjectWithAuthors[]) => {
+					// Put projects into pairs of 2 or reject if there's no results
+					data.length
+						? res(
+								data
+									.map((project, i) => {
+										if (i % 2 === 0)
+											return i === data.length - 1
+												? [project]
+												: [project, data[i + 1]];
+										else return [];
+									})
+									.filter((project) => project.length)
+						  )
+						: rej();
+				})
+		);
 	};
 </script>
 
@@ -36,7 +75,7 @@
 	<title>Developers</title>
 </svelte:head>
 
-<Hero src="/developers/index/developers.webm">
+<Hero src="/assets/developers/index/developers.webm">
 	<PageTitle class="from-blue-light to-blue-dark">
 		Discover who can push you forward.
 	</PageTitle>
@@ -62,7 +101,7 @@
 		<HireStep title="Search and discover.">
 			<StepImage
 				slot="image"
-				src="/developers/index/find.webp"
+				src="/assets/developers/index/find.webp"
 				alt="Developer profiles stacked ontop of eachother"
 			/>
 			Search for the perfect developer to fit your needs by filtering through
@@ -74,7 +113,7 @@
 		<HireStep title="Evaluate options." side="right">
 			<StepImage
 				slot="image"
-				src="/developers/index/stats.webp"
+				src="/assets/developers/index/stats.webp"
 				alt="Developer profile with statistics bars"
 			/>
 			Evaluate each canditates projects, skill sets, social media, and more
@@ -87,7 +126,7 @@
 		<HireStep title="Create a contract and blastoff.">
 			<StepImage
 				slot="image"
-				src="/developers/index/send.webp"
+				src="/assets/developers/index/send.webp"
 				alt="Developer profile with statistics bars"
 			/>
 			Contact us to schedule a virtual meeting for more information on pricing
@@ -102,39 +141,61 @@
 	<div class="max-w-screen-lg mx-auto w-full">
 		<FilterTitle />
 
-		<SearchBar />
+		<SearchBar bind:search placeholder="Search developers..." />
 
-		<ScrollRow class="mt-6">
-			<SkillFilter name="Frontend Developer" current={true}>
-				<Desktop class="h-6 w-6" />
-			</SkillFilter>
-			<SkillFilter name="Frontend Developer" current={false}>
-				<Desktop class="h-6 w-6" />
-			</SkillFilter>
-			<SkillFilter name="Frontend Developer" current={false}>
-				<Desktop class="h-6 w-6" />
-			</SkillFilter>
-		</ScrollRow>
+		<Scrollable
+			class="before:from-gray-900 after:to-gray-900"
+			arrows={true}
+		>
+			{#each softSkills as skill}
+				<SkillFilter
+					on:click={() => {
+						// Add a filter if its not there and delete it if it's not, then tell
+						// the component whether it's active or or not based off the initial has value
+						const has = filters.has(skill);
+						has ? filters.delete(skill) : filters.add(skill);
+						filters = filters;
 
-		<ScrollRow class="mt-6 mb-12">
-			<SkillFilter name="Python" current={true}>
-				<Python class="h-6 w-6" />
-			</SkillFilter>
-			<SkillFilter name="Python" current={false}>
-				<Python class="h-6 w-6" />
-			</SkillFilter>
-			<SkillFilter name="Python" current={false}>
-				<Python class="h-6 w-6" />
-			</SkillFilter>
-		</ScrollRow>
+						onSearch();
+					}}
+					name={skill.replace("_", " ")}
+					active={filters.has(skill)}
+				>
+					<svelte:component this={getIcon(skill)} class="h-6 w-6" />
+				</SkillFilter>
+			{/each}
+		</Scrollable>
+
+		<Scrollable
+			class="before:from-gray-900 after:to-gray-900"
+			arrows={true}
+		>
+			{#each techSkills as skill}
+				<SkillFilter
+					on:click={() => {
+						// Add a filter if its not there and delete it if it's not, then tell
+						// the component whether it's active or or not based off the initial has value
+						const has = filters.has(skill);
+						has ? filters.delete(skill) : filters.add(skill);
+						filters = filters;
+
+						onSearch();
+					}}
+					name={skill.replace("_", " ")}
+					active={filters.has(skill)}
+				>
+					<svelte:component this={getIcon(skill)} class="h-6 w-6" />
+				</SkillFilter>
+			{/each}
+		</Scrollable>
 
 		<Seperator />
 
-		<ScrollRow class="mt-12">
+		<Scrollable class="before:from-gray-900 after:to-gray-900">
 			<DeveloperFilter current={true} user={placeholder} />
 			<DeveloperFilter current={false} user={placeholder} />
 			<DeveloperFilter current={false} user={placeholder} />
-		</ScrollRow>
+		</Scrollable>
 
 		<div
 			class="flex gap-32 max-w-xl mx-auto overflow-auto scrollbar-hidden snap-x snap-mandatory my-12"

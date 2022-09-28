@@ -14,7 +14,9 @@
 
 	<div class="rounded-full w-10 h-10 overflow-hidden">
 		<img
-			src="/projects/project/placeholder/banner.webp"
+			width="200"
+			height="200"
+			src="/assets/projects/project/placeholder/banner.webp"
 			alt="Random shapes and colors in the formation of a hallway"
 			loading="lazy"
 			class="object-cover object-center w-full h-full"
@@ -24,7 +26,9 @@
 	{#if projectPair.length > 1}
 		<div class="rounded-full w-10 h-10 overflow-hidden">
 			<img
-				src="/projects/project/placeholder/banner.webp"
+				width="200"
+				height="200"
+				src="/assets/projects/project/placeholder/banner.webp"
 				alt="Random shapes and colors in the formation of a hallway"
 				loading="lazy"
 				class="object-cover object-center w-full h-full"

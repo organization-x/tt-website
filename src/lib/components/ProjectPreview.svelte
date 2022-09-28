@@ -10,16 +10,17 @@
 	in:fly={{ duration: 300, y: 50 }}
 	href="/projects/{project.url}"
 	rel="noreferrer noopener"
-	class="rounded-lg border-t-4 max-w-xl overflow-hidden bg-gray-500/40 w-full"
+	class="rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full"
 	style="border-color: #{project.theme}"
 >
 	<div class="relative">
 		<!-- TODO: Replace placeholders -->
 
 		<img
-			src="/projects/project/placeholder/banner.webp"
+			src="/assets/projects/project/placeholder/banner.webp"
 			width="1920"
 			height="1080"
+			loading="lazy"
 			alt="Banner for '{project.title}'"
 			class="object-cover object-center w-full h-32 row-start-1 col-start-1"
 		/>
@@ -28,8 +29,9 @@
 			<img
 				width="200"
 				height="200"
-				src="/developers/user/placeholder/icon.webp"
+				src="/assets/developers/user/placeholder/icon.webp"
 				alt="{author.name}'s avatar"
+				loading="lazy"
 				class="absolute top-2 right-2 w-10 h-10 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4 md:top-3 md:right-3"
 				style="border-color: #{project.theme}"
 			/>

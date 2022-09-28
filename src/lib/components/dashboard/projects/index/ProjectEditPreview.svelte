@@ -13,7 +13,7 @@
 	import Pencil from "$lib/components/icons/Pencil.svelte";
 
 	const dispatch = createEventDispatcher<{
-		visibile: undefined;
+		visible: boolean;
 		delete: undefined;
 	}>();
 
@@ -22,6 +22,10 @@
 
 	let open = false;
 	let deleting = false;
+
+	// Store the visibility variable seperately, since svelte likes to fire extra events when directly
+	// editing the object
+	let visible = project.visible;
 </script>
 
 <div
@@ -39,7 +43,7 @@
 			<!-- TODO: Replace placeholders -->
 
 			<img
-				src="/projects/project/placeholder/banner.webp"
+				src="/assets/projects/project/placeholder/banner.webp"
 				width="1920"
 				height="1080"
 				alt="Banner for '{project.title}'"
@@ -51,7 +55,7 @@
 					<img
 						width="200"
 						height="200"
-						src="/developers/user/placeholder/icon.webp"
+						src="/assets/developers/user/placeholder/icon.webp"
 						alt="{author.name}'s avatar"
 						class="absolute top-2 right-2 w-10 h-10 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4 md:top-3 md:right-3"
 						style="border-color: #{project.theme}"
@@ -78,15 +82,15 @@
 					class="hidden md:flex md:gap-5 md:justify-center md:ml-auto"
 				>
 					<button
-						on:click={() => (project.visible = !project.visible)}
+						on:click={() => (visible = !visible)}
 						use:debounce={{
-							bind: project.visible,
-							func: () => dispatch("visibile"),
+							bind: visible,
+							func: () => dispatch("visible", visible),
 							delay: 300
 						}}
 						class="bg-gray-500/40 shrink-0 rounded-lg p-3"
 					>
-						<ShowHide class="w-5 h-5" crossed={project.visible} />
+						<ShowHide class="w-5 h-5" crossed={visible} />
 					</button>
 					<a
 						href="/dashboard/projects/{project.url}"
@@ -123,10 +127,10 @@
 			class="flex gap-5 justify-center bg-gray-900 pb-4 pt-8 rounded-b-lg -mt-2 relative z-10 md:hidden"
 		>
 			<button
-				on:click={() => (project.visible = !project.visible)}
+				on:click={() => (visible = !visible)}
 				use:debounce={{
-					bind: project.visible,
-					func: () => dispatch("visibile"),
+					bind: visible,
+					func: () => dispatch("visible", visible),
 					delay: 300
 				}}
 				class="bg-gray-500/40 shrink-0 rounded-lg p-3"

@@ -4,13 +4,13 @@
 	import { goto } from "$app/navigation";
 	import Plus from "$lib/components/icons/Plus.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
-	import GradientText from "$lib/components/GradientText.svelte";
 	import ProjectLoader from "$lib/components/ProjectLoader.svelte";
+	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import ProjectEditPreview from "$lib/components/dashboard/projects/index/ProjectEditPreview.svelte";
 
-	import type { PageData } from "./$types";
+	import type { PageParentData } from "./$types";
 
-	export let data: PageData;
+	export let data: PageParentData;
 
 	let search = "";
 	let creatingProject = false;
@@ -94,21 +94,7 @@
 	};
 </script>
 
-<!-- TODO: Replace placeholder -->
-
-<div
-	class="flex flex-col gap-5 my-10 items-center lg:flex-row lg:justify-center lg:my-16"
->
-	<img
-		src="/developers/user/placeholder/icon.webp"
-		alt="{data.user.name}'s avatar"
-		class="w-20 h-20 rounded-full"
-	/>
-
-	<GradientText class="from-green-light to-green-dark text-3xl font-bold">
-		Your Projects
-	</GradientText>
-</div>
+<DashHero user={data.user} title="Your Projects" />
 
 <div class="px-6 max-w-xl mx-auto lg:max-w-screen-xl">
 	<div class="flex flex-col gap-5 mb-5 mx-auto lg:flex-row lg:mb-20">
@@ -129,7 +115,6 @@
 		</button>
 	</div>
 
-	<!-- Stop CLS when search results are changing -->
 	<div class="min-h-[55rem]">
 		{#await request}
 			{#if !deletingProject}
@@ -141,8 +126,9 @@
 					bind:project
 					user={data.user}
 					on:delete={() => deleteProject(project.id)}
-					on:visibile={() =>
-						projectVisibility(project.id, project.visible)}
+					on:visible={({ detail }) => {
+						projectVisibility(project.id, detail);
+					}}
 				/>
 			{/each}
 		{:catch}

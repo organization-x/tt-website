@@ -46,7 +46,7 @@
 
 <!-- TODO: Put Adarsh's proper rendered video here-->
 
-<Hero src="/index/index.webm">
+<Hero src="/assets/index/index.webm">
 	<PageTitle class="from-teal-light to-teal-dark">
 		Grasp the top 1% of junior developers.
 	</PageTitle>
@@ -93,7 +93,7 @@
 		<Company icons={[GoogleCloud, Python, TensorFlow, Pytorch]}>
 			<CompanyImage
 				slot="img"
-				src="/index/healthcare.webp"
+				src="/assets/index/healthcare.webp"
 				alt="Generic healthcare brand logo"
 				width={575}
 				height={172}
@@ -105,7 +105,7 @@
 		<Company icons={[Python, TensorFlow]}>
 			<CompanyImage
 				slot="img"
-				src="/index/obico.webp"
+				src="/assets/index/obico.webp"
 				alt="Obico logo"
 				width={574}
 				height={198}
@@ -118,7 +118,7 @@
 		<Company icons={[JavaScript, React]}>
 			<CompanyImage
 				slot="img"
-				src="/index/ethereum.webp"
+				src="/assets/index/ethereum.webp"
 				alt="Ethereum logo"
 				width={574}
 				height={144}
@@ -131,7 +131,7 @@
 		<Company icons={[Python, Aws]}>
 			<CompanyImage
 				slot="img"
-				src="/index/imprint.webp"
+				src="/assets/index/imprint.webp"
 				alt="Imprint logo"
 				width={574}
 				height={139}
@@ -261,7 +261,7 @@
 		generate millions in revenue annually.
 		<ProjectImage
 			slot="img"
-			src="/index/hippo2.webp"
+			src="/assets/index/hippo2.webp"
 			alt="Hippo emoji"
 			width={250}
 			height={159}
@@ -343,7 +343,7 @@
 		developers.
 		<ProjectImage
 			slot="img"
-			src="/index/aiot.webp"
+			src="/assets/index/aiot.webp"
 			alt="AI On Thumbs green brain logo"
 			width={200}
 			height={200}
@@ -399,7 +399,7 @@
 		generate millions in revenue annually.
 		<ProjectImage
 			slot="img"
-			src="/index/bot.webp"
+			src="/assets/index/bot.webp"
 			alt="Green robot"
 			width={200}
 			height={200}
@@ -427,7 +427,7 @@
 		program can run without hurdles.
 		<ProjectImage
 			slot="img"
-			src="/index/bot.webp"
+			src="/assets/index/bot.webp"
 			alt="Green robot"
 			width={200}
 			height={200}
@@ -562,7 +562,7 @@
 	>
 		<div
 			class="rounded-lg bg-center bg-no-repeat bg-cover w-full shrink-0 aspect-square sm:w-28"
-			style="background-image: url(/projects/project/placeholder/banner.webp);"
+			style="background-image: url(/assets/projects/project/placeholder/banner.webp);"
 		/>
 		<div>
 			<h1 class="font-semibold text-2xl mt-4">Blog Post</h1>
