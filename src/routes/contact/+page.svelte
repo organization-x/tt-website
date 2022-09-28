@@ -35,6 +35,7 @@
 			left: element.children[0].clientWidth * pageNumber,
 			behavior: "smooth"
 		});
+		currentPageValid();
 	};
 
 	let boxes: {}[] = [
