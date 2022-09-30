@@ -5,8 +5,8 @@ import { prisma } from "$lib/prisma";
 
 import type { Prisma } from "@prisma/client";
 
-export const getUsers = async (where: Prisma.UserWhereInput) =>
-	await prisma.user.findMany({ where });
+export const getUsers = (where: Prisma.UserWhereInput) =>
+	prisma.user.findMany({ where });
 
 export const getProjects = (where: Prisma.ProjectWhereInput) => {
 	return new Promise<App.ProjectWithAuthors[]>(async (res, rej) => {

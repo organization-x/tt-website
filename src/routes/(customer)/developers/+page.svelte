@@ -277,7 +277,7 @@
 						<div class="rounded-sm h-2 w-full bg-gray-400" />
 						<div class="rounded-sm h-2 w-32 bg-gray-400" />
 
-						<!-- TODO: Fix this loading placeholder -->
+						<!-- TODO: Fix this loadng placeholder -->
 					</div>
 				{:then users}
 					{#each users as user, i}
