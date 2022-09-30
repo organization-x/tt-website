@@ -26,7 +26,7 @@ declare global {
 		}
 
 		// Type for combining a user with their pinned project, used on the developers page
-		type UserWithProject = User & { pinnedProject: Project };
+		type UserWithProject = User & { pinnedProject: Project | null };
 
 		// Interface for user update requests
 		interface UserUpdateRequest {

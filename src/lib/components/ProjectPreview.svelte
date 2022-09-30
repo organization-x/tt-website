@@ -22,7 +22,7 @@
 			height="1080"
 			loading="lazy"
 			alt="Banner for '{project.title}'"
-			class="object-cover object-center w-full h-32 row-start-1 col-start-1"
+			class="object-cover object-center w-full h-32"
 		/>
 
 		{#each project.authors as author}

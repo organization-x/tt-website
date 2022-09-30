@@ -21,7 +21,6 @@
 	import DeveloperFilter from "$lib/components/developers/index/DeveloperFilter.svelte";
 
 	import type { SoftSkill, TechSkill, User, Project } from "@prisma/client";
-	import ProjectLoader from "$lib/components/ProjectLoader.svelte";
 
 	let request: Promise<App.UserWithProject[]> = new Promise(() => {});
 
@@ -85,7 +84,7 @@
 
 										return {
 											...user,
-											pinnedProject: pinned || projects[0]
+											pinnedProject: pinned || null
 										};
 									})
 								)
@@ -278,34 +277,40 @@
 							<div class="rounded-sm h-2 w-32 bg-gray-400" />
 						</div>
 
-						<div class="mt-8 flex flex-col items-center gap-4">
+						<div class="mt-4 flex flex-col items-center gap-4">
 							<div class="rounded-full h-5 w-44 bg-gray-400" />
 
 							<div
-								class="bg-gray-800 shrink-0 w-full flex flex-col gap-4 rounded-lg p-3 pt-0 mb-5 min-h-[30rem]"
+								class="bg-gray-800 shrink-0 w-full rounded-lg p-3 pt-0 mb-5 min-h-72 md:min-h-[15rem] lg:flex lg:min-h-[12rem] lg:p-4"
 							>
 								<div
-									class="h-32 sm:h-44 md:h-24 bg-gray-400 -mx-3 border-t-4 border-gray-500/40 rounded-t-lg"
+									class="h-32 md:h-24 bg-gray-400 -mx-3 border-t-4 border-gray-500/40 rounded-t-lg lg:w-24 lg:h-auto lg:rounded-lg lg:mx-0 lg:shrink-0 lg:border-none"
 								/>
 								<div
-									class="rounded-full h-5 w-44 bg-gray-400"
-								/>
-								<div
-									class="rounded-sm h-2 w-full bg-gray-400"
-								/>
-								<div
-									class="rounded-sm h-2 w-full bg-gray-400"
-								/>
-								<div
-									class="rounded-sm h-2 w-full bg-gray-400"
-								/>
-								<div
-									class="rounded-sm h-2 w-full bg-gray-400"
-								/>
-								<div
-									class="rounded-sm h-2 w-full bg-gray-400"
-								/>
-								<div class="rounded-sm h-2 w-32 bg-gray-400" />
+									class="flex flex-col gap-4 mt-3 lg:ml-2 lg:w-full"
+								>
+									<div
+										class="rounded-full h-5 w-44 bg-gray-400"
+									/>
+									<div
+										class="rounded-sm h-2 w-full bg-gray-400"
+									/>
+									<div
+										class="rounded-sm h-2 w-full bg-gray-400"
+									/>
+									<div
+										class="rounded-sm h-2 w-full bg-gray-400"
+									/>
+									<div
+										class="rounded-sm h-2 w-full bg-gray-400 md:hidden"
+									/>
+									<div
+										class="rounded-sm h-2 w-full bg-gray-400 md:hidden"
+									/>
+									<div
+										class="rounded-sm h-2 w-32 bg-gray-400"
+									/>
+								</div>
 							</div>
 
 							<div class="rounded-full h-5 w-32 bg-gray-400" />
@@ -386,9 +391,7 @@
 						</div>
 					</div>
 
-					<!-- TODO: Developer result and placeholder -->
-					<!-- TODO: Hover animations -->
-					<!-- TODO: Projects design changes (dashboard) -->
+					<!-- TODO: fix developer component and dashboard projects/authors in banner -->
 				{:then users}
 					{#each users as user, i}
 						{#if page === i}
