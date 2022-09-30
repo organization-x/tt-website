@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { ComponentType } from "svelte";
+
 	import Button from "../Button.svelte";
 	import ProjectDev from "./ProjectDev.svelte";
-
-	import type { ComponentType } from "svelte/types/runtime/internal/dev.js";
 
 	export let href: string;
 	export let title: string;
