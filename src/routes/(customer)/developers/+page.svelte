@@ -21,6 +21,7 @@
 	import DeveloperFilter from "$lib/components/developers/index/DeveloperFilter.svelte";
 
 	import type { SoftSkill, TechSkill, User, Project } from "@prisma/client";
+	import ProjectLoader from "$lib/components/ProjectLoader.svelte";
 
 	let request: Promise<App.UserWithProject[]> = new Promise(() => {});
 
@@ -255,30 +256,139 @@
 			>
 				{#await request}
 					<div
-						rel="noreferrer noopener"
-						class="bg-gray-500 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 h-[72rem] md:h-[54rem]"
+						class="bg-gray-500 animate-pulse flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full hmin-h-[72rem] md:min-h-[54rem]"
 					>
 						<div class="flex gap-6 items-center">
 							<div class="w-20 h-20 bg-gray-400 rounded-full" />
 							<div>
 								<div
-									class="rounded-full h-10 w-44 bg-gray-400"
+									class="rounded-full h-7 w-32 mt-4 bg-gray-400"
 								/>
 								<div
-									class="rounded-full h-5 w-24 bg-gray-400"
+									class="rounded-full h-4 w-24 mt-2 bg-gray-400"
 								/>
 							</div>
 						</div>
 
-						<div class="rounded-full h-5 w-44 bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-32 bg-gray-400" />
+						<div class="flex flex-col gap-4">
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-32 bg-gray-400" />
+						</div>
 
-						<!-- TODO: Fix this loading placeholder -->
+						<div class="mt-8 flex flex-col items-center gap-4">
+							<div class="rounded-full h-5 w-44 bg-gray-400" />
+
+							<div
+								class="bg-gray-800 shrink-0 w-full flex flex-col gap-4 rounded-lg p-3 pt-0 mb-5 min-h-[30rem]"
+							>
+								<div
+									class="h-32 sm:h-44 md:h-24 bg-gray-400 -mx-3 border-t-4 border-gray-500/40 rounded-t-lg"
+								/>
+								<div
+									class="rounded-full h-5 w-44 bg-gray-400"
+								/>
+								<div
+									class="rounded-sm h-2 w-full bg-gray-400"
+								/>
+								<div
+									class="rounded-sm h-2 w-full bg-gray-400"
+								/>
+								<div
+									class="rounded-sm h-2 w-full bg-gray-400"
+								/>
+								<div
+									class="rounded-sm h-2 w-full bg-gray-400"
+								/>
+								<div
+									class="rounded-sm h-2 w-full bg-gray-400"
+								/>
+								<div class="rounded-sm h-2 w-32 bg-gray-400" />
+							</div>
+
+							<div class="rounded-full h-5 w-32 bg-gray-400" />
+
+							<div
+								class="flex flex-col gap-4 md:grid md:grid-cols-2 w-full"
+							>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+							</div>
+
+							<div
+								class="rounded-full h-5 w-32 bg-gray-400 mt-4"
+							/>
+
+							<div
+								class="flex flex-col gap-4 md:grid md:grid-cols-2 w-full"
+							>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+							</div>
+						</div>
 					</div>
+
+					<!-- TODO: Developer result and placeholder -->
+					<!-- TODO: Hover animations -->
+					<!-- TODO: Projects design changes (dashboard) -->
 				{:then users}
 					{#each users as user, i}
 						{#if page === i}

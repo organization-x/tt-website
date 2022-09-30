@@ -13,10 +13,9 @@
 </script>
 
 <a
-	in:fly={{ duration: 300, y: 50 }}
 	href="/developers/{user.url}"
 	rel="noreferrer noopener"
-	class="bg-gray-500/40 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 min-h-[72rem] md:min-h-[54rem]"
+	class="bg-gray-500/40 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 h-[88rem] md:min-h-[54rem]"
 >
 	<!-- TODO: Replace placeholder -->
 
@@ -53,39 +52,42 @@
 		{user.about}
 	</p>
 
-	<div class="mt-6">
-		<div class="flex font-semibold justify-center items-center gap-2">
-			<Pin class="w-6 h-6" />
-			<h1 class="text-lg">Pinned Project</h1>
-		</div>
-		<a
-			href="/projects/{user.pinnedProject.url}"
-			rel="noreferrer noopener"
-			class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4 lg:flex lg:p-4"
-			style="border-color: #{user.pinnedProject.theme}"
-		>
-			<!-- TODO: Replace placeholders -->
-
-			<img
-				src="/assets/projects/project/placeholder/banner.webp"
-				width="1920"
-				height="1080"
-				loading="lazy"
-				alt="Banner for '{user.pinnedProject.title}'"
-				class="object-cover object-center w-full h-32 md:h-20 lg:w-24 lg:h-auto lg:rounded-lg"
-			/>
-
-			<div
-				class="flex flex-col py-4 px-3 min-h-[10rem] lg:min-h-[5rem] lg:py-1"
-			>
-				<h1 class="font-semibold text-2xl md:text-xl">
-					{user.pinnedProject.title}
-				</h1>
-				<p class="mt-2 md:text-sm">
-					{user.pinnedProject.description}
-				</p>
+	<div class="mt-6 flex flex-col gap-8">
+		<div>
+			<div class="flex font-semibold justify-center items-center gap-2">
+				<Pin class="w-6 h-6" />
+				<h1 class="text-lg">Pinned Project</h1>
 			</div>
-		</a>
+
+			<a
+				href="/projects/{user.pinnedProject.url}"
+				rel="noreferrer noopener"
+				class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4 lg:flex lg:p-4"
+				style="border-color: #{user.pinnedProject.theme}"
+			>
+				<!-- TODO: Replace placeholders -->
+
+				<img
+					src="/assets/projects/project/placeholder/banner.webp"
+					width="1920"
+					height="1080"
+					loading="lazy"
+					alt="Banner for '{user.pinnedProject.title}'"
+					class="object-cover object-center w-full h-32 md:h-20 lg:w-24 lg:h-auto lg:rounded-lg"
+				/>
+
+				<div
+					class="flex flex-col py-4 px-3 min-h-[10rem] lg:min-h-[5rem] lg:py-1"
+				>
+					<h1 class="font-semibold text-2xl md:text-xl">
+						{user.pinnedProject.title}
+					</h1>
+					<p class="mt-2 md:text-sm">
+						{user.pinnedProject.description}
+					</p>
+				</div>
+			</a>
+		</div>
 
 		<DevList title="Positions" icon={Bulb}>
 			{#each user.positions as position, i}

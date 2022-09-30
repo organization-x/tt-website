@@ -5,7 +5,7 @@
 	export let icon: ComponentType;
 </script>
 
-<div class="flex font-semibold justify-center items-center gap-2 mt-8">
+<div class="flex font-semibold justify-center items-center gap-2">
 	<svelte:component this={icon} class="w-6 h-6" />
 	<h1 class="text-lg">{title}</h1>
 </div>
