@@ -11,7 +11,7 @@
 </script>
 
 <div
-	class="snap-center shrink-0 w-fit lg:flex lg:even:flex-row-reverse lg:items-center lg:gap-14"
+	class="snap-center shrink-0 w-fit lg:w-full lg:flex lg:even:flex-row-reverse lg:items-center lg:gap-14"
 >
 	<div
 		class="bg-gray-500/40 p-10 rounded-xl relative text-center max-w-lg mx-auto lg:mx-0 lg:p-8"
