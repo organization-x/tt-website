@@ -21,7 +21,6 @@
 
 	let pageNumber = 0;
 	let element: HTMLFormElement;
-	let filledCount = 0;
 
 	// Scroll to next page of contact form
 	const scroll = (next: boolean) => {
@@ -38,26 +37,82 @@
 		currentPageValid();
 	};
 
-	let boxes: {}[] = [
+	let boxes: {
+		page: number;
+		name: string;
+		isValid: boolean;
+		value: string | string[];
+	}[] = [
+		// page 0
+		{
+			page: 0,
+			name: "First Name",
+			isValid: false,
+			value: ""
+		},
+		{
+			page: 0,
+			name: "Last Name",
+			isValid: false,
+			value: ""
+		},
+		{
+			page: 0,
+			name: "Email",
+			isValid: false,
+			value: ""
+		},
+		{
+			page: 0,
+			name: "Phone Number",
+			isValid: true,
+			value: ""
+		},
+		{
+			page: 0,
+			name: "Company",
+			isValid: false,
+			value: ""
+		},
+
 		// page 1
 		{
-			"First Name": false,
-			"Last Name": false,
-			Email: false,
-			"Phone Number": true,
-			Company: false
+			page: 1,
+			name: "Talent",
+			isValid: false,
+			value: []
 		},
+		{
+			page: 1,
+			name: "Company Website",
+			isValid: true,
+			value: ""
+		},
+		{
+			page: 1,
+			name: "What to do",
+			isValid: false,
+			value: []
+		},
+		{
+			page: 1,
+			name: "Heard of Us?",
+			isValid: true,
+			value: ""
+		},
+
 		// page 2
 		{
-			"What Talent Do You Need?": false,
-			"Company Website": true,
-			"What are we doing?": false,
-			"How Did You Hear About Us?": true
+			page: 2,
+			name: "Subject",
+			isValid: false,
+			value: ""
 		},
-		// page 3
 		{
-			Subject: false,
-			Message: false
+			page: 2,
+			name: "Message",
+			isValid: false,
+			value: ""
 		}
 	];
 
@@ -65,17 +120,26 @@
 	const onChange = ({ detail }: CustomEvent) => {
 		let page: number = detail.page - 1;
 		let title: string = detail.title;
-		let valid = detail.isValid;
-		boxes[page][title] = valid;
+		let valid: boolean = detail.isValid;
+		let input = detail.input;
+		let box = boxes.find((obj) => {
+			return obj.page == page && obj.name == title;
+		});
+		box.isValid = valid;
+		box.value = input;
 		currentPageValid();
 	};
 
 	let isValid = false;
 
 	function currentPageValid(): void {
-		for (let title in boxes[pageNumber]) {
-			if (boxes[pageNumber][title] == false) {
-				console.log(boxes[pageNumber]);
+		let page_boxes = boxes.filter((obj) => {
+			return obj.page == pageNumber;
+		});
+		console.log(page_boxes);
+		for (let i = 0; i < page_boxes.length; i++) {
+			let box = page_boxes[i];
+			if (box.isValid == false) {
 				isValid = false;
 				return;
 			}
@@ -164,7 +228,8 @@
 		</Page>
 		<Page>
 			<Select
-				title="What Talent Do You Need?"
+				title="Talent"
+				prompt="What Talent Do You Need?"
 				placeholder="skill(s)"
 				on:change={onChange}
 				disabled={pageNumber !== 1}
@@ -181,7 +246,8 @@
 				page="2"
 			/>
 			<Select
-				title="What are we doing?"
+				title="What to do"
+				prompt="What are we doing?"
 				placeholder="subject(s)"
 				on:change={onChange}
 				disabled={pageNumber !== 1}
@@ -194,7 +260,8 @@
 			/>
 			<Field
 				type="text"
-				title="How Did You Hear About Us?"
+				title="Heard of Us?"
+				prompt="How Did You Hear About Us?"
 				required={false}
 				on:change={onChange}
 				disabled={pageNumber !== 1}

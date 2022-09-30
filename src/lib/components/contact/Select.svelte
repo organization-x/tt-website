@@ -6,6 +6,7 @@
 	import DropdownOption from "./DropdownOption.svelte";
 
 	export let title: string;
+	export let prompt = title;
 	export let required = true;
 	export let disabled: boolean;
 	export let options: string[];
@@ -18,14 +19,21 @@
 	let count = 0;
 	let changed = false;
 	let isValid = false;
+	let input: string[] = [];
 	let dropdownParent: HTMLDivElement;
 
 	// Only dispatch if the previous state of isValid is different than the new state.
-	$: dispatch("change", { page, title, isValid });
+	$: dispatch("change", { page, title, isValid, input });
 
 	// On input change check if the input is filled.
-	const onChange = ({ detail }: CustomEvent<{ isSelected: boolean }>) => {
-		detail.isSelected ? count++ : count--;
+	const onChange = ({ detail }: CustomEvent<{ isSelected: boolean, option: string }>) => {
+		if (detail.isSelected) {
+			count++;
+			input.push(detail.option);
+		} else {
+			count--;
+			if (input.indexOf(detail.option) > -1) input.splice(input.indexOf(detail.option), 1);
+		}
 		isValid = count > 0;
 		changed = true;
 	};
@@ -44,7 +52,7 @@
 
 <div class="mt-8">
 	<div class="flex justify-between items-center">
-		<h1 class="font-semibold">{title}</h1>
+		<h1 class="font-semibold">{prompt}</h1>
 		{#if required}
 			<Asterisk class="w-3 h-3" />
 		{/if}
@@ -72,7 +80,7 @@
 			class="absolute w-full h-fit flex-col inset-0 top-14 bg-gray-800 z-10 rounded-b-lg max-h-[15rem] overflow-auto"
 		>
 			{#each options as option}
-				<DropdownOption on:change={onChange}>
+				<DropdownOption on:change={onChange} option={option}>
 					{option}
 				</DropdownOption>
 			{/each}

@@ -5,6 +5,7 @@
 
 	export let type: string;
 	export let title: string;
+	export let prompt = title;
 	export let required = true;
 	export let disabled: boolean;
 	export let placeholder: string;
@@ -24,13 +25,15 @@
 	let isValid = !required;
 	let changed = false;
 	let isFilled = false;
+	let input = "";
 
 	// Only dispatch if the previous state of isFilled is different than the new state.
-	$: dispatch("change", { page, title, isValid });
+	$: dispatch("change", { page, title, isValid, input });
 
 	// On input check if the input is filled.
 	const onChange = ({ target }: Event) => {
 		const { value, name } = target as HTMLInputElement;
+		input = value;
 		isFilled = value.length > 0;
 		changed = true;
 		if (!isFilled) {
@@ -69,14 +72,14 @@
 
 <div class="mt-8">
 	<div class="flex justify-between items-center">
-		<h1 class="font-semibold">{title}</h1>
+		<h1 class="font-semibold">{prompt}</h1>
 		{#if required}
 			<Asterisk class="w-3 h-3" />
 		{/if}
 	</div>
 	<input
 		on:input={onChange}
-		name={title.toLowerCase()}
+		name={prompt.toLowerCase()}
 		class:border-green-light={isFilled && isValid}
 		class:border-red-light={changed && !isValid}
 		class:border-transparent={!changed || (!isFilled && isValid)}
