@@ -500,7 +500,7 @@
 
 		<div
 			slot="alt"
-			class="hidden lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:my-20 lg:max-w-screen-xl"
+			class="hidden lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:mt-32 lg:max-w-screen-xl"
 		>
 			<DevCard user={placeholder}>
 				<li>Worked on 80000 projects.</li>
@@ -541,7 +541,7 @@
 		</div>
 	</Carousel>
 
-	<Button href="/developers">Discover</Button>
+	<Button href="/developers" class="mt-4 lg:mt-8">Discover</Button>
 
 	<!-- TODO: Put actual important blog post here -->
 

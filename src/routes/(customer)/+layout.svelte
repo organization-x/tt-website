@@ -109,7 +109,7 @@
 <footer
 	class="flex flex-col justify-center gap-7 p-6 text-2xl mt-10 md:items-center lg:justify-between lg:flex-row xl:gap-12 xl:justify-center"
 >
-	<ul class="flex flex-wrap gap-6 md:flex-row md:text-base md:justify-center">
+	<ul class="flex flex-wrap gap-6 text-base md:justify-center">
 		<FootLink href="/">Home</FootLink>
 		<FootLink href="/about">About</FootLink>
 		<FootLink href="/contact">Contact Us</FootLink>
