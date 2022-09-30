@@ -9,6 +9,6 @@
 	<svelte:component this={icon} class="w-6 h-6" />
 	<h1 class="text-lg">{title}</h1>
 </div>
-<div class="flex flex-col gap-4 mt-4">
+<div class="flex flex-col gap-4 mt-4 md:grid md:grid-cols-2">
 	<slot />
 </div>

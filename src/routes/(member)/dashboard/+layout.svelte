@@ -42,6 +42,15 @@
 			<Logo class="w-10 h-10" />
 		</a>
 		<div class="lg:hidden flex gap-3 items-center">
+			<!-- TODO: Replace placeholder -->
+
+			<img
+				width="200"
+				height="200"
+				src="/assets/developers/user/placeholder/icon.webp"
+				alt="{data.user.name}'s avatar"
+				class=" w-7 h-7 rounded-full"
+			/>
 			<h1 class="font-semibold">{data.user.name}</h1>
 			<button
 				type="button"

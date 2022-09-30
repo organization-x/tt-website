@@ -25,6 +25,9 @@ declare global {
 			url: string;
 		}
 
+		// Type for combining a user with their pinned project, used on the developers page
+		type UserWithProject = User & { pinnedProject: Project };
+
 		// Interface for user update requests
 		interface UserUpdateRequest {
 			where: Prisma.UserWhereUniqueInput;
@@ -63,6 +66,7 @@ declare global {
 				skills?: TechSkill[];
 				content?: Prisma.InputJsonValue;
 				visible?: boolean;
+				pinned?: boolean;
 			};
 			authors?: ProjectAuthor[];
 		}

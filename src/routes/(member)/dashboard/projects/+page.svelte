@@ -76,7 +76,8 @@
 		onSearch();
 	};
 
-	const projectVisibility = (id: string, visible: boolean) => {
+	const projectToggle = (id: string, visible: boolean, pinned: boolean) => {
+		console.log(visible, pinned);
 		fetch("/api/project", {
 			method: "PATCH",
 			headers: {
@@ -87,7 +88,8 @@
 					id
 				},
 				project: {
-					visible
+					visible,
+					pinned
 				}
 			} as App.ProjectUpdateRequest)
 		});
@@ -126,9 +128,18 @@
 					bind:project
 					user={data.user}
 					on:delete={() => deleteProject(project.id)}
-					on:visible={({ detail }) => {
-						projectVisibility(project.id, detail);
-					}}
+					on:visible={() =>
+						projectToggle(
+							project.id,
+							project.visible,
+							project.pinned
+						)}
+					on:pinned={() =>
+						projectToggle(
+							project.id,
+							project.visible,
+							project.pinned
+						)}
 				/>
 			{/each}
 		{:catch}

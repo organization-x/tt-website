@@ -10,7 +10,7 @@
 	in:fly={{ duration: 300, y: 50 }}
 	href="/projects/{project.url}"
 	rel="noreferrer noopener"
-	class="rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full"
+	class="rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full block"
 	style="border-color: #{project.theme}"
 >
 	<div class="relative">

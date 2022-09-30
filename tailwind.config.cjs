@@ -60,15 +60,12 @@ module.exports = {
 					"linear-gradient(var(--tw-gradient-from) 50%, var(--tw-gradient-to))"
 			},
 			transitionProperty: {
-				// Ignore the dumbass names
-				transhadow: "filter, transform",
-				bright: "height, border-radius",
-				border: "border, border-radius",
-				widpad: "width, padding"
+				widpad: "width, padding",
+				border: "border, border-radius"
 			},
 			inset: {
-				0.5: "0.125rem",
-				18: "4.5rem"
+				18: "4.5rem",
+				0.5: "0.125rem"
 			},
 			lineHeight: {
 				14: "3.5rem"

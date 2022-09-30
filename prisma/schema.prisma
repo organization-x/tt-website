@@ -82,6 +82,7 @@ model Project {
     ownerId     String
     content     Json // Contains generated tiptap json
     visible     Boolean         @default(true)
+    pinned      Boolean         @default(false)
 
     @@index([title, skills])
 }

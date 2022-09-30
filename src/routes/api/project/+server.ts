@@ -89,7 +89,8 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				date: data.project.date,
 				skills: data.project.skills,
 				content,
-				visible: data.project.visible
+				visible: data.project.visible,
+				pinned: data.project.pinned
 			}
 		})
 		.catch(() => {
@@ -136,6 +137,9 @@ export const POST: RequestHandler = async ({ request }) => {
 		.catch(() => {
 			throw error(400, "Bad Request");
 		});
+
+	// Sort projects by most recently updated
+	projects.sort((p, n) => (p.date.getDate() < n.date.getDate() ? 1 : -1));
 
 	return new Response(JSON.stringify(projects), { status: 200 });
 };

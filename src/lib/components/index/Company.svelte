@@ -5,7 +5,7 @@
 </script>
 
 <div
-	class="bg-gray-800 p-4 rounded-xl flex flex-col max-w-lg mx-auto even:text-right even:items-end lg:transition-transhadow lg:hover:-translate-y-2 lg:hover:drop-shadow-lg"
+	class="bg-gray-800 p-4 rounded-xl flex flex-col max-w-lg mx-auto even:text-right even:items-end lg:transition-[filter,transform] lg:hover:-translate-y-2 lg:hover:drop-shadow-lg"
 >
 	<slot name="img" />
 	<p class="my-4">

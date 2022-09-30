@@ -20,9 +20,9 @@
 	import Developer from "$lib/components/developers/index/Developer.svelte";
 	import DeveloperFilter from "$lib/components/developers/index/DeveloperFilter.svelte";
 
-	import type { SoftSkill, TechSkill, User } from "@prisma/client";
+	import type { SoftSkill, TechSkill, User, Project } from "@prisma/client";
 
-	let request: Promise<User[]> = new Promise(() => {});
+	let request: Promise<App.UserWithProject[]> = new Promise(() => {});
 
 	let page = 0;
 	let search = "";
@@ -55,7 +55,42 @@
 				} as App.UserSearchRequest)
 			})
 				.then((res) => res.json())
-				.then((data: User[]) => (data.length ? res(data) : rej()))
+				.then(async (data: User[]) =>
+					// Get projects for each user and grab that user's pinned project, if one isn't pinned
+					// use their last updated project
+					data.length
+						? res(
+								await Promise.all(
+									data.map(async (user) => {
+										const projects: Project[] = await fetch(
+											"/api/project",
+											{
+												method: "POST",
+												headers: {
+													"Content-Type":
+														"application/json"
+												},
+												body: JSON.stringify({
+													where: {
+														ownerId: user.id
+													}
+												} as App.ProjectSearchRequest)
+											}
+										).then((res) => res.json());
+
+										const pinned = projects.find(
+											(project) => project.pinned
+										);
+
+										return {
+											...user,
+											pinnedProject: pinned || projects[0]
+										};
+									})
+								)
+						  )
+						: rej()
+				)
 		);
 	};
 </script>
@@ -189,14 +224,14 @@
 
 		<Seperator />
 
-		<div class="h-[70rem]">
+		<div class="min-h-[100rem] md:min-h-[73rem]">
 			<Scrollable
 				class="before:from-gray-900 after:to-gray-900"
 				arrows={true}
 			>
 				{#await request}
 					<div
-						class="h-14 flex animate-pulse items-center gap-4 justify-center bg-gray-500 rounded-lg py-4 px-6 shrink-0"
+						class="h-14 flex animate-pulse items-center gap-4 justify-center bg-gray-500 rounded-lg px-4 shrink-0 w-44"
 					>
 						<div class="rounded-full bg-gray-400 w-10 h-10" />
 						<div class="rounded-full bg-gray-400 w-20 h-5" />
@@ -220,48 +255,29 @@
 			>
 				{#await request}
 					<div
-						class="bg-gray-500 rounded-lg w-full h-full py-6 px-4 max-w-xl mx-auto shrink-0 animate-pulse"
+						rel="noreferrer noopener"
+						class="bg-gray-500 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 h-[72rem] md:h-[54rem]"
 					>
-						<div class="flex items-center gap-4">
-							<div
-								class="bg-gray-400 rounded-full w-20 h-20 shrink-0"
-							/>
-							<div class="rounded-full bg-gray-400 w-20 h-5" />
+						<div class="flex gap-6 items-center">
+							<div class="w-20 h-20 bg-gray-400 rounded-full" />
+							<div>
+								<div
+									class="rounded-full h-10 w-44 bg-gray-400"
+								/>
+								<div
+									class="rounded-full h-5 w-24 bg-gray-400"
+								/>
+							</div>
 						</div>
-						<div class="flex flex-col gap-1 ml-24">
-							<div class="rounded-sm h-2 w-full bg-gray-400" />
-							<div class="rounded-sm h-2 w-full bg-gray-400" />
-							<div class="rounded-sm h-2 w-full bg-gray-400" />
-							<div class="rounded-sm h-2 w-32 bg-gray-400" />
-						</div>
-						<div class="grid grid-cols-2 gap-4 my-4">
-							<div
-								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
-							/>
-							<div
-								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
-							/>
-							<div
-								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
-							/>
-							<div
-								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
-							/>
-						</div>
-						<div class="grid grid-cols-2 gap-4">
-							<div
-								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
-							/>
-							<div
-								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
-							/>
-							<div
-								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
-							/>
-							<div
-								class="rounded-lg h-10 w-32 bg-gray-400 mx-auto"
-							/>
-						</div>
+
+						<div class="rounded-full h-5 w-44 bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-32 bg-gray-400" />
+
+						<!-- TODO: Fix this loading placeholder -->
 					</div>
 				{:then users}
 					{#each users as user, i}

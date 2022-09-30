@@ -41,7 +41,7 @@
 			class:h-full={open}
 			class:rounded-t-lg={open}
 			class:h-11={!open}
-			class="absolute flex bg-gray-700 mx-auto transition-bright left-0 right-0 bottom-0 rounded-b-lg w-full lg:hidden"
+			class="absolute flex bg-gray-700 mx-auto transition-[border-radius,height] left-0 right-0 bottom-0 rounded-b-lg w-full lg:hidden"
 		>
 			<div
 				class="flex gap-2 items-center m-auto mb-2 cursor-pointer"
