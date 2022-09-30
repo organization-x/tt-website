@@ -1,23 +1,24 @@
 <script lang="ts">
 	import type { User } from "@prisma/client";
 
-	export let info: User;
+	export let user: User;
 	export let current: boolean;
 </script>
 
-<div
+<button
 	on:click
 	class:grayscale={!current}
 	class:cursor-pointer={!current}
-	class="font-semibold flex jsutify-center gap-4 items-center h-14 bg-gray-500/40 rounded-lg px-4 snap-center shrink-0 select-none"
+	class="font-semibold flex jsutify-center gap-4 justify-center items-center h-14 bg-gray-500/40 rounded-lg px-4 snap-center shrink-0 select-none w-44"
 >
+	<!-- TODO: Replace placeholder -->
 	<img
 		height="200"
 		width="200"
-		src={`/developers/user/${info.url}/icon.webp`}
+		src="/assets/developers/user/placeholder/icon.webp"
 		loading="lazy"
-		alt={`${info.name} from Team Tomorrow`}
+		alt="{user.name}'s avatar"
 		class="rounded-full w-10"
 	/>
-	<h1>{info.name}</h1>
-</div>
+	<h1>{user.name}</h1>
+</button>

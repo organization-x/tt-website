@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+
 	import CarouselDot from "$lib/components/index/CarouselDot.svelte";
 
 	let current = 0;

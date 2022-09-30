@@ -1,9 +1,11 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
 
-	import Checkbox from "../icons/Checkbox.svelte";
+	import Checkbox from "$lib/components/icons/Checkbox.svelte";
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{
+		change: { isSelected: boolean };
+	}>();
 
 	let isSelected = false;
 </script>

@@ -1,6 +1,8 @@
 import { Octokit } from "octokit";
 import { prisma } from "$lib/prisma";
-import { redirect, type RequestHandler } from "@sveltejs/kit";
+import { redirect } from "@sveltejs/kit";
+
+import type { RequestHandler } from "./$types";
 
 const id = import.meta.env.VITE_CLIENT_ID;
 
@@ -34,7 +36,7 @@ export const GET: RequestHandler = async (req) => {
 			.then((res) => res.data)
 			.catch(() => null);
 
-		// If an error occurs fetching the user data, its most likely an expired token, so redirect to github oauth page
+		// If an error occurs fetching the user data, its most likely an expired token (code parameter), so redirect to github oauth page
 		if (!user) throw redirect(302, "/login");
 
 		// Check if the user exists already
@@ -89,10 +91,9 @@ export const GET: RequestHandler = async (req) => {
 
 		const session = await createSession();
 
-		// Set locals to session token and redirect to the users profile
-		// TODO: Change redirect to the users main dashboard
+		// Set locals to session token and redirect to the main dashboard page
 		req.locals.session = session;
-		throw redirect(302, "/dashboard/profile");
+		throw redirect(302, "/dashboard");
 	} else {
 		throw redirect(
 			302,

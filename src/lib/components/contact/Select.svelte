@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount, createEventDispatcher } from "svelte";
 
-	import Asterisk from "../icons/Asterisk.svelte";
-	import Dropdown from "../icons/Dropdown.svelte";
-	import DropdownOption from "./DropdownOption.svelte";
+	import Asterisk from "$lib/components/icons/Asterisk.svelte";
+	import DropArrow from "$lib/components/icons/DropArrow.svelte";
+	import DropdownOption from "$lib/components/contact/DropdownOption.svelte";
 
 	export let title: string;
 	export let required = true;
@@ -51,12 +51,10 @@
 			on:click={() => (open = !open)}
 			class:pointer-events-none={disabled}
 			class:rounded-b-lg={!open}
-			class="w-full flex items-center justify-between p-4 bg-gray-800 mt-4 duration-100 transition-border rounded-t-lg select-none"
+			class="w-full flex items-center justify-between p-4 bg-gray-800 mt-4 rounded-t-lg select-none"
 		>
 			<h1>{count} {placeholder} selected</h1>
-			<Dropdown
-				class="w-6 h-6 transition-transform{open ? ' rotate-180' : ''}"
-			/>
+			<DropArrow {open} class="w-6 h-6 transition-transform" />
 		</div>
 		<div
 			class:flex={open}

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Filter from "./icons/Filter.svelte";
+	import Filter from "$lib/components/icons/Filter.svelte";
 </script>
 
 <div class="flex items-center justify-center gap-2 font-semibold text-xl mt-4">

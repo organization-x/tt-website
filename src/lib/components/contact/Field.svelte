@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
 
-	import Asterisk from "../icons/Asterisk.svelte";
+	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 
 	export let type: string;
 	export let title: string;
@@ -9,12 +9,12 @@
 	export let disabled: boolean;
 	export let placeholder: string;
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{ change: { isFilled: boolean } }>();
 
 	let isFilled = false;
 
-	// Only dispatch if the previous state of isFilled is different than the new state.
-	$: isFilled, dispatch("change", { isFilled });
+	// Let the parent know isFilled has changed
+	$: dispatch("change", { isFilled });
 
 	// On input check if the input is filled.
 	const onChange = ({ target }: Event) => {

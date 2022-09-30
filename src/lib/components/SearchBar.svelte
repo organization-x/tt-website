@@ -1,13 +1,30 @@
 <script lang="ts">
-	import Search from "./icons/Search.svelte";
+	import { createEventDispatcher, onMount } from "svelte";
+
+	import { debounce } from "$lib/debounce";
+	import Search from "$lib/components/icons/Search.svelte";
+
+	const dispatch = createEventDispatcher<{ search: undefined }>();
+
+	export let search = "";
+	export let placeholder: string;
+
+	// Dispatch an initial search on page load so content is loaded
+	// onMount(() => dispatch("search"));
 </script>
 
-<div class="bg-gray-500/40 flex p-4 rounded-lg mt-8 select-none">
+<div class="bg-gray-500/40 flex p-4 rounded-lg select-none w-full items-center">
 	<Search class="w-5 h-5" />
 	<input
+		bind:value={search}
 		on:input
+		use:debounce={{
+			bind: search,
+			func: () => dispatch("search"),
+			delay: 300
+		}}
 		type="text"
 		class="w-full h-full px-2 bg-transparent focus:outline-none"
-		placeholder="Search Projects..."
+		{placeholder}
 	/>
 </div>

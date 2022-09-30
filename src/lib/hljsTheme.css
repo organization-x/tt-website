@@ -1,0 +1,74 @@
+/* Themeing for code in projects using Highlight.js */
+
+pre code.hljs {
+	@apply overflow-x-auto block;
+}
+
+.hljs-comment,
+.hljs-quote {
+	@apply italic text-[#5c6370];
+}
+
+.hljs-doctag,
+.hljs-formula,
+.hljs-keyword {
+	@apply text-[#c678dd];
+}
+
+.hljs-deletion,
+.hljs-name,
+.hljs-section,
+.hljs-selector-tag,
+.hljs-subst {
+	@apply text-[#e06c75];
+}
+
+.hljs-literal {
+	@apply text-[#56b6c2];
+}
+
+.hljs-addition,
+.hljs-attribute,
+.hljs-meta .hljs-string,
+.hljs-regexp,
+.hljs-string {
+	@apply text-[#98c379];
+}
+
+.hljs-attr,
+.hljs-number,
+.hljs-selector-attr,
+.hljs-selector-class,
+.hljs-selector-pseudo,
+.hljs-template-variable,
+.hljs-type,
+.hljs-variable {
+	@apply text-[#d19a66];
+}
+
+.hljs-bullet,
+.hljs-link,
+.hljs-meta,
+.hljs-selector-id,
+.hljs-symbol,
+.hljs-title {
+	@apply text-[#61aeee];
+}
+
+.hljs-built_in,
+.hljs-class .hljs-title,
+.hljs-title.class_ {
+	@apply text-[#e5c07b];
+}
+
+.hljs-emphasis {
+	@apply italic;
+}
+
+.hljs-strong {
+	@apply font-bold;
+}
+
+.hljs-link {
+	@apply underline;
+}
