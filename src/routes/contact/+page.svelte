@@ -86,7 +86,7 @@
 		},
 		{
 			page: 1,
-			name: "What to do",
+			name: "What are we coing?",
 			isValid: false,
 			value: []
 		},
@@ -239,8 +239,7 @@
 				page="2"
 			/>
 			<Select
-				title="What to do"
-				prompt="What are we doing?"
+				title="What are we doing?"
 				placeholder="subject(s)"
 				on:change={onChange}
 				disabled={pageNumber !== 1}
