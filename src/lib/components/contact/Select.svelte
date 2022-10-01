@@ -13,7 +13,7 @@
 	export let placeholder: string;
 	export let page: string;
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{ change: { page: string, title: string, isValid: boolean, input: string[] } }>();
 
 	let open = false;
 	let count = 0;
