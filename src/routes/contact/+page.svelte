@@ -24,11 +24,7 @@
 
 	// Scroll to next page of contact form
 	const scroll = (next: boolean) => {
-		if (next) {
-			pageNumber++;
-		} else {
-			pageNumber--;
-		}
+		pageNumber = next ? pageNumber + 1 : pageNumber - 1;
 
 		element.scrollTo({
 			left: element.children[0].clientWidth * pageNumber,
