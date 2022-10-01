@@ -10,7 +10,14 @@
 	export let placeholder: string;
 	export let page: string;
 
-	const dispatch = createEventDispatcher<{ change: { page: string, title: string, isValid: boolean, input: string } }>();
+	const dispatch = createEventDispatcher<{
+		change: {
+			page: string;
+			title: string;
+			isValid: boolean;
+			input: string;
+		};
+	}>();
 
 	let isValid = false;
 	let input = "";

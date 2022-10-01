@@ -13,7 +13,14 @@
 	export let placeholder: string;
 	export let page: string;
 
-	const dispatch = createEventDispatcher<{ change: { page: string, title: string, isValid: boolean, input: string[] } }>();
+	const dispatch = createEventDispatcher<{
+		change: {
+			page: string;
+			title: string;
+			isValid: boolean;
+			input: string[];
+		};
+	}>();
 
 	let open = false;
 	let count = 0;
@@ -26,13 +33,16 @@
 	$: dispatch("change", { page, title, isValid, input });
 
 	// On input change check if the input is filled.
-	const onChange = ({ detail }: CustomEvent<{ isSelected: boolean, option: string }>) => {
+	const onChange = ({
+		detail
+	}: CustomEvent<{ isSelected: boolean; option: string }>) => {
 		if (detail.isSelected) {
 			count++;
 			input.push(detail.option);
 		} else {
 			count--;
-			if (input.indexOf(detail.option) > -1) input.splice(input.indexOf(detail.option), 1);
+			if (input.indexOf(detail.option) > -1)
+				input.splice(input.indexOf(detail.option), 1);
 		}
 		isValid = count > 0;
 		changed = true;
@@ -80,7 +90,7 @@
 			class="absolute w-full h-fit flex-col inset-0 top-14 bg-gray-800 z-10 rounded-b-lg max-h-[15rem] overflow-auto"
 		>
 			{#each options as option}
-				<DropdownOption on:change={onChange} option={option}>
+				<DropdownOption on:change={onChange} {option}>
 					{option}
 				</DropdownOption>
 			{/each}

@@ -4,7 +4,7 @@
 	import Checkbox from "../icons/Checkbox.svelte";
 
 	const dispatch = createEventDispatcher<{
-		change: { isSelected: boolean, option: string };
+		change: { isSelected: boolean; option: string };
 	}>();
 
 	export let option: string;

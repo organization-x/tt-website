@@ -113,10 +113,20 @@
 	];
 
 	// Check if all required fields are filled
-	const onChange = ({ detail }: CustomEvent<{ page: string, title: string, isValid: boolean, input: string | string[] }>) => {
+	const onChange = ({
+		detail
+	}: CustomEvent<{
+		page: string;
+		title: string;
+		isValid: boolean;
+		input: string | string[];
+	}>) => {
 		let input = detail.input;
 		let box = boxes.find((obj) => {
-			return obj.page == parseInt(detail.page) - 1 && obj.name == detail.title;
+			return (
+				obj.page == parseInt(detail.page) - 1 &&
+				obj.name == detail.title
+			);
 		});
 		box.isValid = detail.isValid;
 		box.value = input;

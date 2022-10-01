@@ -11,7 +11,14 @@
 	export let placeholder: string;
 	export let page: string;
 
-	const dispatch = createEventDispatcher<{ change: { page: string, title: string, isValid: boolean, input: string } }>();
+	const dispatch = createEventDispatcher<{
+		change: {
+			page: string;
+			title: string;
+			isValid: boolean;
+			input: string;
+		};
+	}>();
 
 	const email_regex = new RegExp(
 		"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$"
@@ -47,7 +54,8 @@
 		switch (name) {
 			case "first name":
 			case "last name": {
-				isValid = value[0].toUpperCase() == value[0] && !any_nums.test(value);
+				isValid =
+					value[0].toUpperCase() == value[0] && !any_nums.test(value);
 				break;
 			}
 			case "email": {
@@ -55,7 +63,10 @@
 				break;
 			}
 			case "phone number": {
-				isValid = all_nums.test(value) && 8 <= value.length && value.length <= 15;
+				isValid =
+					all_nums.test(value) &&
+					8 <= value.length &&
+					value.length <= 15;
 				break;
 			}
 			case "company website": {
