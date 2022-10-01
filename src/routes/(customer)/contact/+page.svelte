@@ -111,7 +111,7 @@
 			value: ""
 		}
 	];
-	
+
 	// Check if all required fields are filled
 	const onChange = ({
 		detail
