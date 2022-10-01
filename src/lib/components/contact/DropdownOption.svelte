@@ -4,16 +4,17 @@
 	import Checkbox from "$lib/components/icons/Checkbox.svelte";
 
 	const dispatch = createEventDispatcher<{
-		change: { isSelected: boolean };
+		change: { isSelected: boolean; option: string };
 	}>();
 
+	export let option: string;
 	let isSelected = false;
 </script>
 
 <div
 	on:click={() => {
 		isSelected = !isSelected;
-		dispatch("change", { isSelected });
+		dispatch("change", { isSelected, option });
 	}}
 	class="p-4 flex items-center gap-3 rounded-lg cursor-pointer"
 >

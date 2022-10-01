@@ -4,36 +4,47 @@
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 
 	export let title: string;
+	export let prompt = title;
 	export let required = true;
 	export let disabled: boolean;
 	export let placeholder: string;
+	export let page: string;
 
-	const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher<{
+		change: {
+			page: string;
+			title: string;
+			isValid: boolean;
+			input: string;
+		};
+	}>();
 
-	let isFilled = false;
+	let isValid = false;
+	let input = "";
 
-	// Let the parent know isFilled has changed
-	$: dispatch("change", { isFilled });
+	// Let the parent know input has changed
+	$: dispatch("change", { page, title, isValid, input });
 
 	// On input change check if the input is filled.
 	const onChange = ({ target }: Event) => {
 		const { value } = target as HTMLInputElement;
-		isFilled = value.length > 0;
+		input = value;
+		isValid = value.length > 0;
 	};
 </script>
 
 <div class="mt-8">
 	<div class="flex justify-between items-center">
-		<h1 class="font-semibold">{title}</h1>
+		<h1 class="font-semibold">{prompt}</h1>
 		{#if required}
 			<Asterisk class="w-3 h-3" />
 		{/if}
 	</div>
 	<textarea
 		on:input={onChange}
-		name={title.toLowerCase()}
-		class:border-green-light={isFilled}
-		class:border-transparent={!isFilled}
+		name={prompt.toLowerCase()}
+		class:border-green-light={isValid}
+		class:border-transparent={!isValid}
 		class="w-full h-96 bg-gray-800 resize-none flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
 		{disabled}
 		{placeholder}
