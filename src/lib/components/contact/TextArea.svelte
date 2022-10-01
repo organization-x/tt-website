@@ -15,7 +15,7 @@
 	let isValid = false;
 	let input = "";
 
-	// Only dispatch if the previous state of isValid is different than the new state.
+	// Let the parent know input has changed
 	$: dispatch("change", { page, title, isValid, input });
 
 	// On input change check if the input is filled.
