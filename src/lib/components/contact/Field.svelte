@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
 
-	import Asterisk from "../icons/Asterisk.svelte";
+	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 
 	export let type: string;
 	export let title: string;
@@ -34,7 +34,7 @@
 	let isFilled = false;
 	let input = "";
 
-	// Let the parent know isFilled has changed
+	// Let the parent know input has changed
 	$: dispatch("change", { page, title, isValid, input });
 
 	// On input check if the input is filled.

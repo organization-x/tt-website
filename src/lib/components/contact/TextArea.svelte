@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
 
-	import Asterisk from "../icons/Asterisk.svelte";
+	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 
 	export let title: string;
 	export let prompt = title;

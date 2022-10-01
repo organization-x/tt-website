@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount, createEventDispatcher } from "svelte";
 
-	import Asterisk from "../icons/Asterisk.svelte";
-	import Dropdown from "../icons/Dropdown.svelte";
-	import DropdownOption from "./DropdownOption.svelte";
+	import Asterisk from "$lib/components/icons/Asterisk.svelte";
+	import DropArrow from "$lib/components/icons/DropArrow.svelte";
+	import DropdownOption from "$lib/components/contact/DropdownOption.svelte";
 
 	export let title: string;
 	export let prompt = title;
@@ -29,7 +29,7 @@
 	let input: string[] = [];
 	let dropdownParent: HTMLDivElement;
 
-	// Only dispatch if the previous state of isValid is different than the new state.
+	// Let the parent know input has changed
 	$: dispatch("change", { page, title, isValid, input });
 
 	// On input change check if the input is filled.
@@ -72,7 +72,7 @@
 			on:click={() => (open = !open)}
 			class:pointer-events-none={disabled}
 			class:rounded-b-lg={!open}
-			class="w-full flex items-center justify-between p-4 bg-gray-800 mt-4 duration-100 transition-border rounded-t-lg select-none border-2 z-20 relative"
+			class="w-full flex items-center justify-between p-4 bg-gray-800 mt-4 rounded-t-lg select-none border-2 z-20 relative"
 			class:border-green-light={isValid}
 			class:border-red-light={changed && !isValid && required}
 			class:border-transparent={!changed ||
@@ -80,9 +80,7 @@
 				(isValid && count < 1)}
 		>
 			<h1>{count} {placeholder} selected</h1>
-			<Dropdown
-				class="w-6 h-6 transition-transform{open ? ' rotate-180' : ''}"
-			/>
+			<DropArrow {open} class="w-6 h-6 transition-transform" />
 		</div>
 		<div
 			class:flex={open}

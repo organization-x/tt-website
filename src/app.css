@@ -10,14 +10,39 @@
 		scrollbar-width: thin;
 	}
 
+	*::placeholder {
+		@apply text-gray-400;
+	}
+
 	html {
 		@apply font-main bg-black text-white text-base sm:text-lg lg:text-xl;
 	}
 
 	img {
-		@apply select-none;
 		user-drag: none;
 		-webkit-user-drag: none;
+	}
+
+	a,
+	img,
+	button {
+		@apply select-none;
+	}
+
+	.scrollbar {
+		scrollbar-width: thin;
+	}
+
+	.scrollbar::-webkit-scrollbar {
+		@apply w-3;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb {
+		@apply bg-gray-800 invisible border-y-8 border-solid border-transparent bg-clip-padding rounded-full;
+	}
+
+	.scrollbar:hover::-webkit-scrollbar-thumb {
+		@apply visible;
 	}
 
 	.scrollbar-hidden {

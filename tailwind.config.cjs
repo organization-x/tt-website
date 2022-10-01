@@ -2,7 +2,7 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {import("tailwindcss").Config} */
 module.exports = {
-	content: ["./src/**/*.{html,svelte}"],
+	content: ["./src/**/*.{html,svelte}", "./src/lib/tiptapExtensions.ts"],
 	theme: {
 		fontFamily: {
 			main: ["Lato", ...defaultTheme.fontFamily.sans]
@@ -13,10 +13,15 @@ module.exports = {
 			black: "#000",
 			white: "#FFF",
 			gray: {
+				400: "#707680",
 				500: "#2F2E2E",
 				700: "#222222",
 				800: "#1A1A1A",
 				900: "#151515"
+			},
+			red: {
+				light: "#F83737",
+				dark: "#C61111"
 			},
 			pink: {
 				light: "#F837CE",
@@ -37,17 +42,14 @@ module.exports = {
 			green: {
 				light: "#1FBD67",
 				dark: "#069A6E"
-			},
-			red: {
-				light: "#F83737",
-				dark: "#C61111"
 			}
 		},
 		extend: {
 			screens: {
 				sm: "425px",
 				md: "600px",
-				lg: "1024px"
+				lg: "1024px",
+				"3xl": "1600px"
 			},
 			backgroundImage: {
 				"gradient-radial":
@@ -58,12 +60,11 @@ module.exports = {
 					"linear-gradient(var(--tw-gradient-from) 50%, var(--tw-gradient-to))"
 			},
 			transitionProperty: {
-				// Ignore the dumbass names
-				transhadow: "filter, transform",
-				bright: "height, border-radius",
+				widpad: "width, padding",
 				border: "border, border-radius"
 			},
 			inset: {
+				18: "4.5rem",
 				0.5: "0.125rem"
 			},
 			lineHeight: {
@@ -71,6 +72,9 @@ module.exports = {
 			},
 			height: {
 				100: "25rem"
+			},
+			minHeight: {
+				72: "18rem"
 			}
 		}
 	},

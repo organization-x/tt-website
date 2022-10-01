@@ -1,5 +1,5 @@
 <script lang="ts">
-	import StepTitle from "./StepTitle.svelte";
+	import StepTitle from "$lib/components/index/StepTitle.svelte";
 
 	let className: string;
 	export let num: number;
