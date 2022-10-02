@@ -128,8 +128,8 @@
 				obj.name == detail.title
 			);
 		});
-		box.isValid = detail.isValid;
-		box.value = input;
+		box!.isValid = detail.isValid;
+		box!.value = input;
 		currentPageValid();
 	};
 
