@@ -82,7 +82,7 @@ model Project {
     ownerId     String
     content     Json // Contains generated tiptap json
     visible     Boolean         @default(true)
-    pinned      Boolean         @default(false)
+    pinnedBy    User?
 
     @@index([title, skills])
 }
@@ -97,19 +97,22 @@ model Session {
 
 // The user model for storing tt members
 model User {
-    id         String          @id
-    sessions   Session[]
+    id              String          @id
+    sessions        Session[]
     // Contains the users url basis (firstlast), structured as /users/{firstlast}.
     // For banners and icons we can do /users/{firstlast}/banner.webp and /users/{firstlast}/icon.webp
-    url        String          @unique
-    name       String
-    about      String
-    team       Team?
-    links      Links?
-    positions  Position[]
-    softSkills SoftSkill[]
-    techSkills TechSkill[]
-    projects   ProjectAuthor[]
+    url             String          @unique
+    name            String
+    about           String
+    team            Team?
+    links           Links?
+    positions       Position[]
+    softSkills      SoftSkill[]
+    techSkills      TechSkill[]
+    projects        ProjectAuthor[]
+    pinnedProject   Project?        @relation(fields: [pinnedProjectId], references: [id])
+    pinnedProjectId String?         @unique
+    visible         Boolean         @default(true)
 
     @@index([name, techSkills, softSkills, positions])
 }

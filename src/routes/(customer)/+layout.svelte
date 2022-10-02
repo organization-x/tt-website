@@ -1,9 +1,10 @@
 <script lang="ts">
 	import "../../app.css";
 
-	import { navigating } from "$app/stores";
 	import { slide } from "svelte/transition";
+
 	import Logo from "$lib/components/Logo.svelte";
+	import { afterNavigate } from "$app/navigation";
 	import AICamp from "$lib/components/AICamp.svelte";
 	import NavLink from "$lib/components/NavLink.svelte";
 	import FootLink from "$lib/components/FootLink.svelte";
@@ -14,7 +15,7 @@
 
 	let open = false;
 
-	$: if ($navigating) open = false;
+	afterNavigate(() => (open = false));
 </script>
 
 <header class="bg-black font-heading">

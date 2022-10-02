@@ -25,8 +25,8 @@ declare global {
 			url: string;
 		}
 
-		// Type for combining a user with their pinned project, used on the developers page
-		type UserWithProject = User & { pinnedProject: Project | null };
+		// Type for combining a user with their Links
+		type UserWithMetadata = User & { links: Links; pinnedProject: Project };
 
 		// Interface for user update requests
 		interface UserUpdateRequest {
@@ -38,8 +38,10 @@ declare global {
 				positions?: Position[];
 				softSkills?: SoftSkill[];
 				techSkills?: TechSkill[];
+				links?: Links;
+				pinnedProjectId?: string;
+				visible?: boolean;
 			};
-			links?: Links;
 		}
 
 		// Interface for user search requests
@@ -66,9 +68,8 @@ declare global {
 				skills?: TechSkill[];
 				content?: Prisma.InputJsonValue;
 				visible?: boolean;
-				pinned?: boolean;
+				authors?: ProjectAuthor[];
 			};
-			authors?: ProjectAuthor[];
 		}
 
 		// Interface for project search requests

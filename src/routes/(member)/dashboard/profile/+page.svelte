@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { user as original } from "$lib/stores";
 	import Devto from "$lib/components/icons/Devto.svelte";
 	import Group from "$lib/components/icons/Group.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
@@ -9,6 +10,7 @@
 	import LinkedIn from "$lib/components/icons/LinkedIn.svelte";
 	import Facebook from "$lib/components/icons/Facebook.svelte";
 	import LinkIcon from "$lib/components/icons/LinkIcon.svelte";
+	import ShowHide from "$lib/components/icons/ShowHide.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
 	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
@@ -25,16 +27,13 @@
 		Links
 	} from "@prisma/client";
 
-	let original: PageParentData;
-
-	export { original as data };
-
 	// Since the data object is shared across all pages, we need to make a copy of it so
 	// that unmade changes arent shown on other pages
-	let data = JSON.parse(JSON.stringify(original)) as PageParentData;
+	let user = JSON.parse(JSON.stringify($original)) as PageParentData;
 
 	let disableForm = false;
 	let disableButtons = true;
+	let visible = $original.visible;
 
 	const checkConstraints = () => {
 		// If the form is disabled ignore since the reactive statements fire due to the fetch call
@@ -42,18 +41,18 @@
 
 		disableButtons = true;
 
-		const about = data.user.about.trim();
+		const about = user.about.trim();
 
 		if (
 			about.length > 150 ||
-			data.user.positions.length < 2 ||
-			data.user.softSkills.length < 2 ||
-			data.user.techSkills.length < 2
+			user.positions.length < 2 ||
+			user.softSkills.length < 2 ||
+			user.techSkills.length < 2
 		)
 			return;
 
 		// Check if the data has changed from its original content
-		if (JSON.stringify(original) !== JSON.stringify(data))
+		if (JSON.stringify($original) !== JSON.stringify(user))
 			disableButtons = false;
 	};
 
@@ -80,75 +79,94 @@
 	const updateTeam = ({
 		detail
 	}: CustomEvent<{ selected: string; previous: string }>) => {
-		data.user.team = detail.selected as Team;
+		user.team = detail.selected as Team;
 		checkConstraints();
 	};
 
-	$: data.user.about, checkConstraints();
+	$: user.about, checkConstraints();
 
-	$: data.links,
-		Object.keys(data.links).forEach((key) => {
+	$: user.links,
+		Object.keys(user.links).forEach((key) => {
 			if (key === "userId") return;
 
 			const link =
-				data.links[key as keyof Links] &&
-				data.links[key as keyof Links]!.trim();
+				user.links[key as keyof Links] &&
+				user.links[key as keyof Links]!.trim();
 
 			// @ts-ignore Typescript for some reason doesn't recognize my userId check earlier so it freaks out
-			data.links[key as keyof Links] = link && link.length ? link : null;
+			user.links[key as keyof Links] = link && link.length ? link : null;
 		}),
 		checkConstraints();
 
 	// On cancel, revert the values to their originals and disable the save/cancel buttons
 	const cancel = () => {
 		disableButtons = true;
-		data = JSON.parse(JSON.stringify(original));
+		user = JSON.parse(JSON.stringify($original));
 	};
 
 	const save = () => {
+		checkConstraints();
+
+		if (disableButtons || disableForm) return;
+
 		disableForm = true;
 
 		// Trim the about section
-		data.user.about = data.user.about.trim();
+		user.about = user.about.trim();
 
 		disableButtons = true;
 
-		// Send an update request to the API
 		fetch("/api/user", {
 			method: "PATCH",
 			headers: {
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: {
-					id: data.user.id
-				},
-				user: data.user,
-				links: data.links
+				where: { id: user.id },
+				user
 			} as App.UserUpdateRequest)
 		}).then(() => {
 			disableForm = false;
 
 			// If successful, update the original data.
 			// The reason it's done manually like this is so the original object is presevered and is then used across all dashboard pages
-			original.user.about = data.user.about;
-			original.user.team = data.user.team;
-			original.user.positions = data.user.positions;
-			original.user.softSkills = data.user.softSkills;
-			original.user.techSkills = data.user.techSkills;
-			original.links = data.links;
+			original.set(user);
 		});
+	};
+
+	// Update visility of user
+	const toggleVisible = () => {
+		fetch("/api/user", {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				where: { id: $original.id },
+				user: { visible }
+			} as App.UserUpdateRequest)
+		}).then(() => ($original.visible = visible));
+	};
+
+	// When the user does CTRL/CMD + S, save the data
+	const onKeydown = (e: KeyboardEvent) => {
+		if (e.metaKey && e.key === "s") {
+			e.preventDefault();
+			save();
+		}
 	};
 </script>
 
-<div class="relative pt-[4.5rem] px-8 lg:px-12">
+<svelte:window on:keydown={onKeydown} />
+
+<div class="relative pt-[4.5rem] px-8 lg:px-10">
 	<div class="grid absolute top-0 inset-x-0 -z-10">
 		<!-- TODO: Replace placeholder -->
 		<img
 			src="/assets/projects/project/placeholder/banner.webp"
 			width="1920"
 			height="1080"
-			alt="{data.user.name}'s banner"
+			alt="{user.name}'s banner"
 			class="object-cover object-center w-full h-32 row-start-1 col-start-1 lg:h-44"
 		/>
 
@@ -160,9 +178,9 @@
 		</button>
 	</div>
 
-	<div class="lg:flex lg:gap-12 lg:justify-center">
+	<div class="lg:flex lg:gap-8 lg:justify-center">
 		<div
-			class="flex flex-col gap-4 lg:shrink-0 lg:sticky lg:h-min lg:mt-10 lg:top-6 lg:w-52"
+			class="flex flex-col gap-4 lg:shrink-0 lg:sticky lg:h-min lg:mt-10 lg:top-6 lg:w-60"
 		>
 			<div
 				class="rounded-full w-fit border-4 mt-4 border-black mx-auto grid lg:mx-0"
@@ -171,7 +189,7 @@
 					width="200"
 					height="200"
 					src="/assets/developers/user/placeholder/icon.webp"
-					alt="{data.user.name}'s avatar"
+					alt="{user.name}'s avatar"
 					class="w-28 h-28 rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
 				/>
 				<div
@@ -184,18 +202,33 @@
 			<GradientText
 				class="from-green-light to-green-dark font-bold text-3xl text-center w-full lg:text-start"
 			>
-				{data.user.name}
+				{user.name}
 			</GradientText>
 
-			<a
-				target="_blank"
-				rel="noopener noreferrer"
-				href="/developers/{data.user.url}"
-				class="px-4 py-3 rounded-lg bg-gray-500 flex items-center justify-center mx-auto w-full gap-4 max-w-xl lg:mx-0"
-			>
-				View Profile
-				<ExternalLink class="w-6 h-6" />
-			</a>
+			<div class="flex gap-4 w-full mx-auto max-w-xl lg:mx-0">
+				<a
+					target="_blank"
+					rel="noopener noreferrer"
+					href="/developers/{user.url}"
+					class="px-4 py-3 rounded-lg bg-gray-500 flex items-center justify-center gap-4 w-full"
+				>
+					View Profile
+					<ExternalLink class="w-6 h-6" />
+				</a>
+
+				<DashButton
+					icon={true}
+					on:click={() => (visible = !visible)}
+					debounce={{
+						bind: visible,
+						func: toggleVisible,
+						delay: 300
+					}}
+					class="bg-gray-500 w-fit"
+				>
+					<ShowHide class="w-5 h-5" crossed={visible} />
+				</DashButton>
+			</div>
 		</div>
 
 		<div
@@ -207,7 +240,7 @@
 			<div class="flex flex-col gap-12 justify-between">
 				<ProfileSection direction="bg-gradient-to-br" title="About Me">
 					<TextBox
-						bind:value={data.user.about}
+						bind:value={user.about}
 						placeholder="Include previous projects, skills, and your experience level..."
 						max={150}
 					/>
@@ -215,7 +248,7 @@
 						radio={true}
 						options={teams}
 						required={false}
-						selectedItems={[data.user.team]}
+						selectedItems={[user.team]}
 						on:change={updateTeam}
 					>
 						<Group class="w-8 h-8 shrink-0" />
@@ -228,37 +261,37 @@
 					title="Links"
 				>
 					<Input
-						bind:value={data.links.GitHub}
+						bind:value={user.links.GitHub}
 						placeholder="GitHub username"
 					>
 						<GitHub class="w-6 h-6 mx-auto" />
 					</Input>
 					<Input
-						bind:value={data.links.LinkedIn}
+						bind:value={user.links.LinkedIn}
 						placeholder="LinkedIn username"
 					>
 						<LinkedIn class="w-6 h-6 mx-auto" />
 					</Input>
 					<Input
-						bind:value={data.links.Devto}
+						bind:value={user.links.Devto}
 						placeholder="Dev.to username"
 					>
 						<Devto class="w-6 h-6 mx-auto" />
 					</Input>
 					<Input
-						bind:value={data.links.Twitter}
+						bind:value={user.links.Twitter}
 						placeholder="Twitter username"
 					>
 						<Twitter class="w-6 h-6 mx-auto" />
 					</Input>
 					<Input
-						bind:value={data.links.Facebook}
+						bind:value={user.links.Facebook}
 						placeholder="Facebook username"
 					>
 						<Facebook class="w-6 h-6 mx-auto" />
 					</Input>
 					<Input
-						bind:value={data.links.Website}
+						bind:value={user.links.Website}
 						placeholder="Website link"
 					>
 						<LinkIcon class="w-6 h-6 mx-auto" />
@@ -278,14 +311,14 @@
 							radio={true}
 							required={i < 2}
 							options={positions}
-							selectedItems={data.user.positions}
+							selectedItems={user.positions}
 							on:change={({ detail }) => {
 								dropdownUpdate(
-									data.user.positions,
+									user.positions,
 									detail.selected,
 									detail.previous
 								);
-								data.user.positions = data.user.positions;
+								user.positions = user.positions;
 							}}
 						/>
 					{/each}
@@ -304,14 +337,14 @@
 								radio={true}
 								required={i < 2}
 								options={softSkills}
-								selectedItems={data.user.softSkills}
+								selectedItems={user.softSkills}
 								on:change={({ detail }) => {
 									dropdownUpdate(
-										data.user.softSkills,
+										user.softSkills,
 										detail.selected,
 										detail.previous
 									);
-									data.user.softSkills = data.user.softSkills;
+									user.softSkills = user.softSkills;
 								}}
 							/>
 						{/each}
@@ -326,14 +359,14 @@
 								radio={true}
 								required={i < 2}
 								options={techSkills}
-								selectedItems={data.user.techSkills}
+								selectedItems={user.techSkills}
 								on:change={({ detail }) => {
 									dropdownUpdate(
-										data.user.techSkills,
+										user.techSkills,
 										detail.selected,
 										detail.previous
 									);
-									data.user.techSkills = data.user.techSkills;
+									user.techSkills = user.techSkills;
 								}}
 							/>
 						{/each}

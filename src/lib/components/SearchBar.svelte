@@ -10,9 +10,7 @@
 	export let placeholder: string;
 
 	// Dispatch an initial search on page load so content is loaded
-	// onMount(() => dispatch("search"));
-
-	// TODO: authors overflow
+	onMount(() => dispatch("search"));
 </script>
 
 <div class="bg-gray-500/40 flex p-4 rounded-lg select-none w-full items-center">
@@ -22,7 +20,9 @@
 		on:input
 		use:debounce={{
 			bind: search,
-			func: () => dispatch("search"),
+			func: () => {
+				dispatch("search");
+			},
 			delay: 300
 		}}
 		type="text"

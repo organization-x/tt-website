@@ -1,8 +1,8 @@
 <script lang="ts">
+	import { user } from "$lib/stores";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
+	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 	import DateDropdown from "$lib/components/dashboard/kudos/DateDropdown.svelte";
-
-	import type { PageParentData } from "./$types";
 
 	enum DateOption {
 		Week = "Last 7 days",
@@ -11,15 +11,15 @@
 		Custom = "Custom"
 	}
 
-	export let data: PageParentData;
+	export { user as data };
 
 	let selected: DateOption;
 </script>
 
-<DashHero user={data.user} title="Your Kudos" />
+<DashWrap>
+	<DashHero title="Your Kudos" />
 
-<!-- TODO: Integrate the discord bot kudo API -->
+	<!-- TODO: Integrate the discord bot kudo API -->
 
-<div class="px-6 max-w-xl mx-auto lg:max-w-screen-xl">
 	<DateDropdown bind:selected />
-</div>
+</DashWrap>

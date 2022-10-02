@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import { fly } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
@@ -22,7 +23,7 @@
 
 	import type { SoftSkill, TechSkill, User, Project } from "@prisma/client";
 
-	let request: Promise<App.UserWithProject[]> = new Promise(() => {});
+	let request: Promise<App.UserWithMetadata[]> = new Promise(() => {});
 
 	let page = 0;
 	let search = "";
@@ -50,49 +51,23 @@
 							: undefined,
 						techSkills: techSkillFilter.size
 							? { hasEvery: Array.from(techSkillFilter) }
-							: undefined
+							: undefined,
+						visible: true
 					}
 				} as App.UserSearchRequest)
 			})
 				.then((res) => res.json())
-				.then(async (data: User[]) =>
-					// Get projects for each user and grab that user's pinned project, if one isn't pinned
-					// use their last updated project
-					data.length
-						? res(
-								await Promise.all(
-									data.map(async (user) => {
-										const projects: Project[] = await fetch(
-											"/api/project",
-											{
-												method: "POST",
-												headers: {
-													"Content-Type":
-														"application/json"
-												},
-												body: JSON.stringify({
-													where: {
-														ownerId: user.id
-													}
-												} as App.ProjectSearchRequest)
-											}
-										).then((res) => res.json());
-
-										const pinned = projects.find(
-											(project) => project.pinned
-										);
-
-										return {
-											...user,
-											pinnedProject: pinned || null
-										};
-									})
-								)
-						  )
-						: rej()
+				.then(async (data: App.UserWithMetadata[]) =>
+					data.length ? res(data) : rej()
 				)
 		);
 	};
+
+	// Once mounted check if there's any URL search params, if so, input them
+	onMount(() => {
+		const param = new URLSearchParams(window.location.search).get("search");
+		param && (search = param);
+	});
 </script>
 
 <svelte:head>
@@ -167,7 +142,17 @@
 
 		<SearchBar
 			bind:search
-			on:input={() => (request = new Promise(() => {}))}
+			on:input={() => {
+				// Update search URL parameters on input
+				const url = new URL(window.location.href);
+				if (search.trim().length)
+					url.searchParams.set("search", search);
+				else url.searchParams.delete("search");
+
+				history.replaceState(null, "", url);
+
+				request = new Promise(() => {});
+			}}
 			on:search={onSearch}
 			placeholder="Search developers..."
 		/>
@@ -390,8 +375,6 @@
 							</div>
 						</div>
 					</div>
-
-					<!-- TODO: fix developer component and dashboard projects/authors in banner -->
 				{:then users}
 					{#each users as user, i}
 						{#if page === i}

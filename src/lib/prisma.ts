@@ -14,17 +14,16 @@ export const checkSession = async ({ session }: App.Locals) => {
 // This is used for loading user data with a +page.server.ts file
 export const userAuth = async ({ session }: App.Locals) => {
 	if (!session) return false;
-	const sesh = prisma.session.findUnique({ where: { token: session } });
 
-	const user = sesh.user();
+	const sesh = await prisma.session.findUnique({
+		where: { token: session },
+		include: { user: { include: { links: true, pinnedProject: true } } }
+	});
 
 	// Check if the session token is valid
-	if (!(await sesh)) {
+	if (!sesh) {
 		return false;
 	}
 
-	return {
-		links: (await user.links())!,
-		user: (await user)!
-	};
+	return { ...sesh.user } as App.UserWithMetadata;
 };

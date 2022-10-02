@@ -7,20 +7,21 @@
 	import Wrench from "$lib/components/icons/Wrench.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import DevTag from "$lib/components/developers/index/DevTag.svelte";
+	import DeveloperSection from "$lib/components/DeveloperSection.svelte";
 
-	export let user: App.UserWithProject;
+	export let user: App.UserWithMetadata;
 </script>
 
 <a
 	in:fly={{ duration: 300, y: 50 }}
 	href="/developers/{user.url}"
 	rel="noreferrer noopener"
-	class="bg-gray-500/40 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0"
+	class="bg-gray-500/40 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full"
 >
 	<!-- TODO: Replace placeholder -->
 
 	<div class="flex gap-6 items-center">
-		<div class="relative">
+		<div class="relative shrink-0">
 			<img
 				height="200"
 				width="200"
@@ -93,37 +94,29 @@
 			</div>
 		{/if}
 
-		<div>
-			<div class="flex font-semibold justify-center items-center gap-2">
-				<Bulb class="w-6 h-6" />
-				<h1 class="text-lg">Positions</h1>
-			</div>
-			<div class="flex flex-col gap-4 mt-4 md:grid md:grid-cols-2">
-				{#each user.positions as position, i}
-					{#if i <= 4}
-						<DevTag name={position} />
-					{/if}
-				{/each}
-			</div>
-		</div>
+		<DeveloperSection title="Positions">
+			<Bulb slot="icon" class="w-6 h-6" />
 
-		<div>
-			<div class="flex font-semibold justify-center items-center gap-2">
-				<Wrench class="w-6 h-6" />
-				<h1 class="text-lg">Skills</h1>
-			</div>
-			<div class="flex flex-col gap-4 mt-4 md:grid md:grid-cols-2">
-				{#each user.techSkills as skill, i}
-					{#if i <= 2}
-						<DevTag name={skill} />
-					{/if}
-				{/each}
-				{#each user.softSkills as skill, i}
-					{#if i <= 2}
-						<DevTag name={skill} />
-					{/if}
-				{/each}
-			</div>
-		</div>
+			{#each user.positions as position, i}
+				{#if i <= 4}
+					<DevTag name={position} />
+				{/if}
+			{/each}
+		</DeveloperSection>
+
+		<DeveloperSection title="Skills">
+			<Wrench slot="icon" class="w-6 h-6" />
+
+			{#each user.techSkills as skill, i}
+				{#if i <= 2}
+					<DevTag name={skill} />
+				{/if}
+			{/each}
+			{#each user.softSkills as skill, i}
+				{#if i <= 2}
+					<DevTag name={skill} />
+				{/if}
+			{/each}
+		</DeveloperSection>
 	</div>
 </a>

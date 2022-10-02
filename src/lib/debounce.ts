@@ -7,11 +7,13 @@ export const debounce: Action<
 > = (node, params) => {
 	let timer: NodeJS.Timeout;
 
+	if (!params) return;
+
 	return {
 		update() {
 			clearTimeout(timer);
 
-			timer = setTimeout(params!.func, params!.delay);
+			timer = setTimeout(params.func, params.delay);
 		},
 
 		destroy() {

@@ -51,29 +51,25 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				team: data.user.team,
 				positions: data.user.positions,
 				softSkills: data.user.softSkills,
-				techSkills: data.user.techSkills
+				techSkills: data.user.techSkills,
+				pinnedProjectId: data.user.pinnedProjectId,
+				visible: data.user.visible,
+				links: {
+					update: {
+						GitHub: data.user.links?.GitHub,
+						LinkedIn: data.user.links?.LinkedIn,
+						Devto: data.user.links?.Devto,
+						Twitter: data.user.links?.Twitter,
+						Facebook: data.user.links?.Facebook,
+						Website: data.user.links?.Website
+					}
+				}
 			}
 		})
-		.catch(() => {
+		.catch((e) => {
+			console.log(e);
 			throw error(400, "Bad Request");
 		});
-
-	if (data.links) {
-		// Omit userId from links update, we don't want people to update the userId
-		const { userId, ...links } = data.links;
-
-		// Update the links or create them, if provided
-		if (data.links) {
-			await prisma.links
-				.update({
-					where: { userId: data.where.id },
-					data: links
-				})
-				.catch(() => {
-					throw error(400, "Bad Request");
-				});
-		}
-	}
 
 	return new Response(undefined, { status: 200 });
 };

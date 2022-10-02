@@ -25,17 +25,23 @@
 			class="object-cover object-center w-full h-32"
 		/>
 
-		{#each project.authors as author}
-			<img
-				width="200"
-				height="200"
-				src="/assets/developers/user/placeholder/icon.webp"
-				alt="{author.name}'s avatar"
-				loading="lazy"
-				class="absolute top-2 right-2 w-10 h-10 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4 md:top-3 md:right-3"
-				style="border-color: #{project.theme}"
-			/>
-		{/each}
+		<div
+			class="absolute top-2 right-2 left-0 justify-end pr-6 flex sm:pr-8 md:top-3 md:right-3"
+		>
+			{#each project.authors as author, i}
+				{#if i <= 4}
+					<img
+						width="200"
+						height="200"
+						src="/assets/developers/user/placeholder/icon.webp"
+						alt="{author.name}'s avatar"
+						class="w-10 h-10 -mr-6 sm:-mr-8 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4"
+						style="border-color: #{project.theme}; z-index: {project
+							.authors.length - i}"
+					/>
+				{/if}
+			{/each}
+		</div>
 	</div>
 
 	<div class="flex flex-col py-4 px-3 min-h-72">
