@@ -102,7 +102,6 @@
 
 		disableButtons = true;
 		disableForm = true;
-		editor.setEditable(false);
 
 		// Trim title and description whitespace
 		project.title = project.title.trim();
@@ -144,7 +143,6 @@
 
 			disableForm = false;
 			disableButtons = true;
-			editor.setEditable(true);
 
 			// If successful, update the original data
 			original = JSON.parse(JSON.stringify(project));
@@ -213,12 +211,14 @@
 </div>
 
 <div
-	disabled={disableForm}
-	class:pointer-events-none={disableForm}
-	class:opacity-60={disableForm}
-	class="flex flex-col gap-8 p-4 max-w-xl mx-auto transition-opacity mt-2 lg:px-12 lg:max-w-screen-3xl xl:items-center"
+	class="flex flex-col gap-8 p-4 max-w-xl mx-auto mt-2 lg:px-12 lg:max-w-screen-3xl xl:items-center"
 >
-	<div class="flex flex-col gap-5 w-full lg:max-w-screen-xl">
+	<div
+		disabled={disableForm}
+		class:pointer-events-none={disableForm}
+		class:opacity-60={disableForm}
+		class="flex flex-col gap-5 w-full transition-opacity lg:max-w-screen-xl"
+	>
 		<div>
 			<Input
 				bind:value={project.title}
