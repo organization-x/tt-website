@@ -54,7 +54,7 @@
 	</p>
 
 	<div class="flex flex-col gap-8 h-full">
-		{#if user.pinnedProject}
+		{#if user.pinnedProject && user.pinnedProject.visible}
 			<div class="mt-4">
 				<div
 					class="flex font-semibold justify-center items-center gap-2"
