@@ -16,6 +16,10 @@
 	let selected: DateOption;
 </script>
 
+<svelte:head>
+	<title>Kudos Manager</title>
+</svelte:head>
+
 <DashWrap>
 	<DashHero title="Your Kudos" />
 

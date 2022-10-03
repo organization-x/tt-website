@@ -31,10 +31,19 @@
 
 	// Add functionality for pinning projects on the main dashboard
 	let pinDebounce: NodeJS.Timeout;
-	let pinnedProject = $user.pinnedProjectId;
+	let pinnedProjectId = $user.pinnedProjectId;
 
-	// Add typing to links since svelte doesnt allow typescript in statements
-	let links: { [key: string]: string | null } = $user.links;
+	// Transform links into an array so it's easily iterable
+	const links = Object.keys($user.links).map((key) => {
+		return { key: key, link: $user.links[key as keyof typeof $user.links] };
+	});
+
+	// Define the pinned project, the reason we don't use the user store for this is so that it stays
+	// updated with the database and also because updating the user store causes a refresh on the projects page
+	// that in turn re mounts it when on the main dashboard
+	let pinnedProject = data.projects
+		? data.projects.find((project) => project.id === pinnedProjectId)
+		: null;
 
 	// Update visility of user
 	const toggleVisible = () => {
@@ -65,13 +74,34 @@
 						id: $user.id
 					},
 					user: {
-						pinnedProjectId: pinnedProject
+						pinnedProjectId
 					}
 				} as App.UserUpdateRequest)
-			}).then(() => ($user.pinnedProjectId = pinnedProject));
+			}).then(async () => {
+				$user.pinnedProjectId = pinnedProjectId;
+
+				// Find the project to update the user store
+				const project = data.projects!.find(
+					(project) => project.id === pinnedProjectId
+				);
+
+				if (!project)
+					return ($user.pinnedProject = null), (pinnedProject = null);
+
+				pinnedProject = project;
+
+				// Take the authors property from the project since the store has it as a different type
+				const { authors, ...pin } = project;
+
+				$user.pinnedProject = pin;
+			});
 		}, 300);
 	};
 </script>
+
+<svelte:head>
+	<title>Dashboard</title>
+</svelte:head>
 
 <DashWrap>
 	<DashHero
@@ -81,69 +111,74 @@
 	<div class="flex flex-col gap-12">
 		<DashSection
 			title="Your Profile"
-			class="bg-gray-500/40 p-4 flex flex-col gap-6"
+			class="bg-gray-500/40 p-4 flex flex-col gap-8 lg:p-8 lg:gap-12"
 		>
 			<!-- TODO: Replace placeholder -->
 
-			<div class="flex gap-6 items-center">
-				<div class="relative shrink-0">
-					<img
-						height="200"
-						width="200"
-						src="/assets/developers/user/placeholder/icon.webp"
-						alt="{$user.name}'s avatar"
-						loading="lazy"
-						class="rounded-full w-20 h-20"
-					/>
-					<div
-						class="absolute bg-gray-500 -bottom-3 -right-2 rounded-full p-2"
-					>
-						<svelte:component
-							this={getIcon($user.team || "")}
-							class="w-5 h-5"
-						/>
+			<div class="lg:flex lg:gap-12">
+				<div class="shrink-0">
+					<div class="flex gap-6 items-center mb-6 shrink-0">
+						<div class="relative shrink-0 w-fit">
+							<img
+								height="200"
+								width="200"
+								src="/assets/developers/user/placeholder/icon.webp"
+								alt="{$user.name}'s avatar"
+								loading="lazy"
+								class="rounded-full w-20 h-20 lg:w-24 lg:h-24"
+							/>
+							<div
+								class="absolute bg-gray-500 -bottom-3 -right-2 rounded-full p-2"
+							>
+								<svelte:component
+									this={getIcon($user.team || "")}
+									class="w-5 h-5"
+								/>
+							</div>
+						</div>
+						<div>
+							<div class="flex gap-2 items-center pt-4 w-fit">
+								<GradientText
+									class="from-green-light to-green-dark text-3xl mx-auto"
+								>
+									{$user.name}
+								</GradientText>
+								<a
+									target="_blank"
+									rel="noopener noreffere"
+									href="/developers/{$user.url}"
+								>
+									<ExternalLink
+										class="w-6 h-6 text-green-dark mt-1.5"
+									/>
+								</a>
+							</div>
+							<h1 class="font-semibold">
+								{$user.team || "No Team"}
+							</h1>
+						</div>
 					</div>
+
+					<p class="my-12 md:text-lg lg:max-w-sm lg:my-0">
+						{$user.about}
+					</p>
 				</div>
-				<div>
-					<div class="flex gap-2 items-center pt-4">
-						<GradientText
-							class="from-green-light to-green-dark text-3xl mx-auto"
-						>
-							{$user.name}
-						</GradientText>
+
+				<div class="mt-4 w-full min-h-[18rem]">
+					<div
+						class="flex font-semibold justify-center items-center gap-2"
+					>
+						<Pin class="w-6 h-6" />
+						<h1 class="text-lg">Pinned Project</h1>
+					</div>
+
+					{#if pinnedProject}
 						<a
 							target="_blank"
-							rel="noopener noreffere"
-							href="/developers/{$user.url}"
-						>
-							<ExternalLink
-								class="w-6 h-6 text-green-dark mt-1.5"
-							/>
-						</a>
-					</div>
-					<h1 class="font-semibold">{$user.team || "No Team"}</h1>
-				</div>
-			</div>
-
-			<p class="mx-auto md:text-lg">
-				{$user.about}
-			</p>
-
-			<div class="flex flex-col gap-8 h-full">
-				{#if $user.pinnedProject}
-					<div class="mt-4">
-						<div
-							class="flex font-semibold justify-center items-center gap-2"
-						>
-							<Pin class="w-6 h-6" />
-							<h1 class="text-lg">Pinned Project</h1>
-						</div>
-
-						<a
-							href="/projects/{$user.pinnedProject.url}"
+							href="/projects/{pinnedProject.url}"
 							rel="noreferrer noopener"
-							class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4 lg:flex lg:p-4"
-							style="border-color: #{$user.pinnedProject.theme}"
+							class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4"
+							style="border-color: #{pinnedProject.theme}"
 						>
 							<!-- TODO: Replace placeholders -->
 
@@ -152,70 +187,89 @@
 								width="1920"
 								height="1080"
 								loading="lazy"
-								alt="Banner for '{$user.pinnedProject.title}'"
-								class="object-cover object-center w-full h-32 md:h-20 lg:w-24 lg:h-auto lg:rounded-lg"
+								alt="Banner for '{pinnedProject.title}'"
+								class="object-cover object-center w-full h-32 md:h-20"
 							/>
 
-							<div class="flex flex-col py-4 px-3 lg:py-1">
+							<div class="flex flex-col py-4 px-3">
 								<h1 class="font-semibold text-2xl md:text-xl">
-									{$user.pinnedProject.title}
+									{pinnedProject.title}
 								</h1>
 								<p class="mt-2 md:text-sm">
-									{$user.pinnedProject.description}
+									{pinnedProject.description}
 								</p>
 							</div>
 						</a>
-					</div>
-				{/if}
+					{:else}
+						<div
+							class="rounded-lg border-gray-800 border-4 border-dashed h-56 mt-4"
+						/>
+					{/if}
+				</div>
+			</div>
 
-				<DeveloperSection title="Positions">
+			<div class="grid gap-8 lg:gap-y-0 lg:grid-cols-2">
+				<DeveloperSection
+					title="Positions"
+					class="lg:row-start-1 lg:col-start-1"
+				>
 					<Bulb slot="icon" class="w-6 h-6" />
 
-					{#each $user.positions as position, i}
-						{#if i <= 4}
-							<DevTag name={position} />
-						{/if}
+					{#each { length: 4 } as _, i}
+						<DevTag name={$user.positions[i]} />
 					{/each}
 				</DeveloperSection>
 
-				<DeveloperSection title="Skills">
+				<DeveloperSection
+					title="Skills"
+					class="lg:col-start-2 lg:row-start-1"
+				>
 					<Wrench slot="icon" class="w-6 h-6" />
 
-					{#each $user.techSkills as skill, i}
-						{#if i <= 2}
-							<DevTag name={skill} />
-						{/if}
+					{#each $user.techSkills as skill}
+						<DevTag name={skill} />
 					{/each}
-					{#each $user.softSkills as skill, i}
-						{#if i <= 2}
-							<DevTag name={skill} />
-						{/if}
+
+					{#each $user.softSkills as skill}
+						<DevTag name={skill} />
+					{/each}
+
+					<!-- Get the collective amount of techSkills and softSkills missing -->
+					{#each { length: 10 - ($user.techSkills.length + $user.softSkills.length) } as _, i}
+						<DevTag name="" />
 					{/each}
 				</DeveloperSection>
 
-				<DeveloperSection title="Links">
+				<DeveloperSection
+					title="Links"
+					class="lg:row-start-1 lg:col-start-1 lg:mt-56"
+				>
 					<LinkIcon slot="icon" class="w-6 h-6" />
 
-					{#each Object.keys(links) as link}
-						{#if links[link] && link !== "userId"}
+					{#each { length: 6 } as _, i}
+						{#if links[i].link && links[i].key !== "userId"}
 							<div
 								class="flex justify-center items-center font-semibold bg-gray-800 rounded-lg gap-3 p-4"
 							>
 								<svelte:component
-									this={getIcon(link)}
+									this={getIcon(links[i].key)}
 									class="w-7 h-7 shrink-0"
 								/>
 								<h1
 									class="text-sm overflow-auto scrollbar-hidden"
 								>
-									{links[link]}
+									{links[i].link}
 								</h1>
 							</div>
+						{:else}
+							<DevTag name="" />
 						{/if}
 					{/each}
 				</DeveloperSection>
 
-				<div class="flex gap-4 self-end">
+				<div
+					class="flex gap-4 ml-auto lg:col-start-2 lg:row-start-1 lg:self-end"
+				>
 					<DashButton
 						icon={true}
 						on:click={() => (visible = !visible)}
@@ -224,14 +278,15 @@
 							func: toggleVisible,
 							delay: 300
 						}}
-						class="bg-gray-500/40"
+						class="bg-gray-500/40 hover:bg-gray-500/20"
 					>
 						<ShowHide class="w-5 h-5" crossed={visible} />
 					</DashButton>
+
 					<DashButton
 						icon={true}
 						href="/dashboard/profile"
-						class="bg-blue-light"
+						class="bg-blue-light hover:bg-blue-light/80"
 					>
 						<Pencil class="w-5 h-5" />
 					</DashButton>
@@ -240,30 +295,41 @@
 		</DashSection>
 
 		<DashSection title="Your Projects" class="bg-gray-500/40 p-4">
-			<div class="min-h-[55rem]">
+			<div
+				class="min-h-[55rem] flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:min-h-0 lg:mb-8"
+			>
 				{#if data.projects && data.projects.length}
-					{#each data.projects as project, i}
-						{#if i < 2}
+					{#each { length: 2 } as _, i}
+						{@const project = data.projects[i]}
+
+						{#if project}
 							<ProjectEditPreview
-								bind:pinnedProject
+								bind:pinnedProject={pinnedProjectId}
 								{project}
 								user={$user}
 								minified={true}
 								on:pinned={togglePinned}
 							/>
+						{:else}
+							<div
+								class="rounded-lg border-gray-800 border-4 border-dashed flex-1 h-full"
+							/>
 						{/if}
 					{/each}
 				{:else}
-					<h1 class="text-center text-xl font-semibold my-auto">
+					<h1
+						class="text-center text-xl font-semibold my-auto lg:my-32 lg:col-span-2"
+					>
 						You don't have any projects
 					</h1>
 				{/if}
 			</div>
+
 			<DashButton
 				href="/dashboard/projects"
-				class="bg-gray-500/40 w-full mx-auto mt-4"
+				class="bg-gray-500/40 hover:bg-gray-500/20 w-full mx-auto mt-4 lg:mt-0 lg:w-fit lg:mr-0"
 			>
-				Manage Projects
+				Manage All Projects
 			</DashButton>
 		</DashSection>
 

@@ -260,14 +260,14 @@
 				<DashButton
 					on:click={cancel}
 					disabled={disableButtons}
-					class="bg-gray-500"
+					class="bg-gray-500 hover:bg-gray-500/80"
 				>
 					Cancel
 				</DashButton>
 				<DashButton
 					on:click={save}
 					disabled={disableButtons}
-					class="bg-blue-light"
+					class="bg-blue-light hover:bg-blue-light/80"
 				>
 					Save
 				</DashButton>
@@ -281,7 +281,9 @@
 						func: togglePinned,
 						delay: 300
 					}}
-					class={pinned ? "bg-blue-light" : "bg-gray-500/40"}
+					class={pinned
+						? "bg-blue-light hover:bg-blue-light/80"
+						: "bg-gray-500/40 hover:bg-gray-500/20"}
 				>
 					<Pin class="w-5 h-5" />
 				</DashButton>
@@ -293,7 +295,7 @@
 						func: toggleVisible,
 						delay: 300
 					}}
-					class="bg-gray-500/40"
+					class="bg-gray-500/40 hover:bg-gray-500/20"
 				>
 					<ShowHide crossed={visible} class="w-5 h-5" />
 				</DashButton>

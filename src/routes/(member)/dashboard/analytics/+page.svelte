@@ -14,6 +14,10 @@
 	let selected: DateOption;
 </script>
 
+<svelte:head>
+	<title>Analytics Manager</title>
+</svelte:head>
+
 <DashWrap>
 	<DashHero title="Your Analytics" />
 

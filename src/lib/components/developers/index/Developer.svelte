@@ -49,7 +49,7 @@
 		</div>
 	</div>
 
-	<p class="mx-auto md:text-lg">
+	<p class="md:text-lg">
 		{user.about}
 	</p>
 

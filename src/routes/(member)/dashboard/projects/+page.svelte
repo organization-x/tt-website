@@ -76,6 +76,9 @@
 			} as App.ProjectDeleteRequest)
 		});
 
+		// If the project is pinned, unpin it
+		if (pinnedProject === id) pinnedProject = null;
+
 		deletingProjects.push(id);
 
 		deletingProjects = deletingProjects;
@@ -101,10 +104,27 @@
 						pinnedProjectId: pinnedProject
 					}
 				} as App.UserUpdateRequest)
-			}).then(() => ($user.pinnedProjectId = pinnedProject));
+			}).then(async () => {
+				$user.pinnedProjectId = pinnedProject;
+
+				// Find the project to update the user store
+				const project = (await request).find(
+					(project) => project.id === pinnedProject
+				);
+
+				if (!project) return ($user.pinnedProject = null);
+
+				const { authors, ...pin } = project;
+
+				$user.pinnedProject = pin;
+			});
 		}, 300);
 	};
 </script>
+
+<svelte:head>
+	<title>Project Manager</title>
+</svelte:head>
 
 <DashHero title="Your Projects" />
 

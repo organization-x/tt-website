@@ -2,7 +2,7 @@
 	import "../../../app.css";
 
 	import { derived } from "svelte/store";
-	import { slide } from "svelte/transition";
+	import { slide, crossfade } from "svelte/transition";
 
 	import { user } from "$lib/stores";
 	import { page } from "$app/stores";
@@ -36,6 +36,10 @@
 
 	// Close the burger/user menu on navigation
 	afterNavigate(() => (burgerOpen = userOpen = false));
+
+	const [send, receive] = crossfade({
+		duration: 400
+	});
 </script>
 
 <svelte:window on:click={onClick} />
@@ -50,14 +54,23 @@
 		<div class="lg:hidden flex gap-3 items-center">
 			<!-- TODO: Replace placeholder -->
 
-			<img
-				width="200"
-				height="200"
-				src="/assets/developers/user/placeholder/icon.webp"
-				alt="{$user.name}'s avatar"
-				class=" w-7 h-7 rounded-full"
-			/>
-			<h1 class="font-semibold">{$user.name}</h1>
+			{#if !burgerOpen}
+				<div
+					in:receive={{ key: "user" }}
+					out:send={{ key: "user" }}
+					class="flex gap-3 items-center z-50"
+				>
+					<img
+						width="200"
+						height="200"
+						src="/assets/developers/user/placeholder/icon.webp"
+						alt="{$user.name}'s avatar"
+						class=" w-9 h-9 rounded-full"
+					/>
+					<h1 class="font-semibold">{$user.name}</h1>
+				</div>
+			{/if}
+
 			<button
 				type="button"
 				aria-label="Menu"
@@ -75,16 +88,53 @@
 					class="z-40 absolute inset-0 top-18 overflow-y-auto bg-black h-full"
 				>
 					<div class="p-14 pt-24 max-w-screen-lg mx-auto">
-						<ul class="text-3xl divide-y max-w-md mx-auto">
-							<NavLink href="/dashboard">Dashboard</NavLink>
-							<NavLink href="/dashboard/analytics">
+						<div
+							in:receive={{ key: "user" }}
+							out:send={{ key: "user" }}
+							class="flex gap-3 items-center z-50 w-fit mx-auto"
+						>
+							<img
+								width="200"
+								height="200"
+								src="/assets/developers/user/placeholder/icon.webp"
+								alt="{$user.name}'s avatar"
+								class=" w-14 h-14 rounded-full"
+							/>
+							<h1 class="font-semibold text-xl">{$user.name}</h1>
+						</div>
+						<ul
+							class="text-3xl divide-y max-w-md mx-auto mt-4 list-disc lg:list-none"
+						>
+							<NavLink
+								href="/dashboard"
+								active={$pageId === "home"}
+							>
+								Dashboard
+							</NavLink>
+							<NavLink
+								href="/dashboard/analytics"
+								active={$pageId === "analytics"}
+							>
 								Analytics
 							</NavLink>
-							<NavLink href="/dashboard/profile">Profile</NavLink>
-							<NavLink href="/dashboard/projects">
+							<NavLink
+								href="/dashboard/profile"
+								active={$pageId === "profile"}
+							>
+								Profile
+							</NavLink>
+							<NavLink
+								href="/dashboard/projects"
+								active={$pageId === "projects"}
+							>
 								Projects
 							</NavLink>
-							<NavLink href="/dashboard/kudos">Kudos</NavLink>
+							<NavLink
+								href="/dashboard/kudos"
+								active={$pageId === "kudos"}
+							>
+								Kudos
+							</NavLink>
 							<NavLink
 								target="_blank"
 								href="/developers/{$user.url}"
@@ -123,10 +173,12 @@
 				<NavLink href="/dashboard/kudos" active={$pageId === "kudos"}>
 					Kudos
 				</NavLink>
-				<div bind:this={element} class="relative ml-4">
+				<div bind:this={element} class="relative ml-4 w-44">
 					<button
-						class:bg-gray-900={userOpen}
-						class="flex gap-2 items-center px-4 py-3 rounded-t-lg"
+						class:rounded-lg={!userOpen}
+						class:rounded-t-lg={userOpen}
+						class="flex gap-2 items-center justify-center px-4 py-3 transition-colors duration-200 w-full
+                        {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
 						on:click={() => (userOpen = !userOpen)}
 					>
 						<!-- TODO: Replace placeholder -->
@@ -146,7 +198,7 @@
 						<div
 							class="absolute bg-gray-900 w-full p-1 rounded-b-lg"
 						>
-							<ul class="flex flex-col gap-2">
+							<ul class="flex flex-col gap-2 p-1">
 								<NavLink
 									target="_blank"
 									href="/developers/{$user.url}"

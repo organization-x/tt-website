@@ -2,7 +2,7 @@
 	export let title: string;
 </script>
 
-<div>
+<div class={$$props.class}>
 	<div class="flex font-semibold justify-center items-center gap-2">
 		<slot name="icon" />
 		<h1 class="text-lg">{title}</h1>

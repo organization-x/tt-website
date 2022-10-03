@@ -61,9 +61,10 @@
 	out:slide={{ duration: deleting ? 500 : 0 }}
 	in:fly={{ duration: 300, y: 50 }}
 	disabled={deleting}
+	class:mb-10={!minified}
 	class:opacity-70={deleting}
 	class:pointer-events-none={deleting}
-	class="mb-10 transition-opacity"
+	class="transition-opacity"
 >
 	<div
 		class="rounded-lg border-t-4 overflow-hidden relative bg-gray-900 w-full shadow-black/30 shadow-lg z-20"
@@ -133,7 +134,7 @@
 							func: toggleVisible,
 							delay: 300
 						}}
-						class="bg-gray-500/40 shrink-0 rounded-lg p-3"
+						class="bg-gray-500/40 shrink-0 rounded-lg p-3 hover:bg-gray-500/20"
 					>
 						<ShowHide class="w-5 h-5" crossed={visible} />
 					</DashButton>
@@ -148,8 +149,8 @@
 							dispatch("pinned");
 						}}
 						class={pinnedProject === project.id
-							? "bg-blue-light"
-							: "bg-gray-500/40"}
+							? "bg-blue-light hover:bg-blue-light/80"
+							: "bg-gray-500/40 hover:bg-gray-500/20"}
 					>
 						<Pin class="w-5 h-5" />
 					</DashButton>
@@ -157,7 +158,7 @@
 					<DashButton
 						icon={true}
 						href="/dashboard/projects/{project.url}"
-						class="bg-blue-light"
+						class="bg-blue-light hover:bg-blue-light/80"
 					>
 						<Pencil class="w-5 h-5" />
 					</DashButton>
@@ -169,7 +170,7 @@
 								deleting = true;
 								dispatch("delete");
 							}}
-							class="bg-red-light"
+							class="bg-red-light hover:bg-red-light/80"
 						>
 							<Trash class="w-5 h-5" />
 						</DashButton>
@@ -192,7 +193,7 @@
 					func: () => toggleVisible,
 					delay: 300
 				}}
-				class="bg-gray-500/40"
+				class="bg-gray-500/40 hover:bg-gray-500/20"
 			>
 				<ShowHide class="w-5 h-5" crossed={visible} />
 			</DashButton>
@@ -205,8 +206,8 @@
 					dispatch("pinned");
 				}}
 				class={pinnedProject === project.id
-					? "bg-blue-light"
-					: "bg-gray-500/40"}
+					? "bg-blue-light hover:bg-blue-light/80"
+					: "bg-gray-500/40 hover:bg-gray-500/20"}
 			>
 				<Pin class="w-5 h-5" />
 			</DashButton>
@@ -214,7 +215,7 @@
 			<DashButton
 				icon={true}
 				href="/dashboard/projects/{project.url}"
-				class="bg-blue-light"
+				class="bg-blue-light hover:bg-blue-light/80"
 			>
 				<Pencil class="w-5 h-5" />
 			</DashButton>
@@ -226,7 +227,7 @@
 						deleting = true;
 						dispatch("delete");
 					}}
-					class="bg-red-light"
+					class="bg-red-light hover:bg-red-light/80"
 				>
 					<Trash class="w-5 h-5" />
 				</DashButton>

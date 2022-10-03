@@ -26,7 +26,10 @@ declare global {
 		}
 
 		// Type for combining a user with their Links
-		type UserWithMetadata = User & { links: Links; pinnedProject: Project };
+		type UserWithMetadata = User & {
+			links: Links;
+			pinnedProject: Project?;
+		};
 
 		// Interface for user update requests
 		interface UserUpdateRequest {

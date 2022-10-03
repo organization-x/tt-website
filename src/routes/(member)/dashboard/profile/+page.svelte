@@ -157,6 +157,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>Profile Manager</title>
+</svelte:head>
+
 <svelte:window on:keydown={onKeydown} />
 
 <div class="relative pt-[4.5rem] px-8 lg:px-10">
@@ -210,7 +214,7 @@
 					target="_blank"
 					rel="noopener noreferrer"
 					href="/developers/{user.url}"
-					class="px-4 py-3 rounded-lg bg-gray-500 flex items-center justify-center gap-4 w-full"
+					class="px-4 py-3 rounded-lg bg-gray-500 flex items-center justify-center gap-4 w-full transition-colors hover:bg-gray-500/80"
 				>
 					View Profile
 					<ExternalLink class="w-6 h-6" />
@@ -224,7 +228,7 @@
 						func: toggleVisible,
 						delay: 300
 					}}
-					class="bg-gray-500 w-fit"
+					class="bg-gray-500 px-3.5 sm:px-4 hover:bg-gray-500/80"
 				>
 					<ShowHide class="w-5 h-5" crossed={visible} />
 				</DashButton>
@@ -374,18 +378,18 @@
 				</ProfileSection>
 			</div>
 
-			<div class="flex gap-6 mx-auto lg:mr-0 xl:col-span-2">
+			<div class="flex gap-6 mx-auto lg:mr-0 xl:col-span-2 xl:h-12">
 				<DashButton
 					on:click={cancel}
 					disabled={disableButtons}
-					class="bg-gray-500"
+					class="bg-gray-500 hover:bg-gray-500/80"
 				>
 					Cancel
 				</DashButton>
 				<DashButton
 					on:click={save}
 					disabled={disableButtons}
-					class="bg-blue-light"
+					class="bg-blue-light hover:bg-blue-light/80"
 				>
 					Save
 				</DashButton>

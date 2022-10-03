@@ -22,7 +22,7 @@
 		class:p-4={!icon}
 		class:p-3={icon}
 		rel="noreferrer noopener"
-		class="block text-center rounded-lg shrink-0 {className}"
+		class="block text-center rounded-lg shrink-0 transition-[background-color,opacity] duration-200 {className}"
 	>
 		<slot />
 	</a>
@@ -31,10 +31,11 @@
 		on:click
 		use:debounce={props}
 		{disabled}
+		class:pointer-events-none={disabled}
 		class:w-24={!icon}
-		class:p-4={!icon}
-		class:p-3={icon}
-		class="rounded-lg text-center shrink-0 transition-opacity disabled:opacity-60 {className}"
+		class:px-4={!icon}
+		class:px-3={icon}
+		class="rounded-lg py-3 text-center shrink-0 transition-[background-color,opacity] duration-200 disabled:opacity-60 {className}"
 	>
 		<slot />
 	</button>

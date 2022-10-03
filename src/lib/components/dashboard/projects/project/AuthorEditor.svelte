@@ -98,7 +98,7 @@
 			</div>
 			{#if !cantRemove}
 				<DashButton
-					class="mt-8 bg-red-light"
+					class="mt-8 bg-red-light hover:bg-red-light/80"
 					on:click={() => dispatch("click", { id: author.id })}
 				>
 					Remove
