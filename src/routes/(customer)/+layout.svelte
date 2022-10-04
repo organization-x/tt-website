@@ -1,9 +1,12 @@
 <script lang="ts">
 	import "../../app.css";
 
-	import { navigating } from "$app/stores";
+	import { derived } from "svelte/store";
 	import { slide } from "svelte/transition";
+
+	import { page } from "$app/stores";
 	import Logo from "$lib/components/Logo.svelte";
+	import { afterNavigate } from "$app/navigation";
 	import AICamp from "$lib/components/AICamp.svelte";
 	import NavLink from "$lib/components/NavLink.svelte";
 	import FootLink from "$lib/components/FootLink.svelte";
@@ -14,7 +17,12 @@
 
 	let open = false;
 
-	$: if ($navigating) open = false;
+	let pageId = derived(
+		page,
+		($page) => $page.routeId?.split("/")[1] || "home"
+	);
+
+	afterNavigate(() => (open = false));
 </script>
 
 <header class="bg-black font-heading">
@@ -42,15 +50,36 @@
 					class="z-40 absolute inset-0 top-18 overflow-y-auto bg-black h-full"
 				>
 					<div class="p-16 pt-24 max-w-screen-lg mx-auto">
-						<ul class="text-3xl divide-y max-w-md mx-auto">
-							<NavLink href="/">Home</NavLink>
-							<NavLink href="/about">About</NavLink>
-							<NavLink href="/developers">Developers</NavLink>
-							<NavLink href="/projects">Projects</NavLink>
+						<ul
+							class="text-3xl divide-y max-w-md mx-auto list-disc lg:list-none"
+						>
+							<NavLink href="/" active={$pageId === "home"}>
+								Home
+							</NavLink>
+							<NavLink href="/about" active={$pageId === "about"}>
+								About
+							</NavLink>
+							<NavLink
+								href="/developers"
+								active={$pageId === "developers"}
+							>
+								Developers
+							</NavLink>
+							<NavLink
+								href="/projects"
+								active={$pageId === "projects"}
+							>
+								Projects
+							</NavLink>
 							<NavLink href="https://ai-camp.org" target="_blank">
 								AI Camp
 							</NavLink>
-							<NavLink href="/contact">Contact Us</NavLink>
+							<NavLink
+								href="/contact"
+								active={$pageId === "contact"}
+							>
+								Contact Us
+							</NavLink>
 						</ul>
 						<div
 							class="mt-8 flex gap-4 text-4xl justify-center items-center"
@@ -86,10 +115,16 @@
 		</div>
 		<div class="hidden lg:block">
 			<ul class="flex gap-2 items-center">
-				<NavLink href="/">Home</NavLink>
-				<NavLink href="/about">About</NavLink>
-				<NavLink href="/developers">Developers</NavLink>
-				<NavLink href="/projects">Projects</NavLink>
+				<NavLink href="/" active={$pageId === "home"}>Home</NavLink>
+				<NavLink href="/about" active={$pageId === "about"}>
+					About
+				</NavLink>
+				<NavLink href="/developers" active={$pageId === "developers"}>
+					Developers
+				</NavLink>
+				<NavLink href="/projects" active={$pageId === "projects"}>
+					Projects
+				</NavLink>
 				<NavLink href="https://ai-camp.org" target="_blank">
 					AI Camp
 				</NavLink>

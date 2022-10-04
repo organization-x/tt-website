@@ -1,24 +1,25 @@
 <script lang="ts">
 	import { fly } from "svelte/transition";
 
+	import { user } from "$lib/stores";
 	import { goto } from "$app/navigation";
 	import Plus from "$lib/components/icons/Plus.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import ProjectLoader from "$lib/components/ProjectLoader.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
+	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 	import ProjectEditPreview from "$lib/components/dashboard/projects/index/ProjectEditPreview.svelte";
-
-	import type { PageParentData } from "./$types";
-
-	export let data: PageParentData;
 
 	let search = "";
 	let creatingProject = false;
-	let deletingProject = false;
+	let pinDebounce: NodeJS.Timeout;
+	let deletingProjects: string[] = [];
+	let pinnedProject = $user.pinnedProjectId;
 	let request: Promise<App.ProjectWithAuthors[]> = new Promise(() => {});
 
-	// On search set request to never resolve so the loading animation is shown before the debounce
-	$: search, (request = new Promise(() => {}));
+	// On search set request to never resolve so the loading animation is shown before the debounce and
+	// also reset the deleting projects array so we don't have old ID's
+	$: search, (request = new Promise(() => {})), (deletingProjects = []);
 
 	const onSearch = () => {
 		request = new Promise((res, rej) =>
@@ -37,11 +38,13 @@
 				} as App.ProjectSearchRequest)
 			})
 				.then((res) => res.json())
-				.then((data: App.ProjectWithAuthors[]) => {
-					data.length ? res(data) : rej();
-					deletingProject = false;
-				})
+				.then((data: App.ProjectWithAuthors[]) =>
+					data.length ? res(data) : rej()
+				)
 		);
+
+		// Reset the array of deleting projects here so they don't reappear until a search has been incited
+		deletingProjects = [];
 	};
 
 	const createProject = () => {
@@ -59,8 +62,10 @@
 			);
 	};
 
+	// Deletes a project and sets the currently deleting project id.
+	// This is so we can cleanly animate the project getting deleted without
+	// the each statement making it choppy
 	const deleteProject = async (id: string) => {
-		// There is not reason for error handling here, either way it sends another search request and will update the page
 		await fetch("/api/project", {
 			method: "DELETE",
 			headers: {
@@ -71,34 +76,59 @@
 			} as App.ProjectDeleteRequest)
 		});
 
-		deletingProject = true;
+		// If the project is pinned, unpin it
+		if (pinnedProject === id) pinnedProject = null;
 
-		onSearch();
+		deletingProjects.push(id);
+
+		deletingProjects = deletingProjects;
 	};
 
-	const projectToggle = (id: string, visible: boolean, pinned: boolean) => {
-		console.log(visible, pinned);
-		fetch("/api/project", {
-			method: "PATCH",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify({
-				where: {
-					id
+	// Debounce for pinned projects, it's like this so the UI will stay reactive and
+	// only show one allowed pinned project but will eventually update
+	// the database after a settlement period
+	const togglePinned = () => {
+		clearTimeout(pinDebounce);
+
+		pinDebounce = setTimeout(() => {
+			fetch("/api/user", {
+				method: "PATCH",
+				headers: {
+					"Content-Type": "application/json"
 				},
-				project: {
-					visible,
-					pinned
-				}
-			} as App.ProjectUpdateRequest)
-		});
+				body: JSON.stringify({
+					where: {
+						id: $user.id
+					},
+					user: {
+						pinnedProjectId: pinnedProject
+					}
+				} as App.UserUpdateRequest)
+			}).then(async () => {
+				$user.pinnedProjectId = pinnedProject;
+
+				// Find the project to update the user store
+				const project = (await request).find(
+					(project) => project.id === pinnedProject
+				);
+
+				if (!project) return ($user.pinnedProject = null);
+
+				const { authors, ...pin } = project;
+
+				$user.pinnedProject = pin;
+			});
+		}, 300);
 	};
 </script>
 
-<DashHero user={data.user} title="Your Projects" />
+<svelte:head>
+	<title>Project Manager</title>
+</svelte:head>
 
-<div class="px-6 max-w-xl mx-auto lg:max-w-screen-xl">
+<DashHero title="Your Projects" />
+
+<DashWrap>
 	<div class="flex flex-col gap-5 mb-5 mx-auto lg:flex-row lg:mb-20">
 		<SearchBar
 			bind:search
@@ -119,36 +149,38 @@
 
 	<div class="min-h-[55rem]">
 		{#await request}
-			{#if !deletingProject}
-				<ProjectLoader />
-			{/if}
+			<ProjectLoader />
 		{:then projects}
 			{#each projects as project}
-				<ProjectEditPreview
-					bind:project
-					user={data.user}
-					on:delete={() => deleteProject(project.id)}
-					on:visible={() =>
-						projectToggle(
-							project.id,
-							project.visible,
-							project.pinned
-						)}
-					on:pinned={() =>
-						projectToggle(
-							project.id,
-							project.visible,
-							project.pinned
-						)}
-				/>
+				{#if !deletingProjects.includes(project.id)}
+					<ProjectEditPreview
+						bind:project
+						bind:user={$user}
+						bind:pinnedProject
+						on:delete={() => deleteProject(project.id)}
+						on:pinned={togglePinned}
+						on:outroend={async () => {
+							// If this project isn't being deleted, ignore
+							if (!deletingProjects.includes(project.id)) return;
+
+							// If it's the latest project being deleted then make it responsible for updating the search
+							if (
+								deletingProjects[
+									deletingProjects.length - 1
+								] === project.id
+							)
+								onSearch();
+						}}
+					/>
+				{/if}
 			{/each}
 		{:catch}
 			<h1
 				in:fly={{ duration: 300, y: 30 }}
-				class="text-center font-semibold text-2xl mt-4"
+				class="text-center font-semibold text-2xl pt-5"
 			>
 				No projects
 			</h1>
 		{/await}
 	</div>
-</div>
+</DashWrap>

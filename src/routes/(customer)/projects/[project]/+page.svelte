@@ -19,8 +19,6 @@
 
 	const html = generateHTML(data.content as JSONContent, extensions);
 
-	const { title, theme, date, skills } = data;
-
 	// Syntax highlighting
 	onMount(HLJS.highlightAll);
 </script>
@@ -33,24 +31,26 @@
 	height="1080"
 	alt="Banner for '{data.title}'"
 	class="object-cover object-center w-full h-32 border-b-4 lg:h-44 lg:border-b-8"
-	style="border-color: #{theme}"
+	style="border-color: #{data.theme}"
 />
 
 <div class="p-4 max-w-2xl mx-auto lg:max-w-3xl">
 	<div class="flex justify-between items-center">
-		<p>{date.toLocaleDateString("en-US")}</p>
+		<p>{data.date.toLocaleDateString("en-US")}</p>
 		<div class="flex gap-2">
-			{#each skills as skill}
+			{#each data.skills as skill}
 				<svelte:component this={getIcon(skill)} class="w-8 h-8" />
 			{/each}
 		</div>
 	</div>
 
-	<h1 class="font-bold text-3xl my-6" style="color: #{theme}">{title}</h1>
+	<h1 class="font-bold text-3xl my-6" style="color: #{data.theme}">
+		{data.title}
+	</h1>
 
 	<Scrollable class="before:from-black after:to-black">
 		{#each data.authors as author}
-			<Author {theme} user={author} />
+			<Author theme={data.theme} user={author} />
 		{/each}
 	</Scrollable>
 

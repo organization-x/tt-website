@@ -55,7 +55,7 @@
 				// The reason it's done this way instead of padding is it allows the editor to be clicked on in this
 				// virtual padding.
 
-				// Hacky fix since clientHeight and getBoundingClientRect don't seem to get the correct height immediately
+				// Hacky fix since clientHeight and clientHeight don't seem to get the correct height immediately
 				setTimeout(() => {
 					let height = 0;
 
@@ -85,7 +85,7 @@
 	onDestroy(() => editor && editor.destroy());
 
 	// TODO: Add image upload implementation with cloudflare images
-	// TODO: intersection observer sticky scroll
+	// TODO: Add image resizing capabilities
 </script>
 
 <div class="flex flex-col relative gap-4p-4 rounded-lg xl:min-w-full">

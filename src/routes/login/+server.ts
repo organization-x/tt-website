@@ -61,24 +61,14 @@ export const GET: RequestHandler = async (req) => {
 			// Create empty links object for the user
 			await prisma.links.create({ data: { userId: user.login } });
 		} else {
+			const date = new Date();
+			date.setDate(date.getDate() - 7);
+
 			// Otherwise, if they do exists, do some cleanup and check if they have any expired session
 			// tokens inside postgres, if they do, remove them
-			await prisma.session
-				.findMany({ where: { userId: user.login } })
-				.then((sessions) => {
-					sessions.forEach(async (session) => {
-						// Add a week to the session expiry date
-						session.created.setDate(session.created.getDate() + 7);
-
-						// Check if its been a week since the token has been created
-						if (session.created <= new Date()) {
-							await prisma.session.delete({
-								where: { token: session.token }
-							});
-						}
-					});
-				})
-				.catch(); // If there are no sessions, ignore it
+			await prisma.session.deleteMany({
+				where: { userId: user.login, created: { lte: date } }
+			});
 		}
 
 		// Create a new session for the user, if the session token somehow already exists, recursively generate a new one

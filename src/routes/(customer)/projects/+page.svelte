@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import { fly } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
@@ -15,11 +16,11 @@
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
+	import ProjectLoader from "$lib/components/ProjectLoader.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
 	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
 
 	import type { TechSkill } from "@prisma/client";
-	import ProjectLoader from "$lib/components/ProjectLoader.svelte";
 
 	let request: Promise<App.ProjectWithAuthors[][]> = new Promise(() => {});
 
@@ -69,6 +70,12 @@
 				})
 		);
 	};
+
+	// Once mounted check if there's any URL search params, if so, input them
+	onMount(() => {
+		const param = new URLSearchParams(window.location.search).get("search");
+		param && (search = param);
+	});
 </script>
 
 <svelte:head>
@@ -106,7 +113,17 @@
 
 		<SearchBar
 			bind:search
-			on:input={() => (request = new Promise(() => {}))}
+			on:input={() => {
+				// Update search URL parameters on input
+				const url = new URL(window.location.href);
+				if (search.trim().length)
+					url.searchParams.set("search", search);
+				else url.searchParams.delete("search");
+
+				history.replaceState(null, "", url);
+
+				request = new Promise(() => {});
+			}}
 			on:search={onSearch}
 			placeholder="Search projects..."
 		/>

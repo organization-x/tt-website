@@ -62,7 +62,9 @@
 	</Button>
 </Hero>
 
-<div class="mx-auto max-w-screen-lg w-fit relative lg:mt-32">
+<div
+	class="mx-auto pb-8 max-w-xs relative lg:mt-32 lg:max-w-screen-xl overflow-hidden"
+>
 	<Button href="/contact" class="lg:hidden">Contact Us</Button>
 	<TextHeader>
 		What is
@@ -74,7 +76,7 @@
 </div>
 
 <p
-	class="my-8 px-4 sm:px-10 lg:px-6 xl:px-10 max-w-lg mx-auto lg:text-center lg:max-w-2xl"
+	class="my-8 px-4 max-w-lg mx-auto sm:px-10 lg:px-6 lg:mt-0 lg:text-center lg:max-w-2xl xl:px-10"
 >
 	<strong>
 		Team Tomorrow is an ever expanding team of developers looking to provide

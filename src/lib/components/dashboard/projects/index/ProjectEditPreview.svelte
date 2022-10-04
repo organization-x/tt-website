@@ -3,24 +3,27 @@
 	import { createEventDispatcher } from "svelte";
 
 	import { getIcon } from "$lib/getIcon";
-	import { debounce } from "$lib/debounce";
 	import Pin from "$lib/components/icons/Pin.svelte";
 	import Trash from "$lib/components/icons/Trash.svelte";
 	import Pencil from "$lib/components/icons/Pencil.svelte";
 	import ShowHide from "$lib/components/icons/ShowHide.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
 	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
+	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 
 	import type { User } from "@prisma/client";
 
 	const dispatch = createEventDispatcher<{
-		visible: undefined;
 		pinned: undefined;
 		delete: undefined;
 	}>();
 
 	export let user: User;
+	export let pinnedProject: string | null;
 	export let project: App.ProjectWithAuthors;
+
+	// Disable a few buttons that should only be used on the project management page
+	export let minified: boolean = false;
 
 	let open = false;
 	let deleting = false;
@@ -28,24 +31,40 @@
 
 	// Store the toggleable variables seperatley since svelte treats object as one whole
 	// change instead of listening to each property
-	let pinned = project.pinned;
 	let visible = project.visible;
-
-	$: project.visible = visible;
-	$: project.pinned = pinned;
 
 	// To prevent debounce from firing twice if the mobile actions menu is open, close it at a breakpoint
 	$: if (innerWidth >= 600) open = false;
+
+	const toggleVisible = () => {
+		fetch("/api/project", {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				where: {
+					id: project.id
+				},
+				project: {
+					visible
+				}
+			} as App.ProjectUpdateRequest)
+		}).then(() => (project.visible = visible));
+	};
 </script>
 
 <svelte:window bind:innerWidth />
 
 <div
+	on:outroend
 	out:slide={{ duration: deleting ? 500 : 0 }}
 	in:fly={{ duration: 300, y: 50 }}
 	disabled={deleting}
+	class:mb-10={!minified}
 	class:opacity-70={deleting}
-	class="mb-10 transition-opacity"
+	class:pointer-events-none={deleting}
+	class="transition-opacity"
 >
 	<div
 		class="rounded-lg border-t-4 overflow-hidden relative bg-gray-900 w-full shadow-black/30 shadow-lg z-20"
@@ -62,18 +81,23 @@
 				class="object-cover object-center w-full h-32 row-start-1 col-start-1"
 			/>
 
-			{#each project.authors as author}
-				{#if author.id !== user.id}
-					<img
-						width="200"
-						height="200"
-						src="/assets/developers/user/placeholder/icon.webp"
-						alt="{author.name}'s avatar"
-						class="absolute top-2 right-2 w-10 h-10 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4 md:top-3 md:right-3"
-						style="border-color: #{project.theme}"
-					/>
-				{/if}
-			{/each}
+			<div
+				class="absolute top-2 right-2 left-0 justify-end pr-6 flex sm:pr-8 md:top-3 md:right-3"
+			>
+				{#each project.authors as author, i}
+					{#if author.id !== user.id && i <= 4}
+						<img
+							width="200"
+							height="200"
+							src="/assets/developers/user/placeholder/icon.webp"
+							alt="{author.name}'s avatar"
+							class="w-10 h-10 -mr-6 sm:-mr-8 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4"
+							style="border-color: #{project.theme}; z-index: {project
+								.authors.length - i}"
+						/>
+					{/if}
+				{/each}
+			</div>
 		</div>
 
 		<div class="flex flex-col py-4 px-3 min-h-72 lg:px-5">
@@ -102,50 +126,55 @@
 				<div
 					class="hidden md:flex md:gap-5 md:justify-center md:ml-auto"
 				>
-					<button
+					<DashButton
+						icon={true}
 						on:click={() => (visible = !visible)}
-						use:debounce={{
+						debounce={{
 							bind: visible,
-							func: () => {
-								dispatch("visible");
-							},
+							func: toggleVisible,
 							delay: 300
 						}}
-						class="bg-gray-500/40 shrink-0 rounded-lg p-3"
+						class="bg-gray-500/40 shrink-0 rounded-lg p-3 hover:bg-gray-500/20"
 					>
 						<ShowHide class="w-5 h-5" crossed={visible} />
-					</button>
-					<button
-						on:click={() => (pinned = !pinned)}
-						use:debounce={{
-							bind: pinned,
-							func: () => {
-								dispatch("pinned");
-							},
-							delay: 300
+					</DashButton>
+
+					<DashButton
+						icon={true}
+						on:click={() => {
+							pinnedProject =
+								pinnedProject === project.id
+									? null
+									: project.id;
+							dispatch("pinned");
 						}}
-						class="shrink-0 rounded-lg p-3 {pinned
-							? 'bg-blue-light'
-							: 'bg-gray-500/40'}"
+						class={pinnedProject === project.id
+							? "bg-blue-light hover:bg-blue-light/80"
+							: "bg-gray-500/40 hover:bg-gray-500/20"}
 					>
 						<Pin class="w-5 h-5" />
-					</button>
-					<a
+					</DashButton>
+
+					<DashButton
+						icon={true}
 						href="/dashboard/projects/{project.url}"
-						rel="noreferrer noopener"
-						class="bg-blue-light p-3 rounded-lg shrink-0"
+						class="bg-blue-light hover:bg-blue-light/80"
 					>
 						<Pencil class="w-5 h-5" />
-					</a>
-					<button
-						on:click={() => {
-							deleting = true;
-							dispatch("delete");
-						}}
-						class="bg-red-light shrink-0 rounded-lg p-3"
-					>
-						<Trash class="w-5 h-5" />
-					</button>
+					</DashButton>
+
+					{#if !minified}
+						<DashButton
+							icon={true}
+							on:click={() => {
+								deleting = true;
+								dispatch("delete");
+							}}
+							class="bg-red-light hover:bg-red-light/80"
+						>
+							<Trash class="w-5 h-5" />
+						</DashButton>
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -156,50 +185,53 @@
 			transition:slide|local={{ duration: 200 }}
 			class="flex justify-center px-3 gap-5 bg-gray-900 pb-4 pt-8 rounded-b-lg -mt-2 relative z-10 md:hidden"
 		>
-			<button
+			<DashButton
+				icon={true}
 				on:click={() => (visible = !visible)}
-				use:debounce={{
+				debounce={{
 					bind: visible,
-					func: () => {
-						dispatch("visible");
-					},
+					func: () => toggleVisible,
 					delay: 300
 				}}
-				class="bg-gray-500/40 shrink-0 rounded-lg p-3 w-fit"
+				class="bg-gray-500/40 hover:bg-gray-500/20"
 			>
 				<ShowHide class="w-5 h-5" crossed={visible} />
-			</button>
-			<button
-				on:click={() => (pinned = !pinned)}
-				use:debounce={{
-					bind: pinned,
-					func: () => {
-						dispatch("pinned");
-					},
-					delay: 300
+			</DashButton>
+
+			<DashButton
+				icon={true}
+				on:click={() => {
+					pinnedProject =
+						pinnedProject === project.id ? null : project.id;
+					dispatch("pinned");
 				}}
-				class="shrink-0 rounded-lg p-3 w-fit {pinned
-					? 'bg-blue-light'
-					: 'bg-gray-500/40'}"
+				class={pinnedProject === project.id
+					? "bg-blue-light hover:bg-blue-light/80"
+					: "bg-gray-500/40 hover:bg-gray-500/20"}
 			>
 				<Pin class="w-5 h-5" />
-			</button>
-			<button
-				on:click={() => {
-					deleting = true;
-					dispatch("delete");
-				}}
-				class="bg-red-light shrink-0 rounded-lg p-3 w-fit"
-			>
-				<Trash class="w-5 h-5" />
-			</button>
-			<a
+			</DashButton>
+
+			<DashButton
+				icon={true}
 				href="/dashboard/projects/{project.url}"
-				rel="noreferrer noopener"
-				class="bg-blue-light p-3 rounded-lg shrink-0 w-fit"
+				class="bg-blue-light hover:bg-blue-light/80"
 			>
 				<Pencil class="w-5 h-5" />
-			</a>
+			</DashButton>
+
+			{#if !minified}
+				<DashButton
+					icon={true}
+					on:click={() => {
+						deleting = true;
+						dispatch("delete");
+					}}
+					class="bg-red-light hover:bg-red-light/80"
+				>
+					<Trash class="w-5 h-5" />
+				</DashButton>
+			{/if}
 		</div>
 	{/if}
 </div>

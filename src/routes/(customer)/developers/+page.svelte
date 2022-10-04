@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import { fly } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
@@ -22,7 +23,7 @@
 
 	import type { SoftSkill, TechSkill, User, Project } from "@prisma/client";
 
-	let request: Promise<App.UserWithProject[]> = new Promise(() => {});
+	let request: Promise<App.UserWithMetadata[]> = new Promise(() => {});
 
 	let page = 0;
 	let search = "";
@@ -50,49 +51,23 @@
 							: undefined,
 						techSkills: techSkillFilter.size
 							? { hasEvery: Array.from(techSkillFilter) }
-							: undefined
+							: undefined,
+						visible: true
 					}
 				} as App.UserSearchRequest)
 			})
 				.then((res) => res.json())
-				.then(async (data: User[]) =>
-					// Get projects for each user and grab that user's pinned project, if one isn't pinned
-					// use their last updated project
-					data.length
-						? res(
-								await Promise.all(
-									data.map(async (user) => {
-										const projects: Project[] = await fetch(
-											"/api/project",
-											{
-												method: "POST",
-												headers: {
-													"Content-Type":
-														"application/json"
-												},
-												body: JSON.stringify({
-													where: {
-														ownerId: user.id
-													}
-												} as App.ProjectSearchRequest)
-											}
-										).then((res) => res.json());
-
-										const pinned = projects.find(
-											(project) => project.pinned
-										);
-
-										return {
-											...user,
-											pinnedProject: pinned || projects[0]
-										};
-									})
-								)
-						  )
-						: rej()
+				.then(async (data: App.UserWithMetadata[]) =>
+					data.length ? res(data) : rej()
 				)
 		);
 	};
+
+	// Once mounted check if there's any URL search params, if so, input them
+	onMount(() => {
+		const param = new URLSearchParams(window.location.search).get("search");
+		param && (search = param);
+	});
 </script>
 
 <svelte:head>
@@ -167,7 +142,17 @@
 
 		<SearchBar
 			bind:search
-			on:input={() => (request = new Promise(() => {}))}
+			on:input={() => {
+				// Update search URL parameters on input
+				const url = new URL(window.location.href);
+				if (search.trim().length)
+					url.searchParams.set("search", search);
+				else url.searchParams.delete("search");
+
+				history.replaceState(null, "", url);
+
+				request = new Promise(() => {});
+			}}
 			on:search={onSearch}
 			placeholder="Search developers..."
 		/>
@@ -255,29 +240,140 @@
 			>
 				{#await request}
 					<div
-						rel="noreferrer noopener"
-						class="bg-gray-500 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 h-[72rem] md:h-[54rem]"
+						class="bg-gray-500 animate-pulse flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full hmin-h-[72rem] md:min-h-[54rem]"
 					>
 						<div class="flex gap-6 items-center">
 							<div class="w-20 h-20 bg-gray-400 rounded-full" />
 							<div>
 								<div
-									class="rounded-full h-10 w-44 bg-gray-400"
+									class="rounded-full h-7 w-32 mt-4 bg-gray-400"
 								/>
 								<div
-									class="rounded-full h-5 w-24 bg-gray-400"
+									class="rounded-full h-4 w-24 mt-2 bg-gray-400"
 								/>
 							</div>
 						</div>
 
-						<div class="rounded-full h-5 w-44 bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-32 bg-gray-400" />
+						<div class="flex flex-col gap-4">
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-32 bg-gray-400" />
+						</div>
 
-						<!-- TODO: Fix this loadng placeholder -->
+						<div class="mt-4 flex flex-col items-center gap-4">
+							<div class="rounded-full h-5 w-44 bg-gray-400" />
+
+							<div
+								class="bg-gray-800 shrink-0 w-full rounded-lg p-3 pt-0 mb-5 min-h-72 md:min-h-[15rem] lg:flex lg:min-h-[12rem] lg:p-4"
+							>
+								<div
+									class="h-32 md:h-24 bg-gray-400 -mx-3 border-t-4 border-gray-500/40 rounded-t-lg lg:w-24 lg:h-auto lg:rounded-lg lg:mx-0 lg:shrink-0 lg:border-none"
+								/>
+								<div
+									class="flex flex-col gap-4 mt-3 lg:ml-2 lg:w-full"
+								>
+									<div
+										class="rounded-full h-5 w-44 bg-gray-400"
+									/>
+									<div
+										class="rounded-sm h-2 w-full bg-gray-400"
+									/>
+									<div
+										class="rounded-sm h-2 w-full bg-gray-400"
+									/>
+									<div
+										class="rounded-sm h-2 w-full bg-gray-400"
+									/>
+									<div
+										class="rounded-sm h-2 w-full bg-gray-400 md:hidden"
+									/>
+									<div
+										class="rounded-sm h-2 w-full bg-gray-400 md:hidden"
+									/>
+									<div
+										class="rounded-sm h-2 w-32 bg-gray-400"
+									/>
+								</div>
+							</div>
+
+							<div class="rounded-full h-5 w-32 bg-gray-400" />
+
+							<div
+								class="flex flex-col gap-4 md:grid md:grid-cols-2 w-full"
+							>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+							</div>
+
+							<div
+								class="rounded-full h-5 w-32 bg-gray-400 mt-4"
+							/>
+
+							<div
+								class="flex flex-col gap-4 md:grid md:grid-cols-2 w-full"
+							>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+								<div
+									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
+								>
+									<div
+										class="w-6 h-6 bg-gray-400 rounded-sm"
+									/>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400"
+									/>
+								</div>
+							</div>
+						</div>
 					</div>
 				{:then users}
 					{#each users as user, i}

@@ -20,5 +20,5 @@
 		alt="{user.name}'s avatar"
 		class="rounded-full w-10"
 	/>
-	<h1>{user.name}</h1>
+	<h1>{user.name.split(" ")[0]}</h1>
 </button>

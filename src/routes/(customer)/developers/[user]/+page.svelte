@@ -17,7 +17,7 @@
 	<title>Firstname Lastname &ndash; Team Tomorrow</title>
 </svelte:head>
 
-<!-- TODO: Switch banner/icon to proper defaults. Right now its set to the banner because its bright and easy to differentiate -->
+<!-- TODO: Replace placeholders -->
 
 <div class="relative">
 	<div

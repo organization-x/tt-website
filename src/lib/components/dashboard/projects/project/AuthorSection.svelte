@@ -2,8 +2,8 @@
 	import { slide, fly } from "svelte/transition";
 
 	import { debounce } from "$lib/debounce";
-	import AuthorEditor from "./AuthorEditor.svelte";
 	import Search from "$lib/components/icons/Search.svelte";
+	import AuthorEditor from "$lib/components/dashboard/projects/project/AuthorEditor.svelte";
 
 	import type { User } from "@prisma/client";
 

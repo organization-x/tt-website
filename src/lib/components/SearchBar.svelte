@@ -20,7 +20,9 @@
 		on:input
 		use:debounce={{
 			bind: search,
-			func: () => dispatch("search"),
+			func: () => {
+				dispatch("search");
+			},
 			delay: 300
 		}}
 		type="text"

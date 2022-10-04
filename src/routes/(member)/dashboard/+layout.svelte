@@ -2,19 +2,24 @@
 	import "../../../app.css";
 
 	import { derived } from "svelte/store";
+	import { slide, crossfade } from "svelte/transition";
 
-	import { slide } from "svelte/transition";
-	import { page, navigating } from "$app/stores";
+	import { user } from "$lib/stores";
+	import { page } from "$app/stores";
 	import Logo from "$lib/components/Logo.svelte";
+	import { afterNavigate } from "$app/navigation";
 	import NavLink from "$lib/components/NavLink.svelte";
 	import Burger from "$lib/components/icons/Burger.svelte";
 	import LogOut from "$lib/components/icons/LogOut.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
 	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
 
-	import type { LayoutData } from "./$types";
+	import type { LayoutServerData } from "./$types";
 
-	export let data: LayoutData;
+	export let data: LayoutServerData;
+
+	// Layout gets rendered early before user is set, so make sure it's set
+	user.set(data);
 
 	let userOpen = false;
 	let burgerOpen = false;
@@ -24,12 +29,17 @@
 		($page) => $page.routeId?.split("/")[2] || "home"
 	);
 
-	$: if ($navigating) burgerOpen = userOpen = false;
-
 	// Close the user menu when it's clicked outside of
 	const onClick = ({ target }: Event) => {
 		if (userOpen && !element.contains(target as Node)) userOpen = false;
 	};
+
+	// Close the burger/user menu on navigation
+	afterNavigate(() => (burgerOpen = userOpen = false));
+
+	const [send, receive] = crossfade({
+		duration: 400
+	});
 </script>
 
 <svelte:window on:click={onClick} />
@@ -38,20 +48,29 @@
 	<div
 		class="p-4 mx-auto max-w-screen-2xl flex justify-between lg:items-center lg:px-6 xl:px-10"
 	>
-		<a href="/" class="z-50" aria-label="Home">
+		<a href="/dashboard" class="z-50" aria-label="Home">
 			<Logo class="w-10 h-10" />
 		</a>
 		<div class="lg:hidden flex gap-3 items-center">
 			<!-- TODO: Replace placeholder -->
 
-			<img
-				width="200"
-				height="200"
-				src="/assets/developers/user/placeholder/icon.webp"
-				alt="{data.user.name}'s avatar"
-				class=" w-7 h-7 rounded-full"
-			/>
-			<h1 class="font-semibold">{data.user.name}</h1>
+			{#if !burgerOpen}
+				<div
+					in:receive={{ key: "user" }}
+					out:send={{ key: "user" }}
+					class="flex gap-3 items-center z-50"
+				>
+					<img
+						width="200"
+						height="200"
+						src="/assets/developers/user/placeholder/icon.webp"
+						alt="{$user.name}'s avatar"
+						class=" w-9 h-9 rounded-full"
+					/>
+					<h1 class="font-semibold">{$user.name}</h1>
+				</div>
+			{/if}
+
 			<button
 				type="button"
 				aria-label="Menu"
@@ -68,17 +87,60 @@
 					transition:slide
 					class="z-40 absolute inset-0 top-18 overflow-y-auto bg-black h-full"
 				>
-					<div class="p-16 pt-24 max-w-screen-lg mx-auto">
-						<ul class="text-3xl divide-y max-w-md mx-auto">
-							<NavLink href="/dashboard">Dashboard</NavLink>
-							<NavLink href="/dashboard/analytics">
+					<div class="p-14 pt-24 max-w-screen-lg mx-auto">
+						<div
+							in:receive={{ key: "user" }}
+							out:send={{ key: "user" }}
+							class="flex gap-3 items-center z-50 w-fit mx-auto"
+						>
+							<img
+								width="200"
+								height="200"
+								src="/assets/developers/user/placeholder/icon.webp"
+								alt="{$user.name}'s avatar"
+								class=" w-14 h-14 rounded-full"
+							/>
+							<h1 class="font-semibold text-xl">{$user.name}</h1>
+						</div>
+						<ul
+							class="text-3xl divide-y max-w-md mx-auto mt-4 list-disc lg:list-none"
+						>
+							<NavLink
+								href="/dashboard"
+								active={$pageId === "home"}
+							>
+								Dashboard
+							</NavLink>
+							<NavLink
+								href="/dashboard/analytics"
+								active={$pageId === "analytics"}
+							>
 								Analytics
 							</NavLink>
-							<NavLink href="/dashboard/profile">Profile</NavLink>
-							<NavLink href="/dashboard/projects">
+							<NavLink
+								href="/dashboard/profile"
+								active={$pageId === "profile"}
+							>
+								Profile
+							</NavLink>
+							<NavLink
+								href="/dashboard/projects"
+								active={$pageId === "projects"}
+							>
 								Projects
 							</NavLink>
-							<NavLink href="/dashboard/kudos">Kudos</NavLink>
+							<NavLink
+								href="/dashboard/kudos"
+								active={$pageId === "kudos"}
+							>
+								Kudos
+							</NavLink>
+							<NavLink
+								target="_blank"
+								href="/developers/{$user.url}"
+							>
+								View Profile
+							</NavLink>
 							<NavLink href="/logout">Log Out</NavLink>
 						</ul>
 					</div>
@@ -111,10 +173,12 @@
 				<NavLink href="/dashboard/kudos" active={$pageId === "kudos"}>
 					Kudos
 				</NavLink>
-				<div bind:this={element} class="relative ml-4">
+				<div bind:this={element} class="relative ml-4 w-44">
 					<button
-						class:bg-gray-900={userOpen}
-						class="flex gap-2 items-center px-4 py-3 rounded-t-lg"
+						class:rounded-lg={!userOpen}
+						class:rounded-t-lg={userOpen}
+						class="flex gap-2 items-center justify-center px-4 py-3 transition-colors duration-200 w-full
+                        {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
 						on:click={() => (userOpen = !userOpen)}
 					>
 						<!-- TODO: Replace placeholder -->
@@ -123,10 +187,10 @@
 							width="200"
 							height="200"
 							src="/assets/projects/project/placeholder/banner.webp"
-							alt="{data.user.name}'s avatar"
+							alt="{$user.name}'s avatar"
 							class="w-8 h-8 rounded-full"
 						/>
-						<span class="font-semibold">{data.user.name}</span>
+						<span class="font-semibold">{$user.name}</span>
 						<DropArrow open={userOpen} class="w-6 h-6" />
 					</button>
 
@@ -134,10 +198,10 @@
 						<div
 							class="absolute bg-gray-900 w-full p-1 rounded-b-lg"
 						>
-							<ul class="flex flex-col gap-2">
+							<ul class="flex flex-col gap-2 p-1">
 								<NavLink
 									target="_blank"
-									href="/developers/{data.user.url}"
+									href="/developers/{$user.url}"
 								>
 									<ExternalLink class="w-5 h-5" />
 									View Profile

@@ -1,6 +1,6 @@
 import { error } from "@sveltejs/kit";
 import { getProjects } from "$lib/getters";
-import { prisma, checkSession, userAuth } from "$lib/prisma";
+import { prisma, userAuth } from "$lib/prisma";
 
 import type { Prisma } from "@prisma/client";
 import type { RequestHandler } from "./$types";
@@ -11,10 +11,10 @@ import type { RequestHandler } from "./$types";
 // * INPUT: ProjectUpdateRequest
 // * OUTPUT: None
 export const PATCH: RequestHandler = async ({ locals, request }) => {
-	const session = await checkSession(locals);
+	const user = await userAuth(locals);
 
 	// If the session token is invalid, throw unauthorized
-	if (!session) throw error(401, "Unauthorized");
+	if (!user) throw error(401, "Unauthorized");
 
 	// Parse data or throw bad request if it isn't valid json
 	const data: App.ProjectUpdateRequest = await request
@@ -26,13 +26,14 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 
 	// Grab the project from the database for validation
 	const project = await prisma.project.findUnique({
-		where: data.where
+		where: data.where,
+		include: { pinnedBy: true }
 	});
 
 	if (!project) throw error(400, "Bad Request");
 
 	// If the token isn't the same as for the user they are updating, throw unauthorized
-	if (project.ownerId !== session.userId) throw error(401, "Unauthorized");
+	if (project.ownerId !== user.id) throw error(401, "Unauthorized");
 
 	// Input validation
 	if (
@@ -43,9 +44,11 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			(data.project.description.length < 1 ||
 				data.project.description.length > 300)) ||
 		(data.project.skills && data.project.skills.length < 2) ||
-		(data.authors &&
-			(data.authors.length < 1 ||
-				!data.authors.some((author) => author.id === project.ownerId)))
+		(data.project.authors &&
+			(data.project.authors.length < 1 ||
+				!data.project.authors.some(
+					(author) => author.id === project.ownerId
+				)))
 	)
 		throw error(400, "Bad Request");
 
@@ -90,38 +93,22 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				skills: data.project.skills,
 				content,
 				visible: data.project.visible,
-				pinned: data.project.pinned
+				authors: data.project.authors
+					? {
+							deleteMany: {},
+							createMany: {
+								data: data.project.authors.map((author) => ({
+									userId: author.id,
+									position: author.position
+								}))
+							}
+					  }
+					: undefined
 			}
 		})
 		.catch(() => {
 			throw error(400, "Bad Request");
 		});
-
-	if (data.authors) {
-		// Update the authors, fist by deleting all current authors
-		await prisma.projectAuthor
-			.deleteMany({
-				where: { projectId: project.id }
-			})
-			.catch(() => {
-				throw error(400, "Bad Request");
-			});
-
-		// Then add all the authors that were provided in the updated data.
-		// The reason for this is it's faster than comparing the two arrays
-		// and surgically updating the authors.
-		await prisma.projectAuthor
-			.createMany({
-				data: data.authors.map((author) => ({
-					projectId: project.id,
-					userId: author.id,
-					position: author.position
-				}))
-			})
-			.catch(() => {
-				throw error(400, "Bad Request");
-			});
-	}
 
 	return new Response(JSON.stringify({ url }), { status: 200 });
 };
@@ -132,11 +119,9 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 export const POST: RequestHandler = async ({ request }) => {
 	const data: App.ProjectSearchRequest = await request.json();
 
-	const projects = await getProjects(data.where)
-		.then((projects) => projects)
-		.catch(() => {
-			throw error(400, "Bad Request");
-		});
+	const projects = await getProjects(data.where);
+
+	if (!projects) throw error(400, "Bad Request");
 
 	// Sort projects by most recently updated
 	projects.sort((p, n) => (p.date.getDate() < n.date.getDate() ? 1 : -1));
@@ -148,23 +133,24 @@ export const POST: RequestHandler = async ({ request }) => {
 // * INPUT: None
 // * OUTPUT: String (url)
 export const PUT: RequestHandler = async ({ locals }) => {
-	const props = await userAuth(locals);
+	const user = await userAuth(locals);
 
-	if (!props) throw error(401, "Unauthorized");
+	if (!user) throw error(401, "Unauthorized");
 
 	// Check for other projects and postfix this one
 	const postfix = await prisma.project
 		.findMany({
 			where: {
 				url: {
-					startsWith: `untitled-${props.user.id}-`
+					startsWith: `untitled-${user.id}-`
 				},
-				ownerId: props.user.id
+				ownerId: user.id
 			}
 		})
 		.then((projects) => {
 			let biggest = 0;
 
+			// Generate a unique postifx for each new project based on how many there are
 			projects.forEach((project) => {
 				try {
 					const int = Number.parseInt(project.url.split("-")[2]);
@@ -184,31 +170,24 @@ export const PUT: RequestHandler = async ({ locals }) => {
 	const project = await prisma.project
 		.create({
 			data: {
-				url: `untitled-${props.user.id}-${postfix}`,
-				title: `Untitled-${props.user.id}-${postfix}`,
+				url: `untitled-${user.id}-${postfix}`,
+				title: `Untitled-${user.id}-${postfix}`,
 				description: "A super cool untitled project!",
 				theme: "3B84D6",
 				date: new Date(),
 				skills: ["Python", "Pytorch"],
-				ownerId: props.user.id,
-				content: { type: "doc", content: [{ type: "paragraph" }] }
+				ownerId: user.id,
+				content: { type: "doc", content: [{ type: "paragraph" }] },
+				authors: {
+					create: {
+						userId: user.id,
+						position: "Designer" // Designers the default since it's the first in the options list
+					}
+				}
 			}
 		})
 		.catch(() => {
 			throw error(400, "Bad Request");
-		});
-
-	// Add the owner as an author
-	await prisma.projectAuthor
-		.create({
-			data: {
-				userId: props.user.id,
-				projectId: project.id,
-				position: "Designer" // Designers the default since it's the first in the options list
-			}
-		})
-		.catch(() => {
-			throw error(500, "Internal Server Error");
 		});
 
 	return new Response(JSON.stringify({ url: project.url }), { status: 200 });
@@ -218,9 +197,9 @@ export const PUT: RequestHandler = async ({ locals }) => {
 // * INPUT: ProjectDeleteRequest
 // * OUTPUT: None
 export const DELETE: RequestHandler = async ({ locals, request }) => {
-	const props = await userAuth(locals);
+	const user = await userAuth(locals);
 
-	if (!props) throw error(401, "Unauthorized");
+	if (!user) throw error(401, "Unauthorized");
 
 	const data: App.ProjectDeleteRequest = await request.json();
 
@@ -235,21 +214,18 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 	if (!project) throw error(400, "Bad Request");
 
 	// Check if the user owns the project
-	if (project.ownerId !== props.user.id) throw error(401, "Unauthorized");
+	if (project.ownerId !== user.id) throw error(401, "Unauthorized");
 
-	// Delete all authors associated with the project
-	await prisma.projectAuthor
-		.deleteMany({ where: { projectId: data.id } })
-		.catch(() => {
-			throw error(500, "Internal Server Error");
-		});
+	// Delete the projects authors
+	await prisma.projectAuthor.deleteMany({ where: { projectId: project.id } });
 
 	// Delete the project
 	await prisma.project
 		.delete({
 			where: { id: data.id }
 		})
-		.catch(() => {
+		.catch((e) => {
+			console.log(e);
 			throw error(500, "Internal Server Error");
 		});
 
