@@ -13,7 +13,6 @@ import { Strike } from "@tiptap/extension-strike";
 import json from "highlight.js/lib/languages/json";
 import bash from "highlight.js/lib/languages/bash";
 import { Heading } from "@tiptap/extension-heading";
-import { History } from "@tiptap/extension-history";
 import { Document } from "@tiptap/extension-document";
 import { ListItem } from "@tiptap/extension-list-item";
 import js from "highlight.js/lib/languages/javascript";
@@ -48,7 +47,6 @@ export const extensions = [
 	Code,
 	Strike,
 	Italic,
-	History,
 	Document,
 	ListItem,
 	Underline,

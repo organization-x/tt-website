@@ -50,7 +50,7 @@
 
 	<Scrollable class="before:from-black after:to-black">
 		{#each data.authors as author}
-			<Author theme={data.theme} user={author} />
+			<Author theme={data.theme} {author} />
 		{/each}
 	</Scrollable>
 

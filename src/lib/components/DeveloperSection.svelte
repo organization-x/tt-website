@@ -1,8 +1,11 @@
 <script lang="ts">
 	export let title: string;
+	let className: string | null = null;
+
+	export { className as class };
 </script>
 
-<div class={$$props.class}>
+<div class={className}>
 	<div class="flex font-semibold justify-center items-center gap-2">
 		<slot name="icon" />
 		<h1 class="text-lg">{title}</h1>

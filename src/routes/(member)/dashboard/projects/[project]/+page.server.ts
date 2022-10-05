@@ -6,7 +6,7 @@ import type { PageServerLoad } from "./$types";
 
 // Grab project data using slug, if the project doesn't exist, go back to the users project dashboard.
 export const load: PageServerLoad<{
-	project: App.ProjectWithAuthors;
+	project: App.ProjectWithMetadata;
 }> = async ({ params, parent }) => {
 	const user = await parent();
 
@@ -14,10 +14,10 @@ export const load: PageServerLoad<{
 	// Should only be one project since the slug is unique
 	const project = await getProjects({
 		url: params.project,
-		ownerId: user.id
+		OR: [{ ownerId: user.id }, { authors: { some: { userId: user.id } } }]
 	});
 
-	if (!project) throw redirect(302, "/dashboard/projects");
+	if (!project || !project.length) throw redirect(302, "/dashboard/projects");
 
 	return { project: project[0] };
 };

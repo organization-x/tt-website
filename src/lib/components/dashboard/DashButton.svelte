@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { debounce } from "$lib/debounce";
 
-	export let href = "";
 	let className: string;
 	export let icon = false;
 	export let disabled = false;
@@ -16,27 +15,14 @@
 	export { className as class, props as debounce };
 </script>
 
-{#if href.length}
-	<a
-		{href}
-		class:p-4={!icon}
-		class:p-3={icon}
-		rel="noreferrer noopener"
-		class="block text-center rounded-lg shrink-0 transition-[background-color,opacity] duration-200 {className}"
-	>
-		<slot />
-	</a>
-{:else}
-	<button
-		on:click
-		use:debounce={props}
-		{disabled}
-		class:pointer-events-none={disabled}
-		class:w-24={!icon}
-		class:px-4={!icon}
-		class:px-3={icon}
-		class="rounded-lg py-3 text-center shrink-0 transition-[background-color,opacity] duration-200 disabled:opacity-60 {className}"
-	>
-		<slot />
-	</button>
-{/if}
+<button
+	on:click
+	use:debounce={props}
+	{disabled}
+	class:w-24={!icon}
+	class:px-4={!icon}
+	class:px-3={icon}
+	class="rounded-lg py-3 text-center shrink-0 transition-[background-color,opacity] duration-200 disabled:opacity-60 disabled:pointer-events-none {className}"
+>
+	<slot />
+</button>

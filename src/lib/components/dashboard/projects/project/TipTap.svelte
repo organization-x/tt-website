@@ -1,26 +1,28 @@
 <script lang="ts">
 	import "highlight.js/styles/atom-one-dark.css";
 
+	import { Doc } from "yjs";
+	import { onMount } from "svelte";
 	import { Editor } from "@tiptap/core";
-	import { onMount, onDestroy } from "svelte";
+	import { WebsocketProvider } from "y-websocket";
 	import { extensions } from "$lib/tiptapExtensions";
+	import { Collaboration } from "@tiptap/extension-collaboration";
 
 	import { createEventDispatcher } from "svelte";
 	import OrList from "$lib/components/icons/OrList.svelte";
 	import UnList from "$lib/components/icons/UnList.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 	import LinkButton from "$lib/components/dashboard/projects/project/LinkButton.svelte";
 	import HeadButton from "$lib/components/dashboard/projects/project/HeadButton.svelte";
 	import ImageButton from "$lib/components/dashboard/projects/project/ImageButton.svelte";
 	import EditorButton from "$lib/components/dashboard/projects/project/EditorButton.svelte";
 
-	import type { Prisma } from "@prisma/client";
 	import type { Content } from "@tiptap/core";
-	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	const dispatch = createEventDispatcher<{ editor: Editor }>();
 
-	// Gget the stored content from the parent, this is also bound to for comparison
-	export let content: Prisma.JsonValue;
+	// Get the project data from the parent, this is also bound to for comparison
+	export let project: App.ProjectWithMetadata;
 
 	let editor: Editor;
 	let editorElement: HTMLDivElement;
@@ -40,10 +42,18 @@
 	};
 
 	onMount(() => {
+		// Register document with yjs for collaborative editing
+		const doc = new Doc();
+		// const ws = new WebsocketProvider(
+		// 	"ws://localhost:8080/dashboard/projects",
+		// 	project.id,
+		// 	doc
+		// );
+
 		editor = new Editor({
 			element: editorElement,
-			content: Object.keys(content!).length
-				? (content as Content)
+			content: Object.keys(project.content!).length
+				? (project.content as Content)
 				: undefined,
 			editorProps: {
 				attributes: {
@@ -72,23 +82,30 @@
 				);
 
 				// Get the content for comparison
-				content = editor.getJSON();
+				project.content = editor.getJSON();
 			},
 			onCreate: () => {
 				dispatch("editor", editor);
-				content = editor.getJSON();
+				project.content = editor.getJSON();
 			},
-			extensions
+			extensions: [
+				Collaboration.configure({
+					document: doc
+				}),
+				...extensions
+			]
 		});
-	});
 
-	onDestroy(() => editor && editor.destroy());
+		// Destroy the editor on unmount
+		return editor.destroy;
+	});
 
 	// TODO: Add image upload implementation with cloudflare images
 	// TODO: Add image resizing capabilities
+	// TODO: Add collaboration
 </script>
 
-<div class="flex flex-col relative gap-4p-4 rounded-lg xl:min-w-full">
+<div class="relative rounded-lg w-full">
 	{#if editor}
 		<div class="absolute inset-0 pointer-events-none">
 			<Scrollable

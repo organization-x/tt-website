@@ -15,7 +15,7 @@
 	let pinDebounce: NodeJS.Timeout;
 	let deletingProjects: string[] = [];
 	let pinnedProject = $user.pinnedProjectId;
-	let request: Promise<App.ProjectWithAuthors[]> = new Promise(() => {});
+	let request: Promise<App.ProjectWithMetadata[]> = new Promise(() => {});
 
 	// On search set request to never resolve so the loading animation is shown before the debounce and
 	// also reset the deleting projects array so we don't have old ID's
@@ -33,12 +33,25 @@
 						title: {
 							contains: search.trim(),
 							mode: "insensitive"
-						}
+						},
+
+						OR: [
+							{
+								ownerId: $user.id
+							},
+							{
+								authors: {
+									some: {
+										userId: $user.id
+									}
+								}
+							}
+						]
 					}
 				} as App.ProjectSearchRequest)
 			})
 				.then((res) => res.json())
-				.then((data: App.ProjectWithAuthors[]) =>
+				.then((data: App.ProjectWithMetadata[]) =>
 					data.length ? res(data) : rej()
 				)
 		);
@@ -155,7 +168,6 @@
 				{#if !deletingProjects.includes(project.id)}
 					<ProjectEditPreview
 						bind:project
-						bind:user={$user}
 						bind:pinnedProject
 						on:delete={() => deleteProject(project.id)}
 						on:pinned={togglePinned}

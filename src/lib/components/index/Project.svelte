@@ -39,7 +39,7 @@
 				class="flex overflow-auto py-2 px-8 gap-8 snap-x snap-proximity rounded-lg scrollbar-hidden"
 			>
 				{#each developers as developer}
-					<Author user={developer} />
+					<Author author={developer} />
 				{/each}
 			</div>
 		</div>
@@ -55,7 +55,7 @@
 		<div class="p-4 flex flex-col gap-1 overflow-auto scrollbar">
 			<h1 class="font-semibold mb-2">Developers</h1>
 			{#each developers as developer}
-				<Author user={developer} />
+				<Author author={developer} />
 			{/each}
 		</div>
 	</div>

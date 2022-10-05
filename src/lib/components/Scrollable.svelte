@@ -87,7 +87,7 @@
 				bind:this={scrollable}
 				on:scroll={onScroll}
 				class="
-                flex gap-6 overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
+                flex gap-5 overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
 			>
 				<slot />
 			</div>
@@ -119,7 +119,7 @@
 			bind:this={scrollable}
 			on:scroll={onScroll}
 			class="
-            flex gap-6 overflow-auto py-2 scrollbar-hidden"
+            flex gap-5 overflow-auto py-2 scrollbar-hidden"
 		>
 			<slot />
 		</div>
