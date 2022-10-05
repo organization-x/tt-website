@@ -19,13 +19,7 @@
 	import ProfileSection from "$lib/components/dashboard/profile/ProfileSection.svelte";
 
 	import type { PageParentData } from "./$types";
-	import type {
-		Position,
-		SoftSkill,
-		TechSkill,
-		Team,
-		Links
-	} from "@prisma/client";
+	import type { Position, SoftSkill, TechSkill, Team } from "@prisma/client";
 
 	// Since the data object is shared across all pages, we need to make a copy of it so
 	// that unmade changes arent shown on other pages
@@ -87,14 +81,12 @@
 
 	$: user.links,
 		Object.keys(user.links).forEach((key) => {
-			if (key === "userId") return;
-
 			const link =
-				user.links[key as keyof Links] &&
-				user.links[key as keyof Links]!.trim();
+				user.links[key as keyof App.UserLinks] &&
+				user.links[key as keyof App.UserLinks]!.trim();
 
-			// @ts-ignore Typescript for some reason doesn't recognize my userId check earlier so it freaks out
-			user.links[key as keyof Links] = link && link.length ? link : null;
+			user.links[key as keyof App.UserLinks] =
+				link && link.length ? link : null;
 		}),
 		checkConstraints();
 
@@ -128,9 +120,8 @@
 		}).then(() => {
 			disableForm = false;
 
-			// If successful, update the original data.
-			// The reason it's done manually like this is so the original object is presevered and is then used across all dashboard pages
-			original.set(user);
+			// If successful, update the original data store
+			original.set(JSON.parse(JSON.stringify(user)));
 		});
 	};
 

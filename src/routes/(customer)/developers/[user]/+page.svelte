@@ -1,32 +1,46 @@
 <script lang="ts">
 	import { getIcon } from "$lib/getIcon";
 	import Button from "$lib/components/Button.svelte";
+	import TextHeader from "$lib/components/TextHeader.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import Icons from "$lib/components/developers/user/Icons.svelte";
 	import Panel from "$lib/components/developers/user/Panel.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
-	import TextHeader from "$lib/components/TextHeader.svelte";
 
 	import type { PageData } from "./$types";
-	import type { Links } from "@prisma/client";
 
 	export let data: PageData;
 
-	const previewedProjects = data.projects?.slice(0, 3) ?? [];
+	// Get top 3 projects
+	const previewedProjects = data.projects?.slice(0, 3);
 
-	if (data.user.pinnedProject) {
-		previewedProjects.unshift({
-			...data.user.pinnedProject,
-			authors: data.user.pinnedProject.authors.map((a) => ({
-				...a.user,
-				position: a.position
-			}))
-		});
-	}
+	if (data.user.pinnedProject)
+		previewedProjects.unshift(data.user.pinnedProject);
 
-	const linkArray = Object.entries(data.user.links ?? {})
+	const links = Object.entries(data.user.links)
 		.filter(([_, link]) => link)
-		.map(([key, link]) => ({ key: key as keyof Links, link: link! }));
+		.map(([key, link]) => ({
+			key: key as keyof App.UserLinks,
+			link: link!
+		}));
+
+	// Construct links based off of their name
+	const createLink = (key: keyof App.UserLinks, link: string) => {
+		switch (key) {
+			case "GitHub":
+				return `https://github.com/${link}`;
+			case "LinkedIn":
+				return `https://linkedin.com/in/${link}`;
+			case "Devto":
+				return `https://dev.to/${link}`;
+			case "Twitter":
+				return `https://twitter.com/${link}`;
+			case "Facebook":
+				return `https://facebook.com/${link}`;
+			case "Website":
+				return link;
+		}
+	};
 </script>
 
 <svelte:head>
@@ -68,9 +82,9 @@
 				direction="bg-gradient-to-br"
 				class="mt-4 flex gap-4 justify-center"
 			>
-				{#each linkArray as link}
+				{#each links as link}
 					<a
-						href="https://github.com/cubedhuang"
+						href={createLink(link.key, link.link)}
 						class="hover:opacity-80 transition-opacity"
 					>
 						<svelte:component

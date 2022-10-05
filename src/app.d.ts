@@ -27,9 +27,12 @@ declare global {
 			};
 		}
 
-		// Type for combining a user with their Links
+		// Type for removing the relational userId property from the links model
+		type UserLinks = Omit<Links, "userId">;
+
+		// Type for combining a user with their associated links and pinned project
 		type UserWithMetadata = User & {
-			links: Links;
+			links: UserLinks;
 			pinnedProject: Project?;
 		};
 
@@ -43,7 +46,7 @@ declare global {
 				positions?: Position[];
 				softSkills?: SoftSkill[];
 				techSkills?: TechSkill[];
-				links?: Links;
+				links?: UserLinks;
 				pinnedProjectId?: string;
 				visible?: boolean;
 			};

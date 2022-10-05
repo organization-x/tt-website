@@ -84,12 +84,13 @@
 		checkConstraints();
 	};
 
-	$: if (project.title !== original.title)
+	$: if (project.title !== original.title && !disableForm)
 		(titleError = false), checkConstraints();
 
-	$: if (project.description !== original.description) checkConstraints();
+	$: if (project.description !== original.description && !disableForm)
+		checkConstraints();
 
-	$: if (project.authors.length !== original.authors.length)
+	$: if (project.authors.length !== original.authors.length && !disableForm)
 		checkConstraints();
 
 	$: if (project.content !== original.content && !disableForm)

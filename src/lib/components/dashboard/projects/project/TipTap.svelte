@@ -97,7 +97,7 @@
 		});
 
 		// Destroy the editor on unmount
-		return editor.destroy;
+		return () => editor.destroy();
 	});
 
 	// TODO: Add image upload implementation with cloudflare images
