@@ -16,7 +16,17 @@ export const load: LayoutServerLoad<{
 	const user = (await prisma.user.findUnique({
 		where: { url: params.user },
 		include: {
-			links: true,
+			links: {
+				select: {
+					userId: false,
+					Devto: true,
+					Facebook: true,
+					GitHub: true,
+					LinkedIn: true,
+					Twitter: true,
+					Website: true
+				}
+			},
 			pinnedProject: {
 				include: {
 					authors: {
