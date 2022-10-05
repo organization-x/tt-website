@@ -2,6 +2,7 @@
 	import { createEventDispatcher } from "svelte";
 
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
+	import type { changeValues } from "./_ChangeValuesInterface.svelte";
 
 	export let title: string;
 	export let prompt = title;
@@ -10,14 +11,7 @@
 	export let placeholder: string;
 	export let page: string;
 
-	const dispatch = createEventDispatcher<{
-		change: {
-			page: string;
-			title: string;
-			isValid: boolean;
-			input: string;
-		};
-	}>();
+	const dispatch = createEventDispatcher<changeValues>();
 
 	let isValid = false;
 	let input = "";

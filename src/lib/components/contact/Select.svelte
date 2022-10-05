@@ -3,7 +3,8 @@
 
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
-	import DropdownOption from "$lib/components/contact/DropdownOption.svelte";
+	import DropdownOption from "./DropdownOption.svelte";
+	import type { changeValues } from "./_ChangeValuesInterface.svelte";
 
 	export let title: string;
 	export let prompt = title;
@@ -13,14 +14,7 @@
 	export let placeholder: string;
 	export let page: string;
 
-	const dispatch = createEventDispatcher<{
-		change: {
-			page: string;
-			title: string;
-			isValid: boolean;
-			input: string[];
-		};
-	}>();
+	const dispatch = createEventDispatcher<changeValues>();
 
 	let open = false;
 	let count = 0;

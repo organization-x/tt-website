@@ -11,6 +11,14 @@
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import TextArea from "$lib/components/contact/TextArea.svelte";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
+	import type { changeValues } from "$lib/components/contact/_ChangeValuesInterface.svelte";
+
+	interface boxesType {
+		page: number;
+		name: string;
+		isValid: boolean;
+		value: string | string[];
+	}
 
 	const titles = [
 		"First, the basics.",
@@ -31,14 +39,11 @@
 			behavior: "smooth"
 		});
 		currentPageValid();
+
+		if (pageNumber == 3) {
 	};
 
-	let boxes: {
-		page: number;
-		name: string;
-		isValid: boolean;
-		value: string | string[];
-	}[] = [
+	let boxes: boxesType[] = [
 		// page 0
 		{
 			page: 0,
@@ -86,13 +91,13 @@
 		},
 		{
 			page: 1,
-			name: "What are we coing?",
+			name: "What are we doing?",
 			isValid: false,
 			value: []
 		},
 		{
 			page: 1,
-			name: "Heard of Us?",
+			name: "How did you hear about us?",
 			isValid: true,
 			value: ""
 		},
@@ -112,15 +117,8 @@
 		}
 	];
 
-	// Check if all required fields are filled
-	const onChange = ({
-		detail
-	}: CustomEvent<{
-		page: string;
-		title: string;
-		isValid: boolean;
-		input: string | string[];
-	}>) => {
+	// Check if all fields are valid
+	const onChange = ({ detail }: CustomEvent<changeValues["change"]>) => {
 		let input = detail.input;
 		let box = boxes.find((obj) => {
 			return (
@@ -128,6 +126,21 @@
 				obj.name == detail.title
 			);
 		});
+
+		if (!box) {
+			console.error(
+				"CONTACT FORM: INPUT NOT FOUND: \n\n'" +
+					detail.title +
+					"' NOT IN [" +
+					boxes
+						.filter((obj) => {
+							return obj.page == pageNumber;
+						})
+						.map((box) => "'" + box.name + "'") +
+					"]"
+			);
+		}
+
 		box!.isValid = detail.isValid;
 		box!.value = input;
 		currentPageValid();
@@ -136,12 +149,12 @@
 	let isValid = false;
 
 	function currentPageValid(): void {
-		let page_boxes = boxes.filter((obj) => {
+		let pageBoxes = boxes.filter((obj) => {
 			return obj.page == pageNumber;
 		});
-		console.log(page_boxes);
-		for (let i = 0; i < page_boxes.length; i++) {
-			let box = page_boxes[i];
+
+		for (let i = 0; i < pageBoxes.length; i++) {
+			let box = pageBoxes[i];
 			if (box.isValid == false) {
 				isValid = false;
 				return;
@@ -262,8 +275,7 @@
 			/>
 			<Field
 				type="text"
-				title="Heard of Us?"
-				prompt="How Did You Hear About Us?"
+				title="How Did You Hear About Us?"
 				required={false}
 				on:change={onChange}
 				disabled={pageNumber !== 1}

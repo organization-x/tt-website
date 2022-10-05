@@ -2,6 +2,14 @@
 	import { createEventDispatcher } from "svelte";
 
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
+	import type { changeValues } from "./_ChangeValuesInterface.svelte";
+	import {
+		emailRegex,
+		allNums,
+		anyNum,
+		anySymbol,
+		websiteRegex
+	} from "./_ValidityRegexes.svelte";
 
 	export let type: string;
 	export let title: string;
@@ -11,24 +19,15 @@
 	export let placeholder: string;
 	export let page: string;
 
-	const dispatch = createEventDispatcher<{
-		change: {
-			page: string;
-			title: string;
-			isValid: boolean;
-			input: string;
-		};
-	}>();
+	enum formInputs {
+		firstName = "first name",
+		lastName = "last name",
+		email = "email",
+		phoneNumber = "phone number",
+		companyWebsite = "company website"
+	}
 
-	const email_regex = new RegExp(
-		"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])$"
-	);
-	const all_nums = new RegExp("^[0-9]*$");
-	const any_nums = new RegExp("[0-9]+");
-	const any_symbol = new RegExp("[~`!@#$%^&*(){}|:;>.<,?+=_-]+");
-	const website_regex = new RegExp(
-		"((http(s)?)://[(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))+$"
-	);
+	const dispatch = createEventDispatcher<changeValues>();
 
 	let isValid = !required;
 	let changed = false;
@@ -38,46 +37,39 @@
 	// Let the parent know input has changed
 	$: dispatch("change", { page, title, isValid, input });
 
-	// On input check if the input is filled.
+	// On input check if the input is valid.
 	const onChange = ({ target }: Event) => {
 		const { value, name } = target as HTMLInputElement;
 		input = value;
 		isFilled = value.length > 0;
 		changed = true;
 		if (!isFilled) {
-			if (required) {
-				isValid = false;
-			} else {
-				isValid = true;
-			}
+			isValid = !required;
 			return;
 		}
 		switch (name) {
-			case "first name":
-			case "last name": {
+			case formInputs.firstName:
+			case formInputs.lastName:
 				isValid =
-					value[0].toUpperCase() == value[0] && !any_nums.test(value) && !any_symbol.test(value);
+					value[0].toUpperCase() == value[0] &&
+					!anyNum.test(value) &&
+					!anySymbol.test(value);
 				break;
-			}
-			case "email": {
-				isValid = email_regex.test(value);
+			case formInputs.email:
+				isValid = emailRegex.test(value);
 				break;
-			}
-			case "phone number": {
+			case formInputs.phoneNumber:
 				isValid =
-					all_nums.test(value) &&
+					allNums.test(value) &&
 					8 <= value.length &&
 					value.length <= 15;
 				break;
-			}
-			case "company website": {
-				isValid = website_regex.test(value);
+			case formInputs.companyWebsite:
+				isValid = websiteRegex.test(value);
 				break;
-			}
-			default: {
+			default:
 				isValid = true;
 				break;
-			}
 		}
 	};
 </script>
