@@ -691,9 +691,9 @@
 	</Step>
 	<div
 		slot="alt"
-		class="hidden lg:max-w-2xl lg:mx-auto lg:flex lg:flex-col lg:mt-10 lg:bg-gray-500/40 lg:py-6 lg:pl-28 lg:pr-6 lg:-z-20 lg:rounded-xl lg:relative xl:max-w-screen-lg"
+		class="hidden lg:max-w-2xl lg:mx-auto lg:flex lg:flex-col lg:gap-6 lg:mt-10 lg:bg-gray-500/40 lg:py-6 lg:pl-28 lg:pr-6 lg:-z-20 lg:rounded-xl lg:relative xl:max-w-screen-lg"
 	>
-		<div class="flex flex-col">
+		<div class="flex flex-col lg:gap-4">
 			<Step
 				num={1}
 				title="Choose your path"
@@ -727,7 +727,7 @@
 			</Step>
 		</div>
 		<div
-			class="absolute rotate-90 flex my-auto top-0 bottom-0 lg:-translate-x-80 xl:-translate-x-96 xl:right-4"
+			class="absolute rotate-90 flex my-auto -left-56 top-0 bottom-0 h-14"
 		>
 			<GitCommit />
 			<GitMerge />

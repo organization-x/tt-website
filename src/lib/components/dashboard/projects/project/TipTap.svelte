@@ -44,11 +44,11 @@
 	onMount(() => {
 		// Register document with yjs for collaborative editing
 		const doc = new Doc();
-		// const ws = new WebsocketProvider(
-		// 	"ws://localhost:8080/dashboard/projects",
-		// 	project.id,
-		// 	doc
-		// );
+		const ws = new WebsocketProvider(
+			"ws://localhost:8080/dashboard/projects",
+			project.id,
+			doc
+		);
 
 		editor = new Editor({
 			element: editorElement,
