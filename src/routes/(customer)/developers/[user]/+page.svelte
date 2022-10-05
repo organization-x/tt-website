@@ -120,7 +120,11 @@
 
 				<Panel direction="bg-gradient-to-br" class="mt-2">
 					<Icons name="Soft" icons={data.user.softSkills} />
-					<Icons name="Technical" icons={data.user.techSkills} />
+					<Icons
+						name="Technical"
+						icons={data.user.techSkills}
+						class="mt-4"
+					/>
 				</Panel>
 			</div>
 		</div>
