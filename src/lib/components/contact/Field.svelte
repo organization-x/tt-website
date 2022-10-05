@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from "svelte";
 
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
-	import type { changeValues } from "./_ChangeValuesInterface.svelte";
+	import type { changeValues } from "./_FormInterfaces.svelte";
 	import {
 		emailRegex,
 		allNums,

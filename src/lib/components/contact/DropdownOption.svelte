@@ -2,10 +2,9 @@
 	import { createEventDispatcher } from "svelte";
 
 	import Checkbox from "$lib/components/icons/Checkbox.svelte";
+	import type { changeSelectValues } from "./_FormInterfaces.svelte";
 
-	const dispatch = createEventDispatcher<{
-		change: { isSelected: boolean; option: string };
-	}>();
+	const dispatch = createEventDispatcher<changeSelectValues>();
 
 	export let option: string;
 	let isSelected = false;

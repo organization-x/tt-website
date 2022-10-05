@@ -11,14 +11,10 @@
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import TextArea from "$lib/components/contact/TextArea.svelte";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
-	import type { changeValues } from "$lib/components/contact/_ChangeValuesInterface.svelte";
-
-	interface boxesType {
-		page: number;
-		name: string;
-		isValid: boolean;
-		value: string | string[];
-	}
+	import type {
+		changeValues,
+		boxesType
+	} from "$lib/components/contact/_FormInterfaces.svelte";
 
 	const titles = [
 		"First, the basics.",

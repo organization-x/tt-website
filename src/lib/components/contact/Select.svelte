@@ -4,7 +4,10 @@
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
 	import DropdownOption from "./DropdownOption.svelte";
-	import type { changeValues } from "./_ChangeValuesInterface.svelte";
+	import type {
+		changeValues,
+		changeSelectValues
+	} from "./_FormInterfaces.svelte";
 
 	export let title: string;
 	export let prompt = title;
@@ -29,7 +32,7 @@
 	// On input change check if the input is filled.
 	const onChange = ({
 		detail
-	}: CustomEvent<{ isSelected: boolean; option: string }>) => {
+	}: CustomEvent<changeSelectValues["change"]>) => {
 		if (detail.isSelected) {
 			count++;
 			input.push(detail.option);
