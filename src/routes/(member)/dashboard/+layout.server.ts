@@ -1,3 +1,4 @@
+import { user as store } from "$lib/stores";
 import { userAuth } from "$lib/prisma";
 import { redirect } from "@sveltejs/kit";
 import { user as store } from "$lib/stores";

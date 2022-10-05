@@ -102,7 +102,7 @@
 
 	// TODO: Add image upload implementation with cloudflare images
 	// TODO: Add image resizing capabilities
-	// TODO: All collaboration
+	// TODO: Add collaboration
 </script>
 
 <div class="relative rounded-lg w-full">

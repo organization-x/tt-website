@@ -173,7 +173,7 @@
 				<NavLink href="/dashboard/kudos" active={$pageId === "kudos"}>
 					Kudos
 				</NavLink>
-				<div bind:this={element} class="relative ml-4">
+				<div bind:this={element} class="relative ml-4 w-44">
 					<button
 						class:rounded-lg={!userOpen}
 						class:rounded-t-lg={userOpen}

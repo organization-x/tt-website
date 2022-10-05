@@ -27,6 +27,9 @@
 	// Keep track whether this the user is an owner or a collaborator
 	const isOwner = $user.id === project.ownerId;
 
+	// Disable a few buttons that should only be used on the project management page
+	export let minified: boolean = false;
+
 	let open = false;
 	let deleting = false;
 	let innerWidth: number;
