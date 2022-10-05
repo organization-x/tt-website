@@ -5,9 +5,9 @@
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
 	import DropdownOption from "./DropdownOption.svelte";
 	import type {
-		changeValues,
-		changeSelectValues
-	} from "./_FormInterfaces.svelte";
+		ChangeValues,
+		ChangeSelectValues
+	} from "./formInterfaces.js";
 
 	export let title: string;
 	export let prompt = title;
@@ -15,9 +15,8 @@
 	export let disabled: boolean;
 	export let options: string[];
 	export let placeholder: string;
-	export let page: string;
 
-	const dispatch = createEventDispatcher<changeValues>();
+	const dispatch = createEventDispatcher<ChangeValues>();
 
 	let open = false;
 	let count = 0;
@@ -27,12 +26,12 @@
 	let dropdownParent: HTMLDivElement;
 
 	// Let the parent know input has changed
-	$: dispatch("change", { page, title, isValid, input });
+	$: dispatch("change", { title, isValid, input });
 
 	// On input change check if the input is filled.
 	const onChange = ({
 		detail
-	}: CustomEvent<changeSelectValues["change"]>) => {
+	}: CustomEvent<ChangeSelectValues["change"]>) => {
 		if (detail.isSelected) {
 			count++;
 			input.push(detail.option);
@@ -75,7 +74,7 @@
 			class:border-transparent={!changed ||
 				(!isValid && !required) ||
 				(isValid && count < 1)}
-		>
+			>
 			<h1>{count} {placeholder} selected</h1>
 			<DropArrow {open} class="w-6 h-6 transition-transform" />
 		</div>

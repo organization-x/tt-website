@@ -2,28 +2,27 @@
 	import { createEventDispatcher } from "svelte";
 
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
-	import type { changeValues } from "./_FormInterfaces.svelte";
+	import type { ChangeValues } from "./formInterfaces.js";
 
 	export let title: string;
 	export let prompt = title;
 	export let required = true;
 	export let disabled: boolean;
 	export let placeholder: string;
-	export let page: string;
 
-	const dispatch = createEventDispatcher<changeValues>();
+	const dispatch = createEventDispatcher<ChangeValues>();
 
 	let isValid = false;
 	let input = "";
+	let changed = false;
 
 	// Let the parent know input has changed
-	$: dispatch("change", { page, title, isValid, input });
+	$: dispatch("change", { title, isValid, input });
 
 	// On input change check if the input is filled.
 	const onChange = ({ target }: Event) => {
-		const { value } = target as HTMLInputElement;
-		input = value;
-		isValid = value.length > 0;
+		isValid = input.length > 0;
+		changed = true;
 	};
 </script>
 
@@ -35,10 +34,12 @@
 		{/if}
 	</div>
 	<textarea
+		bind:value={input}
 		on:input={onChange}
 		name={prompt.toLowerCase()}
 		class:border-green-light={isValid}
-		class:border-transparent={!isValid}
+		class:border-red-light={changed && !isValid && required}
+		class:border-transparent={!changed || (!isValid && !required)}
 		class="w-full h-96 bg-gray-800 resize-none flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
 		{disabled}
 		{placeholder}

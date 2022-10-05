@@ -12,9 +12,12 @@
 	import TextArea from "$lib/components/contact/TextArea.svelte";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
 	import type {
-		changeValues,
-		boxesType
-	} from "$lib/components/contact/_FormInterfaces.svelte";
+		ChangeValues,
+		Boxes
+	} from "$lib/components/contact/formInterfaces.js";
+	import AiCamp from "$lib/components/AICamp.svelte";
+	import { parse } from "cookie";
+	import { page } from "$app/stores";
 
 	const titles = [
 		"First, the basics.",
@@ -36,124 +39,137 @@
 		});
 		currentPageValid();
 
-		if (pageNumber == 3) {
+		if (pageNumber === boxes.length) {
 			// send form
 		}
 	};
 
-	let boxes: boxesType[] = [
-		// page 0
-		{
-			page: 0,
-			name: "First Name",
-			isValid: false,
-			value: ""
-		},
-		{
-			page: 0,
-			name: "Last Name",
-			isValid: false,
-			value: ""
-		},
-		{
-			page: 0,
-			name: "Email",
-			isValid: false,
-			value: ""
-		},
-		{
-			page: 0,
-			name: "Phone Number",
-			isValid: true,
-			value: ""
-		},
-		{
-			page: 0,
-			name: "Company",
-			isValid: false,
-			value: ""
-		},
-
-		// page 1
-		{
-			page: 1,
-			name: "Talent",
-			isValid: false,
-			value: []
-		},
-		{
-			page: 1,
-			name: "Company Website",
-			isValid: true,
-			value: ""
-		},
-		{
-			page: 1,
-			name: "What are we doing?",
-			isValid: false,
-			value: []
-		},
-		{
-			page: 1,
-			name: "How did you hear about us?",
-			isValid: true,
-			value: ""
-		},
-
-		// page 2
-		{
-			page: 2,
-			name: "Subject",
-			isValid: false,
-			value: ""
-		},
-		{
-			page: 2,
-			name: "Message",
-			isValid: false,
-			value: ""
-		}
+	let boxes: Boxes[][] = [
+		[
+			{
+				type: "Field",
+				name: "First Name",
+				isValid: false,
+				required: true,
+				placeholder: "First goes here",
+				value: "",
+			},
+			{
+				type: "Field",
+				name: "Last Name",
+				isValid: false,
+				required: true,
+				placeholder: "And now for the last",
+				value: "",
+			},
+			{
+				type: "Field",
+				name: "Email",
+				isValid: false,
+				required: true,
+				placeholder: "Where should we send our pigeon?",
+				value: "",
+			},
+			{
+				type: "Field",
+				name: "Phone Number",
+				isValid: true,
+				required: false,
+				placeholder: "Your digits, please",
+				value: "",
+			},
+			{
+				type: "Field",
+				name: "Company",
+				isValid: false,
+				required: true,
+				placeholder: "What company are you working for?",
+				value: "",
+			}
+		],
+		[
+			{
+				type: "Select",
+				name: "What Talent Do You Need?",
+				isValid: false,
+				required: true,
+				options: ["Design", "Engineering", "Management"],
+				placeholder: "skill(s)",
+				value: [],
+			},
+			{
+				type: "Field",
+				name: "Company Website",
+				isValid: true,
+				required: false,
+				placeholder: "https://company.com...",
+				value: "",
+			},
+			{
+				type: "Select",
+				name: "What are we doing?",
+				isValid: false,
+				required: true,
+				placeholder: "subject(s)",
+				options: [
+					"Creating a brand new product",
+					"Building on an existing project",
+					"Deploying a new product"
+				],
+				value: [],
+			},
+			{
+				type: "Field",
+				name: "How did you hear about us?",
+				isValid: true,
+				required: false,
+				placeholder: "Friends, Family?",
+				value: "",
+			}
+		],
+		[
+			{
+				type: "Field",
+				name: "Subject",
+				isValid: false,
+				required: true,
+				placeholder: "Give yourself a title",
+				value: "",
+			},
+			{
+				type: "TextArea",
+				name: "Message",
+				isValid: false,
+				required: true,
+				placeholder: "Elaborate on how we can help...",
+				value: "",
+			}
+		]
 	];
 
 	// Check if all fields are valid
-	const onChange = ({ detail }: CustomEvent<changeValues["change"]>) => {
+	const onChange = ({ detail }: CustomEvent<ChangeValues["change"]>) => {
 		let input = detail.input;
-		let box = boxes.find((obj) => {
-			return (
-				obj.page == parseInt(detail.page) - 1 &&
-				obj.name == detail.title
-			);
-		});
+		let box = boxes[pageNumber].find((obj) => obj.name === detail.title);
 
 		if (!box) {
 			console.error(
-				"CONTACT FORM: INPUT NOT FOUND: \n\n'" +
-					detail.title +
-					"' NOT IN [" +
-					boxes
-						.filter((obj) => {
-							return obj.page == pageNumber;
-						})
-						.map((box) => "'" + box.name + "'") +
-					"]"
+				"CONTACT FORM: INPUT NOT FOUND: \n\n'" + detail.title + "' NOT IN [" + boxes[pageNumber].map((box) => "'" + box.name + "'") + "]"
 			);
+			return;
 		}
 
-		box!.isValid = detail.isValid;
-		box!.value = input;
+		box.isValid = detail.isValid;
+		box.value = input;
 		currentPageValid();
 	};
 
 	let isValid = false;
 
 	function currentPageValid(): void {
-		let pageBoxes = boxes.filter((obj) => {
-			return obj.page == pageNumber;
-		});
-
-		for (let i = 0; i < pageBoxes.length; i++) {
-			let box = pageBoxes[i];
-			if (box.isValid == false) {
+		for (let i = 0; i < boxes[pageNumber].length; i++) {
+			let box = boxes[pageNumber][i];
+			if (!box.isValid) {
 				isValid = false;
 				return;
 			}
@@ -197,108 +213,38 @@
 		bind:this={element}
 		class="flex gap-12 overflow-hidden snap-x snap-mandatory"
 	>
-		<Page>
-			<Field
-				type="text"
-				title="First Name"
-				disabled={pageNumber !== 0}
-				on:change={onChange}
-				placeholder="First goes here"
-				page="1"
-			/>
-			<Field
-				type="text"
-				title="Last Name"
-				on:change={onChange}
-				disabled={pageNumber !== 0}
-				placeholder="And now for the last"
-				page="1"
-			/>
-			<Field
-				type="email"
-				title="Email"
-				on:change={onChange}
-				disabled={pageNumber !== 0}
-				placeholder="Where should we send our pigeon?"
-				page="1"
-			/>
-			<Field
-				type="text"
-				title="Phone Number"
-				required={false}
-				on:change={onChange}
-				disabled={pageNumber !== 0}
-				placeholder="Your digits, please"
-				page="1"
-			/>
-			<Field
-				type="text"
-				title="Company"
-				on:change={onChange}
-				disabled={pageNumber !== 0}
-				placeholder="What company are you working for?"
-				page="1"
-			/>
-		</Page>
-		<Page>
-			<Select
-				title="Talent"
-				prompt="What Talent Do You Need?"
-				placeholder="skill(s)"
-				on:change={onChange}
-				disabled={pageNumber !== 1}
-				options={["Design", "Engineering", "Management"]}
-				page="2"
-			/>
-			<Field
-				type="text"
-				title="Company Website"
-				required={false}
-				on:change={onChange}
-				disabled={pageNumber !== 1}
-				placeholder="https://company.com..."
-				page="2"
-			/>
-			<Select
-				title="What are we doing?"
-				placeholder="subject(s)"
-				on:change={onChange}
-				disabled={pageNumber !== 1}
-				options={[
-					"Creating a brand new product",
-					"Building on an existing project",
-					"Deploying a new product"
-				]}
-				page="2"
-			/>
-			<Field
-				type="text"
-				title="How Did You Hear About Us?"
-				required={false}
-				on:change={onChange}
-				disabled={pageNumber !== 1}
-				placeholder="Friends, Family?"
-				page="2"
-			/>
-		</Page>
-		<Page>
-			<Field
-				type="text"
-				title="Subject"
-				on:change={onChange}
-				disabled={pageNumber !== 2}
-				placeholder="Give yourself a title"
-				page="3"
-			/>
-
-			<TextArea
-				title="Message"
-				on:change={onChange}
-				disabled={pageNumber !== 2}
-				placeholder="Elaborate on how we can help..."
-				page="3"
-			/>
-		</Page>
+		{#each boxes as page, pageNum}
+			<Page>
+				{#each page as box}
+					{#if box.type === "Field"}
+						<Field
+							title={box.name}
+							disabled={pageNumber !== pageNum}
+							on:change={onChange}
+							required={box.required}
+							placeholder={box.placeholder}
+						/>
+					{:else if box.type === "Select"}
+						<Select
+							title={box.name}
+							disabled={pageNumber !== pageNum}
+							on:change={onChange}
+							options={box.options || ["ERROR"]}
+							required={box.required}
+							placeholder={box.placeholder}
+						/>
+					{:else if box.type === "TextArea"}
+						<TextArea
+							title={box.name}
+							disabled={pageNumber !== pageNum}
+							on:change={onChange}
+							required={box.required}
+							placeholder={box.placeholder}
+						/>
+					{/if}
+				{/each}
+			</Page>
+		{/each}
 		<Page>
 			<div
 				class="flex flex-col h-full text-center justify-center items-center"

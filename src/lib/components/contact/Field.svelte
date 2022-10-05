@@ -2,32 +2,28 @@
 	import { createEventDispatcher } from "svelte";
 
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
-	import type { changeValues } from "./_FormInterfaces.svelte";
+	import type { ChangeValues } from "./formInterfaces.js";
 	import {
 		emailRegex,
 		allNums,
-		anyNum,
-		anySymbol,
 		websiteRegex
-	} from "./_ValidityRegexes.svelte";
+	} from "./validityRegexes";
 
-	export let type: string;
 	export let title: string;
 	export let prompt = title;
 	export let required = true;
 	export let disabled: boolean;
 	export let placeholder: string;
-	export let page: string;
 
-	enum formInputs {
-		firstName = "first name",
-		lastName = "last name",
-		email = "email",
-		phoneNumber = "phone number",
-		companyWebsite = "company website"
+	enum FormInputs {
+		FirstName = "first name",
+		LastName = "last name",
+		Email = "email",
+		PhoneNumber = "phone number",
+		CompanyWebsite = "company website"
 	}
 
-	const dispatch = createEventDispatcher<changeValues>();
+	const dispatch = createEventDispatcher<ChangeValues>();
 
 	let isValid = !required;
 	let changed = false;
@@ -35,7 +31,7 @@
 	let input = "";
 
 	// Let the parent know input has changed
-	$: dispatch("change", { page, title, isValid, input });
+	$: dispatch("change", { title, isValid, input });
 
 	// On input check if the input is valid.
 	const onChange = ({ target }: Event) => {
@@ -48,23 +44,16 @@
 			return;
 		}
 		switch (name) {
-			case formInputs.firstName:
-			case formInputs.lastName:
-				isValid =
-					value[0].toUpperCase() == value[0] &&
-					!anyNum.test(value) &&
-					!anySymbol.test(value);
-				break;
-			case formInputs.email:
+			case FormInputs.Email:
 				isValid = emailRegex.test(value);
 				break;
-			case formInputs.phoneNumber:
+			case FormInputs.PhoneNumber:
 				isValid =
 					allNums.test(value) &&
 					8 <= value.length &&
 					value.length <= 15;
 				break;
-			case formInputs.companyWebsite:
+			case FormInputs.CompanyWebsite:
 				isValid = websiteRegex.test(value);
 				break;
 			default:
@@ -88,7 +77,6 @@
 		class:border-red-light={changed && !isValid}
 		class:border-transparent={!changed || (!isFilled && isValid)}
 		class="w-full h-full px-2 bg-gray-800 flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
-		{type}
 		{disabled}
 		{placeholder}
 	/>
