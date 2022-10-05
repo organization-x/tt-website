@@ -27,30 +27,40 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	// Grab the project from the database for validation
 	const project = await prisma.project.findUnique({
 		where: data.where,
-		include: { pinnedBy: true }
+		include: { pinnedBy: true, authors: { select: { userId: true } } }
 	});
 
 	if (!project) throw error(400, "Bad Request");
 
-	// If the token isn't the same as for the user they are updating, throw unauthorized
-	if (project.ownerId !== user.id) throw error(401, "Unauthorized");
-
-	// Input validation
-	if (
-		(data.project.title &&
-			(data.project.title.length < 1 ||
-				data.project.title.length > 50)) ||
-		(data.project.description &&
-			(data.project.description.length < 1 ||
-				data.project.description.length > 300)) ||
-		(data.project.skills && data.project.skills.length < 2) ||
-		(data.project.authors &&
-			(data.project.authors.length < 1 ||
-				!data.project.authors.some(
-					(author) => author.id === project.ownerId
-				)))
-	)
-		throw error(400, "Bad Request");
+	// If the user id doesn't match with the owner or a collaborator, throw unauthorized.
+	// The owner and collaborators do not share the same editing permissions, the collaborators
+	// only should be able to update the projects content, not its metadata
+	if (project.ownerId === user.id) {
+		// Input validation
+		if (
+			(data.project.title &&
+				(data.project.title.length < 1 ||
+					data.project.title.length > 50)) ||
+			(data.project.description &&
+				(data.project.description.length < 1 ||
+					data.project.description.length > 300)) ||
+			(data.project.skills && data.project.skills.length < 2) ||
+			(data.project.authors &&
+				(data.project.authors.length < 1 ||
+					!data.project.authors.some(
+						(author) => author.user.id === project.ownerId
+					)))
+		)
+			throw error(400, "Bad Request");
+	} else if (project.authors.some((author) => author.userId !== user.id)) {
+		// Input validation, check if the collaborator is submitting any data besides content
+		if (
+			Object.keys(data.project).some(
+				(key) => key !== "content" && key !== "date"
+			)
+		)
+			throw error(400, "Bad Request");
+	} else throw error(401, "Unauthorized");
 
 	let url: string | undefined;
 
@@ -66,7 +76,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			})
 		)
 			throw error(400, "SAME_TITLE");
-	}
+	} else url = project.url;
 
 	// Check if content is valid json
 	let content: Prisma.InputJsonValue | undefined;
@@ -97,10 +107,12 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 					? {
 							deleteMany: {},
 							createMany: {
-								data: data.project.authors.map((author) => ({
-									userId: author.id,
-									position: author.position
-								}))
+								data: data.project.authors.map(
+									({ user, position }) => ({
+										userId: user.id,
+										position
+									})
+								)
 							}
 					  }
 					: undefined

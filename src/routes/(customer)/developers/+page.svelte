@@ -31,7 +31,7 @@
 	let techSkillFilter = new Set<TechSkill>();
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
-	$: search, (request = new Promise(() => {}));
+	$: search, (request = new Promise(() => {})), (page = 0);
 
 	const onSearch = () => {
 		request = new Promise((res, rej) =>

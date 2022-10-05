@@ -17,7 +17,24 @@ export const userAuth = async ({ session }: App.Locals) => {
 
 	const sesh = await prisma.session.findUnique({
 		where: { token: session },
-		include: { user: { include: { links: true, pinnedProject: true } } }
+		include: {
+			user: {
+				include: {
+					links: {
+						select: {
+							userId: false,
+							Devto: true,
+							Facebook: true,
+							GitHub: true,
+							LinkedIn: true,
+							Twitter: true,
+							Website: true
+						}
+					},
+					pinnedProject: true
+				}
+			}
+		}
 	});
 
 	// Check if the session token is valid

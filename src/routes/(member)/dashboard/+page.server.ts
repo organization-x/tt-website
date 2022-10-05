@@ -4,7 +4,7 @@ import type { PageServerLoad } from "./$types";
 
 // Grab the users projects when they're on the main dashboard page
 export const load: PageServerLoad<{
-	projects: App.ProjectWithAuthors[] | undefined;
+	projects: App.ProjectWithMetadata[] | undefined;
 }> = async ({ parent }) => {
 	const user = await parent();
 

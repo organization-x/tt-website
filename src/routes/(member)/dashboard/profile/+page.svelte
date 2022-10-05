@@ -150,7 +150,7 @@
 
 	// When the user does CTRL/CMD + S, save the data
 	const onKeydown = (e: KeyboardEvent) => {
-		if (e.metaKey && e.key === "s") {
+		if ((e.metaKey && e.key === "s") || (e.ctrlKey && e.key === "s")) {
 			e.preventDefault();
 			save();
 		}

@@ -173,11 +173,11 @@
 				<NavLink href="/dashboard/kudos" active={$pageId === "kudos"}>
 					Kudos
 				</NavLink>
-				<div bind:this={element} class="relative ml-4 w-44">
+				<div bind:this={element} class="relative ml-4">
 					<button
 						class:rounded-lg={!userOpen}
 						class:rounded-t-lg={userOpen}
-						class="flex gap-2 items-center justify-center px-4 py-3 transition-colors duration-200 w-full
+						class="flex gap-2 items-center justify-center px-8 py-3 transition-colors duration-200 w-full
                         {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
 						on:click={() => (userOpen = !userOpen)}
 					>

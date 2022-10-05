@@ -1,14 +1,15 @@
 <script lang="ts">
 	import { slide, fly } from "svelte/transition";
 
+	import { user } from "$lib/stores";
 	import { debounce } from "$lib/debounce";
 	import Search from "$lib/components/icons/Search.svelte";
 	import AuthorEditor from "$lib/components/dashboard/projects/project/AuthorEditor.svelte";
 
 	import type { User } from "@prisma/client";
 
-	export let user: User;
-	export let authors: App.ProjectAuthor[];
+	export let ownerId: string;
+	export let authors: App.Author[];
 
 	let search = "";
 	let request: Promise<User[]> = new Promise(() => {});
@@ -41,7 +42,9 @@
 					// Filter users out who are already collaborators
 					let results = data.filter(
 						(result) =>
-							!authors.some((author) => author.id === result.id)
+							!authors.some(
+								(author) => author.user.id === result.id
+							)
 					);
 
 					results.length ? res(results) : rej();
@@ -58,10 +61,13 @@
 			{#each authors as author}
 				<AuthorEditor
 					bind:author
-					cantRemove={author.id === user.id}
+					cantRemove={author.user.id === $user.id ||
+						author.user.id === ownerId}
 					on:click={() => {
 						authors.splice(
-							authors.findIndex((user) => user.id === author.id),
+							authors.findIndex(
+								(user) => user.user.id === author.user.id
+							),
 							1
 						);
 
@@ -128,7 +134,7 @@
 										if (
 											authors.find(
 												(author) =>
-													author.id === user.id
+													author.user.id === user.id
 											)
 										)
 											return;
@@ -136,7 +142,7 @@
 										// Default position is backend since it's at the top
 										authors.push({
 											position: "Backend",
-											...user
+											user
 										});
 
 										authors = authors;

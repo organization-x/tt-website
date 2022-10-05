@@ -22,14 +22,14 @@
 
 	import type { TechSkill } from "@prisma/client";
 
-	let request: Promise<App.ProjectWithAuthors[][]> = new Promise(() => {});
+	let request: Promise<App.ProjectWithMetadata[][]> = new Promise(() => {});
 
 	let page = 0;
 	let search = "";
 	let filters = new Set<TechSkill>();
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
-	$: search, (request = new Promise(() => {}));
+	$: search, (request = new Promise(() => {})), (page = 0);
 
 	const onSearch = () => {
 		request = new Promise((res, rej) =>
@@ -52,7 +52,7 @@
 				} as App.ProjectSearchRequest)
 			})
 				.then((res) => res.json())
-				.then((data: App.ProjectWithAuthors[]) => {
+				.then((data: App.ProjectWithMetadata[]) => {
 					// Put projects into pairs of 2 or reject if there's no results
 					data.length
 						? res(

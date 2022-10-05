@@ -34,9 +34,11 @@
 
 	// TODO: Actually fill dev data
 	const placeholder: App.Developer = {
-		name: "Jackson Choyce",
 		position: "Software Engineer",
-		url: "placeholder"
+		user: {
+			name: "Jackson Choyce",
+			url: "placeholder"
+		}
 	};
 </script>
 
@@ -190,69 +192,95 @@
 		href="/projects/hippo2"
 		developers={[
 			{
-				name: "Alex Nguyen",
 				position: "Software Engineer",
-				url: "placeholder"
+				user: {
+					name: "Alex Nguyen",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Alexander Zhou",
 				position: "Engineering Manager",
-				url: "placeholder"
+				user: {
+					name: "Alexander Zhou",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Bernice",
 				position: "Product Designer",
-				url: "placeholder"
+				user: {
+					name: "Bernice",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Hyrum",
 				position: "Software Engineer",
-				url: "placeholder"
+				user: {
+					name: "Hyrum",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Jackson",
 				position: "Engineering Manager",
-				url: "placeholder"
+				user: {
+					name: "Jackson",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Joseph",
 				position: "Software Engineer",
-				url: "placeholder"
+				user: {
+					name: "Joseph",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Leo",
 				position: "Software Engineer",
-				url: "placeholder"
+				user: {
+					name: "Leo",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Mathan",
 				position: "Software Engineer",
-				url: "placeholder"
+				user: {
+					name: "Mathan",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Matthew",
 				position: "Software Engineer",
-				url: "placeholder"
+				user: {
+					name: "Matthew",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Ray",
 				position: "Software Engineer",
-				url: "placeholder"
+				user: {
+					name: "Ray",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Sean",
 				position: "Software Engineer",
-				url: "placeholder"
+				user: {
+					name: "Sean",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Sricharan",
 				position: "Product Manager",
-				url: "placeholder"
+				user: {
+					name: "Sricharan",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Zachary",
 				position: "Software Engineer",
-				url: "placeholder"
+				user: {
+					name: "Zachary",
+					url: "placeholder"
+				}
 			}
 		]}
 		icons={[Python, React]}
@@ -276,64 +304,88 @@
 		href="/projects/aiot"
 		developers={[
 			{
-				name: "Advay",
 				position: "Software Engineer",
-				url: "placeholder"
+				user: {
+					name: "Advay",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Alex",
 				position: "Software Engineer",
-				url: "placeholder"
+				user: {
+					name: "Alex",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Alexander",
 				position: "Engineering Manager",
-				url: "placeholder"
+				user: {
+					name: "Alexander",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Ansh",
 				position: "Design and Engineering",
-				url: "placeholder"
+				user: {
+					name: "Ansh",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Axel",
 				position: "Lead Desiner",
-				url: "placeholder"
+				user: {
+					name: "Axel",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Blake",
 				position: "Design an Engineering",
-				url: "placeholder"
+				user: {
+					name: "Blake",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Jackson",
 				position: "Engineerig Manager",
-				url: "placeholder"
+				user: {
+					name: "Jackson",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Mitch",
 				position: "Product Mnager",
-				url: "placeholder"
+				user: {
+					name: "Mitch",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Phakawat",
 				position: "Design an Engineering",
-				url: "placeholder"
+				user: {
+					name: "Phakawat",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Rohan",
 				position: "Software ngineer",
-				url: "placeholder"
+				user: {
+					name: "Rohan",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Sanjay",
 				position: "Software ngineer",
-				url: "placeholder"
+				user: {
+					name: "Sanjay",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Zac",
 				position: "Software ngineer",
-				url: "placeholder"
+				user: {
+					name: "Zac",
+					url: "placeholder"
+				}
 			}
 		]}
 		icons={[React]}
@@ -358,39 +410,53 @@
 		href="/projects/aicbot"
 		developers={[
 			{
-				name: "Alexander",
 				position: "Engineering Maager",
-				url: "placeholder"
+				user: {
+					name: "Alexander",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Blake",
 				position: "Software Enginer",
-				url: "placeholder"
+				user: {
+					name: "Blake",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Eegan",
 				position: "Designer",
-				url: "placeholder"
+				user: {
+					name: "Eegan",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Ishaan",
 				position: "Designer",
-				url: "placeholder"
+				user: {
+					name: "Ishaan",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Jackson",
 				position: "Engineering Maager",
-				url: "placeholder"
+				user: {
+					name: "Jackson",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Ray",
 				position: "Software Enginer",
-				url: "placeholder"
+				user: {
+					name: "Ray",
+					url: "placeholder"
+				}
 			},
 			{
-				name: "Zac",
 				position: "Software Enginer",
-				url: "placeholder"
+				user: {
+					name: "Zac",
+					url: "placeholder"
+				}
 			}
 		]}
 		icons={[Python]}
@@ -463,7 +529,7 @@
 	<!-- TODO: Choose actual top 3 devs here -->
 
 	<Carousel amount={3}>
-		<DevCard user={placeholder}>
+		<DevCard author={placeholder}>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -475,7 +541,7 @@
 				dolores minima totam quasi.
 			</DevText>
 		</DevCard>
-		<DevCard user={placeholder}>
+		<DevCard author={placeholder}>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -487,7 +553,7 @@
 				dolores minima totam quasi.
 			</DevText>
 		</DevCard>
-		<DevCard user={placeholder}>
+		<DevCard author={placeholder}>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -504,7 +570,7 @@
 			slot="alt"
 			class="hidden lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:mt-32 lg:max-w-screen-xl"
 		>
-			<DevCard user={placeholder}>
+			<DevCard author={placeholder}>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
@@ -516,7 +582,7 @@
 					itaque dolores minima totam quasi.
 				</DevText>
 			</DevCard>
-			<DevCard user={placeholder}>
+			<DevCard author={placeholder}>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
@@ -528,7 +594,7 @@
 					itaque dolores minima totam quasi.
 				</DevText>
 			</DevCard>
-			<DevCard user={placeholder}>
+			<DevCard author={placeholder}>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>

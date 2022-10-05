@@ -20,9 +20,11 @@ declare global {
 
 		// Landing page project developer
 		interface Developer {
-			name: string;
 			position: string;
-			url: string;
+			user: {
+				name: string;
+				url: string;
+			};
 		}
 
 		// Type for combining a user with their Links
@@ -52,12 +54,13 @@ declare global {
 			where: Prisma.UserWhereInput;
 		}
 
-		// Project author data for project page, it differs from the one in the schema since
-		// that's how it has to be stored since it's relational, but this is how it's used
-		type ProjectAuthor = User & { position: Position };
+		// Type for authors on projects
+		type Author = { user: User; position: Position };
 
 		// Projects combined with their authors for easy access
-		type ProjectWithAuthors = Project & { authors: ProjectAuthor[] };
+		type ProjectWithMetadata = Project & {
+			authors: Author[];
+		};
 
 		// Interface for project update requests
 		interface ProjectUpdateRequest {
@@ -71,7 +74,7 @@ declare global {
 				skills?: TechSkill[];
 				content?: Prisma.InputJsonValue;
 				visible?: boolean;
-				authors?: ProjectAuthor[];
+				authors?: Author[];
 			};
 		}
 

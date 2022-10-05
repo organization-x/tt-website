@@ -10,6 +10,7 @@
 	import GradientText from "$lib/components/GradientText.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
+	import DashLink from "$lib/components/dashboard/DashLink.svelte";
 	import DevTag from "$lib/components/developers/index/DevTag.svelte";
 	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
@@ -247,7 +248,7 @@
 					<LinkIcon slot="icon" class="w-6 h-6" />
 
 					{#each { length: 6 } as _, i}
-						{#if links[i].link && links[i].key !== "userId"}
+						{#if links[i].link}
 							<div
 								class="flex justify-center items-center font-semibold bg-gray-800 rounded-lg gap-3 p-4"
 							>
@@ -283,13 +284,13 @@
 						<ShowHide class="w-5 h-5" crossed={visible} />
 					</DashButton>
 
-					<DashButton
+					<DashLink
 						icon={true}
 						href="/dashboard/profile"
 						class="bg-blue-light hover:bg-blue-light/80"
 					>
 						<Pencil class="w-5 h-5" />
-					</DashButton>
+					</DashLink>
 				</div>
 			</div>
 		</DashSection>
@@ -306,7 +307,6 @@
 							<ProjectEditPreview
 								bind:pinnedProject={pinnedProjectId}
 								{project}
-								user={$user}
 								minified={true}
 								on:pinned={togglePinned}
 							/>
@@ -325,12 +325,12 @@
 				{/if}
 			</div>
 
-			<DashButton
+			<DashLink
 				href="/dashboard/projects"
 				class="bg-gray-500/40 hover:bg-gray-500/20 w-full mx-auto mt-4 lg:mt-0 lg:w-fit lg:mr-0"
 			>
 				Manage All Projects
-			</DashButton>
+			</DashLink>
 		</DashSection>
 
 		<!-- TODO: Kudos section -->

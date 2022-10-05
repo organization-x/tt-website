@@ -3,7 +3,7 @@
 
 	import { getIcon } from "$lib/getIcon";
 
-	export let project: App.ProjectWithAuthors;
+	export let project: App.ProjectWithMetadata;
 </script>
 
 <a
@@ -34,7 +34,7 @@
 						width="200"
 						height="200"
 						src="/assets/developers/user/placeholder/icon.webp"
-						alt="{author.name}'s avatar"
+						alt="{author.user.name}'s avatar"
 						class="w-10 h-10 -mr-6 sm:-mr-8 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4"
 						style="border-color: #{project.theme}; z-index: {project
 							.authors.length - i}"

@@ -3,11 +3,9 @@
 	import Plus from "$lib/components/icons/Plus.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 
-	export let user: App.Developer;
+	export let author: App.Developer;
 
 	let open = false;
-
-	const { url, name, position } = user;
 </script>
 
 <div
@@ -17,22 +15,24 @@
 		class="bg-gray-500/40 p-10 rounded-xl relative text-center max-w-lg mx-auto lg:mx-0 lg:p-8"
 	>
 		<div class="lg:flex lg:justify-center lg:gap-8">
+			<!-- TODO: Replace placeholder -->
+
 			<img
 				height="200"
 				width="200"
-				src="/assets/developers/user/{url}/icon.webp"
-				alt="{name}'s avatar"
+				src="/assets/developers/user/placeholder/icon.webp"
+				alt="{author.user.name}'s avatar"
 				loading="lazy"
 				class="rounded-full mx-auto w-20 h-20 xl:mx-0"
 			/>
 			<div>
 				<h1 class="font-extrabold mt-3 mb-1 text-sm">
-					{position.toUpperCase()}
+					{author.position.toUpperCase()}
 				</h1>
 				<GradientText
 					class="text-center from-green-light to-green-dark text-xl"
 				>
-					{name}
+					{author.user.name}
 				</GradientText>
 			</div>
 		</div>

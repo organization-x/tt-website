@@ -2,28 +2,30 @@
 	import { fly, slide } from "svelte/transition";
 	import { createEventDispatcher } from "svelte";
 
+	import { user } from "$lib/stores";
 	import { getIcon } from "$lib/getIcon";
 	import Pin from "$lib/components/icons/Pin.svelte";
 	import Trash from "$lib/components/icons/Trash.svelte";
 	import Pencil from "$lib/components/icons/Pencil.svelte";
 	import ShowHide from "$lib/components/icons/ShowHide.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
+	import DashLink from "$lib/components/dashboard/DashLink.svelte";
 	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
-
-	import type { User } from "@prisma/client";
 
 	const dispatch = createEventDispatcher<{
 		pinned: undefined;
 		delete: undefined;
 	}>();
 
-	export let user: User;
 	export let pinnedProject: string | null;
-	export let project: App.ProjectWithAuthors;
+	export let project: App.ProjectWithMetadata;
 
 	// Disable a few buttons that should only be used on the project management page
 	export let minified: boolean = false;
+
+	// Keep track whether this the user is an owner or a collaborator
+	const isOwner = $user.id === project.ownerId;
 
 	let open = false;
 	let deleting = false;
@@ -85,12 +87,12 @@
 				class="absolute top-2 right-2 left-0 justify-end pr-6 flex sm:pr-8 md:top-3 md:right-3"
 			>
 				{#each project.authors as author, i}
-					{#if author.id !== user.id && i <= 4}
+					{#if author.user.id !== $user.id && i <= 4}
 						<img
 							width="200"
 							height="200"
 							src="/assets/developers/user/placeholder/icon.webp"
-							alt="{author.name}'s avatar"
+							alt="{author.user.name}'s avatar"
 							class="w-10 h-10 -mr-6 sm:-mr-8 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4"
 							style="border-color: #{project.theme}; z-index: {project
 								.authors.length - i}"
@@ -126,44 +128,46 @@
 				<div
 					class="hidden md:flex md:gap-5 md:justify-center md:ml-auto"
 				>
-					<DashButton
-						icon={true}
-						on:click={() => (visible = !visible)}
-						debounce={{
-							bind: visible,
-							func: toggleVisible,
-							delay: 300
-						}}
-						class="bg-gray-500/40 shrink-0 rounded-lg p-3 hover:bg-gray-500/20"
-					>
-						<ShowHide class="w-5 h-5" crossed={visible} />
-					</DashButton>
+					{#if isOwner}
+						<DashButton
+							icon={true}
+							on:click={() => (visible = !visible)}
+							debounce={{
+								bind: visible,
+								func: toggleVisible,
+								delay: 300
+							}}
+							class="bg-gray-500/40 shrink-0 rounded-lg p-3 hover:bg-gray-500/20"
+						>
+							<ShowHide class="w-5 h-5" crossed={visible} />
+						</DashButton>
 
-					<DashButton
-						icon={true}
-						on:click={() => {
-							pinnedProject =
-								pinnedProject === project.id
-									? null
-									: project.id;
-							dispatch("pinned");
-						}}
-						class={pinnedProject === project.id
-							? "bg-blue-light hover:bg-blue-light/80"
-							: "bg-gray-500/40 hover:bg-gray-500/20"}
-					>
-						<Pin class="w-5 h-5" />
-					</DashButton>
+						<DashButton
+							icon={true}
+							on:click={() => {
+								pinnedProject =
+									pinnedProject === project.id
+										? null
+										: project.id;
+								dispatch("pinned");
+							}}
+							class={pinnedProject === project.id
+								? "bg-blue-light hover:bg-blue-light/80"
+								: "bg-gray-500/40 hover:bg-gray-500/20"}
+						>
+							<Pin class="w-5 h-5" />
+						</DashButton>
+					{/if}
 
-					<DashButton
+					<DashLink
 						icon={true}
 						href="/dashboard/projects/{project.url}"
 						class="bg-blue-light hover:bg-blue-light/80"
 					>
 						<Pencil class="w-5 h-5" />
-					</DashButton>
+					</DashLink>
 
-					{#if !minified}
+					{#if !minified && isOwner}
 						<DashButton
 							icon={true}
 							on:click={() => {
@@ -185,42 +189,44 @@
 			transition:slide|local={{ duration: 200 }}
 			class="flex justify-center px-3 gap-5 bg-gray-900 pb-4 pt-8 rounded-b-lg -mt-2 relative z-10 md:hidden"
 		>
-			<DashButton
-				icon={true}
-				on:click={() => (visible = !visible)}
-				debounce={{
-					bind: visible,
-					func: () => toggleVisible,
-					delay: 300
-				}}
-				class="bg-gray-500/40 hover:bg-gray-500/20"
-			>
-				<ShowHide class="w-5 h-5" crossed={visible} />
-			</DashButton>
+			{#if isOwner}
+				<DashButton
+					icon={true}
+					on:click={() => (visible = !visible)}
+					debounce={{
+						bind: visible,
+						func: () => toggleVisible,
+						delay: 300
+					}}
+					class="bg-gray-500/40 hover:bg-gray-500/20"
+				>
+					<ShowHide class="w-5 h-5" crossed={visible} />
+				</DashButton>
 
-			<DashButton
-				icon={true}
-				on:click={() => {
-					pinnedProject =
-						pinnedProject === project.id ? null : project.id;
-					dispatch("pinned");
-				}}
-				class={pinnedProject === project.id
-					? "bg-blue-light hover:bg-blue-light/80"
-					: "bg-gray-500/40 hover:bg-gray-500/20"}
-			>
-				<Pin class="w-5 h-5" />
-			</DashButton>
+				<DashButton
+					icon={true}
+					on:click={() => {
+						pinnedProject =
+							pinnedProject === project.id ? null : project.id;
+						dispatch("pinned");
+					}}
+					class={pinnedProject === project.id
+						? "bg-blue-light hover:bg-blue-light/80"
+						: "bg-gray-500/40 hover:bg-gray-500/20"}
+				>
+					<Pin class="w-5 h-5" />
+				</DashButton>
+			{/if}
 
-			<DashButton
+			<DashLink
 				icon={true}
 				href="/dashboard/projects/{project.url}"
 				class="bg-blue-light hover:bg-blue-light/80"
 			>
 				<Pencil class="w-5 h-5" />
-			</DashButton>
+			</DashLink>
 
-			{#if !minified}
+			{#if !minified && isOwner}
 				<DashButton
 					icon={true}
 					on:click={() => {
