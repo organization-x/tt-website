@@ -12,8 +12,6 @@
 
 	export let data: PageData;
 
-	console.log(data);
-
 	const previewedProjects = data.projects?.slice(0, 3) ?? [];
 
 	if (data.user.pinnedProject) {
