@@ -41,6 +41,8 @@
 		currentPageValid();
 
 		if (pageNumber == 3) {
+			// send form
+		}
 	};
 
 	let boxes: boxesType[] = [
