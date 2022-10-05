@@ -25,6 +25,7 @@
 	);
 	const all_nums = new RegExp("^[0-9]*$");
 	const any_nums = new RegExp("[0-9]+");
+	const any_symbol = new RegExp("[~`!@#$%^&*(){}|:;>.<,?+=_-]+");
 	const website_regex = new RegExp(
 		"((http(s)?)://[(www\\.)?a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&//=]*))+$"
 	);
@@ -55,7 +56,7 @@
 			case "first name":
 			case "last name": {
 				isValid =
-					value[0].toUpperCase() == value[0] && !any_nums.test(value);
+					value[0].toUpperCase() == value[0] && !any_nums.test(value) && !any_symbol.test(value);
 				break;
 			}
 			case "email": {
