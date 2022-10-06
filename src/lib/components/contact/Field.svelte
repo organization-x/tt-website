@@ -3,11 +3,7 @@
 
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 	import type { ChangeValues } from "./formInterfaces.js";
-	import {
-		emailRegex,
-		allNums,
-		websiteRegex
-	} from "./validityRegexes";
+	import { emailRegex, allNums, websiteRegex } from "./validityRegexes";
 
 	export let title: string;
 	export let prompt = title;

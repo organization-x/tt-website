@@ -52,7 +52,7 @@
 				isValid: false,
 				required: true,
 				placeholder: "First goes here",
-				value: "",
+				value: ""
 			},
 			{
 				type: "Field",
@@ -60,7 +60,7 @@
 				isValid: false,
 				required: true,
 				placeholder: "And now for the last",
-				value: "",
+				value: ""
 			},
 			{
 				type: "Field",
@@ -68,7 +68,7 @@
 				isValid: false,
 				required: true,
 				placeholder: "Where should we send our pigeon?",
-				value: "",
+				value: ""
 			},
 			{
 				type: "Field",
@@ -76,7 +76,7 @@
 				isValid: true,
 				required: false,
 				placeholder: "Your digits, please",
-				value: "",
+				value: ""
 			},
 			{
 				type: "Field",
@@ -84,7 +84,7 @@
 				isValid: false,
 				required: true,
 				placeholder: "What company are you working for?",
-				value: "",
+				value: ""
 			}
 		],
 		[
@@ -95,7 +95,7 @@
 				required: true,
 				options: ["Design", "Engineering", "Management"],
 				placeholder: "skill(s)",
-				value: [],
+				value: []
 			},
 			{
 				type: "Field",
@@ -103,7 +103,7 @@
 				isValid: true,
 				required: false,
 				placeholder: "https://company.com...",
-				value: "",
+				value: ""
 			},
 			{
 				type: "Select",
@@ -116,7 +116,7 @@
 					"Building on an existing project",
 					"Deploying a new product"
 				],
-				value: [],
+				value: []
 			},
 			{
 				type: "Field",
@@ -124,7 +124,7 @@
 				isValid: true,
 				required: false,
 				placeholder: "Friends, Family?",
-				value: "",
+				value: ""
 			}
 		],
 		[
@@ -134,7 +134,7 @@
 				isValid: false,
 				required: true,
 				placeholder: "Give yourself a title",
-				value: "",
+				value: ""
 			},
 			{
 				type: "TextArea",
@@ -142,7 +142,7 @@
 				isValid: false,
 				required: true,
 				placeholder: "Elaborate on how we can help...",
-				value: "",
+				value: ""
 			}
 		]
 	];
@@ -154,7 +154,11 @@
 
 		if (!box) {
 			console.error(
-				"CONTACT FORM: INPUT NOT FOUND: \n\n'" + detail.title + "' NOT IN [" + boxes[pageNumber].map((box) => "'" + box.name + "'") + "]"
+				"CONTACT FORM: INPUT NOT FOUND: \n\n'" +
+					detail.title +
+					"' NOT IN [" +
+					boxes[pageNumber].map((box) => "'" + box.name + "'") +
+					"]"
 			);
 			return;
 		}

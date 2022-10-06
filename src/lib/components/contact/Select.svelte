@@ -4,10 +4,7 @@
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
 	import DropdownOption from "./DropdownOption.svelte";
-	import type {
-		ChangeValues,
-		ChangeSelectValues
-	} from "./formInterfaces.js";
+	import type { ChangeValues, ChangeSelectValues } from "./formInterfaces.js";
 
 	export let title: string;
 	export let prompt = title;
@@ -74,7 +71,7 @@
 			class:border-transparent={!changed ||
 				(!isValid && !required) ||
 				(isValid && count < 1)}
-			>
+		>
 			<h1>{count} {placeholder} selected</h1>
 			<DropArrow {open} class="w-6 h-6 transition-transform" />
 		</div>
