@@ -55,7 +55,7 @@
 
 	<PageCaption>
 		Develop something exciting with skills from low-level mastery to
-		maticulous design. Accelerate progress with the backing you need.
+		meticulous design. Accelerate progress with the backing you need.
 		<strong>A great team</strong>.
 	</PageCaption>
 
