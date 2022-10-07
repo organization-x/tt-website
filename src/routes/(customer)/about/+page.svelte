@@ -49,23 +49,24 @@
 
 	<div class="flex flex-col gap-8 mt-8">
 		<Stat
-			title="Bountiful"
-			statAmount={10}
-			statPostFix="M"
+			title="50+ TT members"
+			statAmount={50}
+			statPostFix="+"
 			delay={1000}
-			statName="in revenue."
+			statName="50+ TT members"
 			class="before:bg-pink-dark"
 		>
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
 			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
 			quas neque laboriosam?
+			<a href="https://www.ai-camp.org/student-products">Test</a>
 		</Stat>
 		<Stat
-			title="Bountiful"
-			statAmount={10}
-			statPostFix="M"
+			title="$70k+ revenue"
+			statAmount={70}
+			statPostFix="k"
 			delay={1000}
-			statName="in revenue."
+			statName="Generated through projects like Hippo2"
 			class="before:bg-pink-dark"
 			side="right"
 		>
@@ -74,11 +75,11 @@
 			quas neque laboriosam?
 		</Stat>
 		<Stat
-			title="Bountiful"
-			statAmount={100}
-			statPostFix="M"
+			title="10+ external company partnerships"
+			statAmount={10}
+			statPostFix="+"
 			delay={2000}
-			statName="in revenue."
+			statName="Where we apply a variety of technical fields: AI, ML, Web Dev, Healthcare, 3D printing"
 			class="before:bg-pink-dark"
 		>
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
@@ -86,17 +87,19 @@
 			quas neque laboriosam?
 		</Stat>
 		<Stat
-			title="Bountiful"
-			statAmount={10}
-			statPostFix="M"
+			title="250+ projects"
+			statAmount={250}
+			statPostFix="+"
 			delay={1000}
-			statName="in revenue."
+			statName="made by students to help gain technical and proffesional skills"
 			class="before:bg-pink-dark"
 			side="right"
 		>
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
 			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
 			quas neque laboriosam?
+
+
 		</Stat>
 	</div>
 </Section>
