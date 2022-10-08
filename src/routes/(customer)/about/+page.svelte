@@ -59,7 +59,7 @@
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
 			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
 			quas neque laboriosam?
-			<a href="https://www.ai-camp.org/student-products">Test</a>
+			<a href="/developers" class = "text-teal-light">Developers</a>
 		</Stat>
 		<Stat
 			title="$70k+ revenue"
@@ -73,6 +73,7 @@
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
 			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
 			quas neque laboriosam?
+			<a href="/projects" class = "text-teal-light">Projects</a>
 		</Stat>
 		<Stat
 			title="10+ external company partnerships"
@@ -85,6 +86,7 @@
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
 			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
 			quas neque laboriosam?
+			<a href="/" class = "text-teal-light">Landing</a>
 		</Stat>
 		<Stat
 			title="250+ projects"
@@ -98,8 +100,7 @@
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
 			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
 			quas neque laboriosam?
-
-
+			<a href="https://www.ai-camp.org/student-products" class = "text-teal-light">Website</a>
 		</Stat>
 	</div>
 </Section>
@@ -135,7 +136,7 @@
 				height={200}
 			/>
 		</Member>
-		<Member name="Michael Ke Zhang" pos="Co Founder">
+		<Member name="Michael Ke Zhang" pos="Co-founder">
 			<MemberImage
 				src="/assets/about/michael.webp"
 				alt="Michael Ke Zhang from Team Tomorrow"
@@ -143,7 +144,7 @@
 				height={200}
 			/>
 		</Member>
-		<Member name="Richard Hsu" pos="Co Founder">
+		<Member name="Richard Hsu" pos="Co-founder">
 			<MemberImage
 				src="/assets/about/richard.webp"
 				alt="Jackson Choyce from Team Tomorrow"
@@ -151,7 +152,7 @@
 				height={200}
 			/>
 		</Member>
-		<Member name="Ying Jiang" pos="Co Founder">
+		<Member name="Ying Jiang" pos="Co-founder">
 			<MemberImage
 				src="/assets/about/ying.webp"
 				alt="Ying Jiang from Team Tomorrow"
