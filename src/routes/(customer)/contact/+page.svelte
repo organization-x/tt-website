@@ -14,7 +14,7 @@
 	import {
 		type Box,
 		BoxType
-	} from "$lib/components/contact/formInterfaces.js";
+	} from "$lib/components/contact/formInterfaces";
 
 	const titles = [
 		"First, the basics.",

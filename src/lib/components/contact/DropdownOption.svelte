@@ -2,7 +2,7 @@
 	import { createEventDispatcher } from "svelte";
 
 	import Checkbox from "$lib/components/icons/Checkbox.svelte";
-	import type { ChangeSelectValues } from "./formInterfaces.js";
+	import type { ChangeSelectValues } from "./formInterfaces";
 
 	const dispatch = createEventDispatcher<ChangeSelectValues>();
 
