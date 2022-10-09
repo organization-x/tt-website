@@ -16,7 +16,7 @@
 	export let input: string[];
 
 	let selections: boolean[] = new Array(options.length).fill(false);
-	
+
 	// This is a hack because if we used options directly, it would
 	// create an infinite loop.
 	let o = options;
@@ -59,7 +59,7 @@
 			class:border-transparent={!changed ||
 				(!isValid && !required) ||
 				(isValid && input.length < 1)}
-			>
+		>
 			<h1>{input.length} {placeholder} selected</h1>
 			<DropArrow {open} class="w-6 h-6 transition-transform" />
 		</div>

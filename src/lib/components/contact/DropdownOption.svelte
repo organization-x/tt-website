@@ -7,7 +7,6 @@
 <div
 	on:click={() => {
 		isSelected = !isSelected;
-		console.log("clicked!")
 	}}
 	class="p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-colors"
 	role="checkbox"
