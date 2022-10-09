@@ -1,21 +1,17 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte";
-
 	import Checkbox from "$lib/components/icons/Checkbox.svelte";
-	import type { ChangeSelectValues } from "./formInterfaces";
-
-	const dispatch = createEventDispatcher<ChangeSelectValues>();
-
-	export let option: string;
-	let isSelected = false;
+	export let isSelected = false;
+	$: console.log(isSelected);
 </script>
 
 <div
 	on:click={() => {
 		isSelected = !isSelected;
-		dispatch("change", { isSelected, option });
+		console.log("clicked!")
 	}}
-	class="p-4 flex items-center gap-3 rounded-lg cursor-pointer"
+	class="p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-colors"
+	role="checkbox"
+	aria-checked={isSelected}
 >
 	<Checkbox checked={isSelected} class="w-4 h-4" />
 	<slot />

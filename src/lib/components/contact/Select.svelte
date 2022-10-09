@@ -4,7 +4,6 @@
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
 	import DropdownOption from "./DropdownOption.svelte";
-	import type { ChangeSelectValues } from "./formInterfaces";
 
 	export let title: string;
 	export let prompt = title;
@@ -12,29 +11,23 @@
 	export let disabled: boolean;
 	export let options: string[];
 	export let placeholder: string;
-	export let input: string[] = [];
 	export let isValid = !required;
 
+	export let input: string[];
+
+	let selections: boolean[] = new Array(options.length).fill(false);
+	
+	// This is a hack because if we used options directly, it would
+	// create an infinite loop.
+	let o = options;
+	$: input = selections.filter((selection) => selection).map((_, i) => o[i]);
+
 	let open = false;
-	let count = 0;
 	let changed = false;
 	let dropdownParent: HTMLDivElement;
 
-	// On input change check if the input is filled.
-	const onChange = ({
-		detail
-	}: CustomEvent<ChangeSelectValues["change"]>) => {
-		if (detail.isSelected) {
-			count++;
-			input.push(detail.option);
-		} else {
-			count--;
-			if (input.indexOf(detail.option) > -1)
-				input.splice(input.indexOf(detail.option), 1);
-		}
-		isValid = count > 0;
-		changed = true;
-	};
+	$: if (input.length > 0) changed = true;
+	$: isValid = input.length > 0;
 
 	// Check if click is outside of the dropdown, if so, close it.
 	onMount(() => {
@@ -65,18 +58,18 @@
 			class:border-red-light={changed && !isValid && required}
 			class:border-transparent={!changed ||
 				(!isValid && !required) ||
-				(isValid && count < 1)}
-		>
-			<h1>{count} {placeholder} selected</h1>
+				(isValid && input.length < 1)}
+			>
+			<h1>{input.length} {placeholder} selected</h1>
 			<DropArrow {open} class="w-6 h-6 transition-transform" />
 		</div>
 		<div
 			class:flex={open}
 			class:hidden={!open}
-			class="absolute w-full h-fit flex-col inset-0 top-14 bg-gray-800 z-10 rounded-b-lg max-h-[15rem] overflow-auto"
+			class="absolute w-full h-fit flex-col top-full bg-gray-800 z-10 rounded-b-lg max-h-[15rem] overflow-auto"
 		>
-			{#each options as option}
-				<DropdownOption on:change={onChange} {option}>
+			{#each options as option, i (option)}
+				<DropdownOption bind:isSelected={selections[i]}>
 					{option}
 				</DropdownOption>
 			{/each}

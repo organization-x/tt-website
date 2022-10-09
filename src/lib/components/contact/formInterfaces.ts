@@ -1,10 +1,3 @@
-export interface ChangeSelectValues {
-	change: {
-		isSelected: boolean;
-		option: string;
-	};
-}
-
 export enum BoxType {
 	Field,
 	Select,

@@ -177,9 +177,9 @@
 		bind:this={element}
 		class="flex gap-12 overflow-hidden snap-x snap-mandatory"
 	>
-		{#each boxes as page, pageNum}
+		{#each boxes as page, pageNum (pageNum)}
 			<Page>
-				{#each page as box}
+				{#each page as box (box.name)}
 					{#if box.type === BoxType.Field}
 						<Field
 							title={box.name}
