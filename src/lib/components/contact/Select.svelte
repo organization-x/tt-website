@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { onMount, createEventDispatcher } from "svelte";
+	import { onMount } from "svelte";
 
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
 	import DropdownOption from "./DropdownOption.svelte";
-	import type { ChangeValues, ChangeSelectValues } from "./formInterfaces.js";
+	import type { ChangeSelectValues } from "./formInterfaces";
 
 	export let title: string;
 	export let prompt = title;
@@ -12,18 +12,13 @@
 	export let disabled: boolean;
 	export let options: string[];
 	export let placeholder: string;
-
-	const dispatch = createEventDispatcher<ChangeValues>();
+	export let input: string[] = [];
+	export let isValid = !required;
 
 	let open = false;
 	let count = 0;
 	let changed = false;
-	let isValid = false;
-	let input: string[] = [];
 	let dropdownParent: HTMLDivElement;
-
-	// Let the parent know input has changed
-	$: dispatch("change", { title, isValid, input });
 
 	// On input change check if the input is filled.
 	const onChange = ({

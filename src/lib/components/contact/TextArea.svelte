@@ -2,26 +2,21 @@
 	import { createEventDispatcher } from "svelte";
 
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
-	import type { ChangeValues } from "./formInterfaces.js";
 
 	export let title: string;
 	export let prompt = title;
 	export let required = true;
 	export let disabled: boolean;
 	export let placeholder: string;
+	export let input = "";
+	export let isValid = !required;
 
-	const dispatch = createEventDispatcher<ChangeValues>();
-
-	let isValid = false;
-	let input = "";
 	let changed = false;
 
-	// Let the parent know input has changed
-	$: dispatch("change", { title, isValid, input });
+	$: isValid = input.length > 0;
 
 	// On input change check if the input is filled.
 	const onChange = ({ target }: Event) => {
-		isValid = input.length > 0;
 		changed = true;
 	};
 </script>

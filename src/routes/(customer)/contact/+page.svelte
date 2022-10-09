@@ -11,13 +11,10 @@
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import TextArea from "$lib/components/contact/TextArea.svelte";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
-	import type {
-		ChangeValues,
-		Boxes
+	import {
+		type Box,
+		BoxType
 	} from "$lib/components/contact/formInterfaces.js";
-	import AiCamp from "$lib/components/AICamp.svelte";
-	import { parse } from "cookie";
-	import { page } from "$app/stores";
 
 	const titles = [
 		"First, the basics.",
@@ -37,17 +34,16 @@
 			left: element.children[0].clientWidth * pageNumber,
 			behavior: "smooth"
 		});
-		currentPageValid();
 
 		if (pageNumber === boxes.length) {
 			// send form
 		}
 	};
 
-	let boxes: Boxes[][] = [
+	let boxes: Box[][] = [
 		[
 			{
-				type: "Field",
+				type: BoxType.Field,
 				name: "First Name",
 				isValid: false,
 				required: true,
@@ -55,7 +51,7 @@
 				value: ""
 			},
 			{
-				type: "Field",
+				type: BoxType.Field,
 				name: "Last Name",
 				isValid: false,
 				required: true,
@@ -63,7 +59,7 @@
 				value: ""
 			},
 			{
-				type: "Field",
+				type: BoxType.Field,
 				name: "Email",
 				isValid: false,
 				required: true,
@@ -71,7 +67,7 @@
 				value: ""
 			},
 			{
-				type: "Field",
+				type: BoxType.Field,
 				name: "Phone Number",
 				isValid: true,
 				required: false,
@@ -79,7 +75,7 @@
 				value: ""
 			},
 			{
-				type: "Field",
+				type: BoxType.Field,
 				name: "Company",
 				isValid: false,
 				required: true,
@@ -89,7 +85,7 @@
 		],
 		[
 			{
-				type: "Select",
+				type: BoxType.Select,
 				name: "What Talent Do You Need?",
 				isValid: false,
 				required: true,
@@ -98,7 +94,7 @@
 				value: []
 			},
 			{
-				type: "Field",
+				type: BoxType.Field,
 				name: "Company Website",
 				isValid: true,
 				required: false,
@@ -106,7 +102,7 @@
 				value: ""
 			},
 			{
-				type: "Select",
+				type: BoxType.Select,
 				name: "What are we doing?",
 				isValid: false,
 				required: true,
@@ -119,7 +115,7 @@
 				value: []
 			},
 			{
-				type: "Field",
+				type: BoxType.Field,
 				name: "How did you hear about us?",
 				isValid: true,
 				required: false,
@@ -129,7 +125,7 @@
 		],
 		[
 			{
-				type: "Field",
+				type: BoxType.Field,
 				name: "Subject",
 				isValid: false,
 				required: true,
@@ -137,7 +133,7 @@
 				value: ""
 			},
 			{
-				type: "TextArea",
+				type: BoxType.TextArea,
 				name: "Message",
 				isValid: false,
 				required: true,
@@ -146,40 +142,7 @@
 			}
 		]
 	];
-
-	// Check if all fields are valid
-	const onChange = ({ detail }: CustomEvent<ChangeValues["change"]>) => {
-		let input = detail.input;
-		let box = boxes[pageNumber].find((obj) => obj.name === detail.title);
-
-		if (!box) {
-			console.error(
-				"CONTACT FORM: INPUT NOT FOUND: \n\n'" +
-					detail.title +
-					"' NOT IN [" +
-					boxes[pageNumber].map((box) => "'" + box.name + "'") +
-					"]"
-			);
-			return;
-		}
-
-		box.isValid = detail.isValid;
-		box.value = input;
-		currentPageValid();
-	};
-
-	let isValid = false;
-
-	function currentPageValid(): void {
-		for (let i = 0; i < boxes[pageNumber].length; i++) {
-			let box = boxes[pageNumber][i];
-			if (!box.isValid) {
-				isValid = false;
-				return;
-			}
-		}
-		isValid = true;
-	}
+	$: currentPageIsValid = boxes[pageNumber].every((box) => box.isValid);
 </script>
 
 <svelte:head>
@@ -220,28 +183,31 @@
 		{#each boxes as page, pageNum}
 			<Page>
 				{#each page as box}
-					{#if box.type === "Field"}
+					{#if box.type === BoxType.Field}
 						<Field
 							title={box.name}
 							disabled={pageNumber !== pageNum}
-							on:change={onChange}
+							bind:input={box.value}
+							bind:isValid={box.isValid}
 							required={box.required}
 							placeholder={box.placeholder}
 						/>
-					{:else if box.type === "Select"}
+					{:else if box.type === BoxType.Select}
 						<Select
 							title={box.name}
 							disabled={pageNumber !== pageNum}
-							on:change={onChange}
+							bind:input={box.value}
+							bind:isValid={box.isValid}
 							options={box.options || ["ERROR"]}
 							required={box.required}
 							placeholder={box.placeholder}
 						/>
-					{:else if box.type === "TextArea"}
+					{:else if box.type === BoxType.TextArea}
 						<TextArea
 							title={box.name}
 							disabled={pageNumber !== pageNum}
-							on:change={onChange}
+							bind:input={box.value}
+							bind:isValid={box.isValid}
 							required={box.required}
 							placeholder={box.placeholder}
 						/>
@@ -271,7 +237,7 @@
 			Back
 		</FormButton>
 		<FormButton
-			disabled={!isValid || pageNumber === 3}
+			disabled={!currentPageIsValid || pageNumber === 3}
 			hidden={pageNumber === 3}
 			on:click={() => scroll(true)}
 		>

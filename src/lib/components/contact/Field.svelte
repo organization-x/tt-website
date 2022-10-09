@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte";
-
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
-	import type { ChangeValues } from "./formInterfaces.js";
 	import { emailRegex, allNums, websiteRegex } from "./validityRegexes";
 
 	export let title: string;
@@ -10,6 +7,8 @@
 	export let required = true;
 	export let disabled: boolean;
 	export let placeholder: string;
+	export let input = "";
+	export let isValid = !required;
 
 	enum FormInputs {
 		FirstName = "first name",
@@ -19,21 +18,13 @@
 		CompanyWebsite = "company website"
 	}
 
-	const dispatch = createEventDispatcher<ChangeValues>();
-
-	let isValid = !required;
 	let changed = false;
 	let isFilled = false;
-	let input = "";
-
-	// Let the parent know input has changed
-	$: dispatch("change", { title, isValid, input });
 
 	// On input check if the input is valid.
 	const onChange = ({ target }: Event) => {
-		const { value, name } = target as HTMLInputElement;
-		input = value;
-		isFilled = value.length > 0;
+		const { name } = target as HTMLInputElement;
+		isFilled = input.length > 0;
 		changed = true;
 		if (!isFilled) {
 			isValid = !required;
@@ -41,16 +32,16 @@
 		}
 		switch (name) {
 			case FormInputs.Email:
-				isValid = emailRegex.test(value);
+				isValid = emailRegex.test(input);
 				break;
 			case FormInputs.PhoneNumber:
 				isValid =
-					allNums.test(value) &&
-					8 <= value.length &&
-					value.length <= 15;
+					allNums.test(input) &&
+					8 <= input.length &&
+					input.length <= 15;
 				break;
 			case FormInputs.CompanyWebsite:
-				isValid = websiteRegex.test(value);
+				isValid = websiteRegex.test(input);
 				break;
 			default:
 				isValid = true;
@@ -67,6 +58,7 @@
 		{/if}
 	</div>
 	<input
+		bind:value={input}
 		on:input={onChange}
 		name={prompt.toLowerCase()}
 		class:border-green-light={isFilled && isValid}
