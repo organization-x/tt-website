@@ -11,10 +11,7 @@
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import TextArea from "$lib/components/contact/TextArea.svelte";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
-	import {
-		type Box,
-		BoxType
-	} from "$lib/components/contact/formInterfaces";
+	import { type Box, BoxType } from "$lib/components/contact/formInterfaces";
 
 	const titles = [
 		"First, the basics.",
