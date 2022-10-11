@@ -28,6 +28,7 @@
 		"postcss": "^8.4.14",
 		"prettier": "^2.6.2",
 		"prettier-plugin-svelte": "^2.7.0",
+		"prisma": "^4.4.0",
 		"svelte": "^3.44.0",
 		"svelte-check": "^2.7.1",
 		"svelte-preprocess": "^4.10.7",
@@ -53,7 +54,6 @@
 		"cookie": "^0.5.0",
 		"highlight.js": "^11.6.0",
 		"lowlight": "^2.7.0",
-		"octokit": "^2.0.7",
-		"prisma": "^4.2.1"
+		"octokit": "^2.0.7"
 	}
 }
