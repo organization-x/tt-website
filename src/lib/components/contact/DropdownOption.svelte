@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Checkbox from "$lib/components/icons/Checkbox.svelte";
 	export let isSelected = false;
-	$: console.log(isSelected);
 </script>
 
 <div
