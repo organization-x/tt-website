@@ -661,7 +661,7 @@
 		title="Choose your path"
 		class="text-purple-light from-purple-light to-purple-dark"
 	>
-		Figure out what you want to acheive and the skills needed to accomplish
+		Figure out what you want to achieve and the skills needed to accomplish
 		such a task. Start by filtering through our team members to pinpoint
 		and/or discover your ideal candidates. Or contact us immediatly to get
 		reccomendations and an instant quote.
@@ -699,7 +699,7 @@
 				title="Choose your path"
 				class="text-purple-light from-purple-light to-purple-dark"
 			>
-				Figure out what you want to acheive and the skills needed to
+				Figure out what you want to achieve and the skills needed to
 				accomplish such a task. Start by filtering through our team
 				members to pinpoint and/or discover your ideal candidates. Or
 				contact us immediatly to get reccomendations and an instant
