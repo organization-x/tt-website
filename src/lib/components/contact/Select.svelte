@@ -3,7 +3,7 @@
 
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
-	import DropdownOption from "./DropdownOption.svelte";
+	import DropdownOption from "$lib/components/contact/DropdownOption.svelte";
 
 	export let title: string;
 	export let prompt = title;
