@@ -49,11 +49,11 @@
 
 	<div class="flex flex-col gap-8 mt-8">
 		<Stat
-			title="50+ TT members"
+			title="50+ Team Tomorrow members"
 			statAmount={50}
 			statPostFix="+"
 			delay={1000}
-			statName="50+ TT members"
+			statName="50+ Team Tomorrow members"
 			class="before:bg-pink-dark"
 		>
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
@@ -80,7 +80,8 @@
 			statAmount={10}
 			statPostFix="+"
 			delay={2000}
-			statName="Where we apply a variety of technical fields: AI, ML, Web Dev, Healthcare, 3D printing"
+			statName="We've applied our skills in AI, Machine Learning, Healthcare, 3D printing, and more
+			"
 			class="before:bg-pink-dark"
 		>
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
@@ -93,7 +94,7 @@
 			statAmount={250}
 			statPostFix="+"
 			delay={1000}
-			statName="made by students to help gain technical and proffesional skills"
+			statName="Made by students to help gain technical and professional skills"
 			class="before:bg-pink-dark"
 			side="right"
 		>
