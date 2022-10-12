@@ -59,7 +59,7 @@
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
 			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
 			quas neque laboriosam?
-			<a href="/developers" class="text-teal-light">Developers</a>
+			<a href="/developers" class="text-teal-light">Developers-Page</a>
 		</Stat>
 		<Stat
 			title="$70k+ revenue"
@@ -73,7 +73,7 @@
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
 			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
 			quas neque laboriosam?
-			<a href="/projects" class="text-teal-light">Projects</a>
+			<a href="/projects" class="text-teal-light">Projects-Page</a>
 		</Stat>
 		<Stat
 			title="10+ external company partnerships"
@@ -87,7 +87,7 @@
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
 			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
 			quas neque laboriosam?
-			<a href="/" class="text-teal-light">Landing</a>
+			<a href="/" class="text-teal-light">Landing-Page</a>
 		</Stat>
 		<Stat
 			title="250+ projects"
@@ -103,7 +103,7 @@
 			quas neque laboriosam?
 			<a
 				href="https://www.ai-camp.org/student-products"
-				class="text-teal-light">Website</a
+				class="text-teal-light">AI Camp Website</a
 			>
 		</Stat>
 	</div>
