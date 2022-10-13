@@ -13,7 +13,7 @@
 	export let placeholder: string;
 	export let isValid = !required;
 
-	export let input: string[];
+	export let input: string[] = [];
 
 	let selections: boolean[] = new Array(options.length).fill(false);
 

@@ -28,3 +28,9 @@ export const techSkills: TechSkill[] = [
 	"React",
 	"TensorFlow"
 ];
+
+export enum BoxType {
+    Field,
+    Select,
+    TextArea
+}

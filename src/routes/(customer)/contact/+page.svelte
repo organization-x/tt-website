@@ -11,7 +11,7 @@
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import TextArea from "$lib/components/contact/TextArea.svelte";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
-	import { type Box, BoxType } from "$lib/components/contact/formInterfaces";
+	import { BoxType } from "$lib/enums";
 
 	const titles = [
 		"First, the basics.",
@@ -34,10 +34,11 @@
 
 		if (pageNumber === boxes.length) {
 			// send form
+
 		}
 	};
 
-	let boxes: Box[][] = [
+	let boxes: App.Box[][] = [
 		[
 			{
 				type: BoxType.Field,
@@ -88,7 +89,7 @@
 				required: true,
 				options: ["Design", "Engineering", "Management"],
 				placeholder: "skill(s)",
-				value: []
+				selected: []
 			},
 			{
 				type: BoxType.Field,
@@ -109,7 +110,7 @@
 					"Building on an existing project",
 					"Deploying a new product"
 				],
-				value: []
+				selected: []
 			},
 			{
 				type: BoxType.Field,
@@ -177,6 +178,7 @@
 		bind:this={element}
 		class="flex gap-12 overflow-hidden snap-x snap-mandatory"
 	>
+		<!-- svelte-ignore missing-declaration -->
 		{#each boxes as page, pageNum (pageNum)}
 			<Page>
 				{#each page as box (box.name)}
@@ -193,7 +195,7 @@
 						<Select
 							title={box.name}
 							disabled={pageNumber !== pageNum}
-							bind:input={box.value}
+							bind:input={box.selected}
 							bind:isValid={box.isValid}
 							options={box.options || ["ERROR"]}
 							required={box.required}

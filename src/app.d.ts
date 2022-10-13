@@ -81,6 +81,17 @@ declare global {
 			id: string;
 		}
 
+		interface Box {
+			type: BoxType;
+			name: string;
+			isValid: boolean;
+			required: boolean;
+			placeholder: string;
+			options?: string[];
+			value?: string;
+			selected?: string[];
+		}
+
 		// interface Platform {}
 		// interface PrivateEnv {}
 		// interface PublicEnv {}
