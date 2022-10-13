@@ -34,7 +34,6 @@
 
 		if (pageNumber === boxes.length) {
 			// send form
-
 		}
 	};
 

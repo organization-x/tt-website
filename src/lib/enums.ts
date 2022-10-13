@@ -30,7 +30,7 @@ export const techSkills: TechSkill[] = [
 ];
 
 export enum BoxType {
-    Field,
-    Select,
-    TextArea
+	Field,
+	Select,
+	TextArea
 }
