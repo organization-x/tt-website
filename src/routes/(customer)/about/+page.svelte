@@ -107,7 +107,7 @@
 			quas neque laboriosam?
 			<a
 				href="https://www.ai-camp.org/student-products"
-				class="text-teal-light">AI Camp Website</a
+				class="text-teal-light">AI Camp Student Products</a
 			>
 		</Stat>
 	</div>
