@@ -11,6 +11,7 @@
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import TextArea from "$lib/components/contact/TextArea.svelte";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
+	import { BoxType } from "$lib/enums";
 
 	const titles = [
 		"First, the basics.",
@@ -21,7 +22,6 @@
 
 	let pageNumber = 0;
 	let element: HTMLFormElement;
-	let filledCount = 0;
 
 	// Scroll to next page of contact form
 	const scroll = (next: boolean) => {
@@ -31,12 +31,115 @@
 			left: element.children[0].clientWidth * pageNumber,
 			behavior: "smooth"
 		});
+
+		if (pageNumber === boxes.length) {
+			// send form
+		}
 	};
 
-	// Check if all required fields are filled
-	const onChange = ({ detail }: CustomEvent<{ isFilled: boolean }>) => {
-		detail.isFilled ? filledCount++ : filledCount--;
-	};
+	let boxes: App.Box[][] = [
+		[
+			{
+				type: BoxType.Field,
+				name: "First Name",
+				isValid: false,
+				required: true,
+				placeholder: "First goes here",
+				value: ""
+			},
+			{
+				type: BoxType.Field,
+				name: "Last Name",
+				isValid: false,
+				required: true,
+				placeholder: "And now for the last",
+				value: ""
+			},
+			{
+				type: BoxType.Field,
+				name: "Email",
+				isValid: false,
+				required: true,
+				placeholder: "Where should we send our pigeon?",
+				value: ""
+			},
+			{
+				type: BoxType.Field,
+				name: "Phone Number",
+				isValid: true,
+				required: false,
+				placeholder: "Your digits, please",
+				value: ""
+			},
+			{
+				type: BoxType.Field,
+				name: "Company",
+				isValid: false,
+				required: true,
+				placeholder: "What company are you working for?",
+				value: ""
+			}
+		],
+		[
+			{
+				type: BoxType.Select,
+				name: "What Talent Do You Need?",
+				isValid: false,
+				required: true,
+				options: ["Design", "Engineering", "Management"],
+				placeholder: "skill(s)",
+				selected: []
+			},
+			{
+				type: BoxType.Field,
+				name: "Company Website",
+				isValid: true,
+				required: false,
+				placeholder: "https://company.com...",
+				value: ""
+			},
+			{
+				type: BoxType.Select,
+				name: "What are we doing?",
+				isValid: false,
+				required: true,
+				placeholder: "subject(s)",
+				options: [
+					"Creating a brand new product",
+					"Building on an existing project",
+					"Deploying a new product"
+				],
+				selected: []
+			},
+			{
+				type: BoxType.Field,
+				name: "How did you hear about us?",
+				isValid: true,
+				required: false,
+				placeholder: "Friends, Family?",
+				value: ""
+			}
+		],
+		[
+			{
+				type: BoxType.Field,
+				name: "Subject",
+				isValid: false,
+				required: true,
+				placeholder: "Give yourself a title",
+				value: ""
+			},
+			{
+				type: BoxType.TextArea,
+				name: "Message",
+				isValid: false,
+				required: true,
+				placeholder: "Elaborate on how we can help...",
+				value: ""
+			}
+		]
+	];
+	$: currentPageIsValid = boxes[pageNumber].every((box) => box.isValid);
 </script>
 
 <svelte:head>
@@ -74,100 +177,42 @@
 		bind:this={element}
 		class="flex gap-12 overflow-hidden snap-x snap-mandatory"
 	>
-		<Page>
-			<Field
-				type="text"
-				title="First Name"
-				disabled={pageNumber !== 0}
-				on:change={onChange}
-				placeholder="First goes here"
-			/>
-			<Field
-				type="text"
-				title="Last Name"
-				on:change={onChange}
-				disabled={pageNumber !== 0}
-				placeholder="And now for the last"
-			/>
-			<Field
-				type="email"
-				title="Email"
-				on:change={onChange}
-				disabled={pageNumber !== 0}
-				placeholder="Where should we send our pigeon?"
-			/>
-			<Field
-				type="text"
-				title="Phone Number"
-				required={false}
-				disabled={pageNumber !== 0}
-				placeholder="Your digits, please"
-			/>
-			<Field
-				type="text"
-				title="Company"
-				on:change={onChange}
-				disabled={pageNumber !== 0}
-				placeholder="What company are you working for?"
-			/>
-		</Page>
-		<Page>
-			<Select
-				title="What Talent Do You Need?"
-				placeholder="skill(s)"
-				on:change={onChange}
-				disabled={pageNumber !== 1}
-				options={[
-					"Design",
-					"Engineering",
-					"Management",
-					"Design",
-					"Engineering",
-					"Management"
-				]}
-			/>
-			<Field
-				type="text"
-				title="Company Website"
-				required={false}
-				disabled={pageNumber !== 1}
-				placeholder="https://company.com..."
-			/>
-			<Select
-				title="What are we doing?"
-				placeholder="subject(s)"
-				on:change={onChange}
-				disabled={pageNumber !== 1}
-				options={[
-					"Creating a brand new product",
-					"Building on an existing project",
-					"Deploying a new product"
-				]}
-			/>
-			<Field
-				type="text"
-				title="How Did You Hear About Us?"
-				required={false}
-				disabled={pageNumber !== 1}
-				placeholder="Friends, Family?"
-			/>
-		</Page>
-		<Page>
-			<Field
-				type="text"
-				title="Subject"
-				on:change={onChange}
-				disabled={pageNumber !== 2}
-				placeholder="Give yourself a title"
-			/>
-
-			<TextArea
-				title="Message"
-				on:change={onChange}
-				disabled={pageNumber !== 2}
-				placeholder="Elaborate on how we can help..."
-			/>
-		</Page>
+		<!-- svelte-ignore missing-declaration -->
+		{#each boxes as page, pageNum (pageNum)}
+			<Page>
+				{#each page as box (box.name)}
+					{#if box.type === BoxType.Field}
+						<Field
+							title={box.name}
+							disabled={pageNumber !== pageNum}
+							bind:input={box.value}
+							bind:isValid={box.isValid}
+							required={box.required}
+							placeholder={box.placeholder}
+						/>
+					{:else if box.type === BoxType.Select}
+						<Select
+							title={box.name}
+							disabled={pageNumber !== pageNum}
+							bind:input={box.selected}
+							bind:isValid={box.isValid}
+							options={box.options || ["ERROR"]}
+							required={box.required}
+							placeholder={box.placeholder}
+						/>
+					{:else if box.type === BoxType.TextArea}
+						<TextArea
+							title={box.name}
+							disabled={pageNumber !== pageNum}
+							bind:input={box.value}
+							bind:isValid={box.isValid}
+							required={box.required}
+							placeholder={box.placeholder}
+						/>
+					{/if}
+				{/each}
+			</Page>
+		{/each}
 		<Page>
 			<div
 				class="flex flex-col h-full text-center justify-center items-center"
@@ -190,10 +235,7 @@
 			Back
 		</FormButton>
 		<FormButton
-			disabled={(pageNumber === 0 && !(filledCount >= 4)) ||
-				(pageNumber === 1 && !(filledCount >= 6)) ||
-				(pageNumber === 2 && !(filledCount >= 8)) ||
-				pageNumber === 3}
+			disabled={!currentPageIsValid || pageNumber === 3}
 			hidden={pageNumber === 3}
 			on:click={() => scroll(true)}
 		>
