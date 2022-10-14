@@ -45,7 +45,6 @@
 				break;
 			default:
 				isValid = true;
-				break;
 		}
 	};
 </script>
