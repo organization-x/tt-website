@@ -70,9 +70,7 @@
 			class="before:bg-pink-dark"
 			side="right"
 		>
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
-			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
-			quas neque laboriosam?
+			Hippo2 is a custom system that a group of 14-19 year-olds built from the ground up in the span of 3 weeks with collaboration across interdisciplinary teams from engineering to design to create a cohesive and seamless experience for customers throughout their journey at AI Camp. It features custom dashboards for students and parents, account creation and linking systems, course registration flows, a full-fledged back office, analytics, and more.
 			<a href="/projects" class="text-teal-light">Projects-Page</a>
 		</Stat>
 		<Stat
