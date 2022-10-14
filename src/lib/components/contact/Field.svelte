@@ -21,7 +21,7 @@
 	let changed = false;
 	let isFilled = false;
 
-	// On input check if the input is valid.
+	// On input check if the input is valid
 	const onChange = ({ target }: Event) => {
 		const { name } = target as HTMLInputElement;
 		isFilled = input.length > 0;

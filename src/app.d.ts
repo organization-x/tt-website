@@ -81,6 +81,7 @@ declare global {
 			id: string;
 		}
 
+		// Interface for inputs on the contact page form
 		interface Box {
 			type: BoxType;
 			name: string;
