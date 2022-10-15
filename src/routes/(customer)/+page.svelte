@@ -243,7 +243,7 @@
 			{
 				position: "Software Engineer",
 				user: {
-					name: "Mathan",
+					name: "Nathan",
 					url: "placeholder"
 				}
 			},
@@ -332,7 +332,7 @@
 				}
 			},
 			{
-				position: "Lead Desiner",
+				position: "Lead Designer",
 				user: {
 					name: "Axel",
 					url: "placeholder"
@@ -346,14 +346,14 @@
 				}
 			},
 			{
-				position: "Engineerig Manager",
+				position: "Engineering Manager",
 				user: {
 					name: "Jackson",
 					url: "placeholder"
 				}
 			},
 			{
-				position: "Product Mnager",
+				position: "Product Manager",
 				user: {
 					name: "Mitch",
 					url: "placeholder"
@@ -367,21 +367,21 @@
 				}
 			},
 			{
-				position: "Software ngineer",
+				position: "Software Engineer",
 				user: {
 					name: "Rohan",
 					url: "placeholder"
 				}
 			},
 			{
-				position: "Software ngineer",
+				position: "Software Engineer",
 				user: {
 					name: "Sanjay",
 					url: "placeholder"
 				}
 			},
 			{
-				position: "Software ngineer",
+				position: "Software Engineer",
 				user: {
 					name: "Zac",
 					url: "placeholder"
@@ -410,14 +410,14 @@
 		href="/projects/aicbot"
 		developers={[
 			{
-				position: "Engineering Maager",
+				position: "Engineering Manager",
 				user: {
 					name: "Alexander",
 					url: "placeholder"
 				}
 			},
 			{
-				position: "Software Enginer",
+				position: "Software Engineer",
 				user: {
 					name: "Blake",
 					url: "placeholder"
@@ -438,21 +438,21 @@
 				}
 			},
 			{
-				position: "Engineering Maager",
+				position: "Engineering Manager",
 				user: {
 					name: "Jackson",
 					url: "placeholder"
 				}
 			},
 			{
-				position: "Software Enginer",
+				position: "Software Engineer",
 				user: {
 					name: "Ray",
 					url: "placeholder"
 				}
 			},
 			{
-				position: "Software Enginer",
+				position: "Software Engineer",
 				user: {
 					name: "Zac",
 					url: "placeholder"
