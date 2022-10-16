@@ -139,7 +139,9 @@
 			}
 		]
 	];
-	$: currentPageIsValid = boxes[pageNumber].every((box) => box.isValid);
+	$: currentPageIsValid =
+		pageNumber == boxes.length ||
+		boxes[pageNumber].every((box) => box.isValid);
 </script>
 
 <svelte:head>
