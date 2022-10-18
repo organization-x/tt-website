@@ -6,8 +6,8 @@
 
 	import { user } from "$lib/stores";
 	import { page } from "$app/stores";
-	import Logo from "$lib/components/Logo.svelte";
 	import { afterNavigate } from "$app/navigation";
+	import Logo from "$lib/components/icons/Logo.svelte";
 	import NavLink from "$lib/components/NavLink.svelte";
 	import Burger from "$lib/components/icons/Burger.svelte";
 	import LogOut from "$lib/components/icons/LogOut.svelte";
@@ -44,7 +44,7 @@
 
 <svelte:window on:click={onClick} />
 
-<header class="bg-black font-heading">
+<header class="bg-black">
 	<div
 		class="p-4 mx-auto max-w-screen-2xl flex justify-between lg:items-center lg:px-6 xl:px-10"
 	>
@@ -177,7 +177,7 @@
 					<button
 						class:rounded-lg={!userOpen}
 						class:rounded-t-lg={userOpen}
-						class="flex gap-2 items-center justify-center px-8 py-3 transition-colors duration-200 w-full
+						class="flex gap-2 items-center justify-center py-3 transition-colors duration-200 w-full
                         {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
 						on:click={() => (userOpen = !userOpen)}
 					>

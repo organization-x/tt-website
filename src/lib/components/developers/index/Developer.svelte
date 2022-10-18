@@ -3,16 +3,17 @@
 
 	import { getIcon } from "$lib/getIcon";
 	import Pin from "$lib/components/icons/Pin.svelte";
+	import DevTag from "$lib/components/DevTag.svelte";
 	import Bulb from "$lib/components/icons/Bulb.svelte";
 	import Wrench from "$lib/components/icons/Wrench.svelte";
+	import DevSection from "$lib/components/DevSection.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
-	import DevTag from "$lib/components/developers/index/DevTag.svelte";
-	import DeveloperSection from "$lib/components/DeveloperSection.svelte";
 
 	export let user: App.UserWithMetadata;
 </script>
 
 <a
+	on:click
 	in:fly={{ duration: 300, y: 50 }}
 	href="/developers/{user.url}"
 	rel="noreferrer noopener"
@@ -94,7 +95,7 @@
 			</div>
 		{/if}
 
-		<DeveloperSection title="Positions">
+		<DevSection title="Positions">
 			<Bulb slot="icon" class="w-6 h-6" />
 
 			{#each user.positions as position, i}
@@ -102,9 +103,9 @@
 					<DevTag name={position} />
 				{/if}
 			{/each}
-		</DeveloperSection>
+		</DevSection>
 
-		<DeveloperSection title="Skills">
+		<DevSection title="Skills">
 			<Wrench slot="icon" class="w-6 h-6" />
 
 			{#each user.techSkills as skill, i}
@@ -117,6 +118,6 @@
 					<DevTag name={skill} />
 				{/if}
 			{/each}
-		</DeveloperSection>
+		</DevSection>
 	</div>
 </a>

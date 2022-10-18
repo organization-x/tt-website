@@ -12,8 +12,8 @@
 		<slot />
 	</p>
 	<div class="flex gap-2 items-center">
-		{#each icons as Icon}
-			<Icon class="w-10 h-10" />
+		{#each icons as icon}
+			<svelte:component this={icon} class="w-10 h-10" />
 		{/each}
 	</div>
 </div>

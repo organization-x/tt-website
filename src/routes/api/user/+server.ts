@@ -1,6 +1,6 @@
 import { error } from "@sveltejs/kit";
-import { getUsers } from "$lib/getters";
-import { prisma, checkSession } from "$lib/prisma";
+
+import { prisma, checkSession, getUsers, parse } from "$lib/prisma";
 
 import type { RequestHandler } from "./$types";
 
@@ -18,12 +18,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	if (!session) throw error(401, "Unauthorized");
 
 	// Parse data or throw bad request if it isn't valid json
-	const data: App.UserUpdateRequest = await request
-		.json()
-		.then((data) => data)
-		.catch(() => {
-			throw error(400, "Bad Request");
-		});
+	const data: App.UserUpdateRequest = await parse(request);
 
 	// If the token isn't the same as for the user they are updating, throw unauthorized
 	if (data.where.id !== session.userId) throw error(401, "Unauthorized");
@@ -66,8 +61,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				}
 			}
 		})
-		.catch((e) => {
-			console.log(e);
+		.catch(() => {
 			throw error(400, "Bad Request");
 		});
 
@@ -78,7 +72,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 // * INPUT: UserSearchRequest
 // * OUTPUT: User[]
 export const POST: RequestHandler = async ({ request }) => {
-	const data: App.UserSearchRequest = await request.json();
+	const data: App.UserSearchRequest = await parse(request);
 
 	// Grab users using request, if an error occurs throw a bad request
 	const users = await getUsers(data.where)

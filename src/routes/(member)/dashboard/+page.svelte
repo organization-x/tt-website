@@ -1,21 +1,21 @@
 <script lang="ts">
 	import { user } from "$lib/stores";
 	import { getIcon } from "$lib/getIcon";
+	import DevTag from "$lib/components/DevTag.svelte";
 	import Pin from "$lib/components/icons/Pin.svelte";
 	import Bulb from "$lib/components/icons/Bulb.svelte";
 	import Wrench from "$lib/components/icons/Wrench.svelte";
 	import Pencil from "$lib/components/icons/Pencil.svelte";
+	import DevSection from "$lib/components/DevSection.svelte";
 	import LinkIcon from "$lib/components/icons/LinkIcon.svelte";
 	import ShowHide from "$lib/components/icons/ShowHide.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 	import DashLink from "$lib/components/dashboard/DashLink.svelte";
-	import DevTag from "$lib/components/developers/index/DevTag.svelte";
 	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
-	import DeveloperSection from "$lib/components/DeveloperSection.svelte";
-	import DashSection from "$lib/components/dashboard/index/DashSection.svelte";
+	import DashSection from "$lib/components/dashboard/DashSection.svelte";
 	import ProjectEditPreview from "$lib/components/dashboard/projects/index/ProjectEditPreview.svelte";
 
 	import type { PageData } from "./$types";
@@ -112,7 +112,7 @@
 	<div class="flex flex-col gap-12">
 		<DashSection
 			title="Your Profile"
-			class="bg-gray-500/40 p-4 flex flex-col gap-8 lg:p-8 lg:gap-12"
+			class="bg-gray-500/40 p-4 rounded-lg flex flex-col gap-8 lg:p-8 lg:gap-12"
 		>
 			<!-- TODO: Replace placeholder -->
 
@@ -160,7 +160,9 @@
 						</div>
 					</div>
 
-					<p class="my-12 md:text-lg lg:max-w-sm lg:my-0">
+					<p
+						class="my-12 md:text-lg lg:max-w-sm lg:min-w-[24rem] lg:my-0"
+					>
 						{$user.about}
 					</p>
 				</div>
@@ -210,7 +212,7 @@
 			</div>
 
 			<div class="grid gap-8 lg:gap-y-0 lg:grid-cols-2">
-				<DeveloperSection
+				<DevSection
 					title="Positions"
 					class="lg:row-start-1 lg:col-start-1"
 				>
@@ -219,29 +221,29 @@
 					{#each { length: 4 } as _, i}
 						<DevTag name={$user.positions[i]} />
 					{/each}
-				</DeveloperSection>
+				</DevSection>
 
-				<DeveloperSection
+				<DevSection
 					title="Skills"
 					class="lg:col-start-2 lg:row-start-1"
 				>
 					<Wrench slot="icon" class="w-6 h-6" />
 
-					{#each $user.techSkills as skill}
-						<DevTag name={skill} />
+					{#each $user.techSkills as name}
+						<DevTag {name} />
 					{/each}
 
-					{#each $user.softSkills as skill}
-						<DevTag name={skill} />
+					{#each $user.softSkills as name}
+						<DevTag {name} />
 					{/each}
 
 					<!-- Get the collective amount of techSkills and softSkills missing -->
 					{#each { length: 10 - ($user.techSkills.length + $user.softSkills.length) } as _, i}
 						<DevTag name="" />
 					{/each}
-				</DeveloperSection>
+				</DevSection>
 
-				<DeveloperSection
+				<DevSection
 					title="Links"
 					class="lg:row-start-1 lg:col-start-1 lg:mt-56"
 				>
@@ -266,7 +268,7 @@
 							<DevTag name="" />
 						{/if}
 					{/each}
-				</DeveloperSection>
+				</DevSection>
 
 				<div
 					class="flex gap-4 ml-auto lg:col-start-2 lg:row-start-1 lg:self-end"
@@ -295,7 +297,10 @@
 			</div>
 		</DashSection>
 
-		<DashSection title="Your Projects" class="bg-gray-500/40 p-4">
+		<DashSection
+			title="Your Projects"
+			class="bg-gray-500/40 rounded-lg p-4"
+		>
 			<div
 				class="min-h-[55rem] flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:min-h-0 lg:mb-8"
 			>

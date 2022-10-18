@@ -10,8 +10,8 @@
 	onMount(
 		async () =>
 			data.track &&
-			(await analytics.track("user_kudos_view", { id: data.user.id }))
+			(await analytics.track("user_projects_view", { id: data.user.id }))
 	);
 </script>
 
-<h1>Kudos</h1>
+<h1>Projects</h1>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { analytics } from "$lib/analytics";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Button from "$lib/components/Button.svelte";
@@ -32,6 +33,10 @@
 	import ProjectImage from "$lib/components/index/ProjectImage.svelte";
 	import CompanyImage from "$lib/components/index/CompanyImage.svelte";
 
+	import type { PageData } from "./$types";
+
+	export let data: PageData;
+
 	// TODO: Actually fill dev data
 	const placeholder: App.Developer = {
 		position: "Software Engineer",
@@ -40,6 +45,13 @@
 			url: "placeholder"
 		}
 	};
+
+	// Grab tracking utilities for clicking buttons
+	const trackClick = (name: string) => async () =>
+		data.track &&
+		(await analytics.track("button_click", {
+			id: name
+		}));
 </script>
 
 <svelte:head>
@@ -55,11 +67,15 @@
 
 	<PageCaption>
 		Develop something exciting with skills from low-level mastery to
-		maticulous design. Accelerate progress with the backing you need.
+		meticulous design. Accelerate progress with the backing you need.
 		<strong>A great team</strong>.
 	</PageCaption>
 
-	<Button href="/contact" class="hidden lg:block lg:mt-6 lg:mx-0">
+	<Button
+		on:click={() => trackClick("contact_top")}
+		href="/contact"
+		class="hidden lg:block lg:mt-6 lg:mx-0"
+	>
 		Contact Us
 	</Button>
 </Hero>
@@ -67,13 +83,19 @@
 <div
 	class="mx-auto pb-8 max-w-xs relative lg:mt-32 lg:max-w-screen-xl overflow-hidden"
 >
-	<Button href="/contact" class="lg:hidden">Contact Us</Button>
+	<Button
+		on:click={() => trackClick("contact_top")}
+		href="/contact"
+		class="lg:hidden">Contact Us</Button
+	>
+
 	<TextHeader>
 		What is
 		<GradientText class="from-purple-light to-purple-dark">
 			Team Tomorrow?
 		</GradientText>
 	</TextHeader>
+
 	<DrawnArrow />
 </div>
 
@@ -167,7 +189,12 @@
 		</strong>
 	</Text>
 
-	<Button href="/contact">Contact Us</Button>
+	<Button
+		on:click={() => trackClick("contact_after_companies")}
+		href="/contact"
+	>
+		Contact Us
+	</Button>
 </Section>
 
 <Section>
@@ -183,7 +210,11 @@
 		craft <strong>real experiences.</strong>
 	</MajorCaption>
 
-	<Button href="/projects" class="my-8">Uncover all our projects</Button>
+	<Button
+		on:click={() => trackClick("uncover_projects")}
+		href="/projects"
+		class="my-8">Uncover all our projects</Button
+	>
 
 	<!-- TODO: Actual profile pictures for developers-->
 
@@ -503,7 +534,11 @@
 		/>
 	</Project>
 
-	<Button href="/projects" class="mb-12 mt-12">
+	<Button
+		on:click={() => trackClick("uncover_projects")}
+		href="/projects"
+		class="mb-12 mt-12"
+	>
 		Uncover all our projects
 	</Button>
 </Section>
@@ -609,7 +644,11 @@
 		</div>
 	</Carousel>
 
-	<Button href="/developers" class="mt-4 lg:mt-8">Discover</Button>
+	<Button
+		on:click={() => trackClick("discover_developers")}
+		href="/developers"
+		class="mt-4 lg:mt-8">Discover</Button
+	>
 
 	<!-- TODO: Put actual important blog post here -->
 
@@ -736,4 +775,8 @@
 	</div>
 </Carousel>
 
-<Button href="/developers" class="mt-8">Explore Developers</Button>
+<Button
+	on:click={() => trackClick("explore_developers")}
+	href="/developers"
+	class="mt-8">Explore Developers</Button
+>

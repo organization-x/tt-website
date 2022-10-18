@@ -6,6 +6,7 @@
 	import { generateHTML } from "@tiptap/html";
 
 	import { getIcon } from "$lib/getIcon";
+	import { analytics } from "$lib/analytics";
 	import { extensions } from "$lib/tiptapExtensions";
 	import Button from "$lib/components/Button.svelte";
 	import Author from "$lib/components/Author.svelte";
@@ -19,8 +20,16 @@
 
 	const html = generateHTML(data.content as JSONContent, extensions);
 
-	// Syntax highlighting
-	onMount(HLJS.highlightAll);
+	onMount(async () => {
+		// Syntax highlighting
+		HLJS.highlightAll();
+
+		if (!data.track) return;
+
+		await analytics.track("project_view", {
+			id: data.id
+		});
+	});
 </script>
 
 <!-- TODO: Replace placeholder -->

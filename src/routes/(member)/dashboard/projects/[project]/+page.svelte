@@ -128,12 +128,10 @@
 				},
 				project: isOwner
 					? {
-							...project,
-							date: new Date()
+							...project
 					  }
 					: {
-							content: project.content,
-							date: new Date()
+							content: project.content
 					  }
 			} as App.ProjectUpdateRequest)
 		}).then(async (res) => {
@@ -184,7 +182,7 @@
 
 	// Update whether the user has the project pinned
 	const togglePinned = () => {
-		const pinnedProjectId = pinned ? null : original.id;
+		const pinnedProjectId = pinned ? original.id : null;
 
 		fetch("/api/user", {
 			method: "PATCH",

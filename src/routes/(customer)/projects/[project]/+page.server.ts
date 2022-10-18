@@ -1,6 +1,6 @@
 import { redirect } from "@sveltejs/kit";
 
-import { getProjects } from "$lib/getters";
+import { getProjects } from "$lib/prisma";
 
 import type { PageServerLoad } from "./$types";
 
@@ -9,7 +9,7 @@ export const load: PageServerLoad<App.ProjectWithMetadata> = async ({
 	params
 }) => {
 	return await getProjects({ url: params.project }).then((projects) => {
-		if (!projects) throw redirect(302, "/projects");
+		if (!projects.length) throw redirect(302, "/projects");
 		return projects[0];
 	});
 };

@@ -1,8 +1,13 @@
 <script lang="ts">
-	export let isCurrent: boolean;
+	export let active: boolean;
 </script>
 
-<div on:click class="cursor-pointer p-0.5" class:text-white={isCurrent}>
+<div
+	on:click
+	class:text-white={active}
+	class:text-gray-500={!active}
+	class="cursor-pointer p-0.5"
+>
 	<svg
 		class="w-2 h-2 transition-colors"
 		fill="currentColor"

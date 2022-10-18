@@ -1,9 +1,9 @@
 import { lowlight } from "lowlight";
+import { Extension } from "@tiptap/core";
 import { Text } from "@tiptap/extension-text";
 import { Bold } from "@tiptap/extension-bold";
 import { Code } from "@tiptap/extension-code";
 import { Link } from "@tiptap/extension-link";
-import { tabShortcut } from "$lib/tabShortcut";
 import { Placeholder } from "$lib/placeholder";
 import { Image } from "@tiptap/extension-image";
 import css from "highlight.js/lib/languages/css";
@@ -40,6 +40,27 @@ lowlight.registerLanguage("bash", bash);
 lowlight.registerLanguage("python", python);
 lowlight.registerLanguage("markdown", markdown);
 lowlight.registerLanguage("typescript", typescript);
+
+// Tab behavoir change for lists
+const tabShortcut = Extension.create({
+	name: "tabShortcut",
+
+	addKeyboardShortcuts() {
+		return {
+			Tab: ({ editor }) => {
+				if (
+					editor.isActive("listItem") &&
+					editor.can().sinkListItem("listItem")
+				)
+					return editor.commands.sinkListItem("listItem");
+
+				editor.chain().insertContent("	").run();
+
+				return true;
+			}
+		};
+	}
+});
 
 export const extensions = [
 	Text,
@@ -102,7 +123,7 @@ export const extensions = [
 	}),
 	Placeholder.configure({
 		emptyNodeClass:
-			"cursor-text before:content-[attr(data-placeholder)] before:absolute before:text-gray-400 before-pointer-events-none"
+			"before:content-[attr(data-placeholder)] before:absolute before:text-gray-400 before-pointer-events-none"
 	}),
 	Heading.extend({
 		levels: [1, 2, 3],

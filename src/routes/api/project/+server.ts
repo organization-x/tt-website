@@ -1,6 +1,6 @@
 import { error } from "@sveltejs/kit";
-import { getProjects } from "$lib/getters";
-import { prisma, userAuth } from "$lib/prisma";
+
+import { prisma, userAuth, getProjects, parse } from "$lib/prisma";
 
 import type { Prisma } from "@prisma/client";
 import type { RequestHandler } from "./$types";
@@ -17,12 +17,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	if (!user) throw error(401, "Unauthorized");
 
 	// Parse data or throw bad request if it isn't valid json
-	const data: App.ProjectUpdateRequest = await request
-		.json()
-		.then((data) => data)
-		.catch(() => {
-			throw error(400, "Bad Request");
-		});
+	const data: App.ProjectUpdateRequest = await parse(request);
 
 	// Grab the project from the database for validation
 	const project = await prisma.project.findUnique({
@@ -52,7 +47,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 					)))
 		)
 			throw error(400, "Bad Request");
-	} else if (project.authors.some((author) => author.userId !== user.id)) {
+	} else if (project.authors.some((author) => author.userId === user.id)) {
 		// Input validation, check if the collaborator is submitting any data besides content
 		if (
 			Object.keys(data.project).some(
@@ -66,8 +61,12 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 
 	// If the title is being changed, do some more input validation
 	if (data.project.title) {
-		// Create a url out of the title if it exists
-		url = data.project.title.trim().replaceAll(" ", "-").toLowerCase();
+		try {
+			// Create a url out of the title if it exists
+			url = data.project.title.trim().replaceAll(" ", "-").toLowerCase();
+		} catch {
+			throw error(400, "Bad Request");
+		}
 
 		// Check if project has the same url (so title) as another project
 		if (
@@ -99,7 +98,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				title: data.project.title,
 				description: data.project.description,
 				theme: data.project.theme,
-				date: data.project.date,
+				date: new Date(),
 				skills: data.project.skills,
 				content,
 				visible: data.project.visible,
@@ -129,7 +128,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 // * INPUT: ProjectSearchRequest
 // * OUTPUT: ProjectWithAuthors[]
 export const POST: RequestHandler = async ({ request }) => {
-	const data: App.ProjectSearchRequest = await request.json();
+	const data: App.ProjectSearchRequest = await parse(request);
 
 	const projects = await getProjects(data.where);
 
@@ -154,7 +153,7 @@ export const PUT: RequestHandler = async ({ locals }) => {
 		.findMany({
 			where: {
 				url: {
-					startsWith: `untitled-${user.id}-`
+					startsWith: `untitled-${user.name}-`
 				},
 				ownerId: user.id
 			}
@@ -173,17 +172,14 @@ export const PUT: RequestHandler = async ({ locals }) => {
 			});
 
 			return biggest + 1;
-		})
-		.catch(() => {
-			throw error(500, "Internal Server Error");
 		});
 
 	// Create the project
 	const project = await prisma.project
 		.create({
 			data: {
-				url: `untitled-${user.id}-${postfix}`,
-				title: `Untitled-${user.id}-${postfix}`,
+				url: `untitled-${user.name}-${postfix}`,
+				title: `Untitled-${user.name}-${postfix}`,
 				description: "A super cool untitled project!",
 				theme: "3B84D6",
 				date: new Date(),
@@ -213,15 +209,12 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 
 	if (!user) throw error(401, "Unauthorized");
 
-	const data: App.ProjectDeleteRequest = await request.json();
+	const data: App.ProjectDeleteRequest = await parse(request);
 
 	// Check if the project exists
 	const project = await prisma.project
 		.findUnique({ where: { id: data.id } })
-		.then((project) => project)
-		.catch(() => {
-			throw error(400, "Bad Request");
-		});
+		.then((project) => project);
 
 	if (!project) throw error(400, "Bad Request");
 
@@ -229,16 +222,19 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 	if (project.ownerId !== user.id) throw error(401, "Unauthorized");
 
 	// Delete the projects authors
-	await prisma.projectAuthor.deleteMany({ where: { projectId: project.id } });
+	await prisma.projectAuthor
+		.deleteMany({ where: { projectId: project.id } })
+		.catch(() => {
+			throw error(400, "Bad Request");
+		});
 
 	// Delete the project
 	await prisma.project
 		.delete({
 			where: { id: data.id }
 		})
-		.catch((e) => {
-			console.log(e);
-			throw error(500, "Internal Server Error");
+		.catch(() => {
+			throw error(400, "Bad Request");
 		});
 
 	return new Response(undefined, { status: 200 });

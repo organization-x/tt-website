@@ -4,6 +4,7 @@
 
 	import { getIcon } from "$lib/getIcon";
 	import { techSkills } from "$lib/enums";
+	import { analytics } from "$lib/analytics";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
@@ -16,17 +17,19 @@
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
-	import ProjectLoader from "$lib/components/ProjectLoader.svelte";
+	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
 	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
 
+	import type { PageData } from "./$types";
 	import type { TechSkill } from "@prisma/client";
 
-	let request: Promise<App.ProjectWithMetadata[][]> = new Promise(() => {});
+	export let data: PageData;
 
 	let page = 0;
 	let search = "";
 	let filters = new Set<TechSkill>();
+	let request: Promise<App.ProjectWithMetadata[][]> = new Promise(() => {});
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
 	$: search, (request = new Promise(() => {})), (page = 0);
@@ -52,16 +55,22 @@
 				} as App.ProjectSearchRequest)
 			})
 				.then((res) => res.json())
-				.then((data: App.ProjectWithMetadata[]) => {
+				.then(async (projects: App.ProjectWithMetadata[]) => {
+					// Random search sampling so the search data isn't spammed
+					if (data.track && filters.size && Math.random() < 0.2)
+						await analytics.track("project_search", {
+							tech_skills: Array.from(filters)
+						});
+
 					// Put projects into pairs of 2 or reject if there's no results
-					data.length
+					projects.length
 						? res(
-								data
+								projects
 									.map((project, i) => {
 										if (i % 2 === 0)
-											return i === data.length - 1
+											return i === projects.length - 1
 												? [project]
-												: [project, data[i + 1]];
+												: [project, projects[i + 1]];
 										else return [];
 									})
 									.filter((project) => project.length)
@@ -72,10 +81,19 @@
 	};
 
 	// Once mounted check if there's any URL search params, if so, input them
-	onMount(() => {
+	onMount(async () => {
 		const param = new URLSearchParams(window.location.search).get("search");
 		param && (search = param);
 	});
+
+	// Track if a project was clicked on and what filters were used
+	const trackProject = async (id: string) =>
+		data.track &&
+		filters.size &&
+		(await analytics.track("project_click", {
+			id,
+			tech_skills: Array.from(filters)
+		}));
 </script>
 
 <svelte:head>
@@ -184,14 +202,22 @@
 				class="flex flex-col items-center max-w-xl mx-auto gap-14 my-12 lg:my-20"
 			>
 				{#await request}
-					<ProjectLoader />
+					<ProjectLoading />
 				{:then projects}
 					{#each projects as projectPair, i}
 						{#if page === i}
-							<ProjectPreview project={projectPair[0]} />
+							<ProjectPreview
+								on:click={async () =>
+									await trackProject(projectPair[0].id)}
+								project={projectPair[0]}
+							/>
 
 							{#if projectPair.length > 1}
-								<ProjectPreview project={projectPair[1]} />
+								<ProjectPreview
+									on:click={async () =>
+										await trackProject(projectPair[1].id)}
+									project={projectPair[1]}
+								/>
 							{/if}
 						{/if}
 					{/each}

@@ -2,7 +2,11 @@ const defaultTheme = require("tailwindcss/defaultTheme");
 
 /** @type {import("tailwindcss").Config} */
 module.exports = {
-	content: ["./src/**/*.{html,svelte}", "./src/lib/tiptapExtensions.ts"],
+	content: [
+		"./src/**/*.{html,svelte}",
+		"./src/lib/tiptapExtensions.ts",
+		"./src/lib/enums.ts"
+	],
 	theme: {
 		fontFamily: {
 			main: ["Lato", ...defaultTheme.fontFamily.sans]
@@ -71,10 +75,22 @@ module.exports = {
 				14: "3.5rem"
 			},
 			height: {
+				15: "3.75rem",
 				100: "25rem"
 			},
 			minHeight: {
 				72: "18rem"
+			},
+			animation: {
+				progress: "progress 1s ease-in-out 1 forwards"
+			},
+			keyframes: {
+				progress: {
+					"0%": {
+						"stroke-dashoffset": 400,
+						opacity: 0
+					}
+				}
 			}
 		}
 	},

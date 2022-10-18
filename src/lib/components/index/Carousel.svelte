@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 
-	import CarouselDot from "$lib/components/index/CarouselDot.svelte";
+	import CarouselDot from "$lib/components/CarouselDot.svelte";
 
 	let current = 0;
 	export let amount: number;
 	let element: HTMLDivElement;
-	let items: HTMLDivElement[] = [];
 
 	// On a dot click, scroll to the element corresponding to that dot
 	const onClick = (i: number) => {
@@ -18,7 +17,7 @@
 
 	// Change the current dot based on what item is visible, utilizing the intersection observer
 	onMount(() => {
-		items = Array.from(element.children) as HTMLDivElement[];
+		const items = Array.from(element.children);
 
 		const observer = new IntersectionObserver(
 			(e) => {
@@ -41,12 +40,9 @@
 	>
 		<slot />
 	</div>
-	<div class="flex gap-3 mt-6 justify-center text-gray-500 lg:hidden">
+	<div class="flex gap-3 mt-6 justify-center lg:hidden">
 		{#each { length: amount } as _, i}
-			<CarouselDot
-				isCurrent={current === i}
-				on:click={() => onClick(i)}
-			/>
+			<CarouselDot active={current === i} on:click={() => onClick(i)} />
 		{/each}
 	</div>
 </div>

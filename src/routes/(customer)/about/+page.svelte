@@ -7,7 +7,6 @@
 	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import PageCaption from "$lib/components/PageCaption.svelte";
-	import MemberImage from "$lib/components/about/MemberImage.svelte";
 </script>
 
 <svelte:head>
@@ -50,10 +49,9 @@
 	<div class="flex flex-col gap-8 mt-8">
 		<Stat
 			title="Bountiful"
-			statAmount={10}
-			statPostFix="M"
-			delay={1000}
-			statName="in revenue."
+			amount={10}
+			postFix="M"
+			caption="in revenue."
 			class="before:bg-pink-dark"
 		>
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
@@ -62,10 +60,9 @@
 		</Stat>
 		<Stat
 			title="Bountiful"
-			statAmount={10}
-			statPostFix="M"
-			delay={1000}
-			statName="in revenue."
+			amount={10}
+			postFix="M"
+			caption="in revenue."
 			class="before:bg-pink-dark"
 			side="right"
 		>
@@ -75,10 +72,9 @@
 		</Stat>
 		<Stat
 			title="Bountiful"
-			statAmount={100}
-			statPostFix="M"
-			delay={2000}
-			statName="in revenue."
+			amount={100}
+			postFix="M"
+			caption="in revenue."
 			class="before:bg-pink-dark"
 		>
 			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
@@ -87,10 +83,9 @@
 		</Stat>
 		<Stat
 			title="Bountiful"
-			statAmount={10}
-			statPostFix="M"
-			delay={1000}
-			statName="in revenue."
+			amount={10}
+			postFix="M"
+			caption="in revenue."
 			class="before:bg-pink-dark"
 			side="right"
 		>
@@ -124,38 +119,26 @@
 	<div
 		class="grid grid-cols-2 gap-6 pt-10 max-w-xl mx-auto md:gap-14 lg:grid-cols-4"
 	>
-		<Member name="Alex Duffy" pos="Head of Product">
-			<MemberImage
-				src="/assets/about/alex.webp"
-				alt="Alex Duffy from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Michael Ke Zhang" pos="Co Founder">
-			<MemberImage
-				src="/assets/about/michael.webp"
-				alt="Michael Ke Zhang from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Richard Hsu" pos="Co Founder">
-			<MemberImage
-				src="/assets/about/richard.webp"
-				alt="Jackson Choyce from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Ying Jiang" pos="Co Founder">
-			<MemberImage
-				src="/assets/about/ying.webp"
-				alt="Ying Jiang from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
+		<Member
+			src="/assets/about/alex.webp"
+			name="Alex Duffy"
+			pos="Head of Product"
+		/>
+		<Member
+			src="/assets/about/michael.webp"
+			name="Michael Ke Zhang"
+			pos="Co Founder"
+		/>
+		<Member
+			src="/assets/about/richard.webp"
+			name="Richard Hsu"
+			pos="Co Founder"
+		/>
+		<Member
+			src="/assets/about/ying.webp"
+			name="Ying Jiang"
+			pos="Co Founder"
+		/>
 	</div>
 </Section>
 

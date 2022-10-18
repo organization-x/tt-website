@@ -1,6 +1,8 @@
 // Docs: https://kit.svelte.dev/docs/types#app
 
-import {
+import type { DateOption } from "$lib/enums";
+import type { Readable } from "svelte/store";
+import type {
 	Prisma,
 	Links,
 	User,
@@ -89,6 +91,33 @@ declare global {
 		// Interface for project deletion
 		interface ProjectDeleteRequest {
 			id: string;
+		}
+
+		// Interface for grabbing analytics data
+		interface AnalyticsRequest {
+			startDate: string;
+			endDate: string;
+		}
+
+		// Type for graph data that will be plotted
+		type GraphData = { label: string; value: number; color: string };
+
+		// Interface for analytics response data
+		interface AnalyticsResponse {
+			returning: number;
+			new: number;
+			prevViews: number;
+			searches: number;
+			prevSearches: number;
+			softSkills: SoftSkill[];
+			techSkills: TechSkill[];
+			projects: {
+				searches: number;
+				prevSearches: number;
+				views: GraphData[];
+				scrolled: GraphData[];
+				techSkills: TechSkill[];
+			};
 		}
 
 		// interface Platform {}

@@ -1,4 +1,7 @@
+import { error } from "@sveltejs/kit";
 import { PrismaClient } from "@prisma/client";
+
+import type { Prisma } from "@prisma/client";
 
 export const prisma = new PrismaClient();
 
@@ -44,3 +47,43 @@ export const userAuth = async ({ session }: App.Locals) => {
 
 	return { ...sesh.user } as App.UserWithMetadata;
 };
+
+// Grab multiple users based on a prisma where statement, used for search
+export const getUsers = (where: Prisma.UserWhereInput) =>
+	prisma.user.findMany({
+		where,
+		include: {
+			links: {
+				select: {
+					userId: false,
+					Devto: true,
+					Facebook: true,
+					GitHub: true,
+					LinkedIn: true,
+					Twitter: true,
+					Website: true
+				}
+			},
+			pinnedProject: true
+		}
+	});
+
+// Grab multiple projects based on a prisma where statement, used for search
+export const getProjects = (where: Prisma.ProjectWhereInput) =>
+	prisma.project
+		.findMany({
+			where,
+			include: {
+				authors: { select: { user: true, position: true } }
+			}
+		})
+		.then((projects) => projects);
+
+// Used for parsing request data on API endpoints
+export const parse = (request: Request) =>
+	request
+		.json()
+		.then((data) => data)
+		.catch(() => {
+			throw error(400, "Bad Request");
+		});

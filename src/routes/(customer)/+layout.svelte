@@ -5,9 +5,10 @@
 	import { slide } from "svelte/transition";
 
 	import { page } from "$app/stores";
-	import Logo from "$lib/components/Logo.svelte";
+	import { analytics } from "$lib/analytics";
 	import { afterNavigate } from "$app/navigation";
 	import AICamp from "$lib/components/AICamp.svelte";
+	import Logo from "$lib/components/icons/Logo.svelte";
 	import NavLink from "$lib/components/NavLink.svelte";
 	import FootLink from "$lib/components/FootLink.svelte";
 	import Burger from "$lib/components/icons/Burger.svelte";
@@ -15,17 +16,25 @@
 	import Envelope from "$lib/components/icons/Envelope.svelte";
 	import Instagram from "$lib/components/icons/Instagram.svelte";
 
-	let open = false;
+	import type { LayoutServerData } from "./$types";
 
+	export let data: LayoutServerData;
+
+	let open = false;
 	let pageId = derived(
 		page,
 		($page) => $page.routeId?.split("/")[1] || "home"
 	);
 
-	afterNavigate(() => (open = false));
+	afterNavigate(async () => {
+		open = false;
+
+		// Track analytical data
+		if (data.track) await analytics.page();
+	});
 </script>
 
-<header class="bg-black font-heading">
+<header class="bg-black">
 	<div
 		class="p-4 mx-auto max-w-screen-2xl flex justify-between lg:items-center lg:px-6 xl:px-10"
 	>

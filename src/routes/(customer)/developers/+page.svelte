@@ -3,6 +3,7 @@
 	import { fly } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
+	import { analytics } from "$lib/analytics";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import { softSkills, techSkills } from "$lib/enums";
@@ -16,19 +17,21 @@
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
 	import PageCaption from "$lib/components/PageCaption.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
+	import DevTagLoading from "$lib/components/DevTagLoading.svelte";
 	import HireStep from "$lib/components/developers/index/HireStep.svelte";
-	import StepImage from "$lib/components/developers/index/StepImage.svelte";
 	import Developer from "$lib/components/developers/index/Developer.svelte";
-	import DeveloperFilter from "$lib/components/developers/index/DeveloperFilter.svelte";
+	import DeveloperFilter from "$lib/components/developers/index/DevFilter.svelte";
 
-	import type { SoftSkill, TechSkill, User, Project } from "@prisma/client";
+	import type { PageData } from "./$types";
+	import type { SoftSkill, TechSkill } from "@prisma/client";
 
-	let request: Promise<App.UserWithMetadata[]> = new Promise(() => {});
+	export let data: PageData;
 
 	let page = 0;
 	let search = "";
 	let softSkillFilter = new Set<SoftSkill>();
 	let techSkillFilter = new Set<TechSkill>();
+	let request: Promise<App.UserWithMetadata[]> = new Promise(() => {});
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
 	$: search, (request = new Promise(() => {})), (page = 0);
@@ -57,9 +60,20 @@
 				} as App.UserSearchRequest)
 			})
 				.then((res) => res.json())
-				.then(async (data: App.UserWithMetadata[]) =>
-					data.length ? res(data) : rej()
-				)
+				.then(async (users: App.UserWithMetadata[]) => {
+					// Random search sampling so the search data isn't spammed
+					if (
+						data.track &&
+						(softSkillFilter.size || techSkillFilter.size) &&
+						Math.random() < 0.2
+					)
+						await analytics.track("user_search", {
+							soft_skills: Array.from(softSkillFilter),
+							tech_skills: Array.from(techSkillFilter)
+						});
+
+					return users.length ? res(users) : rej();
+				})
 		);
 	};
 
@@ -68,6 +82,16 @@
 		const param = new URLSearchParams(window.location.search).get("search");
 		param && (search = param);
 	});
+
+	// Track if a user was clicked on and what filters were used
+	const trackUser = async (id: string) =>
+		data.track &&
+		(softSkillFilter.size || techSkillFilter.size) &&
+		(await analytics.track("user_click", {
+			id,
+			soft_skills: Array.from(softSkillFilter),
+			tech_skills: Array.from(techSkillFilter)
+		}));
 </script>
 
 <svelte:head>
@@ -97,39 +121,39 @@
 	<div
 		class="bg-gray-500/40 p-5 mt-4 rounded-lg flex flex-col gap-8 mb-12 max-w-xl mx-auto"
 	>
-		<HireStep title="Search and discover.">
-			<StepImage
-				slot="image"
-				src="/assets/developers/index/find.webp"
-				alt="Developer profiles stacked ontop of eachother"
-			/>
-			Search for the perfect developer to fit your needs by filtering through
-			our team members below to pinpoint and/or discover your ideal candidates.
+		<HireStep
+			title="Search and discover."
+			src="/assets/developers/index/find.webp"
+			alt="Developer profiles stacked ontop of eachother"
+		>
+			Search for the perfect developer to fit your needs by filtering
+			through our team members below to pinpoint and/or discover your
+			ideal candidates.
 		</HireStep>
 
 		<Seperator />
 
-		<HireStep title="Evaluate options." side="right">
-			<StepImage
-				slot="image"
-				src="/assets/developers/index/stats.webp"
-				alt="Developer profile with statistics bars"
-			/>
-			Evaluate each canditates projects, skill sets, social media, and more
-			by clicking on their profile preview. And figure out who intrigues you
-			most.
+		<HireStep
+			title="Evaluate options."
+			side="right"
+			src="/assets/developers/index/stats.webp"
+			alt="Developer profile with statistics bars"
+		>
+			Evaluate each canditates projects, skill sets, social media, and
+			more by clicking on their profile preview. And figure out who
+			intrigues you most.
 		</HireStep>
 
 		<Seperator />
 
-		<HireStep title="Create a contract and blastoff.">
-			<StepImage
-				slot="image"
-				src="/assets/developers/index/send.webp"
-				alt="Developer profile with statistics bars"
-			/>
-			Contact us to schedule a virtual meeting for more information on pricing
-			and next steps. We usually get back to you within 2 buisness days.
+		<HireStep
+			title="Create a contract and blastoff."
+			src="/assets/developers/index/send.webp"
+			alt="Developer profile with statistics bars"
+		>
+			Contact us to schedule a virtual meeting for more information on
+			pricing and next steps. We usually get back to you within 2 buisness
+			days.
 		</HireStep>
 	</div>
 </Section>
@@ -303,26 +327,8 @@
 							<div
 								class="flex flex-col gap-4 md:grid md:grid-cols-2 w-full"
 							>
-								<div
-									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
-								>
-									<div
-										class="w-6 h-6 bg-gray-400 rounded-sm"
-									/>
-									<div
-										class="rounded-full h-4 w-24 bg-gray-400"
-									/>
-								</div>
-								<div
-									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
-								>
-									<div
-										class="w-6 h-6 bg-gray-400 rounded-sm"
-									/>
-									<div
-										class="rounded-full h-4 w-24 bg-gray-400"
-									/>
-								</div>
+								<DevTagLoading />
+								<DevTagLoading />
 							</div>
 
 							<div
@@ -332,53 +338,20 @@
 							<div
 								class="flex flex-col gap-4 md:grid md:grid-cols-2 w-full"
 							>
-								<div
-									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
-								>
-									<div
-										class="w-6 h-6 bg-gray-400 rounded-sm"
-									/>
-									<div
-										class="rounded-full h-4 w-24 bg-gray-400"
-									/>
-								</div>
-								<div
-									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
-								>
-									<div
-										class="w-6 h-6 bg-gray-400 rounded-sm"
-									/>
-									<div
-										class="rounded-full h-4 w-24 bg-gray-400"
-									/>
-								</div>
-								<div
-									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
-								>
-									<div
-										class="w-6 h-6 bg-gray-400 rounded-sm"
-									/>
-									<div
-										class="rounded-full h-4 w-24 bg-gray-400"
-									/>
-								</div>
-								<div
-									class="flex justify-center items-center bg-gray-800 rounded-lg gap-3 p-5"
-								>
-									<div
-										class="w-6 h-6 bg-gray-400 rounded-sm"
-									/>
-									<div
-										class="rounded-full h-4 w-24 bg-gray-400"
-									/>
-								</div>
+								<DevTagLoading />
+								<DevTagLoading />
+								<DevTagLoading />
+								<DevTagLoading />
 							</div>
 						</div>
 					</div>
 				{:then users}
 					{#each users as user, i}
 						{#if page === i}
-							<Developer {user} />
+							<Developer
+								on:click={async () => await trackUser(user.id)}
+								{user}
+							/>
 						{/if}
 					{/each}
 				{:catch}
