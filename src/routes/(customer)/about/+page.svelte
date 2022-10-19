@@ -29,16 +29,16 @@
 	<TextHeader>Where it all began.</TextHeader>
 
 	<Text>
-		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magni fuga,
-		animi voluptatem temporibus earum ea illum hic suscipit nisi, accusamus
-		molestiae aliquid minus similique facere vitae doloribus placeat
-		aspernatur ullam quo dolore excepturi nostrum delectus consequatur?
-		Vitae, earum repellendus ipsum facilis quisquam possimus delectus
-		doloribus eius veritatis iste voluptatum consequuntur odit et, esse at
-		ut velit, dolore quod? Eius, maxime? Ipsum ex placeat tempora, beatae
-		nam delectus vero nihil odit consequuntur veritatis fugiat velit
-		molestias, autem laboriosam cupiditate? Eius officiis eaque asperiores
-		consequatur. Iste, fugit ipsa.
+		AI Camp was founded to revolutionize AI education around the world. 
+		In doing so, we have helped thousands of students prepare for university, industry, and oftentimes both. 
+		Our superpower is our unique teaching approach. 
+		It is a fusion of the world's best instructors (Stanford, CMU, etc.) 
+		and small class sizes that makes AI education intuitive, accessible, and successful. 
+		We don't teach from A to Z. Instead, our students learn by doing. 
+		They build impressive AI products, develop in-demand skills, and forge powerful connections with our mentors and advisors. 
+		AI camp is in the business of providing opportunity. We are unified by the maxim that we are only as great as the doors we open.
+
+
 	</Text>
 </Section>
 
@@ -56,9 +56,7 @@
 			statName="50+ Team Tomorrow members"
 			class="before:bg-pink-dark"
 		>
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
-			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
-			quas neque laboriosam?
+		AI Camp’s Team Tomorrow provides internships to motivated students and gives them the chance to work for external companies. We believe that the best way to learn is by doing, and so through this program, students can learn the real way that professionals learn, and gain real experience at a job while still attending school.
 			<a href="/developers" class="text-teal-light">Developers-Page</a>
 		</Stat>
 		<Stat
@@ -88,9 +86,9 @@
 			"
 			class="before:bg-pink-dark"
 		>
-			Lorem ipsum dolor sit amet consectetur adipisicing elit. Quibusdam
-			reprehenderit blanditiis illum dignissimos voluptatem hic iure et
-			quas neque laboriosam?
+		Today, AI is helping us making drugs, recommending optimum routes for us to navigate, and helping doctors to fill the paperwork. Tomorrow, AI can compose music for us and drive long winding roads to deliver goods. Learning AI is a good way to master your own future. 
+
+
 			<a href="/" class="text-teal-light">Landing-Page</a>
 		</Stat>
 		<Stat
@@ -117,16 +115,8 @@
 	<TextHeader>The mission that brought us here.</TextHeader>
 
 	<Text>
-		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magni fuga,
-		animi voluptatem temporibus earum ea illum hic suscipit nisi, accusamus
-		molestiae aliquid minus similique facere vitae doloribus placeat
-		aspernatur ullam quo dolore excepturi nostrum delectus consequatur?
-		Vitae, earum repellendus ipsum facilis quisquam possimus delectus
-		doloribus eius veritatis iste voluptatum consequuntur odit et, esse at
-		ut velit, dolore quod? Eius, maxime? Ipsum ex placeat tempora, beatae
-		nam delectus vero nihil odit consequuntur veritatis fugiat velit
-		molestias, autem laboriosam cupiditate? Eius officiis eaque asperiores
-		consequatur. Iste, fugit ipsa.
+		We experienced first-hand that our traditional education did not prepare us for the real world. Even though we had advanced degrees from top universities, the job market was tough us as we did not what jobs were available, what to learn, or who could help. In addition, college tuition has skyrocketed. Student debt in the U.S. has exceeded 1.6 trillion dollars with the average student having $35,000 of debt by the time they graduate. To make matters worse 50% of graduating students are unable to find a job with their degree. This must change. We founded this camp to help students prepare for the real world. We hope that AI Camp can serve as early intervention in a student's life so that they are able to design the lives they want to have. Our students not only learn AI but how also how to pick a major, how to learn, network, and eventually become leaders in their chosen fields.
+
 	</Text>
 </Section>
 
