@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { onMount } from "svelte";
-
 	import { getIcon } from "$lib/getIcon";
-	import { analytics } from "$lib/analytics";
 	import Button from "$lib/components/Button.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
@@ -44,14 +41,6 @@
 				return link;
 		}
 	};
-
-	onMount(
-		async () =>
-			data.track &&
-			(await analytics.track("user_view", {
-				id: data.user.id
-			}))
-	);
 </script>
 
 <svelte:head>

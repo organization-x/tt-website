@@ -76,10 +76,14 @@ module.exports = {
 			},
 			height: {
 				15: "3.75rem",
-				100: "25rem"
+				100: "25rem",
+				104: "26rem"
 			},
 			minHeight: {
 				72: "18rem"
+			},
+			maxWidth: {
+				60: "15rem"
 			},
 			animation: {
 				progress: "progress 1s ease-in-out 1 forwards"

@@ -14,12 +14,9 @@ import type { SoftSkill, TechSkill } from "@prisma/client";
 // Create google analytics fetching client
 const analytics = new BetaAnalyticsDataClient({
 	credentials: {
-		client_email: import.meta.env.VITE_ANALYTICS_EMAIL,
+		client_email: import.meta.env.VITE_GOOGLE_EMAIL,
 		// Replace \n characters with actual newlines because google is wack
-		private_key: import.meta.env.VITE_ANALYTICS_KEY.replaceAll(
-			/\\n/gm,
-			"\n"
-		)
+		private_key: import.meta.env.VITE_GOOGLE_KEY.replaceAll(/\\n/gm, "\n")
 	}
 });
 
@@ -72,12 +69,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 						{
 							filter: {
 								fieldName: "eventName",
-								inListFilter: {
-									values: [
-										"user_view",
-										"user_projects_view",
-										"user_kudos_view"
-									]
+								stringFilter: {
+									value: "user_view"
 								}
 							}
 						},

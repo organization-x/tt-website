@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { analytics } from "$lib/analytics";
+	import { onMount } from "svelte";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Button from "$lib/components/Button.svelte";
@@ -34,8 +34,11 @@
 	import CompanyImage from "$lib/components/index/CompanyImage.svelte";
 
 	import type { PageData } from "./$types";
+	import type { AnalyticsInstance } from "analytics";
 
 	export let data: PageData;
+
+	let analytics: AnalyticsInstance | undefined;
 
 	// TODO: Actually fill dev data
 	const placeholder: App.Developer = {
@@ -46,9 +49,17 @@
 		}
 	};
 
+	onMount(async () => {
+		if (!data.track) return;
+
+		analytics = await import("$lib/analytics")
+			.then(({ analytics }) => analytics)
+			.catch(() => undefined);
+	});
+
 	// Grab tracking utilities for clicking buttons
 	const trackClick = (name: string) => async () =>
-		data.track &&
+		analytics &&
 		(await analytics.track("button_click", {
 			id: name
 		}));

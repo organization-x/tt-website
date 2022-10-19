@@ -40,16 +40,16 @@ export enum DateOption {
 
 // Color array for providing unique colors on each analytics graph column
 export const colors = [
-	"fill-blue-dark",
-	"fill-blue-light",
-	"fill-purple-dark",
-	"fill-purple-light",
-	"fill-red-dark",
-	"fill-red-light",
-	"fill-pink-dark",
-	"fill-pink-light",
-	"fill-teal-dark",
-	"fill-teal-light"
+	"text-blue-dark",
+	"text-blue-light",
+	"text-purple-dark",
+	"text-purple-light",
+	"text-red-dark",
+	"text-red-light",
+	"text-pink-dark",
+	"text-pink-light",
+	"text-teal-dark",
+	"text-teal-light"
 ];
 
 // Enum for idetifying the type of an action for expanding TipTap buttons

@@ -47,7 +47,7 @@
 	};
 
 	const search = () => {
-		request = fetch("/api/analytics", {
+		request = fetch("/api/stats", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
@@ -55,9 +55,6 @@
 			body: JSON.stringify(encodeDate(selected) as App.AnalyticsRequest)
 		}).then((res) => res.json());
 	};
-
-	// TODO: Finish up loading placeholders and test layout
-	// TODO: Move onto kudos page!
 </script>
 
 <svelte:head>
@@ -85,48 +82,72 @@
 					class="bg-gray-500/40 p-6 rounded-lg md:flex md:items-center lg:flex-col lg:w-full"
 				>
 					{#await request}
-						<div class="animate-pulse flex flex-col gap-2">
+						<div
+							class="animate-pulse md:flex-row md:flex md:w-full md:items-center lg:flex-col lg:h-full"
+						>
 							<div
-								class="rounded-full p-4 aspect-square w-52 mx-auto mb-7 flex items-center justify-center relative border-[17px] border-gray-400"
+								class="rounded-full p-4 aspect-square w-52 mx-auto mb-9 flex items-center justify-center relative border-[17px] border-gray-400 md:w-48 md:m-0 md:shrink-0"
 							>
 								<div
-									class="rounded-full h-5 w-28 bg-gray-400"
+									class="rounded-full h-5 w-20 bg-gray-400"
 								/>
 							</div>
 
 							<div
-								class="flex max-w-[15rem] mx-auto w-full justify-between items-center "
+								class="flex flex-col gap-2 md:mx-auto md:mt-1.5 lg:h-full lg:gap-1"
 							>
 								<div
-									class="w-5 h-5 shrink-0 bg-gray-400 rounded-full"
-								/>
+									class="flex max-w-60 mx-auto w-full justify-between items-center md:mt-8 lg:mt-7"
+								>
+									<div
+										class="w-5 h-5 shrink-0 bg-gray-400 rounded-full"
+									/>
+
+									<div
+										class="w-8 h-5 ml-3 rounded-full bg-gray-400 lg:h-4 lg:ml-2"
+									/>
+
+									<div
+										class="w-10 h-5 ml-auto rounded-full bg-gray-400 lg:h-4"
+									/>
+								</div>
 
 								<div
-									class="w-8 h-5 ml-3 rounded-full bg-gray-400"
-								/>
+									class="flex max-w-60 mx-auto w-full justify-between items-center"
+								>
+									<div
+										class="w-5 h-5 shrink-0 bg-gray-400 rounded-full"
+									/>
 
-								<div
-									class="w-10 h-5 ml-auto rounded-full bg-gray-400"
-								/>
+									<div
+										class="w-8 h-5 ml-3 rounded-full bg-gray-400 lg:h-4 lg:ml-2"
+									/>
+
+									<div
+										class="w-20 h-5 ml-auto rounded-full bg-gray-400 lg:h-4"
+									/>
+								</div>
+
+								<div class="mt-5 md:mt-6 lg:mt-auto">
+									<div
+										class="w-40 h-5 mx-auto rounded-full bg-gray-400 mb-3"
+									/>
+
+									<div class="flex gap-3 justify-center">
+										<div
+											class="w-14 h-5 rounded-full bg-gray-400"
+										/>
+
+										<div
+											class="w-5 h-5 rounded-sm bg-gray-400"
+										/>
+
+										<div
+											class="w-14 h-5 rounded-full bg-gray-400"
+										/>
+									</div>
+								</div>
 							</div>
-
-							<div
-								class="flex max-w-[15rem] mx-auto w-full justify-between items-center"
-							>
-								<div
-									class="w-5 h-5 shrink-0 bg-gray-400 rounded-full"
-								/>
-
-								<div
-									class="w-8 h-5 ml-3 rounded-full bg-gray-400"
-								/>
-
-								<div
-									class="w-20 h-5 ml-auto rounded-full bg-gray-400"
-								/>
-							</div>
-
-							<ComparisonLoading />
 						</div>
 					{:then analytics}
 						{@const views = analytics.returning + analytics.new}
@@ -178,16 +199,16 @@
 								<DataKey
 									value={analytics.new}
 									className={views
-										? "fill-blue-light"
-										: "fill-gray-500/40"}
+										? "text-blue-light"
+										: "text-gray-500/40"}
 									label="New"
 								/>
 
 								<DataKey
 									value={analytics.returning}
 									className={views
-										? "fill-blue-dark"
-										: "fill-gray-500/40"}
+										? "text-blue-dark"
+										: "text-gray-500/40"}
 									label="Returning"
 								/>
 							</div>
@@ -207,10 +228,8 @@
 					<h1 class="font-semibold text-lg">Top Soft Skills</h1>
 
 					{#await request}
-						<div class="flex flex-col gap-4 animate-pulse">
-							<DevTagLoading />
-							<DevTagLoading />
-						</div>
+						<DevTagLoading />
+						<DevTagLoading />
 					{:then analytics}
 						{#each { length: 2 } as _, i}
 							<DevTag name={analytics.softSkills[i]} />
@@ -220,12 +239,10 @@
 					<h1 class="font-semibold text-lg mt-2">Top Tech Skills</h1>
 
 					{#await request}
-						<div class="flex flex-col gap-4 animate-pulse">
-							<DevTagLoading />
-							<DevTagLoading />
+						<DevTagLoading />
+						<DevTagLoading />
 
-							<ComparisonLoading />
-						</div>
+						<ComparisonLoading />
 					{:then analytics}
 						{#each { length: 2 } as _, i}
 							<DevTag name={analytics.techSkills[i]} />
@@ -240,32 +257,43 @@
 				</div>
 			</DashSection>
 
-			<DashSection title="Projects" class="bg-gray-500/40">
-				<div
-					class="flex flex-col gap-4 rounded-lg p-6 lg:grid lg:grid-cols-2"
-				>
-					<h1 class="font-semibold text-lg">Top Tech Skills</h1>
+			<DashSection
+				title="Projects"
+				class="bg-gray-500/40 rounded-lg flex flex-col gap-4 p-6 lg:grid lg:grid-cols-2"
+			>
+				<h1 class="font-semibold text-lg">Top Tech Skills</h1>
 
-					{#await request}
-						<div class="flex flex-col gap-4 animate-pulse">
-							<DevTagLoading />
-							<DevTagLoading />
+				{#await request}
+					<DevTagLoading />
+					<DevTagLoading />
 
-							<ComparisonLoading />
-						</div>
-					{:then analytics}
-						{#each { length: 2 } as _, i}
-							<DevTag name={analytics.projects.techSkills[i]} />
-						{/each}
-
-						<Comparison
-							current={analytics.projects.searches}
-							previous={analytics.projects.prevSearches}
-							label="searches"
-							class="col-start-1 row-start-2"
+					<div
+						class="animate-pulse mt-6 md:mt-7 lg:mt-1 lg:col-start-1 lg:row-start-2"
+					>
+						<div
+							class="w-40 h-5 mx-auto rounded-full bg-gray-400 mb-3"
 						/>
-					{/await}
-				</div>
+
+						<div class="flex gap-3 justify-center">
+							<div class="w-16 h-5 rounded-full bg-gray-400" />
+
+							<div class="w-5 h-5 rounded-sm bg-gray-400" />
+
+							<div class="w-16 h-5 rounded-full bg-gray-400" />
+						</div>
+					</div>
+				{:then analytics}
+					{#each { length: 2 } as _, i}
+						<DevTag name={analytics.projects.techSkills[i]} />
+					{/each}
+
+					<Comparison
+						current={analytics.projects.searches}
+						previous={analytics.projects.prevSearches}
+						label="searches"
+						class="lg:col-start-1 lg:row-start-2"
+					/>
+				{/await}
 			</DashSection>
 		</div>
 

@@ -30,9 +30,8 @@
 	);
 
 	// Close the user menu when it's clicked outside of
-	const onClick = ({ target }: Event) => {
-		if (userOpen && !element.contains(target as Node)) userOpen = false;
-	};
+	const onClick = ({ target }: Event) =>
+		userOpen && !element.contains(target as Node) && (userOpen = false);
 
 	// Close the burger/user menu on navigation
 	afterNavigate(() => (burgerOpen = userOpen = false));
@@ -40,6 +39,9 @@
 	const [send, receive] = crossfade({
 		duration: 400
 	});
+
+	// TODO: Fix transition of user menu
+	// TODO: Cleanup components
 </script>
 
 <svelte:window on:click={onClick} />
@@ -177,7 +179,7 @@
 					<button
 						class:rounded-lg={!userOpen}
 						class:rounded-t-lg={userOpen}
-						class="flex gap-2 items-center justify-center py-3 transition-colors duration-200 w-full
+						class="flex gap-2 items-center justify-center py-3 w-full transition-colors duration-200
                         {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
 						on:click={() => (userOpen = !userOpen)}
 					>

@@ -5,7 +5,6 @@
 	import { slide } from "svelte/transition";
 
 	import { page } from "$app/stores";
-	import { analytics } from "$lib/analytics";
 	import { afterNavigate } from "$app/navigation";
 	import AICamp from "$lib/components/AICamp.svelte";
 	import Logo from "$lib/components/icons/Logo.svelte";
@@ -29,8 +28,12 @@
 	afterNavigate(async () => {
 		open = false;
 
-		// Track analytical data
-		if (data.track) await analytics.page();
+		if (!data.track) return;
+
+		// Dynamically import analytics to prevent errors when the client blocks it
+		import("$lib/analytics")
+			.then(async ({ analytics }) => await analytics.page())
+			.catch(() => {}); // Ignore errors
 	});
 </script>
 

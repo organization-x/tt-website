@@ -4,7 +4,6 @@
 
 	import { getIcon } from "$lib/getIcon";
 	import { techSkills } from "$lib/enums";
-	import { analytics } from "$lib/analytics";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
@@ -23,12 +22,14 @@
 
 	import type { PageData } from "./$types";
 	import type { TechSkill } from "@prisma/client";
+	import type { AnalyticsInstance } from "analytics";
 
 	export let data: PageData;
 
 	let page = 0;
 	let search = "";
 	let filters = new Set<TechSkill>();
+	let analytics: AnalyticsInstance | undefined;
 	let request: Promise<App.ProjectWithMetadata[][]> = new Promise(() => {});
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
@@ -57,7 +58,7 @@
 				.then((res) => res.json())
 				.then(async (projects: App.ProjectWithMetadata[]) => {
 					// Random search sampling so the search data isn't spammed
-					if (data.track && filters.size && Math.random() < 0.2)
+					if (analytics && filters.size && Math.random() < 0.2)
 						await analytics.track("project_search", {
 							tech_skills: Array.from(filters)
 						});
@@ -84,12 +85,18 @@
 	onMount(async () => {
 		const param = new URLSearchParams(window.location.search).get("search");
 		param && (search = param);
+
+		if (!data.track) return;
+
+		analytics = await import("$lib/analytics")
+			.then(({ analytics }) => analytics)
+			.catch(() => undefined);
 	});
 
 	// Track if a project was clicked on and what filters were used
 	const trackProject = async (id: string) =>
-		data.track &&
 		filters.size &&
+		analytics &&
 		(await analytics.track("project_click", {
 			id,
 			tech_skills: Array.from(filters)

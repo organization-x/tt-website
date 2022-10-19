@@ -25,7 +25,7 @@
                     q 5 0 5 5 v
                     {colHeight}
                     z"
-			class={item.color}
+			class="fill-current {item.color}"
 		/>
 
 		<!-- The reason 9 is added here is because of the -5 earlier and because the text has weird spacing -->

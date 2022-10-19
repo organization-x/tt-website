@@ -6,7 +6,6 @@
 	import { generateHTML } from "@tiptap/html";
 
 	import { getIcon } from "$lib/getIcon";
-	import { analytics } from "$lib/analytics";
 	import { extensions } from "$lib/tiptapExtensions";
 	import Button from "$lib/components/Button.svelte";
 	import Author from "$lib/components/Author.svelte";
@@ -26,9 +25,13 @@
 
 		if (!data.track) return;
 
-		await analytics.track("project_view", {
-			id: data.id
-		});
+		import("$lib/analytics")
+			.then(async ({ analytics }) =>
+				analytics.track("project_view", {
+					id: data.id
+				})
+			)
+			.catch(() => {});
 	});
 </script>
 

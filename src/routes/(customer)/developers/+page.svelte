@@ -3,7 +3,6 @@
 	import { fly } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
-	import { analytics } from "$lib/analytics";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import { softSkills, techSkills } from "$lib/enums";
@@ -23,6 +22,7 @@
 	import DeveloperFilter from "$lib/components/developers/index/DevFilter.svelte";
 
 	import type { PageData } from "./$types";
+	import type { AnalyticsInstance } from "analytics";
 	import type { SoftSkill, TechSkill } from "@prisma/client";
 
 	export let data: PageData;
@@ -31,6 +31,7 @@
 	let search = "";
 	let softSkillFilter = new Set<SoftSkill>();
 	let techSkillFilter = new Set<TechSkill>();
+	let analytics: AnalyticsInstance | undefined;
 	let request: Promise<App.UserWithMetadata[]> = new Promise(() => {});
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
@@ -63,7 +64,7 @@
 				.then(async (users: App.UserWithMetadata[]) => {
 					// Random search sampling so the search data isn't spammed
 					if (
-						data.track &&
+						analytics &&
 						(softSkillFilter.size || techSkillFilter.size) &&
 						Math.random() < 0.2
 					)
@@ -78,14 +79,20 @@
 	};
 
 	// Once mounted check if there's any URL search params, if so, input them
-	onMount(() => {
+	onMount(async () => {
 		const param = new URLSearchParams(window.location.search).get("search");
 		param && (search = param);
+
+		if (!data.track) return;
+
+		analytics = await import("$lib/analytics")
+			.then(({ analytics }) => analytics)
+			.catch(() => undefined);
 	});
 
 	// Track if a user was clicked on and what filters were used
 	const trackUser = async (id: string) =>
-		data.track &&
+		analytics &&
 		(softSkillFilter.size || techSkillFilter.size) &&
 		(await analytics.track("user_click", {
 			id,
@@ -246,6 +253,14 @@
 						<div class="rounded-full bg-gray-400 w-20 h-5" />
 					</div>
 				{:then users}
+					{#each users as user, i}
+						<DeveloperFilter
+							{user}
+							current={page === i}
+							on:click={() => (page = i)}
+						/>
+					{/each}
+
 					{#each users as user, i}
 						<DeveloperFilter
 							{user}

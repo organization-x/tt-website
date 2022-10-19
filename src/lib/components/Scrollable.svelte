@@ -1,5 +1,6 @@
 <script lang="ts">
 	import CarouselArrow from "$lib/components/icons/CarouselArrow.svelte";
+	import { afterUpdate, onMount } from "svelte/internal";
 
 	let className: string;
 	export let arrows = false;
@@ -33,16 +34,11 @@
 		}
 	};
 
-	const checkArrows = () => {
-		// Set a timeout since clientWidth and scrollWidth don't seem to get the correct inf0
-		if (scrollable) {
-			scrollable.clientWidth === scrollable.scrollWidth
-				? (disabledSide = Side.Both)
-				: onScroll();
-		}
-	};
-
-	$: innerWidth, checkArrows();
+	const checkArrows = () =>
+		scrollable &&
+		(scrollable.clientWidth === scrollable.scrollWidth
+			? (disabledSide = Side.Both)
+			: onScroll());
 
 	// TODO: Fix arrows enabling/disabling on slot contents change
 
@@ -86,8 +82,7 @@
 			<div
 				bind:this={scrollable}
 				on:scroll={onScroll}
-				class="
-                flex gap-5 overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
+				class="flex gap-5 overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
 			>
 				<slot />
 			</div>
@@ -118,8 +113,7 @@
 		<div
 			bind:this={scrollable}
 			on:scroll={onScroll}
-			class="
-            flex gap-5 overflow-auto py-2 scrollbar-hidden"
+			class="flex gap-5 overflow-auto py-2 scrollbar-hidden"
 		>
 			<slot />
 		</div>

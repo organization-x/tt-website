@@ -322,11 +322,12 @@
 						{/if}
 					{/each}
 				{:else}
-					<h1
-						class="text-center text-xl font-semibold my-auto lg:my-32 lg:col-span-2"
-					>
-						You don't have any projects
-					</h1>
+					<div
+						class="rounded-lg border-gray-800 border-4 border-dashed flex-1 h-104"
+					/>
+					<div
+						class="rounded-lg border-gray-800 border-4 border-dashed flex-1 h-104"
+					/>
 				{/if}
 			</div>
 
