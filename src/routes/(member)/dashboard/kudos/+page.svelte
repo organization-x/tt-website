@@ -28,21 +28,11 @@
 <DashWrap>
 	<DashHero title="Your Kudos" />
 
-	{#if !$user.discordId}
-		<h1 class="text-lg max-w-sm mx-auto font-semibold text-center mb-6">
-			You need to connect your Discord account to enable kudos
-		</h1>
-
-		<DashLink href="/discord" class="bg-blue-light max-w-sm mx-auto">
-			Connect Discord
-		</DashLink>
-	{:else}
-		<DateDropdown
-			on:change={() => (request = new Promise(() => {}))}
-			on:search={({ detail }) =>
-				(selected = detail.selected) &&
-				(custom = detail.custom) &&
-				search()}
-		/>
-	{/if}
+	<DateDropdown
+		on:change={() => (request = new Promise(() => {}))}
+		on:search={({ detail }) =>
+			(selected = detail.selected) &&
+			(custom = detail.custom) &&
+			search()}
+	/>
 </DashWrap>

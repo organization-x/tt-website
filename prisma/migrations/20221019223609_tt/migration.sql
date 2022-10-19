@@ -63,7 +63,6 @@ CREATE TABLE "Session" (
 -- CreateTable
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
-    "discordId" TEXT,
     "url" TEXT NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'User',
     "name" TEXT NOT NULL,
@@ -83,9 +82,6 @@ CREATE UNIQUE INDEX "Project_url_key" ON "Project"("url");
 
 -- CreateIndex
 CREATE INDEX "Project_title_skills_idx" ON "Project"("title", "skills");
-
--- CreateIndex
-CREATE UNIQUE INDEX "User_discordId_key" ON "User"("discordId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_url_key" ON "User"("url");

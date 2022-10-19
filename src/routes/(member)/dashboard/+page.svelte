@@ -146,7 +146,7 @@
 								</GradientText>
 								<a
 									target="_blank"
-									rel="noopener noreffere"
+									rel="noopener noreferrer"
 									href="/developers/{$user.url}"
 								>
 									<ExternalLink
@@ -179,7 +179,7 @@
 						<a
 							target="_blank"
 							href="/projects/{pinnedProject.url}"
-							rel="noreferrer noopener"
+							rel="noopener noreferrer"
 							class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4"
 							style="border-color: #{pinnedProject.theme}"
 						>

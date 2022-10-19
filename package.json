@@ -58,7 +58,6 @@
 		"analytics": "^0.8.1",
 		"cookie": "^0.5.0",
 		"d3-scale": "^4.0.2",
-		"google-auth-library": "^8.5.2",
 		"highlight.js": "^11.6.0",
 		"isbot": "^3.6.0",
 		"layercake": "^7.1.0",

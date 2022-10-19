@@ -35,6 +35,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>{data.title}</title>
+</svelte:head>
+
 <!-- TODO: Replace placeholder -->
 
 <img

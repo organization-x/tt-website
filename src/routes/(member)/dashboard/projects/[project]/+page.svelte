@@ -207,6 +207,10 @@
 	};
 </script>
 
+<svelte:head>
+	<title>{original.title} - Project Editor</title>
+</svelte:head>
+
 <svelte:window on:keydown={onKeydown} />
 
 <div class="grid border-b-4" style="border-color: #{project.theme}">
