@@ -39,7 +39,7 @@
 			name: "Alexander Zhou",
 			url: "placeholder"
 		}
-	}
+	};
 </script>
 
 <svelte:head>
@@ -479,14 +479,7 @@
 	<Project
 		title="AI Camp Bot"
 		href="/projects/aicbot"
-		developers={[
-			author,
-			author,
-			author,
-			author,
-			author,
-			author
-		]}
+		developers={[author, author, author, author, author, author]}
 		icons={[Python, TensorFlow]}
 	>
 		Running a camp with 1,000+ students and multiple mentors is no easy
@@ -529,7 +522,12 @@
 	<!-- TODO: Choose actual top 3 devs here -->
 
 	<Carousel amount={3}>
-		<DevCard author={{ position: "Software Engineer", user: { name: "Alexander Zhou", url: "placeholder" } }}>
+		<DevCard
+			author={{
+				position: "Software Engineer",
+				user: { name: "Alexander Zhou", url: "placeholder" }
+			}}
+		>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -541,7 +539,13 @@
 				dolores minima totam quasi.
 			</DevText>
 		</DevCard>
-		<DevCard author={{ position: "Product Designer", user: { name: "Bernice Lau", url: "placeholder" } }}>			<li>Worked on 80000 projects.</li>
+		<DevCard
+			author={{
+				position: "Product Designer",
+				user: { name: "Bernice Lau", url: "placeholder" }
+			}}
+		>
+			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -552,7 +556,13 @@
 				dolores minima totam quasi.
 			</DevText>
 		</DevCard>
-		<DevCard author={{ position: "Product Manager", user: { name: "Sricharan Guddanti", url: "placeholder" } }}>			<li>Worked on 80000 projects.</li>
+		<DevCard
+			author={{
+				position: "Product Manager",
+				user: { name: "Sricharan Guddanti", url: "placeholder" }
+			}}
+		>
+			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -568,18 +578,13 @@
 			slot="alt"
 			class="hidden lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:mt-32 lg:max-w-screen-xl"
 		>
-		<DevCard author={{ position: "Software Engineer", user: { name: "Alexander Zhou", url: "placeholder" } }}>				<li>Worked on 80000 projects.</li>
+			<DevCard
+				author={{
+					position: "Software Engineer",
+					user: { name: "Alexander Zhou", url: "placeholder" }
+				}}
+			>
 				<li>Worked on 80000 projects.</li>
-				<li>Worked on 80000 projects.</li>
-				<li>Worked on 80000 projects.</li>
-
-				<DevText slot="about">
-					Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-					Perferendis aspernatur distinctio at vero. Hic, possimus
-					itaque dolores minima totam quasi.
-				</DevText>
-			</DevCard>
-			<DevCard author={{ position: "Product Designer", user: { name: "Bernice Lau", url: "placeholder" } }}>				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
@@ -590,7 +595,30 @@
 					itaque dolores minima totam quasi.
 				</DevText>
 			</DevCard>
-			<DevCard author={{ position: "Product Manager", user: { name: "Sricharan Guddanti", url: "placeholder" } }}>				<li>Worked on 80000 projects.</li>
+			<DevCard
+				author={{
+					position: "Product Designer",
+					user: { name: "Bernice Lau", url: "placeholder" }
+				}}
+			>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+				<li>Worked on 80000 projects.</li>
+
+				<DevText slot="about">
+					Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+					Perferendis aspernatur distinctio at vero. Hic, possimus
+					itaque dolores minima totam quasi.
+				</DevText>
+			</DevCard>
+			<DevCard
+				author={{
+					position: "Product Manager",
+					user: { name: "Sricharan Guddanti", url: "placeholder" }
+				}}
+			>
+				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
