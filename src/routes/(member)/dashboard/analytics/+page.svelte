@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { tweened } from "svelte/motion";
 	import { DateOption } from "$lib/enums";
+	import { quintInOut, quintOut } from "svelte/easing";
 	import DevTag from "$lib/components/DevTag.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
@@ -10,7 +12,6 @@
 	import DateDropdown from "$lib/components/dashboard/DateDropdown.svelte";
 	import Comparison from "$lib/components/dashboard/analytics/Comparison.svelte";
 	import GraphLoading from "$lib/components/dashboard/analytics/GraphLoading.svelte";
-	import ComparisonLoading from "$lib/components/dashboard/analytics/ComparisonLoading.svelte";
 
 	let custom: Date;
 	let selected = DateOption.Week;
@@ -53,8 +54,26 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify(encodeDate(selected) as App.AnalyticsRequest)
-		}).then((res) => res.json());
+		})
+			.then((res) => res.json())
+			.then((analytics: App.AnalyticsResponse) => {
+				percent.set(
+					Math.trunc(
+						(analytics.new /
+							(analytics.new + analytics.returning)) *
+							100
+					)
+				);
+
+				return analytics;
+			});
 	};
+
+	// Custom animation for circular view ratio gradient
+	const percent = tweened(0, {
+		duration: 1500,
+		easing: quintInOut
+	});
 </script>
 
 <svelte:head>
@@ -79,18 +98,22 @@
 				class="flex flex-col gap-8 lg:flex-row"
 			>
 				<div
-					class="bg-gray-500/40 p-6 rounded-lg md:flex md:items-center lg:flex-col lg:w-full"
+					class="bg-gray-500/40 p-6 rounded-lg md:flex md:gap-4 md:items-center lg:flex-col lg:w-full lg:gap-0"
 				>
 					{#await request}
 						<div
 							class="animate-pulse md:flex-row md:flex md:w-full md:items-center lg:flex-col lg:h-full"
 						>
 							<div
-								class="rounded-full p-4 aspect-square w-52 mx-auto mb-9 flex items-center justify-center relative border-[17px] border-gray-400 md:w-48 md:m-0 md:shrink-0"
+								class="rounded-full p-4 aspect-square w-52 mx-auto mb-9 relative bg-gray-400 md:w-48 md:m-0 md:shrink-0"
 							>
 								<div
-									class="rounded-full h-5 w-20 bg-gray-400"
-								/>
+									class="absolute inset-3 rounded-full flex items-center justify-center bg-gray-800"
+								>
+									<div
+										class="rounded-full h-5 w-32 bg-gray-400"
+									/>
+								</div>
 							</div>
 
 							<div
@@ -130,7 +153,7 @@
 
 								<div class="mt-5 md:mt-6 lg:mt-auto">
 									<div
-										class="w-40 h-5 mx-auto rounded-full bg-gray-400 mb-3"
+										class="w-56 h-5 mx-auto rounded-full bg-gray-400 mb-3"
 									/>
 
 									<div class="flex gap-3 justify-center">
@@ -153,47 +176,34 @@
 						{@const views = analytics.returning + analytics.new}
 
 						<div
-							class="rounded-full p-4 aspect-square w-52 mx-auto mb-6 flex items-center justify-center relative border-[17px] md:w-48 md:m-0 lg:shrink-0
-                    {views ? 'border-blue-dark' : 'border-gray-500/40'}"
+							class="rounded-full p-4 aspect-square w-52 mx-auto mb-6 from-blue-light to-blue-dark relative md:w-48 md:m-0 lg:shrink-0"
+							style="background: conic-gradient(var(--tw-gradient-from) calc({$percent}%), var(--tw-gradient-to) 0)"
 						>
-							{#if views}
-								<svg
-									class="absolute -inset-[17px]"
-									viewBox="0 0 120 120"
-									fill="none"
-								>
-									<circle
-										class="stroke-blue-light stroke-[10] animate-progress"
-										style="stroke-linecap: round; stroke-dasharray: 400;
-                                                    stroke-dashoffset: {400 -
-											Math.trunc(
-												(analytics.new / views) * 400
-											)};"
-										cx="60"
-										cy="60"
-										r="55"
-									/>
-								</svg>
-
+							<div
+								class="absolute inset-3 rounded-full bg-gray-800 flex items-center justify-center shadow-[0_0_5px_3px_rgba(0,0,0,0.4)]"
+							>
 								<h1 class="font-semibold">
-									<!-- Whichever category of users is higher will be displayed inside the circle -->
-									{#if analytics.returning > analytics.new}
-										{Math.trunc(
-											(analytics.returning / views) * 100
-										)}% Returning visitors
+									{#if views}
+										<!-- Whichever category of users is higher will be displayed inside the circle -->
+										{#if analytics.returning > analytics.new}
+											{Math.trunc(
+												(analytics.returning / views) *
+													100
+											)}% Returning visitors
+										{:else}
+											{Math.trunc(
+												(analytics.new / views) * 100
+											)}% New visitors
+										{/if}
 									{:else}
-										{Math.trunc(
-											(analytics.new / views) * 100
-										)}% New visitors
+										No Views
 									{/if}
 								</h1>
-							{:else}
-								<h1 class="font-semibold">No views</h1>
-							{/if}
+							</div>
 						</div>
 
 						<div
-							class="md:w-40 md:mx-auto lg:h-full lg:flex lg:flex-col"
+							class="md:w-fit md:mx-auto lg:h-full lg:flex lg:flex-col"
 						>
 							<div class="mt-8">
 								<DataKey
@@ -242,7 +252,23 @@
 						<DevTagLoading />
 						<DevTagLoading />
 
-						<ComparisonLoading />
+						<div class="animate-pulse mt-6 md:mt-7 lg:mt-1">
+							<div
+								class="w-56 h-5 mx-auto rounded-full bg-gray-400 mb-3"
+							/>
+
+							<div class="flex gap-3 justify-center">
+								<div
+									class="w-16 h-5 rounded-full bg-gray-400"
+								/>
+
+								<div class="w-5 h-5 rounded-sm bg-gray-400" />
+
+								<div
+									class="w-16 h-5 rounded-full bg-gray-400"
+								/>
+							</div>
+						</div>
 					{:then analytics}
 						{#each { length: 2 } as _, i}
 							<DevTag name={analytics.techSkills[i]} />
@@ -271,7 +297,7 @@
 						class="animate-pulse mt-6 md:mt-7 lg:mt-1 lg:col-start-1 lg:row-start-2"
 					>
 						<div
-							class="w-40 h-5 mx-auto rounded-full bg-gray-400 mb-3"
+							class="w-56 h-5 mx-auto rounded-full bg-gray-400 mb-3"
 						/>
 
 						<div class="flex gap-3 justify-center">

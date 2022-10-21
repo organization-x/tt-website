@@ -45,23 +45,23 @@
 
 	onMount(() => {
 		// Register document with yjs for collaborative editing
-		// const doc = new Doc();
+		const doc = new Doc();
 
-		// const ws = new WebsocketProvider(
-		// 	"ws://localhost:8080/dashboard/projects",
-		// 	project.id,
-		// 	doc
-		// );
+		const ws = new WebsocketProvider(
+			"ws://localhost:8080/dashboard/projects",
+			project.id,
+			doc
+		);
 
 		// Generate a random light color for the user
-		// let color = "#";
+		let color = "#";
 
-		// Array.from({ length: 3 }).forEach(
-		// 	() =>
-		// 		(color += `0${Math.floor(
-		// 			((1 + Math.random()) * Math.pow(16, 2)) / 2
-		// 		).toString(16)}`.slice(-2))
-		// );
+		Array.from({ length: 3 }).forEach(
+			() =>
+				(color += `0${Math.floor(
+					((1 + Math.random()) * Math.pow(16, 2)) / 2
+				).toString(16)}`.slice(-2))
+		);
 
 		editor = new Editor({
 			element: editorElement,
@@ -99,22 +99,22 @@
 				project.content = editor.getJSON();
 			},
 			extensions: [
-				// Collaboration.configure({
-				// 	document: doc
-				// }),
-				// CollaborationCursor.configure({
-				// 	provider: ws,
-				// 	user: {
-				// 		name: $user.name,
-				// 		color
-				// 	},
-				// 	render(props: { name: string; color: string }) {
-				// 		const parent = document.createElement("span");
-				// 		new Cursor({ target: parent, props });
+				Collaboration.configure({
+					document: doc
+				}),
+				CollaborationCursor.configure({
+					provider: ws,
+					user: {
+						name: $user.name,
+						color
+					},
+					render(props: { name: string; color: string }) {
+						const parent = document.createElement("span");
+						new Cursor({ target: parent, props });
 
-				// 		return parent.firstElementChild as HTMLElement;
-				// 	}
-				// }),
+						return parent.firstElementChild as HTMLElement;
+					}
+				}),
 				...extensions
 			]
 		});
@@ -122,7 +122,7 @@
 		// Destroy the editor on unmount
 		return () => {
 			editor.destroy();
-			// ws.destroy();
+			ws.destroy();
 		};
 	});
 

@@ -40,6 +40,8 @@
 			? (disabledSide = Side.Both)
 			: onScroll());
 
+	$: innerWidth, checkArrows();
+
 	// TODO: Fix arrows enabling/disabling on slot contents change
 
 	// Scroll on arrow click

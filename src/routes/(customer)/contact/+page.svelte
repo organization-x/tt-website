@@ -2,13 +2,11 @@
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Page from "$lib/components/contact/Page.svelte";
-	import PageTitle from "$lib/components/PageTitle.svelte";
 	import Field from "$lib/components/contact/Field.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Select from "$lib/components/contact/Select.svelte";
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
 	import TextArea from "$lib/components/contact/TextArea.svelte";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
 
@@ -43,15 +41,13 @@
 	<title>Contact Us</title>
 </svelte:head>
 
-<Hero src="/assets/contact/contact.webm">
-	<PageTitle class="from-purple-light to-purple-dark">
-		Let us get the party started for you.
-	</PageTitle>
-
-	<PageCaption>
-		Give us detailed information on what and who you want to start
-		<strong>your journey</strong>.
-	</PageCaption>
+<Hero
+	class="from-purple-light to-purple-dark"
+	title="Let us get the party started for you."
+	src="/assets/contact/contact.webm"
+>
+	Give us detailed information on what and who you want to start
+	<strong>your journey</strong>.
 </Hero>
 
 <Section>

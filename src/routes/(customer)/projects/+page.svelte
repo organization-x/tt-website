@@ -7,13 +7,11 @@
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
-	import PageTitle from "$lib/components/PageTitle.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
 	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
@@ -107,15 +105,13 @@
 	<title>Projects</title>
 </svelte:head>
 
-<Hero src="/assets/projects/index/projects.webm">
-	<PageTitle class="from-pink-light to-pink-dark">
-		Projects from personal to professional.
-	</PageTitle>
-
-	<PageCaption>
-		Find skills in action by <strong>uncovering</strong> our projects and the
-		team behind them.
-	</PageCaption>
+<Hero
+	class="from-pink-light to-pink-dark"
+	title="Projects from personal to professional."
+	src="/assets/projects/index/projects.webm"
+>
+	Find skills in action by <strong>uncovering</strong> our projects and the team
+	behind them.
 </Hero>
 
 <Section>

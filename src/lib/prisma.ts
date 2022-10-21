@@ -78,12 +78,3 @@ export const getProjects = (where: Prisma.ProjectWhereInput) =>
 			}
 		})
 		.then((projects) => projects);
-
-// Used for parsing request data on API endpoints
-export const parse = (request: Request) =>
-	request
-		.json()
-		.then((data) => data)
-		.catch(() => {
-			throw error(400, "Bad Request");
-		});

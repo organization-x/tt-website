@@ -2,42 +2,38 @@
 	import Hero from "$lib/components/Hero.svelte";
 	import Text from "$lib/components/Text.svelte";
 	import Stat from "$lib/components/about/Stat.svelte";
-	import PageTitle from "$lib/components/PageTitle.svelte";
 	import Member from "$lib/components/about/Member.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
 </script>
 
 <svelte:head>
 	<title>About</title>
 </svelte:head>
 
-<Hero src="/assets/about/about.webm">
-	<PageTitle class="from-green-light to-green-dark">
-		A new era of collaboration and teamwork.
-	</PageTitle>
-
-	<PageCaption>
-		Explore what acheivements we've
-		<strong>accomplished</strong> and how we did it.
-	</PageCaption>
+<Hero
+	class="from-green-light to-green-dark"
+	title="A new era of collaboration and teamwork."
+	src="/assets/about/about.webm"
+>
+	Explore what acheivements we've
+	<strong>accomplished</strong> and how we did it.
 </Hero>
 
 <Section>
 	<TextHeader>Where it all began.</TextHeader>
 
 	<Text>
-		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Magni fuga,
-		animi voluptatem temporibus earum ea illum hic suscipit nisi, accusamus
-		molestiae aliquid minus similique facere vitae doloribus placeat
-		aspernatur ullam quo dolore excepturi nostrum delectus consequatur?
-		Vitae, earum repellendus ipsum facilis quisquam possimus delectus
-		doloribus eius veritatis iste voluptatum consequuntur odit et, esse at
-		ut velit, dolore quod? Eius, maxime? Ipsum ex placeat tempora, beatae
-		nam delectus vero nihil odit consequuntur veritatis fugiat velit
-		molestias, autem laboriosam cupiditate? Eius officiis eaque asperiores
-		consequatur. Iste, fugit ipsa.
+		AI Camp was founded to revolutionize AI education around the world. In
+		doing so, we have helped thousands of students prepare for university,
+		industry, and oftentimes both. Our superpower is our unique teaching
+		approach. It is a fusion of the world's best instructors (Stanford, CMU,
+		etc...) and small class sizes that makes AI education intuitive,
+		accessible, and successful. We don't teach from A to Z. Instead, our
+		students learn by doing. They build impressive AI products, develop
+		in-demand skills, and forge powerful connections with our mentors and
+		advisors. AI camp is in the business of providing opportunity. We are
+		unified by the maxim that we are only as great as the doors we open.
 	</Text>
 </Section>
 

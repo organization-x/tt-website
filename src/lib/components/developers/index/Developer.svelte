@@ -21,7 +21,7 @@
 >
 	<!-- TODO: Replace placeholder -->
 
-	<div class="flex gap-6 items-center">
+	<div class="flex flex-col gap-6 items-center md:flex-row">
 		<div class="relative shrink-0">
 			<img
 				height="200"
@@ -40,17 +40,17 @@
 				/>
 			</div>
 		</div>
-		<div>
-			<GradientText
-				class="from-green-light to-green-dark text-3xl mx-auto pt-4"
-			>
+		<div
+			class="flex flex-col-reverse gap-1 items-center text-center md:flex-col md:text-start md:items-start md:gap-0"
+		>
+			<GradientText class="from-green-light to-green-dark text-3xl">
 				{user.name}
 			</GradientText>
 			<h1 class="font-semibold">{user.team || "No Team"}</h1>
 		</div>
 	</div>
 
-	<p class="md:text-lg">
+	<p class="text-center md:text-lg md:text-start">
 		{user.about}
 	</p>
 

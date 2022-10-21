@@ -21,6 +21,9 @@
 	// Layout gets rendered early before user is set, so make sure it's set
 	user.set(data);
 
+	// Get first name of user for overflow prevention
+	$: firstName = $user.name.split(" ")[0];
+
 	let userOpen = false;
 	let burgerOpen = false;
 	let element: HTMLElement;
@@ -41,7 +44,6 @@
 	});
 
 	// TODO: Fix transition of user menu
-	// TODO: Cleanup components
 </script>
 
 <svelte:window on:click={onClick} />
@@ -69,7 +71,11 @@
 						alt="{$user.name}'s avatar"
 						class=" w-9 h-9 rounded-full"
 					/>
-					<h1 class="font-semibold">{$user.name}</h1>
+					<h1
+						class="font-semibold text-sm overflow-auto scrollbar-hidden max-w-[7rem]"
+					>
+						{firstName}
+					</h1>
 				</div>
 			{/if}
 
@@ -93,7 +99,7 @@
 						<div
 							in:receive={{ key: "user" }}
 							out:send={{ key: "user" }}
-							class="flex gap-3 items-center z-50 w-fit mx-auto"
+							class="flex gap-3 items-center w-fit z-50 mx-auto"
 						>
 							<img
 								width="200"
@@ -102,7 +108,9 @@
 								alt="{$user.name}'s avatar"
 								class=" w-14 h-14 rounded-full"
 							/>
-							<h1 class="font-semibold text-xl">{$user.name}</h1>
+							<h1 class="font-semibold text-xl">
+								{firstName}
+							</h1>
 						</div>
 						<ul
 							class="text-3xl divide-y max-w-md mx-auto mt-4 list-disc lg:list-none"
@@ -192,7 +200,7 @@
 							alt="{$user.name}'s avatar"
 							class="w-8 h-8 rounded-full"
 						/>
-						<span class="font-semibold">{$user.name}</span>
+						<span class="font-semibold">{firstName}</span>
 						<DropArrow open={userOpen} class="w-6 h-6" />
 					</button>
 

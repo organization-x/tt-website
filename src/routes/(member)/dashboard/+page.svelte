@@ -39,6 +39,9 @@
 		return { key: key, link: $user.links[key as keyof typeof $user.links] };
 	});
 
+	// Split the name to get the first name and rest of the name seperated
+	$: nameSplit = $user.name.split(/ (.*)/);
+
 	// Define the pinned project, the reason we don't use the user store for this is so that it stays
 	// updated with the database and also because updating the user store causes a refresh on the projects page
 	// that in turn re mounts it when on the main dashboard
@@ -105,9 +108,7 @@
 </svelte:head>
 
 <DashWrap>
-	<DashHero
-		title="{greet(new Date().getHours())}, {$user.name.split(' ')[0]}"
-	/>
+	<DashHero title="{greet(new Date().getHours())}, {nameSplit[0]}" />
 
 	<div class="flex flex-col gap-12">
 		<DashSection
@@ -118,7 +119,9 @@
 
 			<div class="lg:flex lg:gap-12">
 				<div class="shrink-0">
-					<div class="flex gap-6 items-center mb-6 shrink-0">
+					<div
+						class="flex flex-col gap-2 items-center mb-6 shrink-0 md:flex-row md:gap-6 md:justify-center"
+					>
 						<div class="relative shrink-0 w-fit">
 							<img
 								height="200"
@@ -137,10 +140,17 @@
 								/>
 							</div>
 						</div>
-						<div>
-							<div class="flex gap-2 items-center pt-4 w-fit">
+						<div
+							class="flex flex-col gap-2 items-center pt-4 w-fit md:flex-col-reverse md:items-start"
+						>
+							<h1 class="font-semibold">
+								{$user.team || "No Team"}
+							</h1>
+							<div
+								class="text-3xl text-center sm:flex sm:items-center sm:gap-2"
+							>
 								<GradientText
-									class="from-green-light to-green-dark text-3xl mx-auto"
+									class="from-green-light to-green-dark"
 								>
 									{$user.name}
 								</GradientText>
@@ -150,18 +160,15 @@
 									href="/developers/{$user.url}"
 								>
 									<ExternalLink
-										class="w-6 h-6 text-green-dark mt-1.5"
+										class="w-6 h-6 text-green-dark mx-auto mt-1.5"
 									/>
 								</a>
 							</div>
-							<h1 class="font-semibold">
-								{$user.team || "No Team"}
-							</h1>
 						</div>
 					</div>
 
 					<p
-						class="my-12 md:text-lg lg:max-w-sm lg:min-w-[24rem] lg:my-0"
+						class="my-12 text-center md:text-lg lg:text-left lg:max-w-sm lg:min-w-[24rem] lg:my-0"
 					>
 						{$user.about}
 					</p>

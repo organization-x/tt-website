@@ -20,13 +20,11 @@ declare global {
 			session: string | null;
 		}
 
-		// Landing page project developer
+		// Interface for the landing page developer cards
 		interface Developer {
-			position: string;
-			user: {
-				name: string;
-				url: string;
-			};
+			name: string;
+			url: string;
+			about: string;
 		}
 
 		// Type for removing the relational userId property from the links model
@@ -43,6 +41,7 @@ declare global {
 			where: Prisma.UserWhereUniqueInput;
 			user: {
 				id: string;
+				name?: string;
 				about?: string;
 				team?: Team;
 				positions?: Position[];

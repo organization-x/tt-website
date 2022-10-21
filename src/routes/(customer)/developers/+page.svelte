@@ -7,14 +7,12 @@
 	import Hero from "$lib/components/Hero.svelte";
 	import { softSkills, techSkills } from "$lib/enums";
 	import Seperator from "$lib/components/Seperator.svelte";
-	import PageTitle from "$lib/components/PageTitle.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
 	import DevTagLoading from "$lib/components/DevTagLoading.svelte";
 	import HireStep from "$lib/components/developers/index/HireStep.svelte";
@@ -105,15 +103,13 @@
 	<title>Developers</title>
 </svelte:head>
 
-<Hero src="/assets/developers/index/developers.webm">
-	<PageTitle class="from-blue-light to-blue-dark">
-		Discover who can push you forward.
-	</PageTitle>
-
-	<PageCaption>
-		See who fits your needs the most and <strong>propel</strong>
-		your product through our easy hiring process.
-	</PageCaption>
+<Hero
+	class="from-blue-light to-blue-dark"
+	title="Discover who can push you forward."
+	src="/assets/developers/index/developers.webm"
+>
+	See who fits your needs the most and <strong>propel</strong>
+	your product through our easy hiring process.
 </Hero>
 
 <Section>
@@ -247,20 +243,12 @@
 			>
 				{#await request}
 					<div
-						class="h-14 flex animate-pulse items-center gap-4 justify-center bg-gray-500 rounded-lg px-4 shrink-0 w-44"
+						class="h-14 flex animate-pulse items-center gap-4 justify-center bg-gray-500 rounded-lg px-4 shrink-0 w-56"
 					>
 						<div class="rounded-full bg-gray-400 w-10 h-10" />
-						<div class="rounded-full bg-gray-400 w-20 h-5" />
+						<div class="rounded-full bg-gray-400 w-32 h-5" />
 					</div>
 				{:then users}
-					{#each users as user, i}
-						<DeveloperFilter
-							{user}
-							current={page === i}
-							on:click={() => (page = i)}
-						/>
-					{/each}
-
 					{#each users as user, i}
 						<DeveloperFilter
 							{user}
@@ -281,19 +269,25 @@
 					<div
 						class="bg-gray-500 animate-pulse flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full hmin-h-[72rem] md:min-h-[54rem]"
 					>
-						<div class="flex gap-6 items-center">
+						<div
+							class="flex flex-col gap-6 items-center md:flex-row"
+						>
 							<div class="w-20 h-20 bg-gray-400 rounded-full" />
-							<div>
+							<div
+								class="flex flex-col-reverse gap-4 items-center text-center md:flex-col md:text-start md:items-start"
+							>
 								<div
-									class="rounded-full h-7 w-32 mt-4 bg-gray-400"
+									class="rounded-full h-7 w-56 bg-gray-400"
 								/>
 								<div
-									class="rounded-full h-4 w-24 mt-2 bg-gray-400"
+									class="rounded-full h-4 mt-1 w-24 bg-gray-400"
 								/>
 							</div>
 						</div>
 
-						<div class="flex flex-col gap-4">
+						<div
+							class="flex flex-col items-center px-3 gap-4 md:items-start md:px-0"
+						>
 							<div class="rounded-sm h-2 w-full bg-gray-400" />
 							<div class="rounded-sm h-2 w-full bg-gray-400" />
 							<div class="rounded-sm h-2 w-full bg-gray-400" />

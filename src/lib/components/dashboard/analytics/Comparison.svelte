@@ -20,12 +20,12 @@
 </script>
 
 <div class="mt-6 lg:mt-auto {className}">
-	{#if percent === 1}
-		<h1 class=" mb-2">No change</h1>
-	{:else}
-		<!-- Thes ternary operations are for formatting if the number is 100% down from previous, in which case prevPercent is -->
-		<!-- 0, or if prevPercent comes out to be above 1000% where then it is capped at 999% -->
-		<h1>
+	<h1 class=" mb-2">
+		{#if percent === 1}
+			No Change
+		{:else}
+			<!-- Thes ternary operations are for formatting if the number is 100% down from previous, in which case prevPercent is -->
+			<!-- 0, or if prevPercent comes out to be above 1000% where then it is capped at 999% -->
 			Now
 			<span class={color}>
 				{percent > 1
@@ -37,8 +37,8 @@
 					: `${percent ? Math.trunc(percent * 100) : 100}% lower`}
 			</span>
 			than before
-		</h1>
-	{/if}
+		{/if}
+	</h1>
 
 	<div class="flex gap-3 justify-center items-center text-sm">
 		<h1 class="font-normal">

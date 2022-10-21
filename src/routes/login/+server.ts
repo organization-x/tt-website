@@ -1,6 +1,7 @@
 import { redirect } from "@sveltejs/kit";
 
 import { prisma } from "$lib/prisma";
+import { env } from "$env/dynamic/private";
 
 import type { RequestHandler } from "./$types";
 
@@ -37,11 +38,7 @@ export const GET: RequestHandler = async (request) => {
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded"
 				},
-				body: `client_id=${
-					import.meta.env.VITE_DISCORD_ID
-				}&client_secret=${
-					import.meta.env.VITE_DISCORD_SECRET
-				}&grant_type=authorization_code&code=${code}&redirect_uri=http://localhost:5173/login`
+				body: `client_id=${env.DISCORD_ID}&client_secret=${env.DISCORD_SECRET}&grant_type=authorization_code&code=${code}&redirect_uri=http://localhost:5173/login`
 			})
 				.then((res) => res.json())
 				.catch(() => {
@@ -77,7 +74,7 @@ export const GET: RequestHandler = async (request) => {
 			prismaUser = await prisma.user.create({
 				data: {
 					id,
-					url: username.toLowerCase().replaceAll(" ", "-"),
+					url: username.trim().toLowerCase().replaceAll(" ", "-"),
 					name: username,
 					about: "I'm a member of Team Tomorrow!",
 					positions: ["Fullstack", "Designer"],
@@ -126,12 +123,9 @@ export const GET: RequestHandler = async (request) => {
 
 		// Redirect to oauth screen with state
 		// TODO: Switch to actual redirect URI for production
-		//TODO: &redirect_uri=https%3A%2F%2Fteamtomorrow.us%2Flogin
 		throw redirect(
 			302,
-			`https://discord.com/api/oauth2/authorize?redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Flogin&response_type=code&scope=identify&&client_id=${
-				import.meta.env.VITE_DISCORD_ID
-			}&state=${state}`
+			`https://discord.com/api/oauth2/authorize?redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Flogin&response_type=code&scope=identify&client_id=${env.DISCORD_ID}&state=${state}`
 		);
 	}
 };

@@ -2,7 +2,8 @@ import { error } from "@sveltejs/kit";
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
 
 import { colors } from "$lib/enums";
-import { parse, prisma, userAuth } from "$lib/prisma";
+import { env } from "$env/dynamic/private";
+import { prisma, userAuth } from "$lib/prisma";
 
 import type { RequestHandler } from "./$types";
 import type { SoftSkill, TechSkill } from "@prisma/client";
@@ -14,9 +15,9 @@ import type { SoftSkill, TechSkill } from "@prisma/client";
 // Create google analytics fetching client
 const analytics = new BetaAnalyticsDataClient({
 	credentials: {
-		client_email: import.meta.env.VITE_GOOGLE_EMAIL,
+		client_email: env.GOOGLE_EMAIL,
 		// Replace \n characters with actual newlines because google is wack
-		private_key: import.meta.env.VITE_GOOGLE_KEY.replaceAll(/\\n/gm, "\n")
+		private_key: env.GOOGLE_KEY.replaceAll(/\\n/gm, "\n")
 	}
 });
 
@@ -36,111 +37,25 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	const projectIds = projects.map((project) => project.id);
 
-	// Parse data or throw bad request if it isn't valid json
-	const data: App.AnalyticsRequest = await parse(request);
+	try {
+		// Parse data or throw bad request if it isn't valid json
+		const data: App.AnalyticsRequest = await request.json();
 
-	// Provide comparisons to the previous data within the same selected time period. For example if month
-	// is selected provide a comparison to the previous month, if week is then compare to the previous week
-	const end = new Date(data.endDate).getTime();
-	let previous: string | { startDate: string; endDate: string } = new Date(
-		end - (new Date(data.startDate).getTime() - end)
-	).toLocaleDateString("en-CA");
-	previous = { startDate: previous, endDate: previous };
+		// Provide comparisons to the previous data within the same selected time period. For example if month
+		// is selected provide a comparison to the previous month, if week is then compare to the previous week
+		const end = new Date(data.endDate).getTime();
+		let previous: string | { startDate: string; endDate: string } =
+			new Date(
+				end - (new Date(data.startDate).getTime() - end)
+			).toLocaleDateString("en-CA");
+		previous = { startDate: previous, endDate: previous };
 
-	// The request sent to the Google Analytics API
-	const requests = [
-		// Grab the users views across all their pages and new vs returning users for the date range selected
-		// and the previous based on that date range
-		{
-			dateRanges: [data, previous],
-			metrics: [
-				{
-					name: "eventCount"
-				}
-			],
-			dimensions: [
-				{
-					name: "newVsReturning"
-				}
-			],
-			dimensionFilter: {
-				andGroup: {
-					expressions: [
-						{
-							filter: {
-								fieldName: "eventName",
-								stringFilter: {
-									value: "user_view"
-								}
-							}
-						},
-						{
-							filter: {
-								fieldName: "customEvent:id",
-								stringFilter: {
-									value: user.id
-								}
-							}
-						}
-					]
-				}
-			}
-		},
-		// Grab the users top soft skills filters in search
-		{
-			dateRanges: [data, previous],
-			metrics: [
-				{
-					name: "eventCount"
-				}
-			],
-			dimensions: [
-				{
-					name: "customEvent:soft_skills"
-				},
-				{
-					name: "customEvent:tech_skills"
-				}
-			],
-			dimensionFilter: {
-				andGroup: {
-					expressions: [
-						{
-							filter: {
-								fieldName: "eventName",
-								stringFilter: {
-									value: "user_click"
-								}
-							}
-						},
-						{
-							filter: {
-								fieldName: "customEvent:id",
-								stringFilter: {
-									value: user.id
-								}
-							}
-						}
-					]
-				}
-			},
-			orderBys: [
-				{
-					desc: true,
-					metric: {
-						metricName: "eventCount"
-					}
-				}
-			],
-			limit: 2
-		}
-	] as Parameters<typeof analytics.runReport>[0][];
-
-	if (projectIds.length)
-		requests.push(
-			// Grab the users project views along with the percent scrolled on each project
+		// The request sent to the Google Analytics API
+		const requests = [
+			// Grab the users views across all their pages and new vs returning users for the date range selected
+			// and the previous based on that date range
 			{
-				dateRanges: [data],
+				dateRanges: [data, previous],
 				metrics: [
 					{
 						name: "eventCount"
@@ -148,10 +63,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 				],
 				dimensions: [
 					{
-						name: "percentScrolled"
-					},
-					{
-						name: "customEvent:id"
+						name: "newVsReturning"
 					}
 				],
 				dimensionFilter: {
@@ -161,31 +73,23 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 								filter: {
 									fieldName: "eventName",
 									stringFilter: {
-										value: "project_view"
+										value: "user_view"
 									}
 								}
 							},
 							{
 								filter: {
 									fieldName: "customEvent:id",
-									inListFilter: {
-										values: projectIds
+									stringFilter: {
+										value: user.id
 									}
 								}
 							}
 						]
 					}
-				},
-				orderBys: [
-					{
-						desc: true,
-						metric: {
-							metricName: "eventCount"
-						}
-					}
-				]
+				}
 			},
-			// Grab the users project clicks in search results along with the tech skills
+			// Grab the users top soft skills filters in search
 			{
 				dateRanges: [data, previous],
 				metrics: [
@@ -194,6 +98,9 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					}
 				],
 				dimensions: [
+					{
+						name: "customEvent:soft_skills"
+					},
 					{
 						name: "customEvent:tech_skills"
 					}
@@ -205,15 +112,15 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 								filter: {
 									fieldName: "eventName",
 									stringFilter: {
-										value: "project_click"
+										value: "user_click"
 									}
 								}
 							},
 							{
 								filter: {
 									fieldName: "customEvent:id",
-									inListFilter: {
-										values: projectIds
+									stringFilter: {
+										value: user.id
 									}
 								}
 							}
@@ -230,44 +137,139 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 				],
 				limit: 2
 			}
-		);
+		] as Parameters<typeof analytics.runReport>[0][];
 
-	const reports = (
-		await analytics
-			.batchRunReports({
-				property: "properties/336430086",
-				requests
-			})
-			.catch(() => {
-				throw error(400, "Bad Request");
-			})
-	)[0].reports!;
+		if (projectIds.length)
+			requests.push(
+				// Grab the users project views along with the percent scrolled on each project
+				{
+					dateRanges: [data],
+					metrics: [
+						{
+							name: "eventCount"
+						}
+					],
+					dimensions: [
+						{
+							name: "percentScrolled"
+						},
+						{
+							name: "customEvent:id"
+						}
+					],
+					dimensionFilter: {
+						andGroup: {
+							expressions: [
+								{
+									filter: {
+										fieldName: "eventName",
+										stringFilter: {
+											value: "project_view"
+										}
+									}
+								},
+								{
+									filter: {
+										fieldName: "customEvent:id",
+										inListFilter: {
+											values: projectIds
+										}
+									}
+								}
+							]
+						}
+					},
+					orderBys: [
+						{
+							desc: true,
+							metric: {
+								metricName: "eventCount"
+							}
+						}
+					]
+				},
+				// Grab the users project clicks in search results along with the tech skills
+				{
+					dateRanges: [data, previous],
+					metrics: [
+						{
+							name: "eventCount"
+						}
+					],
+					dimensions: [
+						{
+							name: "customEvent:tech_skills"
+						}
+					],
+					dimensionFilter: {
+						andGroup: {
+							expressions: [
+								{
+									filter: {
+										fieldName: "eventName",
+										stringFilter: {
+											value: "project_click"
+										}
+									}
+								},
+								{
+									filter: {
+										fieldName: "customEvent:id",
+										inListFilter: {
+											values: projectIds
+										}
+									}
+								}
+							]
+						}
+					},
+					orderBys: [
+						{
+							desc: true,
+							metric: {
+								metricName: "eventCount"
+							}
+						}
+					],
+					limit: 2
+				}
+			);
 
-	const response = {
-		returning: 0,
-		new: 0,
-		prevViews: 0,
-		searches: 0,
-		prevSearches: 0,
-		softSkills: [],
-		techSkills: [],
-		projects: {
+		const reports = (
+			await analytics
+				.batchRunReports({
+					property: "properties/336430086",
+					requests
+				})
+				.catch(() => {
+					throw error(400, "Bad Request");
+				})
+		)[0].reports!;
+
+		const response = {
+			returning: 0,
+			new: 0,
+			prevViews: 0,
 			searches: 0,
 			prevSearches: 0,
-			views: [],
-			scrolled: [],
-			techSkills: []
-		}
-	} as App.AnalyticsResponse;
+			softSkills: [],
+			techSkills: [],
+			projects: {
+				searches: 0,
+				prevSearches: 0,
+				views: [],
+				scrolled: [],
+				techSkills: []
+			}
+		} as App.AnalyticsResponse;
 
-	// Reports index key
-	// 0: User views
-	// 1: User search clicks with soft skills and tech skills
-	// 2: User project views with percent scrolled
-	// 3: User project clicks in search results with tech skills
+		// Reports index key
+		// 0: User views
+		// 1: User search clicks with soft skills and tech skills
+		// 2: User project views with percent scrolled
+		// 3: User project clicks in search results with tech skills
 
-	// Restructure data from analytics API so it's easier to use
-	try {
+		// Restructure data from analytics API so it's easier to use
 		// Grab user views
 		reports[0].rows!.forEach((row) => {
 			// Previous daterange views
@@ -374,18 +376,17 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					);
 				});
 		}
+
+		// Give every 10 project graph columns a different color, since the max on mobile is 5 columns a page and
+		// 10 on desktop, we can use the same colors with an interval of 10
+		response.projects.views.forEach((_, i) => {
+			const color = colors[i % 10];
+
+			response.projects.views[i].color = color;
+			response.projects.scrolled[i].color = color;
+		});
+		return new Response(JSON.stringify(response), { status: 200 });
 	} catch {
 		throw error(400, "Bad Request");
 	}
-
-	// Give every 10 project graph columns a different color, since the max on mobile is 5 columns a page and
-	// 10 on desktop, we can use the same colors with an interval of 10
-	response.projects.views.forEach((_, i) => {
-		const color = colors[i % 10];
-
-		response.projects.views[i].color = color;
-		response.projects.scrolled[i].color = color;
-	});
-
-	return new Response(JSON.stringify(response), { status: 200 });
 };

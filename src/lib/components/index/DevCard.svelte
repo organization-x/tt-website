@@ -4,7 +4,9 @@
 	import Plus from "$lib/components/icons/Plus.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 
-	export let author: App.Developer;
+	export let position: string;
+	export let developer: App.Developer;
+	export let accomplishments: string[];
 
 	let open = false;
 </script>
@@ -22,22 +24,27 @@
 				height="200"
 				width="200"
 				src="/assets/developers/user/placeholder/icon.webp"
-				alt="{author.user.name}'s avatar"
+				alt="{developer.name}'s avatar"
 				loading="lazy"
 				class="rounded-full mx-auto w-20 h-20 xl:mx-0"
 			/>
 			<div>
 				<h1 class="font-extrabold mt-3 mb-1 text-sm">
-					{author.position.toUpperCase()}
+					{position.toUpperCase()}
 				</h1>
+
 				<GradientText
 					class="text-center from-green-light to-green-dark text-xl"
 				>
-					{author.user.name}
+					{developer.name}
 				</GradientText>
 			</div>
 		</div>
-		<slot name="about" />
+
+		<p class="mt-2 mb-6 max-w-xs lg:mt-6 lg:mb-0">
+			{developer.about}
+		</p>
+
 		<div
 			class:h-full={open}
 			class:rounded-t-lg={open}
@@ -56,6 +63,7 @@
 				<p class="text-center my-auto">Show more</p>
 			</div>
 		</div>
+
 		{#if open}
 			<ul
 				transition:fade={{ duration: 100 }}
@@ -67,6 +75,8 @@
 	</div>
 
 	<ul class="hidden lg:block lg:mx-auto lg:shrink-0 lg:list-disc">
-		<slot />
+		{#each accomplishments as accomplishment}
+			<li>{accomplishment}</li>
+		{/each}
 	</ul>
 </div>

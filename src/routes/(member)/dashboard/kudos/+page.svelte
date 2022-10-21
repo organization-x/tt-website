@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { user } from "$lib/stores";
 	import { DateOption } from "$lib/enums";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
-	import DashLink from "$lib/components/dashboard/DashLink.svelte";
 	import DateDropdown from "$lib/components/dashboard/DateDropdown.svelte";
 
 	let custom: Date;
@@ -18,7 +16,6 @@
 	};
 
 	// TODO: CORS Issue
-	// TODO: Interface from adarsh
 </script>
 
 <svelte:head>

@@ -32,10 +32,7 @@
 
 		// Dynamically import analytics to prevent errors when the client blocks it
 		import("$lib/analytics")
-			.then(async ({ analytics }) => {
-				console.log(analytics.user());
-				await analytics.page();
-			})
+			.then(async ({ analytics }) => await analytics.page())
 			.catch(() => {}); // Ignore errors
 	});
 </script>

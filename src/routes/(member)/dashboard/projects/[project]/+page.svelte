@@ -134,31 +134,31 @@
 							content: project.content
 					  }
 			} as App.ProjectUpdateRequest)
-		}).then(async (res) => {
-			const json = await res.json();
+		})
+			.then((res) => res.json())
+			.then(async (response) => {
+				// If an error occurs and it's the title, tell the user
+				if (response.error === "SAME_TITLE") titleError = true;
+				// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading and update the local copy of the project
+				else if (response.url !== original.url) {
+					project.url = response.url;
 
-			// If an error occurs and it's the title, tell the user
-			if (!res.ok && json.message === "SAME_TITLE") titleError = true;
-			// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading and update the local copy of the project
-			else if (json.url !== original.url) {
-				project.url = json.url;
+					history.replaceState(
+						{},
+						"",
+						new URL(
+							`/dashboard/projects/${response.url}`,
+							document.location.href
+						)
+					);
+				}
 
-				history.replaceState(
-					{},
-					"",
-					new URL(
-						`/dashboard/projects/${json.url}`,
-						document.location.href
-					)
-				);
-			}
+				disableForm = false;
+				disableButtons = true;
 
-			disableForm = false;
-			disableButtons = true;
-
-			// If successful, update the original data
-			original = JSON.parse(JSON.stringify(project));
-		});
+				// If successful, update the original data
+				original = JSON.parse(JSON.stringify(project));
+			});
 
 		disableButtons = true;
 	};
@@ -250,7 +250,10 @@
 				max={50}
 			/>
 			{#if titleError}
-				<p transition:slide class="text-red-light text-sm mt-2 italic">
+				<p
+					transition:slide
+					class="text-red-light font-semibold text-sm mt-2"
+				>
 					Title already in use, please user another!
 				</p>
 			{/if}
