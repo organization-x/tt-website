@@ -61,7 +61,7 @@
 			that the best way to learn is by doing, and so through this program,
 			students can learn the real way that professionals learn, and gain
 			real experience at a job while still attending school.
-			<br>
+			<br />
 			<a href="/developers" class="text-teal-light">Developers</a>
 		</Stat>
 		<Stat
@@ -80,7 +80,7 @@
 			journey at AI Camp. It features custom dashboards for students and
 			parents, account creation and linking systems, course registration
 			flows, a full-fledged back office, analytics, and more.
-			<br>
+			<br />
 			<a href="/projects" class="text-teal-light">Projects</a>
 		</Stat>
 		<Stat
@@ -97,7 +97,7 @@
 			Tomorrow, AI can compose music for us and drive long winding roads
 			to deliver goods. Learning AI is a good way to master your own
 			future.
-			<br>
+			<br />
 			<a href="/" class="text-teal-light">Landing Page</a>
 		</Stat>
 		<Stat
@@ -109,13 +109,18 @@
 			class="before:bg-pink-dark"
 			side="right"
 		>
-		Our students build their foundation in core technical skills by utilizing tools like Python, computer vision, natural language processing, and data analytics to create revolutionary products deployed live on the web. But Team Tomorrow doesn’t stop there. TT developers apply their knowledge and experience in AI, ML, software engineering, and product design to build pipelines, data dashboards, AI models, and more for companies like yours.
-		<br>
-		<a
+			Our students build their foundation in core technical skills by
+			utilizing tools like Python, computer vision, natural language
+			processing, and data analytics to create revolutionary products
+			deployed live on the web. But Team Tomorrow doesn’t stop there. TT
+			developers apply their knowledge and experience in AI, ML, software
+			engineering, and product design to build pipelines, data dashboards,
+			AI models, and more for companies like yours.
+			<br />
+			<a
 				href="https://www.ai-camp.org/student-products"
 				class="text-teal-light">AI Camp Student Products</a
 			>
-			
 		</Stat>
 	</div>
 </Section>
@@ -185,6 +190,9 @@
 	<TextHeader>Innovation moves the world and we're all for it.</TextHeader>
 
 	<Text>
-		Team Tomorrow is the future and we are here to help build a brighter tomorrow for your company. Our developers undergo rigorous curriculum and hands-on professional training to ensure that they are ready to rise to the challenge. So now the question is, are you?
+		Team Tomorrow is the future and we are here to help build a brighter
+		tomorrow for your company. Our developers undergo rigorous curriculum
+		and hands-on professional training to ensure that they are ready to rise
+		to the challenge. So now the question is, are you?
 	</Text>
 </Section>
