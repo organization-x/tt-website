@@ -26,7 +26,7 @@
 				src="/assets/developers/user/placeholder/icon.webp"
 				alt="{developer.name}'s avatar"
 				loading="lazy"
-				class="rounded-full mx-auto w-20 h-20 xl:mx-0"
+				class="rounded-full mx-auto w-20 h-20 lg:mx-0"
 			/>
 			<div>
 				<h1 class="font-extrabold mt-3 mb-1 text-sm">
@@ -52,7 +52,7 @@
 			class="absolute flex bg-gray-700 mx-auto transition-[border-radius,height] left-0 right-0 bottom-0 rounded-b-lg w-full lg:hidden"
 		>
 			<div
-				class="flex gap-2 items-center m-auto mb-2 cursor-pointer"
+				class="flex gap-2 items-center m-auto mb-2 cursor-pointer w-full justify-center"
 				on:click={() => (open = !open)}
 			>
 				<Plus
@@ -69,7 +69,9 @@
 				transition:fade={{ duration: 100 }}
 				class="absolute pb-10 inset-0 left-4 m-auto h-fit w-fit list-disc lg:hidden"
 			>
-				<slot />
+				{#each accomplishments as accomplishment}
+					<li>{accomplishment}</li>
+				{/each}
 			</ul>
 		{/if}
 	</div>

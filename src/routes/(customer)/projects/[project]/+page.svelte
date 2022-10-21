@@ -17,6 +17,8 @@
 
 	export let data: PageData;
 
+	// TODO: Switch to prismjs
+
 	const html = generateHTML(data.content as JSONContent, extensions);
 
 	onMount(async () => {

@@ -24,6 +24,7 @@
 	import GitCommit from "$lib/components/index/GitCommit.svelte";
 	import DrawnArrow from "$lib/components/index/DrawnArrow.svelte";
 	import Annotation from "$lib/components/index/Annotation.svelte";
+	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
 
 	import type { PageData } from "./$types";
 	import type { AnalyticsInstance } from "analytics";
@@ -260,7 +261,7 @@
 
 	<!-- TODO: Switch indexing to proper values -->
 
-	<Carousel>
+	<Carousel class="lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:max-w-screen-xl">
 		<DevCard
 			developer={data.developers[0]}
 			position="Software Engineer"
@@ -295,50 +296,12 @@
 		/>
 	</Carousel>
 
-	<div
-		class="hidden lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:mt-32 lg:max-w-screen-xl"
-	>
-		<DevCard
-			developer={data.developers[0]}
-			position="Software Engineer"
-			accomplishments={[
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects."
-			]}
-		/>
-
-		<DevCard
-			developer={data.developers[0]}
-			position="Software Engineer"
-			accomplishments={[
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects."
-			]}
-		/>
-
-		<DevCard
-			developer={data.developers[0]}
-			position="Software Engineer"
-			accomplishments={[
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects."
-			]}
-		/>
-	</div>
-
 	<Button
 		on:click={() => trackClick("discover_developers")}
 		href="/developers"
-		class="mt-4 lg:mt-8">Discover</Button
 	>
-
-	<!-- TODO: Put actual important blog post here -->
+		Discover
+	</Button>
 
 	<TextHeader>Experience rapid takeoff with experience that fits.</TextHeader>
 
@@ -350,24 +313,10 @@
 		product for one of our clients, and how we did it behind th scenes.
 	</Text>
 
-	<a
-		href="/projects/something"
-		rel="noopener noreferrer"
-		class="p-4 block mb-8 mx-auto rounded-lg bg-gray-700/60 max-w-xs mt-8 border-t-4 ease-in-out duration-200 transition-transform sm:hover:scale-105 sm:flex sm:gap-8 sm:items-center sm:max-w-lg"
-		style="border-color: #3B84D6"
-	>
-		<div
-			class="rounded-lg bg-center bg-no-repeat bg-cover w-full shrink-0 aspect-square sm:w-28"
-			style="background-image: url(/assets/projects/project/placeholder/banner.webp);"
-		/>
-		<div>
-			<h1 class="font-semibold text-2xl mt-4">Blog Post</h1>
-			<p class="leading-5 mt-2 sm:text-sm md:text-lg md:leading-6">
-				Lorem ipsum dolor sit amet consectetur adipisicing elit. Com qui
-				rem et unde corporis placeat.
-			</p>
-		</div>
-	</a>
+	<!-- TODO: Put actual important blog post here -->
+	<div class="max-w-lg mx-auto lg:max-w-2xl">
+		<ProjectPreview project={data.projects[0]} />
+	</div>
 </Section>
 
 <MajorHeader>
@@ -383,7 +332,9 @@
 	to make your product soar.
 </MajorCaption>
 
-<Carousel>
+<Carousel
+	class="lg:max-w-2xl lg:mx-auto lg:flex lg:flex-col lg:gap-6 lg:mt-10 lg:bg-gray-500/40 lg:py-6 lg:pl-28 lg:pr-6 lg:-z-20 lg:rounded-xl lg:relative xl:max-w-screen-lg"
+>
 	<Step
 		num={1}
 		title="Choose your path"
@@ -394,7 +345,7 @@
 		and/or discover your ideal candidates. Or contact us immediatly to get
 		reccomendations and an instant quote.
 
-		<GitCommit slot="svg" />
+		<GitCommit slot="svg" class="lg:hidden" />
 	</Step>
 
 	<Step
@@ -407,7 +358,7 @@
 		and more by clicking on their profile preview and exploring what they
 		have to offer.
 
-		<GitMerge slot="svg" />
+		<GitMerge slot="svg" class="lg:hidden" />
 	</Step>
 
 	<Step
@@ -420,54 +371,17 @@
 		neatly without skipping a beat. Then watch our developers give the boost
 		your project needs.
 
-		<GitDeploy slot="svg" />
+		<GitDeploy slot="svg" class="lg:hidden" />
 	</Step>
-</Carousel>
 
-<div
-	class="hidden lg:max-w-2xl lg:mx-auto lg:flex lg:flex-col lg:gap-6 lg:mt-10 lg:bg-gray-500/40 lg:py-6 lg:pl-28 lg:pr-6 lg:-z-20 lg:rounded-xl lg:relative xl:max-w-screen-lg"
->
-	<div class="flex flex-col lg:gap-4">
-		<Step
-			num={1}
-			title="Choose your path"
-			class="text-purple-light from-purple-light to-purple-dark"
-		>
-			Figure out what you want to acheive and the skills needed to
-			accomplish such a task. Start by filtering through our team members
-			to pinpoint and/or discover your ideal candidates. Or contact us
-			immediatly to get reccomendations and an instant quote.
-		</Step>
-
-		<Step
-			num={2}
-			title="Evaluate options"
-			class="text-teal-light from-teal-light to-teal-dark"
-		>
-			Look deep into the detailed information we provide on each of our
-			team members. Evaluate our developers' projects, skill sets, social
-			media, and more by clicking on their profile preview and exploring
-			what they have to offer.
-		</Step>
-
-		<Step
-			num={3}
-			title="Get speedy results"
-			class="text-pink-light from-pink-light to-pink-dark"
-		>
-			Contact us to schedule a virtual meeting for more information on
-			pricing and next steps. We'll be happy to help you get started
-			quickly and neatly without skipping a beat. Then watch our
-			developers give the boost your project needs.
-		</Step>
-	</div>
-
-	<div class="absolute rotate-90 flex my-auto -left-56 top-0 bottom-0 h-14">
+	<div
+		class="hidden lg:flex lg:absolute lg:rotate-90 lg:my-auto lg:-left-56 lg:top-0 lg:bottom-0 lg:h-14"
+	>
 		<GitCommit />
 		<GitMerge />
 		<GitDeploy />
 	</div>
-</div>
+</Carousel>
 
 <Button
 	on:click={() => trackClick("explore_developers")}
