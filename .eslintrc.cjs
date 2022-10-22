@@ -18,7 +18,16 @@ module.exports = {
 	},
 	env: {
 		browser: true,
-		es2017: true,
+		es2020: true,
 		node: true
+	},
+	rules: {
+		"@typescript-eslint/no-non-null-assertion": "off",
+		"@typescript-eslint/no-empty-function": "off",
+		"@typescript-eslint/ban-ts-comment": "off"
+	},
+	globals: {
+		App: "readonly",
+		NodeJS: "readonly"
 	}
 };

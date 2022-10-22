@@ -1,5 +1,5 @@
 <script lang="ts">
-	let className: string = "";
+	let className = "";
 	export let hidden: boolean;
 	export let disabled: boolean;
 

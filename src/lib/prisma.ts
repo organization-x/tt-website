@@ -1,4 +1,3 @@
-import { error } from "@sveltejs/kit";
 import { PrismaClient } from "@prisma/client";
 
 import type { Prisma } from "@prisma/client";

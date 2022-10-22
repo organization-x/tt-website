@@ -1,7 +1,5 @@
 // Docs: https://kit.svelte.dev/docs/types#app
 
-import type { DateOption } from "$lib/enums";
-import type { Readable } from "svelte/store";
 import type {
 	Prisma,
 	Links,

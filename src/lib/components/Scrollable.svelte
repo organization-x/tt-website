@@ -1,6 +1,5 @@
 <script lang="ts">
 	import CarouselArrow from "$lib/components/icons/CarouselArrow.svelte";
-	import { afterUpdate, onMount } from "svelte/internal";
 
 	let className: string;
 	export let arrows = false;

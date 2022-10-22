@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { tweened } from "svelte/motion";
 	import { DateOption } from "$lib/enums";
-	import { quintInOut, quintOut } from "svelte/easing";
+	import { quintInOut } from "svelte/easing";
 	import DevTag from "$lib/components/DevTag.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";

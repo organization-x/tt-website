@@ -23,6 +23,8 @@ const mail = gmail({ version: "v1", auth: auth });
 export const GET: RequestHandler = async ({ request }) => {
 	try {
 		// const data: App.MailRequest = await request.json();
+
+		// Temp for testing
 		const data = {
 			message: "Hello World",
 			name: "John Doe",
@@ -31,6 +33,8 @@ export const GET: RequestHandler = async ({ request }) => {
 			subject: "Test"
 		};
 
+		// Create raw data for the email with the proper header information and a custom
+		// HTML template
 		const raw = Buffer.from(
 			`Delivered-To: hello@ai-camp.org
 			Return-Path: <${data.email}>
@@ -56,7 +60,7 @@ export const GET: RequestHandler = async ({ request }) => {
 						</div>
 					</body>
 				</html>
-			`.replaceAll(/^	+/gm, "")
+			`.replaceAll(/^	+/gm, "") // eslint-disable-line no-control-regex
 		).toString("base64");
 
 		// Insert an email into the hello@ai-camp.org email with the form data received along with a header
