@@ -683,8 +683,9 @@
 		class="text-purple-light from-purple-light to-purple-dark"
 	>
 		Figure out what you want to achieve and the skills needed to accomplish
-		such a task. Start by filtering through our team members to pinpoint your ideal candidates. Or contact us immediatly to get
-		reccomendations and an instant quote.
+		such a task. Start by filtering through our team members to pinpoint
+		your ideal candidates. Or contact us immediatly to get reccomendations
+		and an instant quote.
 		<GitCommit slot="svg" />
 	</Step>
 	<Step
@@ -721,9 +722,8 @@
 			>
 				Figure out what you want to achieve and the skills needed to
 				accomplish such a task. Start by filtering through our team
-				members to pinpoint your ideal candidates. Or
-				contact us immediatly to get reccomendations and an instant
-				quote.
+				members to pinpoint your ideal candidates. Or contact us
+				immediatly to get reccomendations and an instant quote.
 			</Step>
 			<Step
 				num={2}
