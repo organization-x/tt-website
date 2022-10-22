@@ -29,13 +29,16 @@
 	<TextHeader>Where it all began.</TextHeader>
 
 	<Text>
-		Our main goal at AI Camp is to revolutionize AI education around the globe. 
-		In doing so, we have helped thousands of students prepare for university and industry levels. 
-		Our unique teaching approach, using the world's best instructors to teach our small class sizes, 
-		makes AI education intuitive, accessible, and successful. At AI Camp, we teach our students to 
-		learn by doing. They build impressive AI products, develop in-demand skills, and forge powerful 
-		bonds with their mentors, advisors, and teammates. AI camp is in the business of providing opportunity. 
-		A maxim we use to unify us is that we are only as great as the doors we open.
+		Our main goal at AI Camp is to revolutionize AI education around the
+		globe. In doing so, we have helped thousands of students prepare for
+		university and industry levels. Our unique teaching approach, using the
+		world's best instructors to teach our small class sizes, makes AI
+		education intuitive, accessible, and successful. At AI Camp, we teach
+		our students to learn by doing. They build impressive AI products,
+		develop in-demand skills, and forge powerful bonds with their mentors,
+		advisors, and teammates. AI camp is in the business of providing
+		opportunity. A maxim we use to unify us is that we are only as great as
+		the doors we open.
 	</Text>
 </Section>
 
@@ -53,9 +56,10 @@
 			statName="50+ Team Tomorrow members"
 			class="before:bg-pink-dark"
 		>
-		AI Camp’s Team Tomorrow provides motivated students with internships and the 
-		opportunity to work for external companies. Through this program, students 
-		learn by doing and gain real job experience while attending school.
+			AI Camp’s Team Tomorrow provides motivated students with internships
+			and the opportunity to work for external companies. Through this
+			program, students learn by doing and gain real job experience while
+			attending school.
 			<br />
 			<a href="/developers" class="text-teal-light">Developers</a>
 		</Stat>
@@ -68,10 +72,10 @@
 			class="before:bg-pink-dark"
 			side="right"
 		>
-		Hippo2 is our custom-built internal and customer-facing interface 
-		that facilitates course registration, dashboard, automated 
-		communication, back office, and other operations that are vital 
-		towards helping AI Camp generate millions in revenue annually.
+			Hippo2 is our custom-built internal and customer-facing interface
+			that facilitates course registration, dashboard, automated
+			communication, back office, and other operations that are vital
+			towards helping AI Camp generate millions in revenue annually.
 			<br />
 			<a href="/projects" class="text-teal-light">Projects</a>
 		</Stat>
@@ -84,11 +88,10 @@
 			"
 			class="before:bg-pink-dark"
 		>
-		Today, AI is helping us make drugs, get to work, 
-		and fill out paperwork. Tomorrow, AI will be 
-		composing our music, delivering our goods, and more.
-		We believe it's critical to prepare for tomorrow, 
-		learning about AI, and expanding our knowledge as a team.
+			Today, AI is helping us make drugs, get to work, and fill out
+			paperwork. Tomorrow, AI will be composing our music, delivering our
+			goods, and more. We believe it's critical to prepare for tomorrow,
+			learning about AI, and expanding our knowledge as a team.
 			<br />
 			<a href="/" class="text-teal-light">Landing Page</a>
 		</Stat>
@@ -186,7 +189,7 @@
 		Here at Team Tomorrow, we make the future and are here to help build
 		your company a brighter tomorrow. Our developers undergo rigorous
 		curriculum and hands-on professional training to ensure they are ready
-		to rise to the challenge. Now the only question is, 
+		to rise to the challenge. Now the only question is,
 		<strong>are you?</strong>
 	</Text>
 </Section>
