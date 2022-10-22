@@ -25,6 +25,7 @@ import { BulletList } from "@tiptap/extension-bullet-list";
 import markdown from "highlight.js/lib/languages/markdown";
 import { OrderedList } from "@tiptap/extension-ordered-list";
 import typescript from "highlight.js/lib/languages/typescript";
+import javascript from "highlight.js/lib/languages/javascript";
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 
 // Generating HTML using Tiptap requires me to re-define all the HTML attributes for every extension.
@@ -40,6 +41,7 @@ lowlight.registerLanguage("bash", bash);
 lowlight.registerLanguage("python", python);
 lowlight.registerLanguage("markdown", markdown);
 lowlight.registerLanguage("typescript", typescript);
+lowlight.registerLanguage("javascript", javascript);
 
 // Tab behavoir change for lists
 const tabShortcut = Extension.create({

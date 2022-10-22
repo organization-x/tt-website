@@ -38,7 +38,6 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const projectIds = projects.map((project) => project.id);
 
 	try {
-		// Parse data or throw bad request if it isn't valid json
 		const data: App.AnalyticsRequest = await request.json();
 
 		// Provide comparisons to the previous data within the same selected time period. For example if month

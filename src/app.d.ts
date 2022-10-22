@@ -119,6 +119,25 @@ declare global {
 			};
 		}
 
+		// Interface for contact form email requests
+		interface MailRequest {
+			name: string;
+			email: string;
+			phone?: string;
+			company: string;
+			skills: (TechSkill | SoftSkill)[];
+			website?: string;
+			doing: string;
+			hear?: string;
+			subject: string;
+			message: string;
+		}
+
+		// Interface for contact form response data
+		interface MailResponse {
+			success: boolean;
+		}
+
 		// interface Platform {}
 		// interface PrivateEnv {}
 		// interface PublicEnv {}

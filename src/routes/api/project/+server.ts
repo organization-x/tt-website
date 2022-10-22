@@ -16,7 +16,6 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	if (!user) throw error(401, "Unauthorized");
 
 	try {
-		// Parse data or throw bad request if it isn't valid json
 		const data: App.ProjectUpdateRequest = await request.json();
 
 		// Grab the project from the database for validation

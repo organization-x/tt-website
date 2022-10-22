@@ -18,7 +18,6 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	if (!session) throw error(401, "Unauthorized");
 
 	try {
-		// Parse data or throw bad request if it isn't valid json
 		const data: App.UserUpdateRequest = await request.json();
 
 		// If the token isn't the same as for the user they are updating, throw unauthorized

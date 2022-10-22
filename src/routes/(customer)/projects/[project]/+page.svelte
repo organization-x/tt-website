@@ -1,8 +1,8 @@
 <script lang="ts">
 	import "$lib/hljsTheme.css";
 
-	import HLJS from "highlight.js";
 	import { onMount } from "svelte";
+	import hljs from "highlight.js/es/core";
 	import { generateHTML } from "@tiptap/html";
 
 	import { getIcon } from "$lib/getIcon";
@@ -17,13 +17,11 @@
 
 	export let data: PageData;
 
-	// TODO: Switch to prismjs
-
 	const html = generateHTML(data.content as JSONContent, extensions);
 
 	onMount(async () => {
 		// Syntax highlighting
-		HLJS.highlightAll();
+		hljs.highlightAll();
 
 		if (!data.track) return;
 

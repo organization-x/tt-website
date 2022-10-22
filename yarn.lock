@@ -382,7 +382,7 @@
   resolved "https://registry.yarnpkg.com/@tiptap/extension-bullet-list/-/extension-bullet-list-2.0.0-beta.199.tgz#72df0c94c6a9a5bce97ee1e0180657f1a63ffe18"
   integrity sha512-gGRQRqdQqCZQstB3ztSy8yzIdm5/5IIYxhCuFNb3Z9c9p/CzyRmaNqa7XkRLrXSajp4lS0OH8RkFUJqL6U+/9w==
 
-"@tiptap/extension-code-block-lowlight@^2.0.0-beta.195":
+"@tiptap/extension-code-block-lowlight@^2.0.0-beta.199":
   version "2.0.0-beta.199"
   resolved "https://registry.yarnpkg.com/@tiptap/extension-code-block-lowlight/-/extension-code-block-lowlight-2.0.0-beta.199.tgz#1861abababe8d17f3cd36ebcefb39ba95b649dc1"
   integrity sha512-1FWMdut6ZB/c0/3qbd+ljiB1M/YWADiGHBpm9bVhnoMcPGGkVS5ww+bUYpLBdBpTDcemfzkt7FtrfV0SKEg3+g==
@@ -1994,7 +1994,7 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
-highlight.js@~11.6.0:
+highlight.js@^11.6.0, highlight.js@~11.6.0:
   version "11.6.0"
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-11.6.0.tgz#a50e9da05763f1bb0c1322c8f4f755242cff3f5a"
   integrity sha512-ig1eqDzJaB0pqEvlPVIpSSyMaO92bH1N2rJpLMN/nX396wTpDA4Eq0uK+7I/2XG17pFaaKE0kjV/XPeGt7Evjw==
@@ -2783,11 +2783,6 @@ prisma@^4.5.0:
   integrity sha512-9Aeg4qiKlv9Wsjz4NO8k2CzRzlvS3A4FYVJ5+28sBBZ0eEwbiVOE/Jj7v6rZC1tFW2s4GSICQOAyuOjc6WsNew==
   dependencies:
     "@prisma/engines" "4.5.0"
-
-prismjs@^1.29.0:
-  version "1.29.0"
-  resolved "https://registry.yarnpkg.com/prismjs/-/prismjs-1.29.0.tgz#f113555a8fa9b57c35e637bba27509dcf802dd12"
-  integrity sha512-Kx/1w86q/epKcmte75LNrEoT+lX8pBpavuAbvJWRXar7Hz8jrtF+e3vY751p0R8H9HdArwaCTNDDzHg/ScJK1Q==
 
 prosemirror-commands@^1.3.1:
   version "1.3.1"

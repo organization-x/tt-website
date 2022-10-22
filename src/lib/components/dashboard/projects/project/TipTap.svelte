@@ -6,7 +6,6 @@
 	import { Editor } from "@tiptap/core";
 	import { createEventDispatcher } from "svelte";
 	import { WebsocketProvider } from "y-websocket";
-	import { Awareness } from "y-protocols/awareness";
 	import { extensions } from "$lib/tiptapExtensions";
 	import { Collaboration } from "@tiptap/extension-collaboration";
 	import { CollaborationCursor } from "@tiptap/extension-collaboration-cursor";
@@ -20,6 +19,8 @@
 	import HeadButton from "$lib/components/dashboard/projects/project/HeadButton.svelte";
 	import ImageButton from "$lib/components/dashboard/projects/project/ImageButton.svelte";
 	import EditorButton from "$lib/components/dashboard/projects/project/EditorButton.svelte";
+
+	import type { Content } from "@tiptap/core";
 
 	const dispatch = createEventDispatcher<{ editor: Editor }>();
 
@@ -65,6 +66,7 @@
 
 		editor = new Editor({
 			element: editorElement,
+			content: project.content as Content,
 			editorProps: {
 				attributes: {
 					class: "focus-visible:outline-none"
