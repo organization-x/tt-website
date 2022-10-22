@@ -20,7 +20,7 @@
 	</PageTitle>
 
 	<PageCaption>
-		Explore what acheivements we've
+		Explore what achievements we've
 		<strong>accomplished</strong> and how we did it.
 	</PageCaption>
 </Hero>
