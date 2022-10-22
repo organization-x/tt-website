@@ -60,7 +60,7 @@ export const GET: RequestHandler = async ({ request }) => {
 						</div>
 					</body>
 				</html>
-			`.replaceAll(/^	+/gm, "") // eslint-disable-line no-control-regex
+			`.replaceAll(/^	+/gm, "")
 		).toString("base64");
 
 		// Insert an email into the hello@ai-camp.org email with the form data received along with a header

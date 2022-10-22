@@ -134,6 +134,7 @@ declare global {
 		// Interface for contact form response data
 		interface MailResponse {
 			success: boolean;
+		}
 
 		// Interface for inputs on the contact page form
 		interface Box {

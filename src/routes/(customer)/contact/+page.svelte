@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { BoxType } from "$lib/enums";
+
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Page from "$lib/components/contact/Page.svelte";
@@ -9,7 +11,6 @@
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
 	import TextArea from "$lib/components/contact/TextArea.svelte";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
-	import { BoxType } from "$lib/enums";
 
 	const titles = [
 		"First, the basics.",
