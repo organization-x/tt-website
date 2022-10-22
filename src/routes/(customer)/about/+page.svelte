@@ -16,7 +16,7 @@
 	title="A new era of collaboration and teamwork."
 	src="/assets/about/about.webm"
 >
-	Explore what acheivements we've
+	Explore what achievements we've
 	<strong>accomplished</strong> and how we did it.
 </Hero>
 

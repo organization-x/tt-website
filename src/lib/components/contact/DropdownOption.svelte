@@ -1,21 +1,15 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte";
-
 	import Checkbox from "$lib/components/icons/Checkbox.svelte";
-
-	const dispatch = createEventDispatcher<{
-		change: { isSelected: boolean };
-	}>();
-
-	let isSelected = false;
+	export let isSelected = false;
 </script>
 
 <div
 	on:click={() => {
 		isSelected = !isSelected;
-		dispatch("change", { isSelected });
 	}}
-	class="p-4 flex items-center gap-3 rounded-lg cursor-pointer"
+	class="p-4 flex items-center gap-3 cursor-pointer hover:bg-white/10 transition-colors"
+	role="checkbox"
+	aria-checked={isSelected}
 >
 	<Checkbox checked={isSelected} class="w-4 h-4" />
 	<slot />

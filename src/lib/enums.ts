@@ -57,4 +57,10 @@ export const enum Action {
 	Confirm,
 	Open,
 	Delete
+
+// Enum for type of input field on the contact form
+export enum BoxType {
+	Field,
+	Select,
+	TextArea
 }
