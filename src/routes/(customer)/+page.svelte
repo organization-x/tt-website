@@ -56,6 +56,7 @@
 	<PageCaption>
 		Develop something exciting with skills from low-level mastery to
 		meticulous design. Accelerate progress with the backing you need.
+		<br />
 		<strong>A great team</strong>.
 	</PageCaption>
 
@@ -103,7 +104,7 @@
 				height={172}
 			/>
 			Focusing on intelligent automation for healthcare at a company, our developers
-			build tools to automate repetitive tasks to reduce costs and and improve
+			build tools to automate repetitive tasks to reduce costs and improve
 			experiences in the workflow.
 		</Company>
 		<Company icons={[Python, TensorFlow]}>
@@ -127,10 +128,7 @@
 				width={574}
 				height={144}
 			/>
-			Our team has valuable skills in the WEB3 field. Team Tomorrow developers
-			actively build tools utilizing data from the blockchain and leveraging
-			APIs to help people make smart decisions when trading cryptocurrency
-			assests like NFTs.
+			Our team has valuable skills in the WEB3 field. Team Tomorrow developers actively build tools utilizing data from the blockchain and leveraging APIs to help people make good decisions when trading cryptocurrency assets like NFTs.
 		</Company>
 		<Company icons={[Python, Aws]}>
 			<CompanyImage
@@ -153,18 +151,13 @@
 	</div>
 
 	<Text>
-		Lots of companies nowadays have trouble lifting off the ground since
-		hiring expert software engineers normally is expensive, not here. We
-		look to empower others and
-		<strong>
-			lift the next big thing off the ground in time, and well.
-		</strong>
-		Contact us now for more information on the next steps or continue to explore
-		this website and find our
-		<strong>
-			amazing projects and developers leveraging different skills in
-			different fields all the time.
-		</strong>
+		Many companies nowadays have trouble lifting off the ground since hiring
+		expert software engineers can be expensive, but not here. We strive to
+		empower our developers to create
+		<strong>your next big thing</strong>
+		Contact us <strong>now</strong> for more information on the next steps,
+		or continue to explore our website and uncover our
+		<strong>stunning projects and the developers who have created them.</strong>
 	</Text>
 
 	<Button href="/contact">Contact Us</Button>
@@ -632,7 +625,7 @@
 		</div>
 	</Carousel>
 
-	<Button href="/developers" class="mt-4 lg:mt-8">Discover</Button>
+	<Button href="/developers" class="mt-4 lg:mt-8">Discover Developers</Button>
 
 	<!-- TODO: Put actual important blog post here -->
 
@@ -686,7 +679,7 @@
 	>
 		Figure out what you want to acheive and the skills needed to accomplish
 		such a task. Start by filtering through our team members to pinpoint
-		and/or discover your ideal candidates. Or contact us immediatly to get
+		and discover your ideal candidates. Or contact us immediatly to get
 		reccomendations and an instant quote.
 		<GitCommit slot="svg" />
 	</Step>
@@ -707,7 +700,7 @@
 		class="text-pink-light from-pink-light to-pink-dark"
 	>
 		Contact us to schedule a virtual meeting for more information on pricing
-		and next steps. We'll be happy to help you get started quickly and
+		and the next steps. We'll be happy to help you get started quickly and
 		neatly without skipping a beat. Then watch our developers give the boost
 		your project needs.
 		<GitDeploy slot="svg" />
@@ -759,4 +752,4 @@
 	</div>
 </Carousel>
 
-<Button href="/developers" class="mt-8">Explore Developers</Button>
+<Button href="/developers" class="mt-8">Discover Developers</Button>
