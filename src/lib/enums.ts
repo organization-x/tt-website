@@ -59,9 +59,9 @@ export const enum Action {
 	Delete
 }
 
-// Enum for type of input field on the contact form
-export enum BoxType {
-	Field,
-	Select,
-	TextArea
+// Enum for keeping track of what type of field is being validated on the contact form
+export const enum FieldType {
+	Email,
+	Phone,
+	Website
 }

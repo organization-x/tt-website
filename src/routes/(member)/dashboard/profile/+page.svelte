@@ -57,8 +57,8 @@
 	// For updating dropdown arrays
 	const dropdownUpdate = <T extends Position | SoftSkill | TechSkill>(
 		array: T[],
-		selected: string,
-		previous: string
+		selected: string | undefined,
+		previous: string | undefined
 	) => {
 		const index = array.indexOf(previous as T);
 
@@ -76,7 +76,10 @@
 
 	const updateTeam = ({
 		detail
-	}: CustomEvent<{ selected: string; previous: string }>) => {
+	}: CustomEvent<{
+		selected: string | undefined;
+		previous: string | undefined;
+	}>) => {
 		user.team = detail.selected as Team;
 		checkConstraints();
 	};
@@ -255,7 +258,6 @@
 					/>
 
 					<Dropdown
-						radio={true}
 						options={teams}
 						required={false}
 						selectedItems={[user.team]}
@@ -323,7 +325,6 @@
 					{#each { length: 4 } as _, i}
 						<Dropdown
 							{i}
-							radio={true}
 							required={i < 2}
 							options={positions}
 							selectedItems={user.positions}
@@ -349,7 +350,6 @@
 						{#each { length: 5 } as _, i}
 							<Dropdown
 								{i}
-								radio={true}
 								required={i < 2}
 								options={softSkills}
 								selectedItems={user.softSkills}
@@ -371,7 +371,6 @@
 						{#each { length: 5 } as _, i}
 							<Dropdown
 								{i}
-								radio={true}
 								required={i < 2}
 								options={techSkills}
 								selectedItems={user.techSkills}

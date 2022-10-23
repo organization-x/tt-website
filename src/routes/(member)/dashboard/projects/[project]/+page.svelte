@@ -64,7 +64,10 @@
 
 	const updateSkills = ({
 		detail
-	}: CustomEvent<{ selected: string; previous: string }>) => {
+	}: CustomEvent<{
+		selected: string | undefined;
+		previous: string | undefined;
+	}>) => {
 		const index = project.skills.indexOf(detail.previous as TechSkill);
 
 		// If the newly selected value is the same ignore
@@ -275,7 +278,6 @@
 			{#each { length: 4 } as _, i}
 				<Dropdown
 					{i}
-					radio={true}
 					required={i < 2}
 					options={techSkills}
 					selectedItems={project.skills}

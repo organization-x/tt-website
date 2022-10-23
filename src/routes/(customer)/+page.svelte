@@ -312,7 +312,7 @@
 		<strong>From DevOps to Deployment</strong>
 		we've got you covered with the most popular tools and technologies used in
 		workforces globally. Read a succesfull story of how we built a comprehensive
-		product for one of our clients, and how we did it behind th scenes.
+		product for one of our clients, and how we did it behind the scenes.
 	</Text>
 
 	<!-- TODO: Put actual important blog post here -->
