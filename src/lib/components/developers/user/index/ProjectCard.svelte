@@ -11,6 +11,7 @@
 
 <a
 	class="block bg-gray-500/40 rounded border-t-4 border-t-blue-dark hover:bg-gray-500/50 transition-colors"
+	rel="noopener noreferrer"
 	{href}
 >
 	<div class="relative isolate h-20">

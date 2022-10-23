@@ -33,10 +33,10 @@
 	import CompanyImage from "$lib/components/index/CompanyImage.svelte";
 
 	// TODO: Actually fill dev data
-	const placeholder: App.Developer = {
+	const author: App.Developer = {
 		position: "Software Engineer",
 		user: {
-			name: "Jackson Choyce",
+			name: "Alexander Zhou",
 			url: "placeholder"
 		}
 	};
@@ -103,7 +103,7 @@
 				height={172}
 			/>
 			Focusing on intelligent automation for healthcare at a company, our developers
-			build tools to automate repetitive tasks to reduce costs and and improve
+			build tools to automate repetitive tasks to reduce costs and improve
 			experiences in the workflow.
 		</Company>
 		<Company icons={[Python, TensorFlow]}>
@@ -129,8 +129,8 @@
 			/>
 			Our team has valuable skills in the WEB3 field. Team Tomorrow developers
 			actively build tools utilizing data from the blockchain and leveraging
-			APIs to help people make smart decisions when trading cryptocurrency
-			assests like NFTs.
+			APIs to help people make good decisions when trading cryptocurrency assets
+			like NFTs.
 		</Company>
 		<Company icons={[Python, Aws]}>
 			<CompanyImage
@@ -153,17 +153,14 @@
 	</div>
 
 	<Text>
-		Lots of companies nowadays have trouble lifting off the ground since
-		hiring expert software engineers normally is expensive, not here. We
-		look to empower others and
+		Many companies nowadays have trouble lifting off the ground since hiring
+		expert software engineers can be expensive, but not here. We strive to
+		empower our developers to create
+		<strong>your next big thing</strong>
+		Contact us <strong>now</strong> for more information on the next steps,
+		or continue to explore our website and uncover our
 		<strong>
-			lift the next big thing off the ground in time, and well.
-		</strong>
-		Contact us now for more information on the next steps or continue to explore
-		this website and find our
-		<strong>
-			amazing projects and developers leveraging different skills in
-			different fields all the time.
+			stunning projects and the developers who have created them.
 		</strong>
 	</Text>
 
@@ -479,14 +476,7 @@
 	<Project
 		title="AI Camp Bot"
 		href="/projects/aicbot"
-		developers={[
-			placeholder,
-			placeholder,
-			placeholder,
-			placeholder,
-			placeholder,
-			placeholder
-		]}
+		developers={[author, author, author, author, author, author]}
 		icons={[Python, TensorFlow]}
 	>
 		Running a camp with 1,000+ students and multiple mentors is no easy
@@ -529,7 +519,12 @@
 	<!-- TODO: Choose actual top 3 devs here -->
 
 	<Carousel amount={3}>
-		<DevCard author={placeholder}>
+		<DevCard
+			author={{
+				position: "Software Engineer",
+				user: { name: "Alexander Zhou", url: "placeholder" }
+			}}
+		>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -541,7 +536,12 @@
 				dolores minima totam quasi.
 			</DevText>
 		</DevCard>
-		<DevCard author={placeholder}>
+		<DevCard
+			author={{
+				position: "Product Designer",
+				user: { name: "Bernice Lau", url: "placeholder" }
+			}}
+		>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -553,7 +553,12 @@
 				dolores minima totam quasi.
 			</DevText>
 		</DevCard>
-		<DevCard author={placeholder}>
+		<DevCard
+			author={{
+				position: "Product Manager",
+				user: { name: "Sricharan Guddanti", url: "placeholder" }
+			}}
+		>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
 			<li>Worked on 80000 projects.</li>
@@ -570,7 +575,12 @@
 			slot="alt"
 			class="hidden lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:mt-32 lg:max-w-screen-xl"
 		>
-			<DevCard author={placeholder}>
+			<DevCard
+				author={{
+					position: "Software Engineer",
+					user: { name: "Alexander Zhou", url: "placeholder" }
+				}}
+			>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
@@ -582,7 +592,12 @@
 					itaque dolores minima totam quasi.
 				</DevText>
 			</DevCard>
-			<DevCard author={placeholder}>
+			<DevCard
+				author={{
+					position: "Product Designer",
+					user: { name: "Bernice Lau", url: "placeholder" }
+				}}
+			>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
@@ -594,7 +609,12 @@
 					itaque dolores minima totam quasi.
 				</DevText>
 			</DevCard>
-			<DevCard author={placeholder}>
+			<DevCard
+				author={{
+					position: "Product Manager",
+					user: { name: "Sricharan Guddanti", url: "placeholder" }
+				}}
+			>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
 				<li>Worked on 80000 projects.</li>
@@ -609,7 +629,7 @@
 		</div>
 	</Carousel>
 
-	<Button href="/developers" class="mt-4 lg:mt-8">Discover</Button>
+	<Button href="/developers" class="mt-4 lg:mt-8">Discover Developers</Button>
 
 	<!-- TODO: Put actual important blog post here -->
 
@@ -627,6 +647,7 @@
 		href="/projects/something"
 		class="p-4 block mb-8 mx-auto rounded-lg bg-gray-700/60 max-w-xs mt-8 border-t-4 ease-in-out duration-200 transition-transform sm:hover:scale-105 sm:flex sm:gap-8 sm:items-center sm:max-w-lg"
 		style="border-color: #3B84D6"
+		rel="noopener noreferrer"
 	>
 		<div
 			class="rounded-lg bg-center bg-no-repeat bg-cover w-full shrink-0 aspect-square sm:w-28"
@@ -663,8 +684,8 @@
 	>
 		Figure out what you want to achieve and the skills needed to accomplish
 		such a task. Start by filtering through our team members to pinpoint
-		and/or discover your ideal candidates. Or contact us immediatly to get
-		reccomendations and an instant quote.
+		your ideal candidates. Or contact us immediatly to get reccomendations
+		and an instant quote.
 		<GitCommit slot="svg" />
 	</Step>
 	<Step
@@ -684,7 +705,7 @@
 		class="text-pink-light from-pink-light to-pink-dark"
 	>
 		Contact us to schedule a virtual meeting for more information on pricing
-		and next steps. We'll be happy to help you get started quickly and
+		and the next steps. We'll be happy to help you get started quickly and
 		neatly without skipping a beat. Then watch our developers give the boost
 		your project needs.
 		<GitDeploy slot="svg" />
@@ -701,9 +722,8 @@
 			>
 				Figure out what you want to achieve and the skills needed to
 				accomplish such a task. Start by filtering through our team
-				members to pinpoint and/or discover your ideal candidates. Or
-				contact us immediatly to get reccomendations and an instant
-				quote.
+				members to pinpoint your ideal candidates. Or contact us
+				immediately to get recommendations and an instant quote.
 			</Step>
 			<Step
 				num={2}
@@ -736,4 +756,4 @@
 	</div>
 </Carousel>
 
-<Button href="/developers" class="mt-8">Explore Developers</Button>
+<Button href="/developers" class="mt-8">Discover Developers</Button>

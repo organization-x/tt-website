@@ -48,7 +48,7 @@
 	<div
 		class="p-4 mx-auto max-w-screen-2xl flex justify-between lg:items-center lg:px-6 xl:px-10"
 	>
-		<a href="/dashboard" class="z-50" aria-label="Home">
+		<a href="/dashboard" class="z-50" aria-label="Home" rel="noopener noreferrer">
 			<Logo class="w-10 h-10" />
 		</a>
 		<div class="lg:hidden flex gap-3 items-center">

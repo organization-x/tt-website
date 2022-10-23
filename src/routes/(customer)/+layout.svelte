@@ -29,7 +29,7 @@
 	<div
 		class="p-4 mx-auto max-w-screen-2xl flex justify-between lg:items-center lg:px-6 xl:px-10"
 	>
-		<a href="/" class="z-50" aria-label="Home">
+		<a href="/" class="z-50" aria-label="Home" rel="noopener noreferrer">
 			<Logo class="w-10 h-10" />
 		</a>
 		<div class="lg:hidden flex items-center">
@@ -131,6 +131,7 @@
 				<a
 					href="/contact"
 					class="px-4 py-1 bg-white text-black rounded-3xl transition-border hover:rounded-md"
+					rel="noopener noreferrer"
 				>
 					Contact us
 				</a>
