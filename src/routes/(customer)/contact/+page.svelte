@@ -34,7 +34,34 @@
 
 		if (pageNumber === boxes.length) {
 			// send form
+			fetch("/api/gmail", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(Object.fromEntries(formToData()))
+			});
 		}
+	};
+
+	const formToData = () => {
+		const data = new Map();
+		for (let pageNum = 0; pageNum < boxes.length; pageNum++) {
+			for (let boxNum = 0; boxNum < boxes[pageNum].length; boxNum++) {
+				if (boxes[pageNum][boxNum].selected) {
+					data.set(
+						boxes[pageNum][boxNum].name,
+						boxes[pageNum][boxNum].selected
+					);
+				} else {
+					data.set(
+						boxes[pageNum][boxNum].name,
+						boxes[pageNum][boxNum].value
+					);
+				}
+			}
+		}
+		return data;
 	};
 
 	let boxes: App.Box[][] = [
@@ -139,7 +166,9 @@
 			}
 		]
 	];
-	$: currentPageIsValid = boxes[pageNumber].every((box) => box.isValid);
+	$: currentPageIsValid =
+		pageNumber == boxes.length ||
+		boxes[pageNumber].every((box) => box.isValid);
 </script>
 
 <svelte:head>
