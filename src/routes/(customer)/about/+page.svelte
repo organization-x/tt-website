@@ -60,7 +60,6 @@
 			and the opportunity to work for external companies. Through this
 			program, students learn by doing and gain real job experience while
 			attending school.
-			<br />
 			<a href="/developers" class="text-teal-light">Developers</a>
 		</Stat>
 		<Stat
@@ -76,7 +75,6 @@
 			that facilitates course registration, dashboard, automated
 			communication, back office, and other operations that are vital
 			towards helping AI Camp generate millions in revenue annually.
-			<br />
 			<a href="/projects" class="text-teal-light">Projects</a>
 		</Stat>
 		<Stat
@@ -84,15 +82,13 @@
 			statAmount={10}
 			statPostFix="+"
 			delay={2000}
-			statName="Where we've applied our skills in AI, Machine Learning, Healthcare, 3D printing, and more
-			"
+			statName="Where we've applied our skills in AI, Machine Learning, Healthcare, 3D printing, and more"
 			class="before:bg-pink-dark"
 		>
 			Today, AI is helping us make drugs, get to work, and fill out
 			paperwork. Tomorrow, AI will be composing our music, delivering our
 			goods, and more. We believe it's critical to prepare for tomorrow,
 			learning about AI, and expanding our knowledge as a team.
-			<br />
 			<a href="/" class="text-teal-light">Landing Page</a>
 		</Stat>
 		<Stat

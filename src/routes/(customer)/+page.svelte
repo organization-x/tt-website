@@ -56,7 +56,6 @@
 	<PageCaption>
 		Develop something exciting with skills from low-level mastery to
 		meticulous design. Accelerate progress with the backing you need.
-		<br />
 		<strong>A great team</strong>.
 	</PageCaption>
 
