@@ -121,5 +121,5 @@ model User {
     pinnedProjectId String?         @unique
     visible         Boolean         @default(true)
 
-    @@index([name, techSkills, softSkills, positions])
+    @@index([name, softSkills, techSkills, positions, url])
 }
