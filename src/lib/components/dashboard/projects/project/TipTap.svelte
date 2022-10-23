@@ -4,14 +4,17 @@
 	import { Doc } from "yjs";
 	import { onMount } from "svelte";
 	import { Editor } from "@tiptap/core";
+	import { createEventDispatcher } from "svelte";
 	import { WebsocketProvider } from "y-websocket";
 	import { extensions } from "$lib/tiptapExtensions";
 	import { Collaboration } from "@tiptap/extension-collaboration";
+	import { CollaborationCursor } from "@tiptap/extension-collaboration-cursor";
 
-	import { createEventDispatcher } from "svelte";
+	import { user } from "$lib/stores";
 	import OrList from "$lib/components/icons/OrList.svelte";
 	import UnList from "$lib/components/icons/UnList.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
+	import Cursor from "$lib/components/dashboard/projects/project/Cursor.svelte";
 	import LinkButton from "$lib/components/dashboard/projects/project/LinkButton.svelte";
 	import HeadButton from "$lib/components/dashboard/projects/project/HeadButton.svelte";
 	import ImageButton from "$lib/components/dashboard/projects/project/ImageButton.svelte";
@@ -44,17 +47,26 @@
 	onMount(() => {
 		// Register document with yjs for collaborative editing
 		const doc = new Doc();
+
 		const ws = new WebsocketProvider(
 			"ws://localhost:8080/dashboard/projects",
 			project.id,
 			doc
 		);
 
+		// Generate a random light color for the user
+		let color = "#";
+
+		Array.from({ length: 3 }).forEach(
+			() =>
+				(color += `0${Math.floor(
+					((1 + Math.random()) * Math.pow(16, 2)) / 2
+				).toString(16)}`.slice(-2))
+		);
+
 		editor = new Editor({
 			element: editorElement,
-			content: Object.keys(project.content!).length
-				? (project.content as Content)
-				: undefined,
+			content: project.content as Content,
 			editorProps: {
 				attributes: {
 					class: "focus-visible:outline-none"
@@ -74,7 +86,7 @@
 					});
 
 					editor.view.dom.style.height = `calc(20rem + ${height}px)`;
-				}, 1);
+				});
 
 				// Update active items
 				Object.keys(isActive).forEach(
@@ -92,17 +104,33 @@
 				Collaboration.configure({
 					document: doc
 				}),
+				CollaborationCursor.configure({
+					provider: ws,
+					user: {
+						name: $user.name,
+						color
+					},
+					render(props: { name: string; color: string }) {
+						const parent = document.createElement("span");
+						new Cursor({ target: parent, props });
+
+						return parent.firstElementChild as HTMLElement;
+					}
+				}),
 				...extensions
 			]
 		});
 
 		// Destroy the editor on unmount
-		return () => editor.destroy();
+		return () => {
+			editor.destroy();
+			ws.destroy();
+		};
 	});
 
-	// TODO: Add image upload implementation with cloudflare images
 	// TODO: Add image resizing capabilities
-	// TODO: Add collaboration
+	// TODO: Add image upload implementation with cloudflare images
+	// TODO: Fix collaboration issues like the empty cursor being way too large
 </script>
 
 <div class="relative rounded-lg w-full">
@@ -161,5 +189,5 @@
 		</div>
 	{/if}
 
-	<div class="mt-20" bind:this={editorElement} />
+	<div class="mt-24" bind:this={editorElement} />
 </div>

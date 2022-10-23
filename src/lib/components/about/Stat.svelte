@@ -3,16 +3,17 @@
 
 	let className: string;
 	export let title: string;
-	export let delay: number;
 	export let side = "left";
-	export let statName: string;
-	export let statAmount: number;
-	export let statPostFix: string;
+	export let amount: number;
+	export let caption: string;
+	export let postFix: string;
 
 	export { className as class };
 
 	let count = 0;
-	let element: HTMLHeadingElement;
+	let parent: HTMLHeadingElement;
+
+	const isLeft = side === "left";
 
 	// Easing function for numbers increasing.
 	const easing = (x: number): number => {
@@ -22,43 +23,46 @@
 	// When the number counter enters the viewport, start the animation of it counting upwards.
 	onMount(() => {
 		const observer = new IntersectionObserver(
-			(e) => {
-				if (!e[0].isIntersecting) return;
-				for (let i = 0; i <= statAmount; i++) {
+			(entries) => {
+				if (!entries[0].isIntersecting) return;
+
+				Array.from({ length: amount }).forEach((_, i) =>
 					setTimeout(() => {
 						count = i;
-					}, easing(i / statAmount) * delay);
-				}
+					}, easing(i / amount) * 1000)
+				);
+
 				observer.disconnect();
 			},
 			{ threshold: 0.3 }
 		);
-		observer.observe(element);
+
+		observer.observe(parent);
 
 		return () => observer.disconnect();
 	});
 </script>
 
-<div bind:this={element} class="max-w-lg mx-auto">
+<div bind:this={parent} class="max-w-lg mx-auto">
 	<h2 class:text-right={side !== "left"} class="font-semibold mx-2">
 		{title.toUpperCase()}
 	</h2>
 	<div class="bg-gray-500/40 p-4 rounded-xl mt-2">
 		<div
-			class:before:-left-4={side === "left"}
-			class:ml-4={side === "left"}
-			class:before:left-auto={side !== "left"}
-			class:before:-right-4={side !== "left"}
-			class:text-right={side !== "left"}
-			class:mr-4={side !== "left"}
+			class:before:-left-4={isLeft}
+			class:ml-4={isLeft}
+			class:before:left-auto={!isLeft}
+			class:before:-right-4={!isLeft}
+			class:text-right={!isLeft}
+			class:mr-4={!isLeft}
 			class="relative flex flex-col before:absolute before:inset-0 before:w-1 before:h-full before:rounded-sm {className}"
 		>
 			<h1 class="font-semibold text-4xl">
-				{count}{statPostFix}
+				{count}{postFix}
 			</h1>
-			<h4 class="text-2xl">{statName}</h4>
+			<h4 class="text-2xl">{caption}</h4>
 		</div>
-		<p class:text-right={side !== "left"} class="mt-4">
+		<p class:text-right={!isLeft} class="mt-4">
 			<slot />
 		</p>
 	</div>

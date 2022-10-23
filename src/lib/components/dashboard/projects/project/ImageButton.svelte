@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Editor } from "@tiptap/core";
 
+	import { Action } from "$lib/enums";
 	import Check from "$lib/components/icons/Check.svelte";
 	import Trash from "$lib/components/icons/Trash.svelte";
 	import ImageIcon from "$lib/components/icons/ImageIcon.svelte";
@@ -8,12 +9,6 @@
 
 	export let editor: Editor;
 	export let active: boolean;
-
-	const enum Action {
-		Confirm,
-		Open,
-		Delete
-	}
 
 	let open = false;
 	let input: HTMLInputElement;

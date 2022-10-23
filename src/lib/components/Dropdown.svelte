@@ -6,14 +6,12 @@
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
 
 	const dispatch = createEventDispatcher<{
-		change: { selected: string; previous: string };
+		change: { selected: string | undefined; previous: string | undefined };
 	}>();
 
 	// Provides options that should be in the dropdown, and an array of selected items to prevent re-selection of the same thing.
-	// Along with an index to auto select values, since dropdowns normally are near other dropdowns with the same vlues.
-	// Also has options for radio selectors
+	// Along with an index to auto select values, since dropdowns normally are near other dropdowns with the same values.
 	export let i = 0;
-	export let radio: boolean;
 	export let required: boolean;
 	export let options: string[];
 	export let selectedItems: (string | null)[];
@@ -70,7 +68,9 @@
 				class="w-8 h-8 shrink-0"
 			/>
 		{/if}
+
 		<slot />
+
 		<div class="flex items-center justify-between w-full">
 			<h1>{(placeholder || "None").replaceAll("_", " ")}</h1>
 			<DropArrow {open} class="w-6 h-6" />
@@ -83,7 +83,6 @@
 		>
 			{#if !required}
 				<DropdownItem
-					{radio}
 					on:click={() => onClick(options.length)}
 					selected={selected === options.length}
 				>
@@ -93,7 +92,6 @@
 			{#each options as option, i}
 				{#if !(selectedItems.includes(option) && i !== selected)}
 					<DropdownItem
-						{radio}
 						on:click={() => onClick(i)}
 						selected={selected === i}
 					>

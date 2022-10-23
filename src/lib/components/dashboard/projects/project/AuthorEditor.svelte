@@ -22,9 +22,8 @@
 	const dispatch = createEventDispatcher<{ click: { id: string } }>();
 
 	// Close menu when clicking outside of it
-	const onClick = ({ target }: Event) => {
-		if (open && !parent.contains(target as Node)) open = false;
-	};
+	const onClick = ({ target }: Event) =>
+		open && !parent.contains(target as Node) && (open = false);
 
 	// Change variable on dropdown selection.
 	// Have to do it in a seperate function since svelte doesn't allow for typescript within the on directive

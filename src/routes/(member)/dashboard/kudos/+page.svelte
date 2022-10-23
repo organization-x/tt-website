@@ -1,19 +1,21 @@
 <script lang="ts">
-	import { user } from "$lib/stores";
+	import { DateOption } from "$lib/enums";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
-	import DateDropdown from "$lib/components/dashboard/kudos/DateDropdown.svelte";
+	import DateDropdown from "$lib/components/dashboard/DateDropdown.svelte";
 
-	enum DateOption {
-		Week = "Last 7 days",
-		Month = "Last 30 days",
-		Year = "Last 12 months",
-		Custom = "Custom"
-	}
+	let custom: Date;
+	let selected = DateOption.Week;
+	let request: Promise<App.AnalyticsResponse> = new Promise(() => {});
 
-	export { user as data };
+	const search = async () => {
+		// request = fetch(
+		// 	`https://ai-camp-data-layer.fly.dev/ck/524722785302609941`
+		// ).then((res) => console.log(res));
+		// console.log(await request);
+	};
 
-	let selected: DateOption;
+	// TODO: CORS Issue
 </script>
 
 <svelte:head>
@@ -23,7 +25,11 @@
 <DashWrap>
 	<DashHero title="Your Kudos" />
 
-	<!-- TODO: Integrate the discord bot kudo API -->
-
-	<DateDropdown bind:selected />
+	<DateDropdown
+		on:change={() => (request = new Promise(() => {}))}
+		on:search={({ detail }) =>
+			(selected = detail.selected) &&
+			(custom = detail.custom) &&
+			search()}
+	/>
 </DashWrap>

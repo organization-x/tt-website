@@ -14,7 +14,7 @@
 				type="text"
 				class="w-full h-full px-2 bg-transparent focus:outline-none p-4 my-auto"
 				{placeholder}
-				{max}
+				maxlength={max}
 			/>
 		</div>
 	</div>
@@ -28,7 +28,7 @@
 			type="text"
 			class="w-full h-full px-2 py-4 bg-transparent focus:outline-none my-auto"
 			{placeholder}
-			{max}
+			maxlength={max}
 		/>
 	</div>
 {/if}

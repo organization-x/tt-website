@@ -1,57 +1,82 @@
-import { Octokit } from "octokit";
-import { prisma } from "$lib/prisma";
 import { redirect } from "@sveltejs/kit";
+
+import { prisma } from "$lib/prisma";
+import { env } from "$env/dynamic/private";
 
 import type { RequestHandler } from "./$types";
 
-const id = import.meta.env.VITE_CLIENT_ID;
+export const GET: RequestHandler = async (request) => {
+	// Date used for determining session expiry
+	const date = new Date();
+	date.setDate(date.getDate() - 7);
 
-export const GET: RequestHandler = async (req) => {
-	const code = new URL(req.url).searchParams.get("code");
+	// If a session local is present, check if it is valid, and if it is redirect to the dashboard
+	if (
+		await prisma.session.count({
+			where: {
+				token: request.locals.session || "",
+				created: { gt: date }
+			}
+		})
+	)
+		throw redirect(302, "/dashboard");
 
-	// Check if there is a code parameter in the request URl, if not, go to github oauth page
-	if (code) {
-		// Fetch access token from github API
-		const token = await fetch(
-			"https://github.com/login/oauth/access_token",
-			{
+	const url = new URL(request.url);
+	const code = url.searchParams.get("code");
+
+	// Check if there is a code parameter in the request URl and that the state is valid, if not, go to the Discord OAuth page
+	if (
+		code &&
+		request.cookies.get("state") === url.searchParams.get("state")
+	) {
+		// Get API token from OAuth code
+		// TODO: Switch to actual redirect URI for production
+
+		const token = (
+			await fetch("https://discord.com/api/v10/oauth2/token", {
 				method: "POST",
 				headers: {
-					"Content-Type": "application/json",
-					Accept: "application/json"
+					"Content-Type": "application/x-www-form-urlencoded"
 				},
-				body: JSON.stringify({
-					client_id: id,
-					client_secret: import.meta.env.VITE_CLIENT_SECRET,
-					code
+				body: `client_id=${env.DISCORD_ID}&client_secret=${env.DISCORD_SECRET}&grant_type=authorization_code&code=${code}&redirect_uri=http://localhost:5173/login`
+			})
+				.then((res) => res.json())
+				.catch(() => {
+					throw redirect(302, "/login");
 				})
+		).access_token as string;
+
+		// Get the users info from Discor. If an error occurs fetching the user data, its
+		// most likely an invalid token, so redirect back to the login
+		const { id, username } = (await fetch(
+			"https://discord.com/api/v10/users/@me",
+			{
+				headers: {
+					Authorization: `Bearer ${token}`
+				}
 			}
 		)
 			.then((res) => res.json())
-			.then((res) => res.access_token);
-
-		// Using octokit, make a github API request for the user data
-		const user = await new Octokit({ auth: token })
-			.request("GET /user")
-			.then((res) => res.data)
-			.catch(() => null);
-
-		// If an error occurs fetching the user data, its most likely an expired token (code parameter), so redirect to github oauth page
-		if (!user) throw redirect(302, "/login");
+			.catch(() => {
+				throw redirect(302, "/discord");
+			})) as {
+			id: string;
+			username: string;
+		};
 
 		// Check if the user exists already
 		let prismaUser = await prisma.user.findUnique({
-			where: { id: user.login }
+			where: { id }
 		});
 
 		if (!prismaUser) {
 			// If the user doesnt exist, create them
 			prismaUser = await prisma.user.create({
 				data: {
-					id: user.login,
-					url: user.login,
-					name: user.name || user.login,
-					about: user.bio || "I'm a member of Team Tomorrow!",
+					id,
+					url: username.trim().toLowerCase().replaceAll(" ", "-"),
+					name: username,
+					about: "I'm a member of Team Tomorrow!",
 					positions: ["Fullstack", "Designer"],
 					techSkills: ["JavaScript", "Python"],
 					softSkills: ["Teamwork", "Leadership"]
@@ -59,35 +84,48 @@ export const GET: RequestHandler = async (req) => {
 			});
 
 			// Create empty links object for the user
-			await prisma.links.create({ data: { userId: user.login } });
+			await prisma.links.create({ data: { userId: id } });
 		} else {
-			const date = new Date();
-			date.setDate(date.getDate() - 7);
-
 			// Otherwise, if they do exists, do some cleanup and check if they have any expired session
 			// tokens inside postgres, if they do, remove them
 			await prisma.session.deleteMany({
-				where: { userId: user.login, created: { lte: date } }
+				where: { userId: id, created: { lte: date } }
 			});
 		}
 
 		// Create a new session for the user, if the session token somehow already exists, recursively generate a new one
 		const createSession = async (): Promise<string> => {
 			return await prisma.session
-				.create({ data: { userId: user.login } })
+				.create({
+					data: { userId: id }
+				})
 				.then((session) => session.token)
 				.catch(() => createSession());
 		};
 
 		const session = await createSession();
 
-		// Set locals to session token and redirect to the main dashboard page
-		req.locals.session = session;
+		// Set session cookie and remove state cookie
+		request.cookies.set("session", session, { maxAge: 604800 });
+		request.cookies.set("state", "", { maxAge: 0 });
+
+		// Redirect to the main dashboard page
 		throw redirect(302, "/dashboard");
 	} else {
+		// Generate state value
+		const state = Math.random().toString(36).substring(2, 17);
+
+		// Set state cookie that expires in 5 minutes
+		request.cookies.set("state", state, {
+			maxAge: 300,
+			path: "/login"
+		});
+
+		// Redirect to oauth screen with state
+		// TODO: Switch to actual redirect URI for production
 		throw redirect(
 			302,
-			`https://github.com/login/oauth/authorize?client_id=${id}&scope=read:user`
+			`https://discord.com/api/oauth2/authorize?redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Flogin&response_type=code&scope=identify&client_id=${env.DISCORD_ID}&state=${state}`
 		);
 	}
 };

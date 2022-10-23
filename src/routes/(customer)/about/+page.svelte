@@ -2,27 +2,22 @@
 	import Hero from "$lib/components/Hero.svelte";
 	import Text from "$lib/components/Text.svelte";
 	import Stat from "$lib/components/about/Stat.svelte";
-	import PageTitle from "$lib/components/PageTitle.svelte";
 	import Member from "$lib/components/about/Member.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
-	import MemberImage from "$lib/components/about/MemberImage.svelte";
 </script>
 
 <svelte:head>
 	<title>About</title>
 </svelte:head>
 
-<Hero src="/assets/about/about.webm">
-	<PageTitle class="from-green-light to-green-dark">
-		A new era of collaboration and teamwork.
-	</PageTitle>
-
-	<PageCaption>
-		Explore what achievements we've
-		<strong>accomplished</strong> and how we did it.
-	</PageCaption>
+<Hero
+	class="from-green-light to-green-dark"
+	title="A new era of collaboration and teamwork."
+	src="/assets/about/about.webm"
+>
+	Explore what achievements we've
+	<strong>accomplished</strong> and how we did it.
 </Hero>
 
 <Section>
@@ -49,25 +44,27 @@
 
 	<div class="flex flex-col gap-8 mt-8">
 		<Stat
-			title="50+ Team Tomorrow members"
-			statAmount={50}
-			statPostFix="+"
-			delay={1000}
-			statName="50+ Team Tomorrow members"
+			title="Team Tomorrow Members"
+			amount={50}
+			postFix="+"
+			caption="members and counting"
 			class="before:bg-pink-dark"
 		>
-			AI Camp’s Team Tomorrow provides motivated students with internships
+			AI Camp's Team Tomorrow provides motivated students with internships
 			and the opportunity to work for external companies. Through this
 			program, students learn by doing and gain real job experience while
 			attending school.
-			<a href="/developers" class="text-teal-light" rel="noopener noreferrer">Developers</a>
+			<a
+				href="/developers"
+				class="text-teal-light"
+				rel="noopener noreferrer">Developers</a
+			>
 		</Stat>
 		<Stat
-			title="$70k+ revenue"
-			statAmount={70}
-			statPostFix="k"
-			delay={1000}
-			statName="Generated through projects like Hippo2"
+			title="$70K+ in Revenue"
+			amount={70}
+			postFix="K"
+			caption="in revenue"
 			class="before:bg-pink-dark"
 			side="right"
 		>
@@ -75,28 +72,32 @@
 			that facilitates course registration, dashboard, automated
 			communication, back office, and other operations that are vital
 			towards helping AI Camp generate millions in revenue annually.
-			<a href="/projects" class="text-teal-light" rel="noopener noreferrer">Projects</a>
+			<a
+				href="/projects"
+				class="text-teal-light"
+				rel="noopener noreferrer">Projects</a
+			>
 		</Stat>
 		<Stat
-			title="10+ external company partnerships"
-			statAmount={10}
-			statPostFix="+"
-			delay={2000}
-			statName="Where we've applied our skills in AI, Machine Learning, Healthcare, 3D printing, and more"
+			title="Multiple Partnerships"
+			amount={100}
+			postFix="+"
+			caption="partnerships where we have applied our skills"
 			class="before:bg-pink-dark"
 		>
 			Today, AI is helping us make drugs, get to work, and fill out
 			paperwork. Tomorrow, AI will be composing our music, delivering our
 			goods, and more. We believe it's critical to prepare for tomorrow,
 			learning about AI, and expanding our knowledge as a team.
-			<a href="/" class="text-teal-light" rel="noopener noreferrer">Landing Page</a>
+			<a href="/" class="text-teal-light" rel="noopener noreferrer">
+				Landing Page
+			</a>
 		</Stat>
 		<Stat
-			title="500+ projects"
-			statAmount={500}
-			statPostFix="+"
-			delay={1000}
-			statName="Projects made by students to help gain technical and professional skills"
+			title="Hundreds of Projects"
+			amount={500}
+			postFix="+"
+			caption="projects made by students"
 			class="before:bg-pink-dark"
 			side="right"
 		>
@@ -145,38 +146,26 @@
 	<div
 		class="grid grid-cols-2 gap-6 pt-10 max-w-xl mx-auto md:gap-14 lg:grid-cols-4"
 	>
-		<Member name="Alex Duffy" pos="Head of Product">
-			<MemberImage
-				src="/assets/about/alex.webp"
-				alt="Alex Duffy from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Michael Ke Zhang" pos="Co-founder">
-			<MemberImage
-				src="/assets/about/michael.webp"
-				alt="Michael Ke Zhang from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Richard Hsu" pos="Co-founder">
-			<MemberImage
-				src="/assets/about/richard.webp"
-				alt="Richard Hsu from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
-		<Member name="Ying Jiang" pos="Co-founder">
-			<MemberImage
-				src="/assets/about/ying.webp"
-				alt="Ying Jiang from Team Tomorrow"
-				width={200}
-				height={200}
-			/>
-		</Member>
+		<Member
+			src="/assets/about/alex.webp"
+			name="Alex Duffy"
+			pos="Head of Product"
+		/>
+		<Member
+			src="/assets/about/michael.webp"
+			name="Michael Ke Zhang"
+			pos="Co-Founder"
+		/>
+		<Member
+			src="/assets/about/richard.webp"
+			name="Richard Hsu"
+			pos="Co-Founder"
+		/>
+		<Member
+			src="/assets/about/ying.webp"
+			name="Ying Jiang"
+			pos="Co-Founder"
+		/>
 	</div>
 </Section>
 

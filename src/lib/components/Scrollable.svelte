@@ -33,14 +33,11 @@
 		}
 	};
 
-	const checkArrows = () => {
-		// Set a timeout since clientWidth and scrollWidth don't seem to get the correct inf0
-		if (scrollable) {
-			scrollable.clientWidth === scrollable.scrollWidth
-				? (disabledSide = Side.Both)
-				: onScroll();
-		}
-	};
+	const checkArrows = () =>
+		scrollable &&
+		(scrollable.clientWidth === scrollable.scrollWidth
+			? (disabledSide = Side.Both)
+			: onScroll());
 
 	$: innerWidth, checkArrows();
 
@@ -76,7 +73,7 @@
 				disabledSide === Side.Both}
 			class="
             relative overflow-hidden
-    
+
             before:transition-opacity before:duration-300 before:z-10 before:absolute before:top-0 before:left-0 before:w-8 before:h-full before:bg-gradient-to-r before:to-transparent before:pointer-events-none
 
             after:transition-opacity after:duration-300 after:z-10 after:absolute after:top-0 after:right-0 after:w-8 after:h-full after:bg-gradient-to-r after:from-transparent after:pointer-events-none
@@ -86,8 +83,7 @@
 			<div
 				bind:this={scrollable}
 				on:scroll={onScroll}
-				class="
-                flex gap-5 overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
+				class="flex gap-5 overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
 			>
 				<slot />
 			</div>
@@ -118,8 +114,7 @@
 		<div
 			bind:this={scrollable}
 			on:scroll={onScroll}
-			class="
-            flex gap-5 overflow-auto py-2 scrollbar-hidden"
+			class="flex gap-5 overflow-auto py-2 scrollbar-hidden"
 		>
 			<slot />
 		</div>

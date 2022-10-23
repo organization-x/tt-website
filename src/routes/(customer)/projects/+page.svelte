@@ -7,26 +7,28 @@
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
-	import PageTitle from "$lib/components/PageTitle.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import SkillFilter from "$lib/components/SkillFilter.svelte";
-	import ProjectLoader from "$lib/components/ProjectLoader.svelte";
+	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
 	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
 
+	import type { PageData } from "./$types";
 	import type { TechSkill } from "@prisma/client";
+	import type { AnalyticsInstance } from "analytics";
 
-	let request: Promise<App.ProjectWithMetadata[][]> = new Promise(() => {});
+	export let data: PageData;
 
 	let page = 0;
 	let search = "";
 	let filters = new Set<TechSkill>();
+	let analytics: AnalyticsInstance | undefined;
+	let request: Promise<App.ProjectWithMetadata[][]> = new Promise(() => {});
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
 	$: search, (request = new Promise(() => {})), (page = 0);
@@ -52,16 +54,22 @@
 				} as App.ProjectSearchRequest)
 			})
 				.then((res) => res.json())
-				.then((data: App.ProjectWithMetadata[]) => {
+				.then(async (projects: App.ProjectWithMetadata[]) => {
+					// Random search sampling so the search data isn't spammed
+					if (analytics && filters.size && Math.random() < 0.2)
+						await analytics.track("project_search", {
+							tech_skills: Array.from(filters)
+						});
+
 					// Put projects into pairs of 2 or reject if there's no results
-					data.length
+					projects.length
 						? res(
-								data
+								projects
 									.map((project, i) => {
 										if (i % 2 === 0)
-											return i === data.length - 1
+											return i === projects.length - 1
 												? [project]
-												: [project, data[i + 1]];
+												: [project, projects[i + 1]];
 										else return [];
 									})
 									.filter((project) => project.length)
@@ -72,25 +80,38 @@
 	};
 
 	// Once mounted check if there's any URL search params, if so, input them
-	onMount(() => {
+	onMount(async () => {
 		const param = new URLSearchParams(window.location.search).get("search");
 		param && (search = param);
+
+		if (!data.track) return;
+
+		analytics = await import("$lib/analytics")
+			.then(({ analytics }) => analytics)
+			.catch(() => undefined);
 	});
+
+	// Track if a project was clicked on and what filters were used
+	const trackProject = async (id: string) =>
+		filters.size &&
+		analytics &&
+		(await analytics.track("project_click", {
+			id,
+			tech_skills: Array.from(filters)
+		}));
 </script>
 
 <svelte:head>
 	<title>Projects</title>
 </svelte:head>
 
-<Hero src="/assets/projects/index/projects.webm">
-	<PageTitle class="from-pink-light to-pink-dark">
-		Projects from personal to professional.
-	</PageTitle>
-
-	<PageCaption>
-		Find skills in action by <strong>uncovering</strong> our projects and the
-		team behind them.
-	</PageCaption>
+<Hero
+	class="from-pink-light to-pink-dark"
+	title="Projects from personal to professional."
+	src="/assets/projects/index/projects.webm"
+>
+	Find skills in action by <strong>uncovering</strong> our projects and the team
+	behind them.
 </Hero>
 
 <Section>
@@ -184,14 +205,22 @@
 				class="flex flex-col items-center max-w-xl mx-auto gap-14 my-12 lg:my-20"
 			>
 				{#await request}
-					<ProjectLoader />
+					<ProjectLoading />
 				{:then projects}
 					{#each projects as projectPair, i}
 						{#if page === i}
-							<ProjectPreview project={projectPair[0]} />
+							<ProjectPreview
+								on:click={async () =>
+									await trackProject(projectPair[0].id)}
+								project={projectPair[0]}
+							/>
 
 							{#if projectPair.length > 1}
-								<ProjectPreview project={projectPair[1]} />
+								<ProjectPreview
+									on:click={async () =>
+										await trackProject(projectPair[1].id)}
+									project={projectPair[1]}
+								/>
 							{/if}
 						{/if}
 					{/each}

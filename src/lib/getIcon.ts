@@ -1,4 +1,4 @@
-import Cog from "$lib/components/index/Cog.svelte";
+import Cog from "$lib/components/icons/Cog.svelte";
 import Pen from "$lib/components/icons/Pen.svelte";
 import Aws from "$lib/components/icons/Aws.svelte";
 import Work from "$lib/components/icons/Work.svelte";

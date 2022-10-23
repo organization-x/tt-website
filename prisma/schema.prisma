@@ -6,7 +6,7 @@ generator client {
 
 datasource db {
     provider = "postgresql"
-    url      = env("PG_URL")
+    url      = env("DATABASE_URL")
 }
 
 // Teams that users could be a part of
@@ -41,6 +41,12 @@ enum SoftSkill {
     Leadership
     Writing
     Proactive
+}
+
+// Enum for user permission roles
+enum Role {
+    Admin
+    User
 }
 
 // Social links on profiles
@@ -90,9 +96,9 @@ model Project {
 // Model for storing session tokens
 model Session {
     token   String   @id @default(cuid())
+    created DateTime @default(now())
     user    User     @relation(fields: [userId], references: [id])
     userId  String
-    created DateTime @default(now())
 }
 
 // The user model for storing tt members
@@ -102,6 +108,7 @@ model User {
     // Contains the users url basis (firstlast), structured as /users/{firstlast}.
     // For banners and icons we can do /users/{firstlast}/banner.webp and /users/{firstlast}/icon.webp
     url             String          @unique
+    role            Role            @default(User)
     name            String
     about           String
     team            Team?

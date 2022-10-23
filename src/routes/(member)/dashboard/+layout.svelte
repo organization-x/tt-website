@@ -6,8 +6,8 @@
 
 	import { user } from "$lib/stores";
 	import { page } from "$app/stores";
-	import Logo from "$lib/components/Logo.svelte";
 	import { afterNavigate } from "$app/navigation";
+	import Logo from "$lib/components/icons/Logo.svelte";
 	import NavLink from "$lib/components/NavLink.svelte";
 	import Burger from "$lib/components/icons/Burger.svelte";
 	import LogOut from "$lib/components/icons/LogOut.svelte";
@@ -21,6 +21,9 @@
 	// Layout gets rendered early before user is set, so make sure it's set
 	user.set(data);
 
+	// Get first name of user for overflow prevention
+	$: firstName = $user.name.split(" ")[0];
+
 	let userOpen = false;
 	let burgerOpen = false;
 	let element: HTMLElement;
@@ -30,9 +33,8 @@
 	);
 
 	// Close the user menu when it's clicked outside of
-	const onClick = ({ target }: Event) => {
-		if (userOpen && !element.contains(target as Node)) userOpen = false;
-	};
+	const onClick = ({ target }: Event) =>
+		userOpen && !element.contains(target as Node) && (userOpen = false);
 
 	// Close the burger/user menu on navigation
 	afterNavigate(() => (burgerOpen = userOpen = false));
@@ -40,15 +42,22 @@
 	const [send, receive] = crossfade({
 		duration: 400
 	});
+
+	// TODO: Fix transition of user menu
 </script>
 
 <svelte:window on:click={onClick} />
 
-<header class="bg-black font-heading">
+<header class="bg-black">
 	<div
 		class="p-4 mx-auto max-w-screen-2xl flex justify-between lg:items-center lg:px-6 xl:px-10"
 	>
-		<a href="/dashboard" class="z-50" aria-label="Home" rel="noopener noreferrer">
+		<a
+			href="/dashboard"
+			class="z-50"
+			aria-label="Home"
+			rel="noopener noreferrer"
+		>
 			<Logo class="w-10 h-10" />
 		</a>
 		<div class="lg:hidden flex gap-3 items-center">
@@ -67,7 +76,11 @@
 						alt="{$user.name}'s avatar"
 						class=" w-9 h-9 rounded-full"
 					/>
-					<h1 class="font-semibold">{$user.name}</h1>
+					<h1
+						class="font-semibold text-sm overflow-auto scrollbar-hidden max-w-[7rem]"
+					>
+						{firstName}
+					</h1>
 				</div>
 			{/if}
 
@@ -91,7 +104,7 @@
 						<div
 							in:receive={{ key: "user" }}
 							out:send={{ key: "user" }}
-							class="flex gap-3 items-center z-50 w-fit mx-auto"
+							class="flex gap-3 items-center w-fit z-50 mx-auto"
 						>
 							<img
 								width="200"
@@ -100,7 +113,9 @@
 								alt="{$user.name}'s avatar"
 								class=" w-14 h-14 rounded-full"
 							/>
-							<h1 class="font-semibold text-xl">{$user.name}</h1>
+							<h1 class="font-semibold text-xl">
+								{firstName}
+							</h1>
 						</div>
 						<ul
 							class="text-3xl divide-y max-w-md mx-auto mt-4 list-disc lg:list-none"
@@ -177,7 +192,7 @@
 					<button
 						class:rounded-lg={!userOpen}
 						class:rounded-t-lg={userOpen}
-						class="flex gap-2 items-center justify-center px-8 py-3 transition-colors duration-200 w-full
+						class="flex gap-2 items-center justify-center py-3 w-full transition-colors duration-200
                         {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
 						on:click={() => (userOpen = !userOpen)}
 					>
@@ -190,7 +205,7 @@
 							alt="{$user.name}'s avatar"
 							class="w-8 h-8 rounded-full"
 						/>
-						<span class="font-semibold">{$user.name}</span>
+						<span class="font-semibold">{firstName}</span>
 						<DropArrow open={userOpen} class="w-6 h-6" />
 					</button>
 

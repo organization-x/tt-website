@@ -44,7 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.user.name} &ndash; Team Tomorrow</title>
+	<title>{data.user.name}</title>
 </svelte:head>
 
 <!-- TODO: Replace placeholders -->
