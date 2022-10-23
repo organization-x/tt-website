@@ -647,6 +647,7 @@
 		href="/projects/something"
 		class="p-4 block mb-8 mx-auto rounded-lg bg-gray-700/60 max-w-xs mt-8 border-t-4 ease-in-out duration-200 transition-transform sm:hover:scale-105 sm:flex sm:gap-8 sm:items-center sm:max-w-lg"
 		style="border-color: #3B84D6"
+		rel="noopener noreferrer"
 	>
 		<div
 			class="rounded-lg bg-center bg-no-repeat bg-cover w-full shrink-0 aspect-square sm:w-28"

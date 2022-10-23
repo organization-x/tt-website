@@ -60,7 +60,7 @@
 			and the opportunity to work for external companies. Through this
 			program, students learn by doing and gain real job experience while
 			attending school.
-			<a href="/developers" class="text-teal-light">Developers</a>
+			<a href="/developers" class="text-teal-light" rel="noopener noreferrer">Developers</a>
 		</Stat>
 		<Stat
 			title="$70k+ revenue"
@@ -75,7 +75,7 @@
 			that facilitates course registration, dashboard, automated
 			communication, back office, and other operations that are vital
 			towards helping AI Camp generate millions in revenue annually.
-			<a href="/projects" class="text-teal-light">Projects</a>
+			<a href="/projects" class="text-teal-light" rel="noopener noreferrer">Projects</a>
 		</Stat>
 		<Stat
 			title="10+ external company partnerships"
@@ -89,7 +89,7 @@
 			paperwork. Tomorrow, AI will be composing our music, delivering our
 			goods, and more. We believe it's critical to prepare for tomorrow,
 			learning about AI, and expanding our knowledge as a team.
-			<a href="/" class="text-teal-light">Landing Page</a>
+			<a href="/" class="text-teal-light" rel="noopener noreferrer">Landing Page</a>
 		</Stat>
 		<Stat
 			title="500+ projects"
