@@ -160,9 +160,9 @@
 		<strong>your next big thing</strong>
 		Contact us <strong>now</strong> for more information on the next steps,
 		or continue to explore our website and uncover our
-		<strong
-			>stunning projects and the developers who have created them.</strong
-		>
+		<strong>
+			stunning projects and the developers who have created them.
+		</strong>
 	</Text>
 
 	<Button href="/contact">Contact Us</Button>
@@ -723,7 +723,7 @@
 				Figure out what you want to achieve and the skills needed to
 				accomplish such a task. Start by filtering through our team
 				members to pinpoint your ideal candidates. Or contact us
-				immediatly to get reccomendations and an instant quote.
+				immediately to get recommendations and an instant quote.
 			</Step>
 			<Step
 				num={2}

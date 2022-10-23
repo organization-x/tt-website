@@ -107,15 +107,17 @@
 			Our students build their foundation in core technical skills by
 			utilizing tools like Python, computer vision, natural language
 			processing, and data analytics to create revolutionary products
-			deployed live on the web. However, Team Tomorrow doesn’t stop there.
+			deployed live on the web. However, Team Tomorrow doesn't stop there.
 			TT developers apply their knowledge and experience in AI, ML,
 			software engineering, and product design to build pipelines, data
 			dashboards, AI models, and more for companies like yours.
-			<br />
 			<a
 				href="https://www.ai-camp.org/student-products"
-				class="text-teal-light">AI Camp Student Products</a
+				rel="noopener noreferrer"
+				class="text-teal-light"
 			>
+				AI Camp Student Products
+			</a>
 		</Stat>
 	</div>
 </Section>
@@ -166,7 +168,7 @@
 		<Member name="Richard Hsu" pos="Co-founder">
 			<MemberImage
 				src="/assets/about/richard.webp"
-				alt="Jackson Choyce from Team Tomorrow"
+				alt="Richard Hsu from Team Tomorrow"
 				width={200}
 				height={200}
 			/>
@@ -189,7 +191,7 @@
 		Here at Team Tomorrow, we make the future and are here to help build
 		your company a brighter tomorrow. Our developers undergo rigorous
 		curriculum and hands-on professional training to ensure they are ready
-		to rise to the challenge. Now the only question is,
+		to overcome any challenge. Now the only question is,
 		<strong>are you?</strong>
 	</Text>
 </Section>
