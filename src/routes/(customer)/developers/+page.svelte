@@ -130,8 +130,7 @@
 			alt="Developer profiles stacked ontop of eachother"
 		>
 			Search for the perfect developer to fit your needs by filtering
-			through our team members below to pinpoint and/or discover your
-			ideal candidates.
+			through our team members below to pinpoint your ideal candidates.
 		</HireStep>
 
 		<Seperator />

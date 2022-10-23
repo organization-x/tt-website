@@ -86,6 +86,7 @@
 					<a
 						href={createLink(link.key, link.link)}
 						class="hover:opacity-80 transition-opacity"
+						rel="noopener noreferrer"
 					>
 						<svelte:component
 							this={getIcon(link.key)}

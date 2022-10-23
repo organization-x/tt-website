@@ -121,7 +121,7 @@
 		>
 			Focusing on intelligent automation for healthcare at a company, our
 			developers build tools to automate repetitive tasks to reduce costs
-			and and improve experiences in the workflow.
+			and improve experiences in the workflow.
 		</Company>
 
 		<Company
@@ -150,8 +150,8 @@
 		>
 			Our team has valuable skills in the WEB3 field. Team Tomorrow
 			developers actively build tools utilizing data from the blockchain
-			and leveraging APIs to help people make smart decisions when trading
-			cryptocurrency assests like NFTs.
+			and leveraging APIs to help people make good decisions when trading
+			cryptocurrency assets like NFTs.
 		</Company>
 		<Company
 			skills={["Python", "AWS"]}
@@ -175,17 +175,14 @@
 	</div>
 
 	<Text>
-		Lots of companies nowadays have trouble lifting off the ground since
-		hiring expert software engineers normally is expensive, not here. We
-		look to empower others and
+		Many companies nowadays have trouble lifting off the ground since hiring
+		expert software engineers can be expensive, but not here. We strive to
+		empower our developers to create
+		<strong>your next big thing</strong>
+		Contact us <strong>now</strong> for more information on the next steps,
+		or continue to explore our website and uncover our
 		<strong>
-			lift the next big thing off the ground in time, and well.
-		</strong>
-		Contact us now for more information on the next steps or continue to explore
-		this website and find our
-		<strong>
-			amazing projects and developers leveraging different skills in
-			different fields all the time.
+			stunning projects and the developers who have created them.
 		</strong>
 	</Text>
 
@@ -315,7 +312,7 @@
 		product for one of our clients, and how we did it behind the scenes.
 	</Text>
 
-	<!-- TODO: Put actual important blog post here -->
+	<!-- TODO: Put actual important project here -->
 	<div class="max-w-lg mx-auto lg:max-w-2xl">
 		<ProjectPreview project={data.projects[0]} />
 	</div>
@@ -344,8 +341,8 @@
 	>
 		Figure out what you want to achieve and the skills needed to accomplish
 		such a task. Start by filtering through our team members to pinpoint
-		and/or discover your ideal candidates. Or contact us immediatly to get
-		reccomendations and an instant quote.
+		your ideal candidates. Or contact us immediately to get recommendations
+		and an instant quote.
 
 		<GitCommit slot="svg" class="lg:hidden" />
 	</Step>
@@ -388,5 +385,5 @@
 <Button
 	on:click={() => trackClick("explore_developers")}
 	href="/developers"
-	class="mt-8">Explore Developers</Button
+	class="mt-8">Discover Developers</Button
 >
