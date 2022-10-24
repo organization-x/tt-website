@@ -44,7 +44,7 @@
 </script>
 
 <svelte:head>
-	<title>{data.user.name} &ndash; Team Tomorrow</title>
+	<title>{data.user.name}</title>
 </svelte:head>
 
 <!-- TODO: Replace placeholders -->
@@ -78,14 +78,12 @@
 				</p>
 			</div>
 
-			<Panel
-				direction="bg-gradient-to-br"
-				class="mt-4 flex gap-4 justify-center"
-			>
+			<Panel class="mt-4 flex gap-4 justify-center">
 				{#each links as link}
 					<a
 						href={createLink(link.key, link.link)}
 						class="hover:opacity-80 transition-opacity"
+						rel="noopener noreferrer"
 					>
 						<svelte:component
 							this={getIcon(link.key)}
@@ -104,15 +102,12 @@
 			<div>
 				<TextHeader>Projects</TextHeader>
 
-				<Panel
-					direction="bg-gradient-to-br"
-					class="mt-2 flex flex-col gap-4"
-				>
+				<Panel class="mt-2 flex flex-col gap-4">
 					{#each previewedProjects as project}
 						<ProjectPreview {project} />
 					{/each}
 
-					<Button href="./projects">View More</Button>
+					<Button href="./{data.user.url}/projects">View More</Button>
 				</Panel>
 			</div>
 		</div>
@@ -121,10 +116,7 @@
 			<div>
 				<TextHeader>Positions</TextHeader>
 
-				<Panel
-					direction="bg-gradient-to-br"
-					class="mt-2 grid grid-cols-2 xl:grid-cols-1 gap-2"
-				>
+				<Panel class="mt-2">
 					<Icons icons={data.user.positions} />
 				</Panel>
 			</div>
@@ -132,7 +124,7 @@
 			<div>
 				<TextHeader>Skills</TextHeader>
 
-				<Panel direction="bg-gradient-to-br" class="mt-2">
+				<Panel class="mt-2">
 					<Icons name="Soft" icons={data.user.softSkills} />
 					<Icons
 						name="Technical"

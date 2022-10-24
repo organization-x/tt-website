@@ -1,17 +1,16 @@
 <script lang="ts">
+	import { createEventDispatcher, onMount } from "svelte";
+
+	import { DateOption } from "$lib/enums";
+	import { debounce } from "$lib/debounce";
+	import Arrow from "$lib/components/icons/Arrow.svelte";
 	import DropdownItem from "$lib/components/DropdownItem.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
-	import LeftArrow from "$lib/components/icons/LeftArrow.svelte";
-	import RightArrow from "$lib/components/icons/RightArrow.svelte";
 
-	enum DateOption {
-		Week = "Last 7 days",
-		Month = "Last 30 days",
-		Year = "Last 12 months",
-		Custom = "Custom"
-	}
-
-	export let selected: DateOption = DateOption.Week;
+	const dispatch = createEventDispatcher<{
+		change: undefined;
+		search: { selected: DateOption; custom: Date };
+	}>();
 
 	const options = Object.values(DateOption);
 
@@ -19,13 +18,17 @@
 	let days: Date[];
 	let childOpen = false;
 	let parent: HTMLDivElement;
+	let selected = DateOption.Week;
 	let childParent: HTMLDivElement;
 
-	// Keep track of the current date the custom date is on
+	// Keep track of the current date the calender ui is on, default is the current day
 	let current = new Date();
 
-	// Reset the current date to midnight so the comparison works properly
+	// Reset the current and custom dates to midnight so the comparisons work properly
 	current.setHours(0, 0, 0, 0);
+
+	// Keep track of the custom date selected, starts off as the current
+	let custom = current;
 
 	// Store iterable data for generating the calender
 	$: {
@@ -47,15 +50,32 @@
 		} else if (childParent && !childParent.contains(target as Node))
 			childOpen = false;
 	};
+
+	// Notify parent of an immediate change so the loading animation gets triggered.
+	// The reason bind isn't used here is because the two variables make it weird
+	$: selected, custom, dispatch("change");
+
+	// Dispatch an initial search on page load so content is loaded
+	onMount(() => dispatch("search", { selected, custom }));
 </script>
 
 <svelte:window on:click={windowClick} />
 
-<div bind:this={parent} class="relative max-w-sm mx-auto">
+<div
+	bind:this={parent}
+	use:debounce={{
+		bind: selected && custom,
+		func: () => {
+			dispatch("search", { selected, custom });
+		},
+		delay: 300
+	}}
+	class="relative max-w-sm mx-auto w-full mb-8 lg:mb-12"
+>
 	<button
 		on:click={() => (open = !open)}
 		class:rounded-b-lg={!open}
-		class="flex items-center justify-between p-4 w-full bg-gray-800 rounded-t-lg"
+		class="flex items-center justify-between p-4 w-full bg-gray-800 rounded-t-lg h-16"
 	>
 		<h1>
 			{selected === DateOption.Custom
@@ -67,7 +87,7 @@
 
 	{#if open}
 		<div
-			class="absolute w-full h-fit inset-0 top-14 shadow-lg bg-gray-800 rounded-b-lg z-40 p-4"
+			class="absolute w-full h-fit inset-0 top-14 shadow-lg bg-gray-800 rounded-b-lg z-40 p-4 sm:p-6"
 		>
 			<div bind:this={childParent} class="relative">
 				<button
@@ -117,7 +137,7 @@
 								current = current;
 							}}
 						>
-							<LeftArrow class="w-5 h-5" />
+							<Arrow class="w-5 h-5 -rotate-90" />
 						</button>
 						<button
 							on:click={() => {
@@ -125,15 +145,15 @@
 								current = current;
 							}}
 						>
-							<RightArrow class="w-5 h-5" />
+							<Arrow class="w-5 h-5 rotate-90" />
 						</button>
 					</div>
 				</div>
 				<div class="grid grid-cols-7 grid-rows-5 gap-2 -ml-1 mt-4">
-					{#each days as day, i}
+					{#each days as day, i (i)}
 						<button
-							on:click={() => (current = day)}
-							class:bg-blue-light={current.toString() ===
+							on:click={() => (custom = day)}
+							class:bg-blue-light={custom.toString() ===
 								day.toString()}
 							class="font-bold rounded-lg p-2 shrink-0 w-fit aspect-square"
 						>

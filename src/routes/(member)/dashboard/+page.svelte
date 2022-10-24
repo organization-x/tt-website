@@ -1,21 +1,21 @@
 <script lang="ts">
 	import { user } from "$lib/stores";
 	import { getIcon } from "$lib/getIcon";
+	import DevTag from "$lib/components/DevTag.svelte";
 	import Pin from "$lib/components/icons/Pin.svelte";
 	import Bulb from "$lib/components/icons/Bulb.svelte";
 	import Wrench from "$lib/components/icons/Wrench.svelte";
 	import Pencil from "$lib/components/icons/Pencil.svelte";
+	import DevSection from "$lib/components/DevSection.svelte";
 	import LinkIcon from "$lib/components/icons/LinkIcon.svelte";
 	import ShowHide from "$lib/components/icons/ShowHide.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 	import DashLink from "$lib/components/dashboard/DashLink.svelte";
-	import DevTag from "$lib/components/developers/index/DevTag.svelte";
 	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
-	import DeveloperSection from "$lib/components/DeveloperSection.svelte";
-	import DashSection from "$lib/components/dashboard/index/DashSection.svelte";
+	import DashSection from "$lib/components/dashboard/DashSection.svelte";
 	import ProjectEditPreview from "$lib/components/dashboard/projects/index/ProjectEditPreview.svelte";
 
 	import type { PageData } from "./$types";
@@ -38,6 +38,9 @@
 	const links = Object.keys($user.links).map((key) => {
 		return { key: key, link: $user.links[key as keyof typeof $user.links] };
 	});
+
+	// Split the name to get the first name and rest of the name seperated
+	$: nameSplit = $user.name.split(/ (.*)/);
 
 	// Define the pinned project, the reason we don't use the user store for this is so that it stays
 	// updated with the database and also because updating the user store causes a refresh on the projects page
@@ -105,20 +108,20 @@
 </svelte:head>
 
 <DashWrap>
-	<DashHero
-		title="{greet(new Date().getHours())}, {$user.name.split(' ')[0]}"
-	/>
+	<DashHero title="{greet(new Date().getHours())}, {nameSplit[0]}" />
 
 	<div class="flex flex-col gap-12">
 		<DashSection
 			title="Your Profile"
-			class="bg-gray-500/40 p-4 flex flex-col gap-8 lg:p-8 lg:gap-12"
+			class="bg-gray-500/40 p-4 rounded-lg flex flex-col gap-8 lg:p-8 lg:gap-12"
 		>
 			<!-- TODO: Replace placeholder -->
 
 			<div class="lg:flex lg:gap-12">
 				<div class="shrink-0">
-					<div class="flex gap-6 items-center mb-6 shrink-0">
+					<div
+						class="flex flex-col gap-2 items-center mb-6 shrink-0 md:flex-row md:gap-6 md:justify-center"
+					>
 						<div class="relative shrink-0 w-fit">
 							<img
 								height="200"
@@ -137,30 +140,36 @@
 								/>
 							</div>
 						</div>
-						<div>
-							<div class="flex gap-2 items-center pt-4 w-fit">
+						<div
+							class="flex flex-col gap-2 items-center pt-4 w-fit md:flex-col-reverse md:items-start"
+						>
+							<h1 class="font-semibold">
+								{$user.team || "No Team"}
+							</h1>
+							<div
+								class="text-3xl text-center sm:flex sm:items-center sm:gap-2"
+							>
 								<GradientText
-									class="from-green-light to-green-dark text-3xl mx-auto"
+									class="from-green-light to-green-dark"
 								>
 									{$user.name}
 								</GradientText>
 								<a
 									target="_blank"
-									rel="noopener noreffere"
+									rel="noopener noreferrer"
 									href="/developers/{$user.url}"
 								>
 									<ExternalLink
-										class="w-6 h-6 text-green-dark mt-1.5"
+										class="w-6 h-6 text-green-dark mx-auto mt-1.5"
 									/>
 								</a>
 							</div>
-							<h1 class="font-semibold">
-								{$user.team || "No Team"}
-							</h1>
 						</div>
 					</div>
 
-					<p class="my-12 md:text-lg lg:max-w-sm lg:my-0">
+					<p
+						class="my-12 text-center md:text-lg lg:text-left lg:max-w-sm lg:min-w-[24rem] lg:my-0"
+					>
 						{$user.about}
 					</p>
 				</div>
@@ -177,7 +186,7 @@
 						<a
 							target="_blank"
 							href="/projects/{pinnedProject.url}"
-							rel="noreferrer noopener"
+							rel="noopener noreferrer"
 							class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4"
 							style="border-color: #{pinnedProject.theme}"
 						>
@@ -210,7 +219,7 @@
 			</div>
 
 			<div class="grid gap-8 lg:gap-y-0 lg:grid-cols-2">
-				<DeveloperSection
+				<DevSection
 					title="Positions"
 					class="lg:row-start-1 lg:col-start-1"
 				>
@@ -219,29 +228,29 @@
 					{#each { length: 4 } as _, i}
 						<DevTag name={$user.positions[i]} />
 					{/each}
-				</DeveloperSection>
+				</DevSection>
 
-				<DeveloperSection
+				<DevSection
 					title="Skills"
 					class="lg:col-start-2 lg:row-start-1"
 				>
 					<Wrench slot="icon" class="w-6 h-6" />
 
-					{#each $user.techSkills as skill}
-						<DevTag name={skill} />
+					{#each $user.techSkills as name}
+						<DevTag {name} />
 					{/each}
 
-					{#each $user.softSkills as skill}
-						<DevTag name={skill} />
+					{#each $user.softSkills as name}
+						<DevTag {name} />
 					{/each}
 
 					<!-- Get the collective amount of techSkills and softSkills missing -->
 					{#each { length: 10 - ($user.techSkills.length + $user.softSkills.length) } as _, i}
 						<DevTag name="" />
 					{/each}
-				</DeveloperSection>
+				</DevSection>
 
-				<DeveloperSection
+				<DevSection
 					title="Links"
 					class="lg:row-start-1 lg:col-start-1 lg:mt-56"
 				>
@@ -266,7 +275,7 @@
 							<DevTag name="" />
 						{/if}
 					{/each}
-				</DeveloperSection>
+				</DevSection>
 
 				<div
 					class="flex gap-4 ml-auto lg:col-start-2 lg:row-start-1 lg:self-end"
@@ -295,7 +304,10 @@
 			</div>
 		</DashSection>
 
-		<DashSection title="Your Projects" class="bg-gray-500/40 p-4">
+		<DashSection
+			title="Your Projects"
+			class="bg-gray-500/40 rounded-lg p-4"
+		>
 			<div
 				class="min-h-[55rem] flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:min-h-0 lg:mb-8"
 			>
@@ -317,11 +329,12 @@
 						{/if}
 					{/each}
 				{:else}
-					<h1
-						class="text-center text-xl font-semibold my-auto lg:my-32 lg:col-span-2"
-					>
-						You don't have any projects
-					</h1>
+					<div
+						class="rounded-lg border-gray-800 border-4 border-dashed flex-1 h-104"
+					/>
+					<div
+						class="rounded-lg border-gray-800 border-4 border-dashed flex-1 h-104"
+					/>
 				{/if}
 			</div>
 

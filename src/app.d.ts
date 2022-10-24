@@ -119,17 +119,17 @@ declare global {
 
 		// Interface for contact form email requests
 		interface MailRequest {
-			"First Name": string;
-			"Last Name": string;
-			Email: string;
-			"Phone Number"?: string;
-			Company: string;
-			"What Talent Do You Need?": (TechSkill | SoftSkill)[];
-			"Company Website"?: string;
-			"What are we doing?": string;
-			"How did you hear about us?"?: string;
-			Subject: string;
-			Message: string;
+			firstName: string;
+			lastName: string;
+			email: string;
+			phone?: string;
+			company: string;
+			talent: string;
+			website?: string;
+			doing: string;
+			refer?: string;
+			subject: string;
+			message: string;
 		}
 
 		// Interface for contact form response data

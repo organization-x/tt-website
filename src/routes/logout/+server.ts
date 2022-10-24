@@ -1,21 +1,18 @@
-import { serialize } from "cookie";
+import { redirect } from "@sveltejs/kit";
+
 import { prisma } from "$lib/prisma.js";
 
 import type { RequestHandler } from "@sveltejs/kit";
 
-// On logout remove any cookies by setting the locals to null and setting the session cookie to expire immediatley,
-// also remove the session from postgres, then redirect to home page
-export const GET: RequestHandler = async (req) => {
-	if (req.locals.session)
-		await prisma.session.delete({ where: { token: req.locals.session } });
+// On logout remove any cookies by setting the session cookie to expire immediatley and
+// removing the session from postgres, then redirect to home page
+export const GET: RequestHandler = async (request) => {
+	if (request.locals.session)
+		await prisma.session.delete({
+			where: { token: request.locals.session }
+		});
 
-	req.locals.session = null;
+	request.cookies.set("session", "", { maxAge: 0 });
 
-	return new Response(undefined, {
-		status: 302,
-		headers: {
-			location: "/",
-			"set-cookie": serialize("session", "", { expires: new Date(0) })
-		}
-	});
+	throw redirect(302, "/");
 };

@@ -12,7 +12,5 @@
 		<h1 class="text-sm">{name.replaceAll("_", " ")}</h1>
 	</div>
 {:else}
-	<div
-		class="rounded-lg border-gray-800 border-4 border-dashed h-[3.75rem]"
-	/>
+	<div class="rounded-lg border-gray-800 border-4 border-dashed h-15" />
 {/if}
