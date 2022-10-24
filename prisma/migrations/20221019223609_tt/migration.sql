@@ -10,6 +10,9 @@ CREATE TYPE "TechSkill" AS ENUM ('JavaScript', 'Python', 'React', 'TensorFlow', 
 -- CreateEnum
 CREATE TYPE "SoftSkill" AS ENUM ('Teamwork', 'Leadership', 'Writing', 'Proactive');
 
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('Admin', 'User');
+
 -- CreateTable
 CREATE TABLE "Links" (
     "GitHub" TEXT,
@@ -51,8 +54,8 @@ CREATE TABLE "Project" (
 -- CreateTable
 CREATE TABLE "Session" (
     "token" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
     "created" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "userId" TEXT NOT NULL,
 
     CONSTRAINT "Session_pkey" PRIMARY KEY ("token")
 );
@@ -61,12 +64,15 @@ CREATE TABLE "Session" (
 CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "url" TEXT NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'User',
     "name" TEXT NOT NULL,
     "about" TEXT NOT NULL,
     "team" "Team",
     "positions" "Position"[],
     "softSkills" "SoftSkill"[],
     "techSkills" "TechSkill"[],
+    "pinnedProjectId" TEXT,
+    "visible" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -79,6 +85,9 @@ CREATE INDEX "Project_title_skills_idx" ON "Project"("title", "skills");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_url_key" ON "User"("url");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "User_pinnedProjectId_key" ON "User"("pinnedProjectId");
 
 -- CreateIndex
 CREATE INDEX "User_name_techSkills_softSkills_positions_idx" ON "User"("name", "techSkills", "softSkills", "positions");
@@ -94,3 +103,6 @@ ALTER TABLE "ProjectAuthor" ADD CONSTRAINT "ProjectAuthor_projectId_fkey" FOREIG
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "User" ADD CONSTRAINT "User_pinnedProjectId_fkey" FOREIGN KEY ("pinnedProjectId") REFERENCES "Project"("id") ON DELETE SET NULL ON UPDATE CASCADE;
