@@ -264,6 +264,3 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 		throw error(400, "Bad Request");
 	}
 };
-
-// TODO: Finish up user banner/icon editing
-// TODO: Add support for project banner editing

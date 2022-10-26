@@ -153,7 +153,7 @@
 		);
 
 		// Apend the type
-		body.append("type", type);
+		body.append("type", `user-${type}`);
 
 		// Update the image
 		await fetch("/api/images", {
@@ -201,31 +201,50 @@
 <svelte:window on:keydown={onKeydown} />
 
 <div class="relative pt-18 px-5 lg:px-10">
-	<div class="grid absolute top-0 inset-x-0 -z-10">
+	<label class="grid absolute top-0 inset-x-0 z-20">
 		<!-- TODO: Replace Cloudflare image delivery URL -->
 
-		<img
-			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{$original.id}/banner"
-			width="1920"
-			height="1080"
-			alt="{$original.name}'s banner"
-			class="object-cover object-center w-full h-32 row-start-1 col-start-1 lg:h-44"
-		/>
+		{#if banner && banner.disabled}
+			<div
+				class="animate-grays from-gray-400 to-gray-700 w-full h-32 row-start-1 col-start-1 lg:h-44"
+			/>
+		{:else}
+			<img
+				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{$original.id}/banner"
+				width="1920"
+				height="1080"
+				alt="{$original.name}'s banner"
+				class="object-cover object-center w-full h-32 row-start-1 col-start-1 lg:h-44"
+			/>
+		{/if}
 
-		<button
+		<div
 			class="w-full h-full bg-black/40 flex justify-center items-center gap-2 row-start-1 col-start-1"
 		>
 			<Pencil class="w-6 h-6 lg:w-8 lg:h-8" />
 			<h1 class="text-xl select-none font-semibold lg:text-2xl">Edit</h1>
-		</button>
-	</div>
+		</div>
 
-	<div class="lg:flex lg:gap-8 lg:justify-center">
+		<input
+			bind:this={banner}
+			on:change={() =>
+				banner.files?.length &&
+				// Limit file size to 1MB
+				banner.files[0].size <= 1048576 &&
+				(banner.disabled = true) &&
+				updateImage("banner")}
+			type="file"
+			accept="image/*"
+			class="hidden"
+		/>
+	</label>
+
+	<div class="z-10 lg:flex lg:gap-8 lg:justify-center">
 		<div
 			class="flex flex-col gap-4 lg:shrink-0 lg:sticky lg:h-min lg:mt-10 lg:top-6 lg:w-60"
 		>
 			<label
-				class="rounded-full cursor-pointer w-fit border-4 mt-4 border-black mx-auto grid lg:mx-0"
+				class="rounded-full z-30 cursor-pointer w-fit border-4 mt-4 border-black mx-auto grid lg:mx-0"
 			>
 				{#if avatar && avatar.disabled}
 					<div

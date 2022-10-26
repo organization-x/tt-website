@@ -38,6 +38,7 @@
 	let titleError = false;
 	let disableForm = false;
 	let disableButtons = true;
+	let banner: HTMLInputElement;
 	let visible = original.visible;
 	let pinned = $user.pinnedProjectId === original.id;
 
@@ -166,6 +167,34 @@
 		disableButtons = true;
 	};
 
+	// Update the project's banner
+	const updateImage = async () => {
+		if (!banner.files?.length || banner.files[0].size > 1048576) return;
+
+		banner.disabled = true;
+
+		const body = new FormData();
+
+		// Append the newly uploaded image to the body
+		body.append("file", new File([banner.files![0]], "banner"));
+
+		// Apend the type
+		body.append("type", "project-banner");
+
+		// Add the project ID
+		body.append("id", original.id);
+
+		// Update the image
+		await fetch("/api/images", {
+			method: "PATCH",
+			body
+		}).catch(() => {}); // Ignore errors, the avatar will just stay the same
+
+		// Reset the selected input value and enabled it
+		banner.value = "";
+		banner.disabled = false;
+	};
+
 	// Update visility of the project
 	const toggleVisible = () => {
 		fetch("/api/project", {
@@ -216,26 +245,40 @@
 
 <svelte:window on:keydown={onKeydown} />
 
-<div class="grid border-b-4" style="border-color: #{project.theme}">
+<label class="grid border-b-4" style="border-color: #{project.theme}">
 	<!-- TODO: Replace Cloudflare image delivery URL -->
 
-	<img
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{original.id}/banner"
-		width="1920"
-		height="1080"
-		alt="Banner for '{project.title}'"
-		class="object-cover object-center w-full h-32 row-start-1 col-start-1"
-	/>
+	{#if banner && banner.disabled}
+		<div
+			class="animate-grays from-gray-400 to-gray-700 w-full h-32 row-start-1 col-start-1"
+		/>
+	{:else}
+		<img
+			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{original.id}/banner"
+			width="1920"
+			height="1080"
+			alt="Banner for '{project.title}'"
+			class="object-cover object-center w-full h-32 row-start-1 col-start-1"
+		/>
+	{/if}
 
 	{#if isOwner}
-		<button
+		<div
 			class="w-full h-full bg-black/40 flex justify-center items-center gap-2 row-start-1 col-start-1"
 		>
 			<Pencil class="w-6 h-6 lg:w-8 lg:h-8" />
 			<h1 class="text-xl select-none font-semibold lg:text-2xl">Edit</h1>
-		</button>
+		</div>
+
+		<input
+			bind:this={banner}
+			on:change={updateImage}
+			type="file"
+			accept="image/*"
+			class="hidden"
+		/>
 	{/if}
-</div>
+</label>
 
 <div
 	class="flex flex-col gap-8 p-4 max-w-xl mx-auto mt-2 lg:px-12 lg:max-w-screen-xl xl:items-center"
