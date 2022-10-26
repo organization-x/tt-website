@@ -1,5 +1,5 @@
-import { Plugin } from "prosemirror-state";
 import { Extension } from "@tiptap/core";
+import { Plugin } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
 
 // Placeholders for different node types

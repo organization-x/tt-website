@@ -1,6 +1,6 @@
 import { redirect } from "@sveltejs/kit";
 
-import { getProjects } from "$lib/getters";
+import { getProjects } from "$lib/prisma";
 
 import type { PageServerLoad } from "./$types";
 

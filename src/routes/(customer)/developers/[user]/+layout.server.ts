@@ -1,6 +1,6 @@
 import { prisma } from "$lib/prisma";
 import { redirect } from "@sveltejs/kit";
-import { getProjects } from "$lib/getters";
+import { getProjects } from "$lib/prisma";
 
 import type { User } from "@prisma/client";
 import type { LayoutServerLoad } from "./$types";

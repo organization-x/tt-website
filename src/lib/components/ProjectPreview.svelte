@@ -7,6 +7,7 @@
 </script>
 
 <a
+	on:click
 	in:fly={{ duration: 300, y: 50 }}
 	href="/projects/{project.url}"
 	rel="noreferrer noopener"
