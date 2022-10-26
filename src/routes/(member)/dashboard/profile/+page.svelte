@@ -14,10 +14,10 @@
 	import ShowHide from "$lib/components/icons/ShowHide.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
+	import ProfileSection from "$lib/components/ProfileSection.svelte";
 	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 	import { teams, positions, softSkills, techSkills } from "$lib/enums";
-	import ProfileSection from "$lib/components/dashboard/profile/ProfileSection.svelte";
 
 	import type { PageParentData } from "./$types";
 	import type { Position, SoftSkill, TechSkill, Team } from "@prisma/client";
@@ -29,6 +29,10 @@
 	let disableForm = false;
 	let disableButtons = true;
 	let visible = $original.visible;
+
+	// Image and banner input elements for when the user switches their profile picture
+	let banner: HTMLInputElement;
+	let avatar: HTMLInputElement;
 
 	const checkConstraints = () => {
 		// If the form is disabled ignore since the reactive statements fire due to the fetch call
@@ -135,6 +139,34 @@
 		});
 	};
 
+	// Update profile picture/banner of user
+	const updateImage = (type: "banner" | "avatar") => {
+		const body = new FormData();
+
+		// Append the newly uploaded image to the body
+		body.append(
+			"file",
+			new File(
+				[type === "banner" ? banner.files![0] : avatar.files![0]],
+				type
+			)
+		);
+
+		// Apend the type
+		body.append("type", type);
+
+		// Update the image
+		fetch("/api/images", {
+			method: "PATCH",
+			body
+		}).catch(() => {}); // Ignore errors
+
+		// Reset the selected input value and enabled it
+		type === "banner"
+			? (banner.value = "") && (banner.disabled = false)
+			: (avatar.value = "") && (avatar.disabled = false);
+	};
+
 	// Update visility of user
 	const toggleVisible = () => {
 		fetch("/api/user", {
@@ -164,7 +196,7 @@
 
 <svelte:window on:keydown={onKeydown} />
 
-<div class="relative pt-[4.5rem] px-8 lg:px-10">
+<div class="relative pt-18 px-5 lg:px-10">
 	<div class="grid absolute top-0 inset-x-0 -z-10">
 		<!-- TODO: Replace placeholder -->
 		<img
@@ -187,22 +219,40 @@
 		<div
 			class="flex flex-col gap-4 lg:shrink-0 lg:sticky lg:h-min lg:mt-10 lg:top-6 lg:w-60"
 		>
-			<div
-				class="rounded-full w-fit border-4 mt-4 border-black mx-auto grid lg:mx-0"
+			<label
+				class="rounded-full cursor-pointer w-fit border-4 mt-4 border-black mx-auto grid lg:mx-0"
 			>
-				<img
-					width="200"
-					height="200"
-					src="/assets/developers/user/placeholder/icon.webp"
-					alt="{$original.name}'s avatar"
-					class="w-28 h-28 rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
+				{#if avatar && avatar.disabled}
+					<div
+						class="animate-grays from-gray-400 to-gray-700 w-28 h-28 rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
+					/>
+				{:else}
+					<img
+						width="200"
+						height="200"
+						src="/assets/developers/user/placeholder/icon.webp"
+						alt="{$original.name}'s avatar"
+						class="w-28 h-28 rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
+					/>
+
+					<div
+						class="bg-black/40 rounded-full flex row-start-1 col-start-1 z-10"
+					>
+						<Pencil class="w-7 h-7 m-auto" />
+					</div>
+				{/if}
+
+				<input
+					bind:this={avatar}
+					on:change={() =>
+						avatar.files?.length &&
+						(avatar.disabled = true) &&
+						updateImage("avatar")}
+					type="file"
+					accept="image/*"
+					class="hidden"
 				/>
-				<div
-					class="bg-black/40 rounded-full flex row-start-1 col-start-1"
-				>
-					<Pencil class="w-7 h-7 m-auto" />
-				</div>
-			</div>
+			</label>
 
 			<GradientText
 				class="from-green-light to-green-dark font-bold text-3xl break-words text-center w-full lg:text-start"
@@ -210,12 +260,14 @@
 				{$original.name}
 			</GradientText>
 
-			<div class="flex gap-4 w-full mx-auto max-w-xl lg:mx-0">
+			<div
+				class="flex justify-center gap-4 w-full mx-auto max-w-xl lg:mx-0"
+			>
 				<a
 					target="_blank"
 					rel="noopener noreferrer"
 					href="/developers/{$original.url}"
-					class="px-4 py-3 rounded-lg bg-gray-500 flex items-center justify-center gap-4 w-full transition-colors hover:bg-gray-500/80"
+					class="px-4 py-3 rounded-lg bg-gray-500 flex items-center justify-center max-w-xs gap-4 w-full transition-colors hover:bg-gray-500/80"
 				>
 					View Profile
 					<ExternalLink class="w-6 h-6" />
@@ -240,10 +292,10 @@
 			disabled={disableForm}
 			class:opacity-60={disableForm}
 			class:pointer-events-none={disableForm}
-			class="flex flex-col mt-8 gap-12 max-w-screen-2xl mx-auto transition-opacity duration-300 lg:mt-40 lg:mx-0 3xl:grid 3xl:grid-cols-2 3xl:text-sm"
+			class="flex flex-col mt-8 gap-12 max-w-xl mx-auto transition-opacity duration-300 lg:max-w-screen-2xl lg:mt-40 lg:mx-0 3xl:grid 3xl:grid-cols-2 3xl:text-sm"
 		>
 			<div class="flex flex-col gap-12 justify-between">
-				<ProfileSection direction="bg-gradient-to-br" title="About Me">
+				<ProfileSection title="About Me">
 					<Input
 						bind:value={user.name}
 						max={20}
@@ -267,11 +319,7 @@
 					</Dropdown>
 				</ProfileSection>
 
-				<ProfileSection
-					direction="bg-gradient-to-tr"
-					largeGrid={true}
-					title="Links"
-				>
+				<ProfileSection largeGrid={true} title="Links">
 					<Input
 						bind:value={user.links.GitHub}
 						placeholder="GitHub username"
@@ -317,11 +365,7 @@
 			</div>
 
 			<div class="flex flex-col gap-12 justify-between">
-				<ProfileSection
-					direction="bg-gradient-to-tl"
-					largeGrid={true}
-					title="Positions"
-				>
+				<ProfileSection largeGrid={true} title="Positions">
 					{#each { length: 4 } as _, i}
 						<Dropdown
 							{i}
@@ -340,11 +384,7 @@
 					{/each}
 				</ProfileSection>
 
-				<ProfileSection
-					direction="bg-gradient-to-bl"
-					largeGrid={true}
-					title="Skills"
-				>
+				<ProfileSection largeGrid={true} title="Skills">
 					<div class="flex flex-col gap-6">
 						<h1 class="font-semibold text-xl text-center">Soft</h1>
 						{#each { length: 5 } as _, i}
@@ -364,6 +404,7 @@
 							/>
 						{/each}
 					</div>
+
 					<div class="flex flex-col gap-6">
 						<h1 class="font-semibold text-xl text-center">
 							Technical

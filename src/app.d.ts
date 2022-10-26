@@ -136,18 +136,6 @@ declare global {
 			success: boolean;
 		}
 
-		// Interface for inputs on the contact page form
-		interface Box {
-			type: BoxType;
-			name: string;
-			isValid: boolean;
-			required: boolean;
-			placeholder: string;
-			options?: string[];
-			value?: string;
-			selected?: string[];
-		}
-
 		// interface Platform {}
 		// interface PrivateEnv {}
 		// interface PublicEnv {}

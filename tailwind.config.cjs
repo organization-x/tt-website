@@ -59,9 +59,7 @@ module.exports = {
 				"gradient-radial":
 					"radial-gradient(var(--tw-gradient-from) 30%, var(--tw-gradient-to))",
 				"gradient-conic":
-					"conic-gradient(var(--tw-gradient-from), var(--tw-gradient-to))",
-				"gradient-page":
-					"linear-gradient(var(--tw-gradient-from) 50%, var(--tw-gradient-to))"
+					"conic-gradient(var(--tw-gradient-from), var(--tw-gradient-to))"
 			},
 			transitionProperty: {
 				widpad: "width, padding",
@@ -85,14 +83,20 @@ module.exports = {
 			maxWidth: {
 				60: "15rem"
 			},
+			padding: {
+				18: "4.5rem"
+			},
 			animation: {
-				progress: "progress 1s ease-in-out 1 forwards"
+				grays: "grays 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"
 			},
 			keyframes: {
-				progress: {
-					"0%": {
-						"stroke-dashoffset": 400,
-						opacity: 0
+				grays: {
+					"0%, 100%": {
+						"background-color": "var(--tw-gradient-from)"
+					},
+
+					"50%": {
+						"background-color": "var(--tw-gradient-to)"
 					}
 				}
 			}

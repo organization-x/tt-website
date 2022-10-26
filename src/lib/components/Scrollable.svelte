@@ -14,34 +14,23 @@
 		None
 	}
 
-	let innerWidth: number;
+	let clientWidth: number;
 	let disabledSide = Side.Left;
 	let scrollable: HTMLDivElement;
 
 	// Update which gradient on either side is shown based on where the element is scrolled to
-	const onScroll = () => {
-		if (scrollable.scrollLeft === 0) {
-			disabledSide = Side.Left;
-		} else if (
-			scrollable.scrollLeft -
-				(scrollable.scrollWidth - scrollable.clientWidth) >=
+	const checkArrows = () => {
+		if (clientWidth === scrollable.scrollWidth) disabledSide = Side.Both;
+		else if (scrollable.scrollLeft === 0) disabledSide = Side.Left;
+		else if (
+			scrollable.scrollLeft - (scrollable.scrollWidth - clientWidth) >=
 			-0.5
-		) {
+		)
 			disabledSide = Side.Right;
-		} else {
-			disabledSide = Side.None;
-		}
+		else disabledSide = Side.None;
 	};
 
-	const checkArrows = () =>
-		scrollable &&
-		(scrollable.clientWidth === scrollable.scrollWidth
-			? (disabledSide = Side.Both)
-			: onScroll());
-
-	$: innerWidth, checkArrows();
-
-	// TODO: Fix arrows enabling/disabling on slot contents change
+	$: clientWidth, scrollable && checkArrows();
 
 	// Scroll on arrow click
 	const scroller = (side: Side) => {
@@ -55,8 +44,6 @@
 		});
 	};
 </script>
-
-<svelte:window bind:innerWidth />
 
 {#if arrows}
 	<div class:justify-center={disabledSide === Side.Both} class="flex gap-4">
@@ -81,9 +68,10 @@
             {className}"
 		>
 			<div
+				bind:clientWidth
 				bind:this={scrollable}
-				on:scroll={onScroll}
-				class="flex gap-5 overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
+				on:scroll={checkArrows}
+				class="flex gap-5 w-full overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
 			>
 				<slot />
 			</div>
@@ -112,8 +100,9 @@
         {className}"
 	>
 		<div
+			bind:clientWidth
 			bind:this={scrollable}
-			on:scroll={onScroll}
+			on:scroll={checkArrows}
 			class="flex gap-5 overflow-auto py-2 scrollbar-hidden"
 		>
 			<slot />

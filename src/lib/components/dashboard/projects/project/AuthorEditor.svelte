@@ -16,7 +16,6 @@
 	export let author: App.Author;
 
 	let open = false;
-	let innerWidth: number;
 	let parent: HTMLDivElement;
 
 	const dispatch = createEventDispatcher<{ click: { id: string } }>();
@@ -29,8 +28,10 @@
 	// Have to do it in a seperate function since svelte doesn't allow for typescript within the on directive
 	const onChange = ({
 		detail
-	}: CustomEvent<{ selected: string; previous: string }>) =>
-		(author.position = detail.selected as Position);
+	}: CustomEvent<{
+		selected: string | undefined;
+		previous: string | undefined;
+	}>) => (author.position = detail.selected as Position);
 
 	// Transition for when an author is removed
 	const transition = (node: Element): TransitionConfig => {
@@ -48,7 +49,7 @@
 	};
 </script>
 
-<svelte:window on:click={onClick} bind:innerWidth />
+<svelte:window on:click={onClick} />
 
 <div
 	in:slide|local={{ duration: 200 }}
@@ -109,7 +110,6 @@
 	<div class="hidden lg:block bg-gray-800 rounded-b-lg">
 		<Dropdown
 			i={0}
-			radio={true}
 			options={positions}
 			required={true}
 			selectedItems={[author.position]}

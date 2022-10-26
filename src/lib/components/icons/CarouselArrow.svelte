@@ -10,7 +10,8 @@
 	<svg
 		class:opacity-0={hidden}
 		class:opacity-50={disabled}
-		class="w-7 h-7 transition-opacity {className}"
+		class:transition-opacity={!hidden}
+		class="w-7 h- {className}"
 		fill="currentColor"
 		viewBox="0 0 24 24"
 	>

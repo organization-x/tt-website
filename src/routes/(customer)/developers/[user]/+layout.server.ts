@@ -45,7 +45,7 @@ export const load: LayoutServerLoad<{
 
 	if (!user) throw redirect(302, "/developers");
 
-	const projects = await getProjects({ url: user.url });
+	const projects = await getProjects({ ownerId: user.id });
 
 	return { user, projects };
 };

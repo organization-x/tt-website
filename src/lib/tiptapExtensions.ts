@@ -88,16 +88,70 @@ export const extensions = [
 		addKeyboardShortcuts() {
 			return {
 				Backspace: () => {
-					// On backspace, lift the list item if in the right scenario before anything else
-					// TODO: Fix weird bug where backspace brings back list items
+					// On backspace, lift the list item if in the right scenario before anything else. And if backspace is pressed on an empty paragraph
+					// below a list item, don't create another listen item
 
+					// Check if the editor is active on a list item and is able to lift it, if so lift the list item
 					if (
 						this.editor.isActive("listItem") &&
 						this.editor.state.selection.$from.parentOffset === 0 &&
 						this.editor.state.selection.empty &&
 						this.editor.can().liftListItem("listItem")
 					) {
-						return this.editor.commands.liftListItem("listItem");
+						this.editor.commands.liftListItem("listItem");
+
+						return true;
+					}
+
+					// TODO: Fix weird bullet point behavoir, currently can't unselect node
+					if (
+						this.editor.state.selection.empty &&
+						this.editor.state.selection.$from.parentOffset === 0 &&
+						this.editor.state.doc.content.childCount > 1
+					) {
+						// If the editor is on an empty newline with no offset to the parent
+						// Grab the current node at the cursor.
+
+						this.editor.commands.selectNodeBackward();
+
+						// If the the previous node is non existant or the type isn't a bulletList ignore
+						const isList =
+							this.editor.state.selection.content().content
+								.firstChild?.type.name !== "bulletList";
+
+						if (isList) return false;
+
+						this.editor.commands.deleteSelection();
+
+						// If there is content, shift it up to the next line
+						// if (node.textContent.length) {
+						// 	// Insert the stored content
+						// 	this.editor.commands.insertContent(
+						// 		node.textContent
+						// 	);
+
+						// 	// Move the cursor to the start of the inserted content
+						// 	this.editor.commands.setTextSelection(
+						// 		this.editor.state.selection.anchor -
+						// 			node.textContent.length
+						// 	);
+						// }
+
+						// If there is content, shift it up to the next line
+						// if (node.textContent.length) {
+						// 	// Insert the stored content
+						// 	this.editor.commands.insertContent(
+						// 		node.textContent
+						// 	);
+
+						// 	// Move the cursor to the start of the inserted content
+						// 	this.editor.commands.setTextSelection(
+						// 		this.editor.state.selection.anchor -
+						// 			node.textContent.length
+						// 	);
+						// }
+
+						return true;
 					}
 
 					return false;

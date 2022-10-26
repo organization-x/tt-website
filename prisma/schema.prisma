@@ -46,6 +46,7 @@ enum SoftSkill {
 // Enum for user permission roles
 enum Role {
     Admin
+    Lead
     User
 }
 
@@ -103,23 +104,34 @@ model Session {
 
 // The user model for storing tt members
 model User {
-    id              String          @id
-    sessions        Session[]
-    // Contains the users url basis (firstlast), structured as /users/{firstlast}.
-    // For banners and icons we can do /users/{firstlast}/banner.webp and /users/{firstlast}/icon.webp
-    url             String          @unique
-    role            Role            @default(User)
-    name            String
-    about           String
-    team            Team?
-    links           Links?
-    positions       Position[]
-    softSkills      SoftSkill[]
-    techSkills      TechSkill[]
-    projects        ProjectAuthor[]
-    pinnedProject   Project?        @relation(fields: [pinnedProjectId], references: [id])
-    pinnedProjectId String?         @unique
-    visible         Boolean         @default(true)
+    id                   String          @id
+    sessions             Session[]
+    url                  String          @unique
+    role                 Role            @default(User)
+    name                 String
+    about                String
+    team                 Team?
+    links                Links?
+    positions            Position[]
+    softSkills           SoftSkill[]
+    techSkills           TechSkill[]
+    projects             ProjectAuthor[]
+    pinnedProject        Project?        @relation(fields: [pinnedProjectId], references: [id])
+    pinnedProjectId      String?         @unique
+    visible              Boolean         @default(true)
+    endorsementsReceived Endorsement[]   @relation("to")
+    endorsementsSent     Endorsement[]   @relation("from")
 
     @@index([name, softSkills, techSkills, positions, url])
+}
+
+// The endorsement model for storing lead/admin to user endorsements
+model Endorsement {
+    id        Int        @id @default(autoincrement())
+    techSkill TechSkill?
+    softSkill SoftSkill?
+    to        User       @relation("to", fields: [toId], references: [id])
+    toId      String
+    from      User       @relation("from", fields: [fromId], references: [id])
+    fromId    String
 }

@@ -4,8 +4,6 @@ import { prisma, checkSession, getUsers } from "$lib/prisma";
 
 import type { RequestHandler } from "./$types";
 
-// TODO: possibly implement rate limiting on all API routes
-
 // Request handlers for managing user data in prisma, it uses the users session token to verify the API call
 
 // Update user information
