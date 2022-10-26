@@ -20,40 +20,44 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 
 		const type = data.get("type") as string;
 
-		// If the data includes an invalid type, throw bad request
-		if (type !== "avatar" && type !== "banner")
+		// If the data includes an invalid type or the image size is greater than 1MB throw bad request
+		if (
+			(type !== "avatar" && type !== "banner") ||
+			(data.get("file") as File).size >= 1048576
+		)
 			throw error(400, "Bad Request");
 
 		// Remove the type since we don't want it in the Cloudflare request
 		data.delete("type");
 
-		// Update the image with the Cloudflare Images API
+		// Add the user ID and type for image identification
+		data.set("id", `${type}-${user.id}`);
+
+		// First delete the image from Cloudflare
 		await fetch(
 			`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1/${type}-${user.id}`,
 			{
-				method: "PATCH",
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+				}
+			}
+		);
+
+		// Then upload the new image to Cloudflare
+		await fetch(
+			`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1`,
+			{
+				method: "POST",
 				headers: {
 					Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
 				},
 				body: data
 			}
-		)
-			.then((res) => res.json())
-			.then((res) => console.log(res));
+		);
 
 		return new Response(undefined, { status: 200 });
-	} catch (e) {
-		console.log(e);
+	} catch {
 		throw error(400, "Bad Request");
 	}
-};
-
-export const GET: RequestHandler = async () => {
-	console.log(
-		await fetch(
-			`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1?per_page=100`
-		).then((res) => res.json())
-	);
-
-	return new Response(undefined, { status: 200 });
 };

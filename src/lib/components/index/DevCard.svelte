@@ -18,12 +18,12 @@
 		class="bg-gray-500/40 p-10 rounded-xl relative text-center max-w-lg mx-auto lg:mx-0 lg:p-8"
 	>
 		<div class="lg:flex lg:justify-center lg:gap-8">
-			<!-- TODO: Replace placeholder -->
+			<!-- TODO: Replace Cloudflare image delivery URL -->
 
 			<img
-				height="200"
-				width="200"
-				src="/assets/developers/user/placeholder/icon.webp"
+				height="512"
+				width="512"
+				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{developer.id}/avatar"
 				alt="{developer.name}'s avatar"
 				loading="lazy"
 				class="rounded-full mx-auto w-20 h-20 lg:mx-0"
@@ -51,7 +51,7 @@
 			class:h-11={!open}
 			class="absolute flex bg-gray-700 mx-auto transition-[border-radius,height] left-0 right-0 bottom-0 rounded-b-lg w-full lg:hidden"
 		>
-			<div
+			<button
 				class="flex gap-2 items-center m-auto mb-2 cursor-pointer w-full justify-center"
 				on:click={() => (open = !open)}
 			>
@@ -61,7 +61,7 @@
 						: ''}"
 				/>
 				<p class="text-center my-auto">Show more</p>
-			</div>
+			</button>
 		</div>
 
 		{#if open}

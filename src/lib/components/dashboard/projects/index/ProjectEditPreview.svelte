@@ -73,10 +73,10 @@
 		style="border-color: #{project.theme}"
 	>
 		<div class="relative">
-			<!-- TODO: Replace placeholders -->
+			<!-- TODO: Replace Cloudflare image delivery URL -->
 
 			<img
-				src="/assets/projects/project/placeholder/banner.webp"
+				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{project.id}/banner"
 				width="1920"
 				height="1080"
 				alt="Banner for '{project.title}'"
@@ -88,10 +88,13 @@
 			>
 				{#each project.authors as author, i}
 					{#if author.user.id !== $user.id && i <= 4}
+						<!-- TODO: Replace Cloudflare image delivery URL -->
+
 						<img
-							width="200"
-							height="200"
-							src="/assets/developers/user/placeholder/icon.webp"
+							width="512"
+							height="512"
+							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
+								.user.id}/avatar"
 							alt="{author.user.name}'s avatar"
 							class="w-10 h-10 -mr-6 sm:-mr-8 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4"
 							style="border-color: #{project.theme}; z-index: {project

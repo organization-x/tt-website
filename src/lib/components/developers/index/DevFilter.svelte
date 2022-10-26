@@ -11,11 +11,12 @@
 	class:cursor-pointer={!current}
 	class="font-semibold flex jsutify-center gap-4 justify-center items-center h-14 bg-gray-500/40 rounded-lg px-4 snap-center shrink-0 select-none w-56"
 >
-	<!-- TODO: Replace placeholder -->
+	<!-- TODO: Replace Cloudflare image delivery URL -->
+
 	<img
-		height="200"
-		width="200"
-		src="/assets/developers/user/placeholder/icon.webp"
+		height="512"
+		width="512"
+		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar"
 		loading="lazy"
 		alt="{user.name}'s avatar"
 		class="rounded-full w-10"

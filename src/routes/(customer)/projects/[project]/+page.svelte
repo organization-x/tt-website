@@ -39,10 +39,10 @@
 	<title>{data.title}</title>
 </svelte:head>
 
-<!-- TODO: Replace placeholder -->
+<!-- TODO: Replace Cloudflare image delivery URL -->
 
 <img
-	src="/assets/projects/project/placeholder/banner.webp"
+	src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.id}/banner"
 	width="1920"
 	height="1080"
 	alt="Banner for '{data.title}'"

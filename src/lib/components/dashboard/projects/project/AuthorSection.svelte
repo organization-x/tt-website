@@ -23,20 +23,14 @@
 			if (!req.length && search.length) return rej();
 			else if (!req.length) return;
 
-			fetch("/api/user", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					where: {
-						name: {
-							contains: search.trim(),
-							mode: "insensitive"
-						}
+			fetch(
+				`/api/user?where=${JSON.stringify({
+					name: {
+						contains: search.trim(),
+						mode: "insensitive"
 					}
-				} as App.UserSearchRequest)
-			})
+				})}`
+			)
 				.then((res) => res.json())
 				.then((data: User[]) => {
 					// Filter users out who are already collaborators
@@ -153,12 +147,12 @@
 									in:fly={{ y: 20, duration: 200 }}
 									class="flex gap-3 items-center"
 								>
-									<!-- TODO: Replace placeholder -->
+									<!-- TODO: Replace Cloudflare image delivery URL -->
 
 									<img
-										width="200"
-										height="200"
-										src="/assets/developers/user/placeholder/icon.webp"
+										width="512"
+										height="512"
+										src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar"
 										alt="{user.name}'s avatar"
 										class="w-10 h-10 rounded-full"
 									/>

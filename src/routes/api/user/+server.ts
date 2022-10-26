@@ -2,6 +2,7 @@ import { error } from "@sveltejs/kit";
 
 import { prisma, checkSession, getUsers } from "$lib/prisma";
 
+import type { Prisma } from "@prisma/client";
 import type { RequestHandler } from "./$types";
 
 // Request handlers for managing user data in prisma, it uses the users session token to verify the API call
@@ -72,14 +73,16 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 };
 
 // Search for users, otherwise a +page.server.ts should be used
-// * INPUT: UserSearchRequest
+// * INPUT: where=Prisma.UserWhereInput
 // * OUTPUT: User[]
-export const POST: RequestHandler = async ({ request }) => {
+export const GET: RequestHandler = async ({ request }) => {
 	try {
-		const data: App.UserSearchRequest = await request.json();
-
 		// Grab users using request, if an error occurs throw a bad request
-		const users = await getUsers(data.where);
+		const users = await getUsers(
+			JSON.parse(
+				new URL(request.url).searchParams.get("where")!
+			) as Prisma.UserWhereInput
+		);
 
 		return new Response(JSON.stringify(users), { status: 200 });
 	} catch {

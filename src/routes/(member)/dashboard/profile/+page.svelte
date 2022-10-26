@@ -140,7 +140,7 @@
 	};
 
 	// Update profile picture/banner of user
-	const updateImage = (type: "banner" | "avatar") => {
+	const updateImage = async (type: "banner" | "avatar") => {
 		const body = new FormData();
 
 		// Append the newly uploaded image to the body
@@ -156,15 +156,19 @@
 		body.append("type", type);
 
 		// Update the image
-		fetch("/api/images", {
+		await fetch("/api/images", {
 			method: "PATCH",
 			body
-		}).catch(() => {}); // Ignore errors
+		}).catch(() => {}); // Ignore errors, the avatar will just stay the same
 
 		// Reset the selected input value and enabled it
-		type === "banner"
-			? (banner.value = "") && (banner.disabled = false)
-			: (avatar.value = "") && (avatar.disabled = false);
+		if (type === "banner") {
+			banner.value = "";
+			banner.disabled = false;
+		} else {
+			avatar.value = "";
+			avatar.disabled = false;
+		}
 	};
 
 	// Update visility of user
@@ -198,9 +202,10 @@
 
 <div class="relative pt-18 px-5 lg:px-10">
 	<div class="grid absolute top-0 inset-x-0 -z-10">
-		<!-- TODO: Replace placeholder -->
+		<!-- TODO: Replace Cloudflare image delivery URL -->
+
 		<img
-			src="/assets/projects/project/placeholder/banner.webp"
+			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{$original.id}/banner"
 			width="1920"
 			height="1080"
 			alt="{$original.name}'s banner"
@@ -228,9 +233,9 @@
 					/>
 				{:else}
 					<img
-						width="200"
-						height="200"
-						src="/assets/developers/user/placeholder/icon.webp"
+						width="512"
+						height="512"
+						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$original.id}/avatar"
 						alt="{$original.name}'s avatar"
 						class="w-28 h-28 rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
 					/>
@@ -246,6 +251,8 @@
 					bind:this={avatar}
 					on:change={() =>
 						avatar.files?.length &&
+						// Limit file size to 1MB
+						avatar.files[0].size <= 1048576 &&
 						(avatar.disabled = true) &&
 						updateImage("avatar")}
 					type="file"

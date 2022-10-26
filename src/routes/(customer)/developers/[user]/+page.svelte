@@ -46,11 +46,12 @@
 	<title>{data.user.name}</title>
 </svelte:head>
 
-<!-- TODO: Replace placeholders -->
+<!-- TODO: Replace Cloudflare image delivery URL -->
 
 <div class="relative pt-18 px-5 lg:px-10">
 	<img
-		src="/assets/projects/project/placeholder/banner.webp"
+		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.user
+			.id}/banner"
 		width="1920"
 		height="1080"
 		alt="{data.user.name}'s banner"
@@ -67,9 +68,10 @@
 				class="flex flex-col gap-4 items-center mb-4 md:shrink-0 lg:items-start"
 			>
 				<img
-					width="200"
-					height="200"
-					src="/assets/developers/user/placeholder/icon.webp"
+					width="512"
+					height="512"
+					src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
+						.user.id}/avatar"
 					alt="{data.user.name}'s avatar"
 					class="border-4 mt-4 border-black box-content w-28 h-28 rounded-full lg:w-32 lg:mx-0 lg:h-32"
 				/>

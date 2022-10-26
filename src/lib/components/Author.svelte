@@ -10,15 +10,16 @@
     after:duration-200 after:transition-transform after:h-0.5 after:absolute after:right-4 after:-bottom-0.5 after:left-4 after:bg-white after:scale-x-0 hover:after:scale-x-100"
 	rel="noopener noreferrer"
 >
-	<!-- TODO: Replace placeholder -->
+	<!-- TODO: Replace Cloudflare image delivery URL -->
 
 	<img
 		class:border-4={theme.length}
 		class="rounded-full my-auto w-12"
 		style={theme.length ? `border-color: #${theme}` : ""}
-		height="200"
-		width="200"
-		src="/assets/developers/user/placeholder/icon.webp"
+		height="512"
+		width="512"
+		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
+			.user.id}/avatar"
 		alt="{author.user.name}'s avatar"
 		loading="lazy"
 	/>

@@ -20,8 +20,8 @@ declare global {
 
 		// Interface for the landing page developer cards
 		interface Developer {
+			id: string;
 			name: string;
-			url: string;
 			about: string;
 		}
 
@@ -51,11 +51,6 @@ declare global {
 			};
 		}
 
-		// Interface for user search requests
-		interface UserSearchRequest {
-			where: Prisma.UserWhereInput;
-		}
-
 		// Type for authors on projects
 		type Author = { user: User; position: Position };
 
@@ -80,20 +75,9 @@ declare global {
 			};
 		}
 
-		// Interface for project search requests
-		interface ProjectSearchRequest {
-			where: Prisma.ProjectWhereInput;
-		}
-
 		// Interface for project deletion
 		interface ProjectDeleteRequest {
 			id: string;
-		}
-
-		// Interface for grabbing analytics data
-		interface AnalyticsRequest {
-			startDate: string;
-			endDate: string;
 		}
 
 		// Type for graph data that will be plotted

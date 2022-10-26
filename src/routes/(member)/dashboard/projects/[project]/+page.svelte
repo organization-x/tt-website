@@ -217,9 +217,10 @@
 <svelte:window on:keydown={onKeydown} />
 
 <div class="grid border-b-4" style="border-color: #{project.theme}">
-	<!-- TODO: Replace placeholder -->
+	<!-- TODO: Replace Cloudflare image delivery URL -->
+
 	<img
-		src="/assets/projects/project/placeholder/banner.webp"
+		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{original.id}/banner"
 		width="1920"
 		height="1080"
 		alt="Banner for '{project.title}'"

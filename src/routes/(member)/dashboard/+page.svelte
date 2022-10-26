@@ -115,7 +115,7 @@
 			title="Your Profile"
 			class="bg-gray-500/40 p-4 rounded-lg flex flex-col gap-8 lg:p-8 lg:gap-12"
 		>
-			<!-- TODO: Replace placeholder -->
+			<!-- TODO: Replace Cloudflare image delivery URL -->
 
 			<div class="lg:flex lg:gap-12">
 				<div class="shrink-0">
@@ -124,9 +124,9 @@
 					>
 						<div class="relative shrink-0 w-fit">
 							<img
-								height="200"
-								width="200"
-								src="/assets/developers/user/placeholder/icon.webp"
+								height="512"
+								width="512"
+								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar"
 								alt="{$user.name}'s avatar"
 								loading="lazy"
 								class="rounded-full w-20 h-20 lg:w-24 lg:h-24"
@@ -190,10 +190,10 @@
 							class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4"
 							style="border-color: #{pinnedProject.theme}"
 						>
-							<!-- TODO: Replace placeholders -->
+							<!-- TODO: Replace Cloudflare image delivery URL -->
 
 							<img
-								src="/assets/projects/project/placeholder/banner.webp"
+								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{pinnedProject.id}/banner"
 								width="1920"
 								height="1080"
 								loading="lazy"

@@ -25,7 +25,7 @@ export const load: PageServerLoad<{
 		},
 		select: {
 			name: true,
-			url: true,
+			id: true,
 			about: true
 		}
 	});

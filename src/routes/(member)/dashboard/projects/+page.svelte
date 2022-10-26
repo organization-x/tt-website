@@ -10,6 +10,8 @@
 	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
 	import ProjectEditPreview from "$lib/components/dashboard/projects/index/ProjectEditPreview.svelte";
 
+	import type { Prisma } from "@prisma/client";
+
 	let search = "";
 	let creatingProject = false;
 	let pinDebounce: NodeJS.Timeout;
@@ -23,33 +25,27 @@
 
 	const onSearch = () => {
 		request = new Promise((res, rej) =>
-			fetch("/api/project", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					where: {
-						title: {
-							contains: search.trim(),
-							mode: "insensitive"
-						},
+			fetch(
+				`/api/project?where=${JSON.stringify({
+					title: {
+						contains: search.trim(),
+						mode: "insensitive"
+					},
 
-						OR: [
-							{
-								ownerId: $user.id
-							},
-							{
-								authors: {
-									some: {
-										userId: $user.id
-									}
+					OR: [
+						{
+							ownerId: $user.id
+						},
+						{
+							authors: {
+								some: {
+									userId: $user.id
 								}
 							}
-						]
-					}
-				} as App.ProjectSearchRequest)
-			})
+						}
+					]
+				} as Prisma.ProjectWhereInput)}`
+			)
 				.then((res) => res.json())
 				.then((data: App.ProjectWithMetadata[]) =>
 					data.length ? res(data) : rej()
@@ -61,7 +57,7 @@
 		creatingProject = true;
 
 		fetch("/api/project", {
-			method: "PUT",
+			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
 			}

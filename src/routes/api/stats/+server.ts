@@ -12,8 +12,7 @@ import type { SoftSkill, TechSkill } from "@prisma/client";
 
 // Request handlers for managing user data in prisma, it uses the users session token to verify the API call
 
-// TODO: Switch to proper connection for fly during production
-const redis = new Redis();
+const redis = new Redis(env.REDIS_URL);
 
 // Create google analytics fetching client
 const analytics = new BetaAnalyticsDataClient({
@@ -25,9 +24,9 @@ const analytics = new BetaAnalyticsDataClient({
 });
 
 // Get analytics data for the specific user
-// * INPUT: AnalyticsRequest
+// * INPUT: startDate=string, endDate=string
 // * OUTPUT: AnalyticsResponse
-export const POST: RequestHandler = async ({ locals, request }) => {
+export const GET: RequestHandler = async ({ locals, request }) => {
 	const user = await userAuth(locals);
 
 	if (!user) throw error(401, "Unauthorized");
@@ -41,12 +40,17 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const projectIds = projects.map((project) => project.id);
 
 	try {
-		const data: App.AnalyticsRequest = await request.json();
+		const url = new URL(request.url).searchParams;
+
+		const data = {
+			startDate: url.get("startDate")!,
+			endDate: url.get("endDate")!
+		};
 
 		// Create a unique hash of this request
-		const hash = createHash("shake128")
+		const hash = createHash("shake128", { outputLength: 10 })
 			.update(data.startDate + data.endDate + user.id)
-			.toString();
+			.digest("hex");
 
 		// Check if this request has been cached
 		const cached = await redis.get(hash);
@@ -406,8 +410,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		await redis.set(hash, json);
 
 		return new Response(json, { status: 200 });
-	} catch (e) {
-		console.log(e);
+	} catch {
 		throw error(400, "Bad Request");
 	}
 };

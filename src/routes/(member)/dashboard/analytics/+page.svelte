@@ -35,26 +35,18 @@
 
 				break;
 			case DateOption.Custom:
-				return {
-					startDate: custom.toLocaleDateString("en-CA"),
-					endDate: custom.toLocaleDateString("en-CA")
-				};
+				const date = custom.toLocaleDateString("en-CA");
+
+				return `startDate=${date}&endDate=${date}`;
 		}
 
-		return {
-			startDate: now.toLocaleDateString("en-CA"),
-			endDate: new Date().toLocaleDateString("en-CA")
-		};
+		return `startDate=${now.toLocaleDateString(
+			"en-CA"
+		)}&endDate=${new Date().toLocaleDateString("en-CA")}`;
 	};
 
 	const search = () => {
-		request = fetch("/api/stats", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(encodeDate(selected) as App.AnalyticsRequest)
-		})
+		request = fetch(`/api/stats?${encodeDate(selected)}`)
 			.then((res) => res.json())
 			.then((analytics: App.AnalyticsResponse) => {
 				percent.set(

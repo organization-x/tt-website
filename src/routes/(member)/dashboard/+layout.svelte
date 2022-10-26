@@ -66,7 +66,7 @@
 			<Logo class="w-10 h-10" />
 		</a>
 		<div class="lg:hidden flex gap-3 items-center">
-			<!-- TODO: Replace placeholder -->
+			<!-- TODO: Replace Cloudflare image delivery URL -->
 
 			{#if !burgerOpen}
 				<div
@@ -75,9 +75,9 @@
 					class="flex gap-3 items-center z-50"
 				>
 					<img
-						width="200"
-						height="200"
-						src="/assets/developers/user/placeholder/icon.webp"
+						width="512"
+						height="512"
+						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar"
 						alt="{$user.name}'s avatar"
 						class=" w-9 h-9 rounded-full"
 					/>
@@ -111,10 +111,12 @@
 							out:send={{ key: "user" }}
 							class="flex gap-3 items-center w-fit z-50 mx-auto"
 						>
+							<!-- TODO: Replace Cloudflare image delivery URL -->
+
 							<img
-								width="200"
-								height="200"
-								src="/assets/developers/user/placeholder/icon.webp"
+								width="512"
+								height="512"
+								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar"
 								alt="{$user.name}'s avatar"
 								class=" w-14 h-14 rounded-full"
 							/>
@@ -204,12 +206,12 @@
 						on:transitionend={() => (disableTransition = false)}
 						on:click={() => (userOpen = !userOpen)}
 					>
-						<!-- TODO: Replace placeholder -->
+						<!-- TODO: Replace Cloudflare image delivery URL -->
 
 						<img
-							width="200"
-							height="200"
-							src="/assets/projects/project/placeholder/banner.webp"
+							width="512"
+							height="512"
+							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar"
 							alt="{$user.name}'s avatar"
 							class="w-8 h-8 rounded-full"
 						/>

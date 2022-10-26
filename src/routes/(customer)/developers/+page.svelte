@@ -37,27 +37,21 @@
 
 	const onSearch = () => {
 		request = new Promise((res, rej) =>
-			fetch("/api/user", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					where: {
-						name: {
-							contains: search.trim(),
-							mode: "insensitive"
-						},
-						softSkills: softSkillFilter.size
-							? { hasEvery: Array.from(softSkillFilter) }
-							: undefined,
-						techSkills: techSkillFilter.size
-							? { hasEvery: Array.from(techSkillFilter) }
-							: undefined,
-						visible: true
-					}
-				} as App.UserSearchRequest)
-			})
+			fetch(
+				`/api/user?where=${JSON.stringify({
+					name: {
+						contains: search.trim(),
+						mode: "insensitive"
+					},
+					softSkills: softSkillFilter.size
+						? { hasEvery: Array.from(softSkillFilter) }
+						: undefined,
+					techSkills: techSkillFilter.size
+						? { hasEvery: Array.from(techSkillFilter) }
+						: undefined,
+					visible: true
+				})}`
+			)
 				.then((res) => res.json())
 				.then(async (users: App.UserWithMetadata[]) => {
 					// Random search sampling so the search data isn't spammed
@@ -106,7 +100,7 @@
 <Hero
 	class="from-blue-light to-blue-dark"
 	title="Discover who can push you forward."
-	src="/assets/developers/index/developers.webm"
+	src="/assets/developers/developers.webm"
 >
 	See who fits your needs the most and <strong>propel</strong>
 	your product through our easy hiring process.
@@ -126,7 +120,7 @@
 	>
 		<HireStep
 			title="Search and discover."
-			src="/assets/developers/index/find.webp"
+			src="/assets/developers/find.webp"
 			alt="Developer profiles stacked ontop of eachother"
 		>
 			Search for the perfect developer to fit your needs by filtering
@@ -138,7 +132,7 @@
 		<HireStep
 			title="Evaluate options."
 			side="right"
-			src="/assets/developers/index/stats.webp"
+			src="/assets/developers/stats.webp"
 			alt="Developer profile with statistics bars"
 		>
 			Evaluate each canditates projects, skill sets, social media, and
@@ -150,7 +144,7 @@
 
 		<HireStep
 			title="Create a contract and blastoff."
-			src="/assets/developers/index/send.webp"
+			src="/assets/developers/send.webp"
 			alt="Developer profile with statistics bars"
 		>
 			Contact us to schedule a virtual meeting for more information on

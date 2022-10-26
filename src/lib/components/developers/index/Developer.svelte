@@ -19,14 +19,14 @@
 	rel="noreferrer noopener"
 	class="bg-gray-500/40 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full"
 >
-	<!-- TODO: Replace placeholder -->
+	<!-- TODO: Replace Cloudflare image delivery URL -->
 
 	<div class="flex flex-col gap-6 items-center md:flex-row">
 		<div class="relative shrink-0">
 			<img
-				height="200"
-				width="200"
-				src="/assets/developers/user/placeholder/icon.webp"
+				height="512"
+				width="512"
+				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar"
 				alt="{user.name}'s avatar"
 				loading="lazy"
 				class="rounded-full w-20 h-20"
@@ -70,10 +70,11 @@
 					class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4 lg:flex lg:p-4"
 					style="border-color: #{user.pinnedProject.theme}"
 				>
-					<!-- TODO: Replace placeholders -->
+					<!-- TODO: Replace Cloudflare image delivery URL -->
 
 					<img
-						src="/assets/projects/project/placeholder/banner.webp"
+						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{user
+							.pinnedProject.id}/banner"
 						width="1920"
 						height="1080"
 						loading="lazy"

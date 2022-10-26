@@ -1,7 +1,9 @@
 import { error } from "@sveltejs/kit";
 
+import { env } from "$env/dynamic/private";
 import { prisma, userAuth, getProjects } from "$lib/prisma";
 
+import type { Prisma } from "@prisma/client";
 import type { RequestHandler } from "./$types";
 
 // Request handlers for managing project data in prisma, it uses the users session token to verify the API call
@@ -111,13 +113,15 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 };
 
 // Search for projects, otherwise a +page.server.ts should be used
-// * INPUT: ProjectSearchRequest
+// * INPUT: where=Prisma.ProjectWhereInput
 // * OUTPUT: ProjectWithAuthors[]
-export const POST: RequestHandler = async ({ request }) => {
+export const GET: RequestHandler = async ({ request }) => {
 	try {
-		const data: App.ProjectSearchRequest = await request.json();
-
-		const projects = await getProjects(data.where);
+		const projects = await getProjects(
+			JSON.parse(
+				new URL(request.url).searchParams.get("where")!
+			) as Prisma.ProjectWhereInput
+		);
 
 		// Sort projects by most recently updated
 		projects.sort((p, n) => (p.date.getDate() < n.date.getDate() ? 1 : -1));
@@ -131,7 +135,7 @@ export const POST: RequestHandler = async ({ request }) => {
 // Create a new project
 // * INPUT: None
 // * OUTPUT: String (url)
-export const PUT: RequestHandler = async ({ locals }) => {
+export const POST: RequestHandler = async ({ locals }) => {
 	const user = await userAuth(locals);
 
 	if (!user) throw error(401, "Unauthorized");
@@ -186,11 +190,29 @@ export const PUT: RequestHandler = async ({ locals }) => {
 			}
 		});
 
+		const body = new FormData();
+
+		// TODO: Replace URL for production
+		// The users and proejects share the same ID structure since they will never clash
+		body.set("id", "banner-" + project.id);
+		body.set("url", "https://tt-alpha.fly.dev/assets/default/banner.webp");
+
+		// Add default banner
+		await fetch(
+			`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1`,
+			{
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+				},
+				body
+			}
+		);
+
 		return new Response(JSON.stringify({ url: project.url }), {
 			status: 200
 		});
-	} catch (e) {
-		console.log(e);
+	} catch {
 		throw error(400, "Bad Request");
 	}
 };
@@ -226,8 +248,22 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			where: { id: data.id }
 		});
 
+		// Delete the banner
+		await fetch(
+			`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1/banner-${project.id}`,
+			{
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+				}
+			}
+		);
+
 		return new Response(undefined, { status: 200 });
 	} catch {
 		throw error(400, "Bad Request");
 	}
 };
+
+// TODO: Finish up user banner/icon editing
+// TODO: Add support for project banner editing

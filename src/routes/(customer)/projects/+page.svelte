@@ -19,8 +19,8 @@
 	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
 
 	import type { PageData } from "./$types";
-	import type { TechSkill } from "@prisma/client";
 	import type { AnalyticsInstance } from "analytics";
+	import type { Prisma, TechSkill } from "@prisma/client";
 
 	export let data: PageData;
 
@@ -35,24 +35,18 @@
 
 	const onSearch = () => {
 		request = new Promise((res, rej) =>
-			fetch("/api/project", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					where: {
-						title: {
-							contains: search.trim(),
-							mode: "insensitive"
-						},
-						visible: true,
-						skills: filters.size
-							? { hasEvery: Array.from(filters) }
-							: undefined
-					}
-				} as App.ProjectSearchRequest)
-			})
+			fetch(
+				`/api/project?where=${JSON.stringify({
+					title: {
+						contains: search.trim(),
+						mode: "insensitive"
+					},
+					visible: true,
+					skills: filters.size
+						? { hasEvery: Array.from(filters) }
+						: undefined
+				} as Prisma.ProjectWhereInput)}`
+			)
 				.then((res) => res.json())
 				.then(async (projects: App.ProjectWithMetadata[]) => {
 					// Random search sampling so the search data isn't spammed
@@ -108,7 +102,7 @@
 <Hero
 	class="from-pink-light to-pink-dark"
 	title="Projects from personal to professional."
-	src="/assets/projects/index/projects.webm"
+	src="/assets/projects/projects.webm"
 >
 	Find skills in action by <strong>uncovering</strong> our projects and the team
 	behind them.
