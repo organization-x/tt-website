@@ -29,12 +29,19 @@
 	let element: HTMLElement;
 	let pageId = derived(
 		page,
-		($page) => $page.routeId?.split("/")[2] || "home"
+		($page) => $page.routeId?.split("/")[3] || "home"
 	);
+
+	// When the user menu is closed by a click outside of it, disabled the color transition
+	// since it looks weird
+	let disableTransition = false;
 
 	// Close the user menu when it's clicked outside of
 	const onClick = ({ target }: Event) =>
-		userOpen && !element.contains(target as Node) && (userOpen = false);
+		userOpen &&
+		!element.contains(target as Node) &&
+		(disableTransition = true) &&
+		(userOpen = false);
 
 	// Close the burger/user menu on navigation
 	afterNavigate(() => (burgerOpen = userOpen = false));
@@ -42,8 +49,6 @@
 	const [send, receive] = crossfade({
 		duration: 400
 	});
-
-	// TODO: Fix transition of user menu
 </script>
 
 <svelte:window on:click={onClick} />
@@ -192,8 +197,11 @@
 					<button
 						class:rounded-lg={!userOpen}
 						class:rounded-t-lg={userOpen}
-						class="flex gap-2 items-center justify-center py-3 w-full transition-colors duration-200
-                        {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
+						class:duration-200={!disableTransition}
+						class:transition-colors={!disableTransition}
+						class="flex gap-2 items-center justify-center py-3 w-full
+                    {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
+						on:transitionend={() => (disableTransition = false)}
 						on:click={() => (userOpen = !userOpen)}
 					>
 						<!-- TODO: Replace placeholder -->

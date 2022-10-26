@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { getIcon } from "$lib/getIcon";
+	import DevTag from "$lib/components/DevTag.svelte";
 	import Button from "$lib/components/Button.svelte";
-	import TextHeader from "$lib/components/TextHeader.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
-	import Icons from "$lib/components/developers/user/Icons.svelte";
-	import Panel from "$lib/components/developers/user/Panel.svelte";
+	import ProfileSection from "$lib/components/ProfileSection.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
 
 	import type { PageData } from "./$types";
@@ -47,89 +46,116 @@
 
 <!-- TODO: Replace placeholders -->
 
-<div class="relative">
-	<div
-		class="h-32 absolute inset-0 bottom-auto bg-cover bg-center -z-10"
-		style="background-image: url(/assets/projects/project/placeholder/banner.webp);"
+<div class="relative pt-18 px-5 lg:px-10">
+	<img
+		src="/assets/projects/project/placeholder/banner.webp"
+		width="1920"
+		height="1080"
+		alt="{data.user.name}'s banner"
+		class="-z-10 absolute top-0 inset-0 object-cover object-center w-full h-32 lg:h-44"
 	/>
-</div>
 
-<div
-	class="px-8 max-w-screen-md lg:max-w-screen-2xl mx-auto flex flex-col lg:flex-row gap-4"
->
-	<div class="mt-16 px-4 lg:w-60 xl:w-70 2xl:w-80">
-		<div class="top-8 sticky">
-			<img
-				src="/assets/projects/project/placeholder/banner.webp"
-				alt="Profile"
-				class="w-32 h-32 rounded-full border-4 border-black"
-			/>
+	<div
+		class="mx-auto max-w-xl lg:max-w-none lg:flex lg:gap-10 lg:justify-center"
+	>
+		<div
+			class="mb-8 max-w-sm mx-auto md:max-w-none md:flex md:gap-10 lg:mt-10 lg:mb-0 lg:flex-col lg:items-start lg:gap-0 lg:shrink-0 lg:sticky lg:top-6 lg:mx-0 lg:h-fit"
+		>
+			<div
+				class="flex flex-col gap-4 items-center mb-4 md:shrink-0 lg:items-start"
+			>
+				<img
+					width="200"
+					height="200"
+					src="/assets/developers/user/placeholder/icon.webp"
+					alt="{data.user.name}'s avatar"
+					class="border-4 mt-4 border-black box-content w-28 h-28 rounded-full lg:w-32 lg:mx-0 lg:h-32"
+				/>
 
-			<div class="flex flex-col gap-4 mt-2">
-				<GradientText
-					class="from-green-light to-green-dark font-bold text-3xl"
+				<div
+					class="flex flex-col gap-1 text-center md:flex-col-reverse lg:text-start"
 				>
-					{data.user.name}
-				</GradientText>
-				<p>
+					<h1 class="font-semibold text-lg">
+						{data.user.team || "No Team"}
+					</h1>
+					<GradientText
+						class="from-green-light to-green-dark font-bold text-3xl break-words w-full lg:text-start"
+					>
+						{data.user.name}
+					</GradientText>
+				</div>
+			</div>
+
+			<div>
+				<p class="mx-auto mb-4 md:mt-20 lg:mt-0 lg:w-64 lg:mx-0">
 					{data.user.about}
 				</p>
-			</div>
 
-			<Panel class="mt-4 flex gap-4 justify-center">
-				{#each links as link}
-					<a
-						href={createLink(link.key, link.link)}
-						class="hover:opacity-80 transition-opacity"
-						rel="noopener noreferrer"
+				{#if links.length}
+					<div
+						class="p-3 w-full flex items-center justify-evenly md:justify-start md:px-0 md:gap-4"
 					>
-						<svelte:component
-							this={getIcon(link.key)}
-							class="h-6 w-6"
-						/>
-					</a>
-				{/each}
-			</Panel>
+						{#each links as link}
+							<a
+								href={createLink(link.key, link.link)}
+								rel="noopener noreferrer"
+								target="_blank"
+							>
+								<svelte:component
+									this={getIcon(link.key)}
+									class="w-8 h-8 lg:w-7 lg:h-7"
+								/>
+							</a>
+						{/each}
+					</div>
+				{/if}
+			</div>
 		</div>
-	</div>
 
-	<div
-		class="flex-1 grid xl:grid-cols-3 lg:mt-32 [align-items:start] gap-4 mx-4"
-	>
-		<div class="xl:col-span-2 flex flex-col gap-4">
-			<div>
-				<TextHeader>Projects</TextHeader>
-
-				<Panel class="mt-2 flex flex-col gap-4">
-					{#each previewedProjects as project}
-						<ProjectPreview {project} />
+		<div
+			class="max-w-xl lg:min-w-[28rem] lg:mt-40 3xl:flex 3xl:gap-10 3xl:min-w-[65rem]"
+		>
+			<div class="flex flex-col gap-8 mb-8 3xl:w-full">
+				<ProfileSection title="Positions">
+					{#each data.user.positions as name}
+						<DevTag {name} />
 					{/each}
+				</ProfileSection>
 
-					<Button href="./{data.user.url}/projects">View More</Button>
-				</Panel>
+				{#if data.projects.length}
+					<ProfileSection title="Projects">
+						{#each { length: 2 } as _, i}
+							<ProjectPreview project={data.projects[i]} />
+						{/each}
+
+						<Button
+							href="/developers/{data.user.url}/projects"
+							class="mb-2">View More</Button
+						>
+					</ProfileSection>
+				{/if}
 			</div>
-		</div>
 
-		<div class="flex flex-col gap-4">
-			<div>
-				<TextHeader>Positions</TextHeader>
+			<div class="flex flex-col gap-8 w-full 3xl:w-full">
+				<ProfileSection title="Skills">
+					<div class="flex flex-col gap-6">
+						<h1 class="font-semibold text-xl text-center">Soft</h1>
+						{#each data.user.softSkills as name}
+							<DevTag {name} />
+						{/each}
+					</div>
 
-				<Panel class="mt-2">
-					<Icons icons={data.user.positions} />
-				</Panel>
-			</div>
+					<div class="flex flex-col gap-6">
+						<h1 class="font-semibold text-xl text-center">
+							Technical
+						</h1>
+						{#each data.user.techSkills as name}
+							<DevTag {name} />
+						{/each}
+					</div>
+				</ProfileSection>
 
-			<div>
-				<TextHeader>Skills</TextHeader>
-
-				<Panel class="mt-2">
-					<Icons name="Soft" icons={data.user.softSkills} />
-					<Icons
-						name="Technical"
-						icons={data.user.techSkills}
-						class="mt-4"
-					/>
-				</Panel>
+				<!-- TODO: Add kudos -->
 			</div>
 		</div>
 	</div>

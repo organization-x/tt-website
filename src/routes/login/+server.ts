@@ -85,6 +85,48 @@ export const GET: RequestHandler = async (request) => {
 
 			// Create empty links object for the user
 			await prisma.links.create({ data: { userId: id } });
+
+			// Give them the default profile picture and banner on Cloudflare Images
+			const body = new FormData();
+
+			// TODO: Update the URLs once this is deployed and the new routes can be used
+
+			// Append the appropriate data
+			body.append("id", "avatar" + id);
+			body.append(
+				"url",
+				"https://tt-alpha.fly.dev/assets/developers/user/placeholder/icon.webp"
+			);
+
+			// Add avatar
+			await fetch(
+				`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1`,
+				{
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+					},
+					body
+				}
+			);
+
+			body.set("id", "banner" + id);
+			body.set(
+				"url",
+				"https://tt-alpha.fly.dev/assets/projects/project/placeholder/banner.webp"
+			);
+
+			// Add banner
+			await fetch(
+				`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1`,
+				{
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+					},
+					body
+				}
+			);
 		} else {
 			// Otherwise, if they do exists, do some cleanup and check if they have any expired session
 			// tokens inside postgres, if they do, remove them

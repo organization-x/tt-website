@@ -1,7 +1,9 @@
+import Redis from "ioredis";
 import { error } from "@sveltejs/kit";
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
 
 import { colors } from "$lib/enums";
+import { createHash } from "node:crypto";
 import { env } from "$env/dynamic/private";
 import { prisma, userAuth } from "$lib/prisma";
 
@@ -10,7 +12,8 @@ import type { SoftSkill, TechSkill } from "@prisma/client";
 
 // Request handlers for managing user data in prisma, it uses the users session token to verify the API call
 
-// TODO: Redis cache
+// TODO: Switch to proper connection for fly during production
+const redis = new Redis();
 
 // Create google analytics fetching client
 const analytics = new BetaAnalyticsDataClient({
@@ -39,6 +42,16 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 
 	try {
 		const data: App.AnalyticsRequest = await request.json();
+
+		// Create a unique hash of this request
+		const hash = createHash("shake128")
+			.update(data.startDate + data.endDate + user.id)
+			.toString();
+
+		// Check if this request has been cached
+		const cached = await redis.get(hash);
+
+		if (cached) return new Response(cached, { status: 200 });
 
 		// Provide comparisons to the previous data within the same selected time period. For example if month
 		// is selected provide a comparison to the previous month, if week is then compare to the previous week
@@ -384,8 +397,17 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			response.projects.views[i].color = color;
 			response.projects.scrolled[i].color = color;
 		});
-		return new Response(JSON.stringify(response), { status: 200 });
-	} catch {
+
+		const json = JSON.stringify(response);
+
+		// Add the response to the cache so that we don't reach the Google Analytics API limit.
+		// The key is the date selected along with the users ID all hashed to improve performance, we
+		// don't want to be using that entire string as the key
+		await redis.set(hash, json);
+
+		return new Response(json, { status: 200 });
+	} catch (e) {
+		console.log(e);
 		throw error(400, "Bad Request");
 	}
 };
