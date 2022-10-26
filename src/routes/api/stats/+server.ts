@@ -13,7 +13,7 @@ import type { SoftSkill, TechSkill } from "@prisma/client";
 // Request handlers for managing user data in prisma, it uses the users session token to verify the API call
 
 // TODO: Switch to proper connection for fly during production
-const redis = new Redis();
+const redis = new Redis(env.REDIS_URL);
 
 // Create google analytics fetching client
 const analytics = new BetaAnalyticsDataClient({
@@ -44,9 +44,9 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		const data: App.AnalyticsRequest = await request.json();
 
 		// Create a unique hash of this request
-		const hash = createHash("shake128")
+		const hash = createHash("shake128", { outputLength: 10 })
 			.update(data.startDate + data.endDate + user.id)
-			.toString();
+			.digest("hex");
 
 		// Check if this request has been cached
 		const cached = await redis.get(hash);
