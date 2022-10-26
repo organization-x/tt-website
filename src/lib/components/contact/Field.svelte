@@ -1,43 +1,58 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte";
-
+	import { validate } from "$lib/validate";
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 
-	export let type: string;
-	export let title: string;
-	export let required = true;
-	export let disabled: boolean;
-	export let placeholder: string;
+	import type { FieldType } from "$lib/enums";
 
-	const dispatch = createEventDispatcher<{ change: { isFilled: boolean } }>();
+	export let big = false;
+	export let title: string;
+	export let value: string;
+	export let required = true;
+	export let isValid: boolean;
+	export let placeholder: string;
+	export let type: FieldType | null = null;
 
 	let isFilled = false;
 
-	// Let the parent know isFilled has changed
-	$: dispatch("change", { isFilled });
+	// On input check if the input is valid and filled after trim
+	$: {
+		const input = value ? value.trim() : null;
 
-	// On input check if the input is filled.
-	const onChange = ({ target }: Event) => {
-		const { value } = target as HTMLInputElement;
-		isFilled = value.length > 0;
-	};
+		if (input && input.length) {
+			isFilled = true;
+			isValid = validate(input, type);
+		} else {
+			isFilled = false;
+			isValid = !required;
+		}
+	}
 </script>
 
-<div class="mt-8">
+<div>
 	<div class="flex justify-between items-center">
 		<h1 class="font-semibold">{title}</h1>
 		{#if required}
 			<Asterisk class="w-3 h-3" />
 		{/if}
 	</div>
-	<input
-		on:input={onChange}
-		name={title.toLowerCase()}
-		class:border-green-light={isFilled}
-		class:border-transparent={!isFilled}
-		class="w-full h-full px-2 bg-gray-800 flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
-		{type}
-		{disabled}
-		{placeholder}
-	/>
+
+	{#if big}
+		<textarea
+			bind:value
+			class:border-transparent={!isFilled}
+			class:border-red-light={isFilled && !isValid}
+			class:border-green-light={isFilled && isValid}
+			class="w-full h-96 bg-gray-800 resize-none flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
+			{placeholder}
+		/>
+	{:else}
+		<input
+			bind:value
+			class:border-transparent={!isFilled}
+			class:border-red-light={isFilled && !isValid}
+			class:border-green-light={isFilled && isValid}
+			class="w-full px-2 bg-gray-800 flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
+			{placeholder}
+		/>
+	{/if}
 </div>

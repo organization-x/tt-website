@@ -24,10 +24,13 @@
 	// Isolate the project data from the rest of the parent data
 	let project = data.project;
 
+	// Keep track whether this the user is an owner or a collaborator
+	const isOwner = $user.id === project.ownerId;
+
 	// Store an original copy of the data
 	let original = JSON.parse(
 		JSON.stringify(project)
-	) as App.ProjectWithAuthors;
+	) as App.ProjectWithMetadata;
 
 	// Store a reference to the editor for generation of the content
 	let editor: Editor;
@@ -61,7 +64,10 @@
 
 	const updateSkills = ({
 		detail
-	}: CustomEvent<{ selected: string; previous: string }>) => {
+	}: CustomEvent<{
+		selected: string | undefined;
+		previous: string | undefined;
+	}>) => {
 		const index = project.skills.indexOf(detail.previous as TechSkill);
 
 		// If the newly selected value is the same ignore
@@ -81,11 +87,17 @@
 		checkConstraints();
 	};
 
-	$: project.authors, checkConstraints();
+	$: if (project.title !== original.title && !disableForm)
+		(titleError = false), checkConstraints();
 
-	$: project.title, (titleError = false), checkConstraints();
+	$: if (project.description !== original.description && !disableForm)
+		checkConstraints();
 
-	$: project.description, checkConstraints();
+	$: if (project.authors.length !== original.authors.length && !disableForm)
+		checkConstraints();
+
+	$: if (project.content !== original.content && !disableForm)
+		checkConstraints();
 
 	// On cancel, revert the values to their originals and disable the save/cancel buttons
 	const cancel = () => {
@@ -95,20 +107,20 @@
 		project.authors = JSON.parse(JSON.stringify(original.authors));
 	};
 
-	const save = async () => {
+	const save = () => {
 		checkConstraints();
 
 		if (disableButtons || disableForm) return;
-
-		disableButtons = true;
-		disableForm = true;
 
 		// Trim title and description whitespace
 		project.title = project.title.trim();
 		project.description = project.description.trim();
 
+		disableForm = true;
+		disableButtons = true;
+
 		// Send an update request to the API
-		await fetch("/api/project", {
+		fetch("/api/project", {
 			method: "PATCH",
 			headers: {
 				"Content-Type": "application/json"
@@ -117,36 +129,41 @@
 				where: {
 					id: original.id
 				},
-				project: {
-					...project,
-					date: new Date()
-				}
+				project: isOwner
+					? {
+							...project
+					  }
+					: {
+							content: project.content
+					  }
 			} as App.ProjectUpdateRequest)
-		}).then(async (res) => {
-			const json = await res.json();
+		})
+			.then((res) => res.json())
+			.then(async (response) => {
+				// If an error occurs and it's the title, tell the user
+				if (response.error === "SAME_TITLE") titleError = true;
+				// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading and update the local copy of the project
+				else if (response.url !== original.url) {
+					project.url = response.url;
 
-			// If an error occurs and it's the title, tell the user
-			if (!res.ok && json.message === "SAME_TITLE") titleError = true;
-			// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading and update the local copy of the project
-			else if (json.url !== original.url) {
-				project.url = json.url;
+					history.replaceState(
+						{},
+						"",
+						new URL(
+							`/dashboard/projects/${response.url}`,
+							document.location.href
+						)
+					);
+				}
 
-				history.replaceState(
-					{},
-					"",
-					new URL(
-						`/dashboard/projects/${json.url}`,
-						document.location.href
-					)
-				);
-			}
+				disableForm = false;
+				disableButtons = true;
 
-			disableForm = false;
-			disableButtons = true;
+				// If successful, update the original data
+				original = JSON.parse(JSON.stringify(project));
+			});
 
-			// If successful, update the original data
-			original = JSON.parse(JSON.stringify(project));
-		});
+		disableButtons = true;
 	};
 
 	// Update visility of the project
@@ -160,12 +177,15 @@
 				where: { id: original.id },
 				project: { visible }
 			} as App.ProjectUpdateRequest)
-		}).then(() => (original.visible = visible));
+		}).then(() => {
+			original.visible = visible;
+			project.visible = visible;
+		});
 	};
 
 	// Update whether the user has the project pinned
 	const togglePinned = () => {
-		const pinnedProjectId = pinned ? null : original.id;
+		const pinnedProjectId = pinned ? original.id : null;
 
 		fetch("/api/user", {
 			method: "PATCH",
@@ -183,12 +203,16 @@
 
 	// When the user does CTRL/CMD + S, save the data
 	const onKeydown = (e: KeyboardEvent) => {
-		if (e.metaKey && e.key === "s") {
+		if ((e.metaKey && e.key === "s") || (e.ctrlKey && e.key === "s")) {
 			e.preventDefault();
 			save();
 		}
 	};
 </script>
+
+<svelte:head>
+	<title>{original.title} - Project Editor</title>
+</svelte:head>
 
 <svelte:window on:keydown={onKeydown} />
 
@@ -202,22 +226,24 @@
 		class="object-cover object-center w-full h-32 row-start-1 col-start-1"
 	/>
 
-	<button
-		class="w-full h-full bg-black/40 flex justify-center items-center gap-2 row-start-1 col-start-1"
-	>
-		<Pencil class="w-6 h-6 lg:w-8 lg:h-8" />
-		<h1 class="text-xl select-none font-semibold lg:text-2xl">Edit</h1>
-	</button>
+	{#if isOwner}
+		<button
+			class="w-full h-full bg-black/40 flex justify-center items-center gap-2 row-start-1 col-start-1"
+		>
+			<Pencil class="w-6 h-6 lg:w-8 lg:h-8" />
+			<h1 class="text-xl select-none font-semibold lg:text-2xl">Edit</h1>
+		</button>
+	{/if}
 </div>
 
 <div
-	class="flex flex-col gap-8 p-4 max-w-xl mx-auto mt-2 lg:px-12 lg:max-w-screen-3xl xl:items-center"
+	class="flex flex-col gap-8 p-4 max-w-xl mx-auto mt-2 lg:px-12 lg:max-w-screen-xl xl:items-center"
 >
 	<div
-		disabled={disableForm}
-		class:pointer-events-none={disableForm}
-		class:opacity-60={disableForm}
-		class="flex flex-col gap-5 w-full transition-opacity lg:max-w-screen-xl"
+		disabled={disableForm || !isOwner}
+		class:pointer-events-none={disableForm || !isOwner}
+		class:opacity-60={disableForm || !isOwner}
+		class="flex flex-col gap-5 w-full transition-opacity"
 	>
 		<div>
 			<Input
@@ -227,7 +253,10 @@
 				max={50}
 			/>
 			{#if titleError}
-				<p transition:slide class="text-red-light text-sm mt-2 italic">
+				<p
+					transition:slide
+					class="text-red-light font-semibold text-sm mt-2"
+				>
 					Title already in use, please user another!
 				</p>
 			{/if}
@@ -240,13 +269,15 @@
 			max={300}
 		/>
 
-		<AuthorSection bind:authors={project.authors} user={$user} />
+		<AuthorSection
+			bind:authors={project.authors}
+			ownerId={project.ownerId}
+		/>
 
 		<InputSection title="Skills">
 			{#each { length: 4 } as _, i}
 				<Dropdown
 					{i}
-					radio={true}
 					required={i < 2}
 					options={techSkills}
 					selectedItems={project.skills}
@@ -254,24 +285,26 @@
 				/>
 			{/each}
 		</InputSection>
+	</div>
 
-		<div class="flex flex-col items-center">
-			<div class="flex gap-6 mx-auto mt-6">
-				<DashButton
-					on:click={cancel}
-					disabled={disableButtons}
-					class="bg-gray-500 hover:bg-gray-500/80"
-				>
-					Cancel
-				</DashButton>
-				<DashButton
-					on:click={save}
-					disabled={disableButtons}
-					class="bg-blue-light hover:bg-blue-light/80"
-				>
-					Save
-				</DashButton>
-			</div>
+	<div class="flex flex-col items-center">
+		<div class="flex gap-6 mx-auto mt-6">
+			<DashButton
+				on:click={cancel}
+				disabled={disableButtons}
+				class="bg-gray-500 hover:bg-gray-500/80"
+			>
+				Cancel
+			</DashButton>
+			<DashButton
+				on:click={save}
+				disabled={disableButtons}
+				class="bg-blue-light hover:bg-blue-light/80"
+			>
+				Save
+			</DashButton>
+		</div>
+		{#if isOwner}
 			<div class="flex gap-6 mx-auto mt-6">
 				<DashButton
 					icon={true}
@@ -300,13 +333,13 @@
 					<ShowHide crossed={visible} class="w-5 h-5" />
 				</DashButton>
 			</div>
-		</div>
+		{/if}
 	</div>
 
 	<Seperator class="max-w-screen-xl" />
 
 	<TipTap
-		bind:content={project.content}
+		bind:project
 		on:editor={({ detail }) => {
 			// For some reason tiptap re-orders some data once it's lodaded into the editor, so we need to change the original to that
 			original.content = JSON.parse(JSON.stringify(detail.getJSON()));

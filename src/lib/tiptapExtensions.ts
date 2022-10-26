@@ -1,9 +1,9 @@
 import { lowlight } from "lowlight";
+import { Extension } from "@tiptap/core";
 import { Text } from "@tiptap/extension-text";
 import { Bold } from "@tiptap/extension-bold";
 import { Code } from "@tiptap/extension-code";
 import { Link } from "@tiptap/extension-link";
-import { tabShortcut } from "$lib/tabShortcut";
 import { Placeholder } from "$lib/placeholder";
 import { Image } from "@tiptap/extension-image";
 import css from "highlight.js/lib/languages/css";
@@ -13,7 +13,6 @@ import { Strike } from "@tiptap/extension-strike";
 import json from "highlight.js/lib/languages/json";
 import bash from "highlight.js/lib/languages/bash";
 import { Heading } from "@tiptap/extension-heading";
-import { History } from "@tiptap/extension-history";
 import { Document } from "@tiptap/extension-document";
 import { ListItem } from "@tiptap/extension-list-item";
 import js from "highlight.js/lib/languages/javascript";
@@ -26,6 +25,7 @@ import { BulletList } from "@tiptap/extension-bullet-list";
 import markdown from "highlight.js/lib/languages/markdown";
 import { OrderedList } from "@tiptap/extension-ordered-list";
 import typescript from "highlight.js/lib/languages/typescript";
+import javascript from "highlight.js/lib/languages/javascript";
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 
 // Generating HTML using Tiptap requires me to re-define all the HTML attributes for every extension.
@@ -41,6 +41,28 @@ lowlight.registerLanguage("bash", bash);
 lowlight.registerLanguage("python", python);
 lowlight.registerLanguage("markdown", markdown);
 lowlight.registerLanguage("typescript", typescript);
+lowlight.registerLanguage("javascript", javascript);
+
+// Tab behavoir change for lists
+const tabShortcut = Extension.create({
+	name: "tabShortcut",
+
+	addKeyboardShortcuts() {
+		return {
+			Tab: ({ editor }) => {
+				if (
+					editor.isActive("listItem") &&
+					editor.can().sinkListItem("listItem")
+				)
+					return editor.commands.sinkListItem("listItem");
+
+				editor.chain().insertContent("	").run();
+
+				return true;
+			}
+		};
+	}
+});
 
 export const extensions = [
 	Text,
@@ -48,7 +70,6 @@ export const extensions = [
 	Code,
 	Strike,
 	Italic,
-	History,
 	Document,
 	ListItem,
 	Underline,
@@ -104,7 +125,7 @@ export const extensions = [
 	}),
 	Placeholder.configure({
 		emptyNodeClass:
-			"cursor-text before:content-[attr(data-placeholder)] before:absolute before:text-gray-400 before-pointer-events-none"
+			"before:content-[attr(data-placeholder)] before:absolute before:text-gray-400 before-pointer-events-none"
 	}),
 	Heading.extend({
 		levels: [1, 2, 3],

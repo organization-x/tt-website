@@ -1,4 +1,10 @@
-<svg class="w-full mt-5" viewBox="0 0 158 30" fill="none">
+<script lang="ts">
+	let className = "";
+
+	export { className as class };
+</script>
+
+<svg class="w-full mt-5 {className}" viewBox="0 0 159 30" fill="none">
 	<path
 		d="M54.5 18H27"
 		stroke="white"

@@ -5,9 +5,9 @@
 	import { goto } from "$app/navigation";
 	import Plus from "$lib/components/icons/Plus.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
-	import ProjectLoader from "$lib/components/ProjectLoader.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
+	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
 	import ProjectEditPreview from "$lib/components/dashboard/projects/index/ProjectEditPreview.svelte";
 
 	let search = "";
@@ -15,7 +15,7 @@
 	let pinDebounce: NodeJS.Timeout;
 	let deletingProjects: string[] = [];
 	let pinnedProject = $user.pinnedProjectId;
-	let request: Promise<App.ProjectWithAuthors[]> = new Promise(() => {});
+	let request: Promise<App.ProjectWithMetadata[]> = new Promise(() => {});
 
 	// On search set request to never resolve so the loading animation is shown before the debounce and
 	// also reset the deleting projects array so we don't have old ID's
@@ -33,18 +33,28 @@
 						title: {
 							contains: search.trim(),
 							mode: "insensitive"
-						}
+						},
+
+						OR: [
+							{
+								ownerId: $user.id
+							},
+							{
+								authors: {
+									some: {
+										userId: $user.id
+									}
+								}
+							}
+						]
 					}
 				} as App.ProjectSearchRequest)
 			})
 				.then((res) => res.json())
-				.then((data: App.ProjectWithAuthors[]) =>
+				.then((data: App.ProjectWithMetadata[]) =>
 					data.length ? res(data) : rej()
 				)
 		);
-
-		// Reset the array of deleting projects here so they don't reappear until a search has been incited
-		deletingProjects = [];
 	};
 
 	const createProject = () => {
@@ -149,13 +159,12 @@
 
 	<div class="min-h-[55rem]">
 		{#await request}
-			<ProjectLoader />
+			<ProjectLoading />
 		{:then projects}
 			{#each projects as project}
 				{#if !deletingProjects.includes(project.id)}
 					<ProjectEditPreview
 						bind:project
-						bind:user={$user}
 						bind:pinnedProject
 						on:delete={() => deleteProject(project.id)}
 						on:pinned={togglePinned}

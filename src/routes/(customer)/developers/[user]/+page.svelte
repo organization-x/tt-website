@@ -1,36 +1,48 @@
 <script lang="ts">
 	import { getIcon } from "$lib/getIcon";
 	import Button from "$lib/components/Button.svelte";
+	import TextHeader from "$lib/components/TextHeader.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import Icons from "$lib/components/developers/user/Icons.svelte";
 	import Panel from "$lib/components/developers/user/Panel.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
-	import TextHeader from "$lib/components/TextHeader.svelte";
 
 	import type { PageData } from "./$types";
-	import type { Links } from "@prisma/client";
 
 	export let data: PageData;
 
 	const previewedProjects = data.projects?.slice(0, 3) ?? [];
+	if (data.user.pinnedProject)
+		previewedProjects.unshift(data.user.pinnedProject);
 
-	if (data.user.pinnedProject) {
-		previewedProjects.unshift({
-			...data.user.pinnedProject,
-			authors: data.user.pinnedProject.authors.map((a) => ({
-				...a.user,
-				position: a.position
-			}))
-		});
-	}
-
-	const linkArray = Object.entries(data.user.links ?? {})
+	const links = Object.entries(data.user.links)
 		.filter(([_, link]) => link)
-		.map(([key, link]) => ({ key: key as keyof Links, link: link! }));
+		.map(([key, link]) => ({
+			key: key as keyof App.UserLinks,
+			link: link!
+		}));
+
+	// Construct links based off of their name
+	const createLink = (key: keyof App.UserLinks, link: string) => {
+		switch (key) {
+			case "GitHub":
+				return `https://github.com/${link}`;
+			case "LinkedIn":
+				return `https://linkedin.com/in/${link}`;
+			case "Devto":
+				return `https://dev.to/${link}`;
+			case "Twitter":
+				return `https://twitter.com/${link}`;
+			case "Facebook":
+				return `https://facebook.com/${link}`;
+			case "Website":
+				return link;
+		}
+	};
 </script>
 
 <svelte:head>
-	<title>{data.user.name} &ndash; Team Tomorrow</title>
+	<title>{data.user.name}</title>
 </svelte:head>
 
 <!-- TODO: Replace placeholders -->
@@ -64,14 +76,12 @@
 				</p>
 			</div>
 
-			<Panel
-				direction="bg-gradient-to-br"
-				class="mt-4 flex gap-4 justify-center"
-			>
-				{#each linkArray as link}
+			<Panel class="mt-4 flex gap-4 justify-center">
+				{#each links as link}
 					<a
-						href="https://github.com/cubedhuang"
+						href={createLink(link.key, link.link)}
 						class="hover:opacity-80 transition-opacity"
+						rel="noopener noreferrer"
 					>
 						<svelte:component
 							this={getIcon(link.key)}
@@ -90,15 +100,12 @@
 			<div>
 				<TextHeader>Projects</TextHeader>
 
-				<Panel
-					direction="bg-gradient-to-br"
-					class="mt-2 flex flex-col gap-4"
-				>
+				<Panel class="mt-2 flex flex-col gap-4">
 					{#each previewedProjects as project}
 						<ProjectPreview {project} />
 					{/each}
 
-					<Button href="./projects">View More</Button>
+					<Button href="./{data.user.url}/projects">View More</Button>
 				</Panel>
 			</div>
 		</div>
@@ -107,10 +114,7 @@
 			<div>
 				<TextHeader>Positions</TextHeader>
 
-				<Panel
-					direction="bg-gradient-to-br"
-					class="mt-2 grid grid-cols-2 xl:grid-cols-1 gap-2"
-				>
+				<Panel class="mt-2">
 					<Icons icons={data.user.positions} />
 				</Panel>
 			</div>
@@ -118,7 +122,7 @@
 			<div>
 				<TextHeader>Skills</TextHeader>
 
-				<Panel direction="bg-gradient-to-br" class="mt-2">
+				<Panel class="mt-2">
 					<Icons name="Soft" icons={data.user.softSkills} />
 					<Icons
 						name="Technical"

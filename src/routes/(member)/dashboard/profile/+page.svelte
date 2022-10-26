@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { user as original } from "$lib/stores";
+	import Id from "$lib/components/icons/Id.svelte";
 	import Devto from "$lib/components/icons/Devto.svelte";
 	import Group from "$lib/components/icons/Group.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
@@ -19,13 +20,7 @@
 	import ProfileSection from "$lib/components/dashboard/profile/ProfileSection.svelte";
 
 	import type { PageParentData } from "./$types";
-	import type {
-		Position,
-		SoftSkill,
-		TechSkill,
-		Team,
-		Links
-	} from "@prisma/client";
+	import type { Position, SoftSkill, TechSkill, Team } from "@prisma/client";
 
 	// Since the data object is shared across all pages, we need to make a copy of it so
 	// that unmade changes arent shown on other pages
@@ -41,9 +36,12 @@
 
 		disableButtons = true;
 
+		const name = user.name.trim();
 		const about = user.about.trim();
 
 		if (
+			name.length < 1 ||
+			name.length > 20 ||
 			about.length > 150 ||
 			user.positions.length < 2 ||
 			user.softSkills.length < 2 ||
@@ -59,8 +57,8 @@
 	// For updating dropdown arrays
 	const dropdownUpdate = <T extends Position | SoftSkill | TechSkill>(
 		array: T[],
-		selected: string,
-		previous: string
+		selected: string | undefined,
+		previous: string | undefined
 	) => {
 		const index = array.indexOf(previous as T);
 
@@ -78,7 +76,10 @@
 
 	const updateTeam = ({
 		detail
-	}: CustomEvent<{ selected: string; previous: string }>) => {
+	}: CustomEvent<{
+		selected: string | undefined;
+		previous: string | undefined;
+	}>) => {
 		user.team = detail.selected as Team;
 		checkConstraints();
 	};
@@ -87,14 +88,12 @@
 
 	$: user.links,
 		Object.keys(user.links).forEach((key) => {
-			if (key === "userId") return;
-
 			const link =
-				user.links[key as keyof Links] &&
-				user.links[key as keyof Links]!.trim();
+				user.links[key as keyof App.UserLinks] &&
+				user.links[key as keyof App.UserLinks]!.trim();
 
-			// @ts-ignore Typescript for some reason doesn't recognize my userId check earlier so it freaks out
-			user.links[key as keyof Links] = link && link.length ? link : null;
+			user.links[key as keyof App.UserLinks] =
+				link && link.length ? link : null;
 		}),
 		checkConstraints();
 
@@ -111,7 +110,10 @@
 
 		disableForm = true;
 
-		// Trim the about section
+		// Generate the proper url for the user based off of their name and also trim
+		// their name and about sections
+		user.name = user.name.trim();
+		user.url = user.name.trim().toLowerCase().replaceAll(" ", "-");
 		user.about = user.about.trim();
 
 		disableButtons = true;
@@ -128,9 +130,8 @@
 		}).then(() => {
 			disableForm = false;
 
-			// If successful, update the original data.
-			// The reason it's done manually like this is so the original object is presevered and is then used across all dashboard pages
-			original.set(user);
+			// If successful, update the original data store
+			original.set(JSON.parse(JSON.stringify(user)));
 		});
 	};
 
@@ -150,7 +151,7 @@
 
 	// When the user does CTRL/CMD + S, save the data
 	const onKeydown = (e: KeyboardEvent) => {
-		if (e.metaKey && e.key === "s") {
+		if ((e.metaKey && e.key === "s") || (e.ctrlKey && e.key === "s")) {
 			e.preventDefault();
 			save();
 		}
@@ -170,7 +171,7 @@
 			src="/assets/projects/project/placeholder/banner.webp"
 			width="1920"
 			height="1080"
-			alt="{user.name}'s banner"
+			alt="{$original.name}'s banner"
 			class="object-cover object-center w-full h-32 row-start-1 col-start-1 lg:h-44"
 		/>
 
@@ -193,7 +194,7 @@
 					width="200"
 					height="200"
 					src="/assets/developers/user/placeholder/icon.webp"
-					alt="{user.name}'s avatar"
+					alt="{$original.name}'s avatar"
 					class="w-28 h-28 rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
 				/>
 				<div
@@ -204,16 +205,16 @@
 			</div>
 
 			<GradientText
-				class="from-green-light to-green-dark font-bold text-3xl text-center w-full lg:text-start"
+				class="from-green-light to-green-dark font-bold text-3xl break-words text-center w-full lg:text-start"
 			>
-				{user.name}
+				{$original.name}
 			</GradientText>
 
 			<div class="flex gap-4 w-full mx-auto max-w-xl lg:mx-0">
 				<a
 					target="_blank"
 					rel="noopener noreferrer"
-					href="/developers/{user.url}"
+					href="/developers/{$original.url}"
 					class="px-4 py-3 rounded-lg bg-gray-500 flex items-center justify-center gap-4 w-full transition-colors hover:bg-gray-500/80"
 				>
 					View Profile
@@ -243,13 +244,20 @@
 		>
 			<div class="flex flex-col gap-12 justify-between">
 				<ProfileSection direction="bg-gradient-to-br" title="About Me">
+					<Input
+						bind:value={user.name}
+						max={20}
+						placeholder="Your name"
+					>
+						<Id class="w-6 h-6 mx-auto" />
+					</Input>
 					<TextBox
 						bind:value={user.about}
 						placeholder="Include previous projects, skills, and your experience level..."
 						max={150}
 					/>
+
 					<Dropdown
-						radio={true}
 						options={teams}
 						required={false}
 						selectedItems={[user.team]}
@@ -270,30 +278,35 @@
 					>
 						<GitHub class="w-6 h-6 mx-auto" />
 					</Input>
+
 					<Input
 						bind:value={user.links.LinkedIn}
 						placeholder="LinkedIn username"
 					>
 						<LinkedIn class="w-6 h-6 mx-auto" />
 					</Input>
+
 					<Input
 						bind:value={user.links.Devto}
 						placeholder="Dev.to username"
 					>
 						<Devto class="w-6 h-6 mx-auto" />
 					</Input>
+
 					<Input
 						bind:value={user.links.Twitter}
 						placeholder="Twitter username"
 					>
 						<Twitter class="w-6 h-6 mx-auto" />
 					</Input>
+
 					<Input
 						bind:value={user.links.Facebook}
 						placeholder="Facebook username"
 					>
 						<Facebook class="w-6 h-6 mx-auto" />
 					</Input>
+
 					<Input
 						bind:value={user.links.Website}
 						placeholder="Website link"
@@ -312,7 +325,6 @@
 					{#each { length: 4 } as _, i}
 						<Dropdown
 							{i}
-							radio={true}
 							required={i < 2}
 							options={positions}
 							selectedItems={user.positions}
@@ -338,7 +350,6 @@
 						{#each { length: 5 } as _, i}
 							<Dropdown
 								{i}
-								radio={true}
 								required={i < 2}
 								options={softSkills}
 								selectedItems={user.softSkills}
@@ -360,7 +371,6 @@
 						{#each { length: 5 } as _, i}
 							<Dropdown
 								{i}
-								radio={true}
 								required={i < 2}
 								options={techSkills}
 								selectedItems={user.techSkills}

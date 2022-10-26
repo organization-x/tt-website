@@ -1,4 +1,6 @@
 <script lang="ts">
+	export let src: string;
+	export let alt: string;
 	export let title: string;
 	export let side = "left";
 </script>
@@ -8,7 +10,14 @@
 	class:items-end={side !== "left"}
 	class="flex flex-col gap-4 md:text-base md:flex-row md:items-center"
 >
-	<slot name="image" />
+	<img
+		class="w-32 md:shrink-0"
+		height="500"
+		width="500"
+		loading="lazy"
+		{src}
+		{alt}
+	/>
 	<div class:text-right={side !== "left"} class="mt-4">
 		<h1 class="font-semibold">{title}</h1>
 		<p class="mt-1">

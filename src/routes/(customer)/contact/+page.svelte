@@ -1,17 +1,15 @@
 <script lang="ts">
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
-	import Page from "$lib/components/contact/Page.svelte";
-	import PageTitle from "$lib/components/PageTitle.svelte";
 	import Field from "$lib/components/contact/Field.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Select from "$lib/components/contact/Select.svelte";
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
-	import PageCaption from "$lib/components/PageCaption.svelte";
-	import TextArea from "$lib/components/contact/TextArea.svelte";
+	import { FieldType, techSkills, softSkills } from "$lib/enums";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
 
+	// Titles for each page of the contact form
 	const titles = [
 		"First, the basics.",
 		"Just some details.",
@@ -19,23 +17,76 @@
 		"That's it!"
 	];
 
-	let pageNumber = 0;
-	let element: HTMLFormElement;
-	let filledCount = 0;
+	let pageNum = 0;
 
-	// Scroll to next page of contact form
-	const scroll = (next: boolean) => {
-		pageNumber = next ? pageNumber + 1 : pageNumber - 1;
-
-		element.scrollTo({
-			left: element.children[0].clientWidth * pageNumber,
-			behavior: "smooth"
-		});
+	// Keep track of all information entered in the form, if a field is option
+	// then it is valid by default
+	const fields = {
+		firstName: {
+			value: "",
+			valid: false,
+			page: 0
+		},
+		lastName: {
+			value: "",
+			valid: false,
+			page: 0
+		},
+		email: {
+			value: "",
+			valid: false,
+			page: 0
+		},
+		phone: {
+			value: "",
+			valid: true,
+			page: 0
+		},
+		company: {
+			value: "",
+			valid: false,
+			page: 0
+		},
+		talent: {
+			selected: [],
+			valid: false,
+			page: 1
+		},
+		website: {
+			value: "",
+			valid: false,
+			page: 1
+		},
+		doing: {
+			selected: [],
+			valid: true,
+			page: 1
+		},
+		refer: {
+			value: "",
+			valid: true,
+			page: 1
+		},
+		subject: {
+			value: "",
+			valid: false,
+			page: 2
+		},
+		message: {
+			value: "",
+			valid: false,
+			page: 2
+		}
 	};
 
-	// Check if all required fields are filled
-	const onChange = ({ detail }: CustomEvent<{ isFilled: boolean }>) => {
-		detail.isFilled ? filledCount++ : filledCount--;
+	// Check if all fields on the current page are valid
+	$: isValid = Object.values(fields).every((field) =>
+		field.page === pageNum ? field.valid : true
+	);
+
+	// Form submit
+	const submit = () => {
+		// fetch
 	};
 </script>
 
@@ -43,15 +94,13 @@
 	<title>Contact Us</title>
 </svelte:head>
 
-<Hero src="/assets/contact/contact.webm">
-	<PageTitle class="from-purple-light to-purple-dark">
-		Let us get the party started for you.
-	</PageTitle>
-
-	<PageCaption>
-		Give us detailed information on what and who you want to start
-		<strong>your journey</strong>.
-	</PageCaption>
+<Hero
+	class="from-purple-light to-purple-dark"
+	title="Let us get the party started for you."
+	src="/assets/contact/contact.webm"
+>
+	Give us detailed information on what and who you want to start
+	<strong>your journey</strong>.
 </Hero>
 
 <Section>
@@ -68,136 +117,127 @@
 </Section>
 
 <Section filled={true}>
-	<MajorHeader>{titles[pageNumber]}</MajorHeader>
+	<MajorHeader>{titles[pageNum]}</MajorHeader>
 
-	<form
-		bind:this={element}
-		class="flex gap-12 overflow-hidden snap-x snap-mandatory"
-	>
-		<Page>
+	<div class="flex flex-col gap-10 mt-8 h-[40rem]">
+		{#if pageNum === 0}
 			<Field
-				type="text"
+				bind:value={fields.firstName.value}
+				bind:isValid={fields.firstName.valid}
 				title="First Name"
-				disabled={pageNumber !== 0}
-				on:change={onChange}
 				placeholder="First goes here"
 			/>
+
 			<Field
-				type="text"
+				bind:value={fields.lastName.value}
+				bind:isValid={fields.lastName.valid}
 				title="Last Name"
-				on:change={onChange}
-				disabled={pageNumber !== 0}
 				placeholder="And now for the last"
 			/>
+
 			<Field
-				type="email"
+				bind:value={fields.email.value}
+				bind:isValid={fields.email.valid}
 				title="Email"
-				on:change={onChange}
-				disabled={pageNumber !== 0}
-				placeholder="Where should we send our pigeon?"
+				placeholder="Our pigeon will be sent here"
+				type={FieldType.Email}
 			/>
+
 			<Field
-				type="text"
+				bind:value={fields.phone.value}
+				bind:isValid={fields.phone.valid}
 				title="Phone Number"
+				placeholder="Those digits of yours"
+				type={FieldType.Phone}
 				required={false}
-				disabled={pageNumber !== 0}
-				placeholder="Your digits, please"
 			/>
+
 			<Field
-				type="text"
+				bind:value={fields.company.value}
+				bind:isValid={fields.company.valid}
 				title="Company"
-				on:change={onChange}
-				disabled={pageNumber !== 0}
-				placeholder="What company are you working for?"
+				placeholder="The company were working with"
 			/>
-		</Page>
-		<Page>
+		{:else if pageNum === 1}
 			<Select
+				bind:selected={fields.talent.selected}
+				bind:isValid={fields.talent.valid}
+				radio={false}
 				title="What Talent Do You Need?"
 				placeholder="skill(s)"
-				on:change={onChange}
-				disabled={pageNumber !== 1}
-				options={[
-					"Design",
-					"Engineering",
-					"Management",
-					"Design",
-					"Engineering",
-					"Management"
-				]}
+				options={[...softSkills, ...techSkills]}
 			/>
+
 			<Field
-				type="text"
+				bind:value={fields.website.value}
+				bind:isValid={fields.website.valid}
 				title="Company Website"
-				required={false}
-				disabled={pageNumber !== 1}
-				placeholder="https://company.com..."
+				placeholder="https://company.com"
+				type={FieldType.Website}
 			/>
+
 			<Select
-				title="What are we doing?"
-				placeholder="subject(s)"
-				on:change={onChange}
-				disabled={pageNumber !== 1}
+				bind:selected={fields.doing.selected}
+				bind:isValid={fields.doing.valid}
+				radio={true}
+				title="What Are We Doing?"
 				options={[
 					"Creating a brand new product",
 					"Building on an existing project",
 					"Deploying a new product"
 				]}
 			/>
+
 			<Field
-				type="text"
-				title="How Did You Hear About Us?"
+				bind:value={fields.refer.value}
+				bind:isValid={fields.refer.valid}
 				required={false}
-				disabled={pageNumber !== 1}
-				placeholder="Friends, Family?"
+				title="How did you hear about us?"
+				placeholder="Google is a friend"
 			/>
-		</Page>
-		<Page>
+		{:else if pageNum === 2}
 			<Field
-				type="text"
+				bind:value={fields.subject.value}
+				bind:isValid={fields.subject.valid}
 				title="Subject"
-				on:change={onChange}
-				disabled={pageNumber !== 2}
 				placeholder="Give yourself a title"
 			/>
 
-			<TextArea
-				title="Message"
-				on:change={onChange}
-				disabled={pageNumber !== 2}
-				placeholder="Elaborate on how we can help..."
+			<Field
+				bind:value={fields.message.value}
+				bind:isValid={fields.message.valid}
+				big={true}
+				title="Subject"
+				placeholder="Elaborate and give us plenty of details"
 			/>
-		</Page>
-		<Page>
-			<div
-				class="flex flex-col h-full text-center justify-center items-center"
-			>
-				<TextHeader>Your message has been sent.</TextHeader>
+		{:else if pageNum === 3}
+			<div class="text-center my-auto">
+				<h1 class="text-2xl font-semibold text-center">
+					Your message has been sent!
+				</h1>
 				<Text>
 					We'll get back to you very soon, stay posted and get ready
 					for something new.
 				</Text>
 			</div>
-		</Page>
-	</form>
+		{/if}
+	</div>
 
 	<div class="flex justify-between">
 		<FormButton
-			disabled={pageNumber === 0}
-			hidden={pageNumber === 0 || pageNumber === 3}
-			on:click={() => scroll(false)}
+			disabled={pageNum === 0}
+			hidden={pageNum === 0 || pageNum === 3}
+			on:click={() => (pageNum -= 1)}
 		>
 			Back
 		</FormButton>
+
 		<FormButton
-			disabled={(pageNumber === 0 && !(filledCount >= 4)) ||
-				(pageNumber === 1 && !(filledCount >= 6)) ||
-				(pageNumber === 2 && !(filledCount >= 8)) ||
-				pageNumber === 3}
-			hidden={pageNumber === 3}
-			on:click={() => scroll(true)}
+			disabled={!isValid || pageNum === 3}
+			hidden={pageNum === 3}
+			on:click={() => (pageNum += 1) && pageNum === 3 && submit()}
 		>
-			{pageNumber === 2 ? "Send" : "Next"}
+			{pageNum === 2 ? "Send" : "Next"}
 		</FormButton>
 	</div>
 </Section>

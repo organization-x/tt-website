@@ -1,8 +1,8 @@
 <script lang="ts">
 	import "$lib/hljsTheme.css";
 
-	import HLJS from "highlight.js";
 	import { onMount } from "svelte";
+	import hljs from "highlight.js/es/core";
 	import { generateHTML } from "@tiptap/html";
 
 	import { getIcon } from "$lib/getIcon";
@@ -19,9 +19,25 @@
 
 	const html = generateHTML(data.content as JSONContent, extensions);
 
-	// Syntax highlighting
-	onMount(HLJS.highlightAll);
+	onMount(async () => {
+		// Syntax highlighting
+		hljs.highlightAll();
+
+		if (!data.track) return;
+
+		import("$lib/analytics")
+			.then(async ({ analytics }) =>
+				analytics.track("project_view", {
+					id: data.id
+				})
+			)
+			.catch(() => {});
+	});
 </script>
+
+<svelte:head>
+	<title>{data.title}</title>
+</svelte:head>
 
 <!-- TODO: Replace placeholder -->
 
@@ -50,7 +66,7 @@
 
 	<Scrollable class="before:from-black after:to-black">
 		{#each data.authors as author}
-			<Author theme={data.theme} user={author} />
+			<Author theme={data.theme} {author} />
 		{/each}
 	</Scrollable>
 

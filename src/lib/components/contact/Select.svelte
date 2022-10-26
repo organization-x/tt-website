@@ -1,71 +1,89 @@
 <script lang="ts">
-	import { onMount, createEventDispatcher } from "svelte";
-
 	import Asterisk from "$lib/components/icons/Asterisk.svelte";
+	import DropdownItem from "$lib/components/DropdownItem.svelte";
 	import DropArrow from "$lib/components/icons/DropArrow.svelte";
-	import DropdownOption from "$lib/components/contact/DropdownOption.svelte";
 
 	export let title: string;
+	export let radio: boolean;
 	export let required = true;
-	export let disabled: boolean;
+	export let isValid: boolean;
+	export let placeholder = "";
 	export let options: string[];
-	export let placeholder: string;
-
-	const dispatch = createEventDispatcher();
+	export let selected: string[] = [];
 
 	let open = false;
-	let count = 0;
-	let isFilled = false;
-	let dropdownParent: HTMLDivElement;
+	let changed = false;
+	let parent: HTMLDivElement;
 
-	// Only dispatch if the previous state of isFilled is different than the new state.
-	$: dispatch("change", { isFilled });
+	// If the select is in radio mode automatically select the first option
+	if (radio) selected = [options[0]];
 
-	// On input change check if the input is filled.
-	const onChange = ({ detail }: CustomEvent<{ isSelected: boolean }>) => {
-		detail.isSelected ? count++ : count--;
-		isFilled = count > 0;
+	// Check if the dropdown has items selected and change it's valid value accordingly
+	$: isValid = required ? selected.length > 0 : true;
+
+	// Check if click is outside of the dropdown, if so, close it
+	const windowClick = ({ target }: Event) => {
+		if (open && !parent.contains(target as Node)) open = false;
 	};
-
-	// Check if click is outside of the dropdown, if so, close it.
-	onMount(() => {
-		const onClick = ({ target }: Event) => {
-			if (!dropdownParent.contains(target as Node)) open = false;
-		};
-
-		addEventListener("click", onClick);
-
-		return () => removeEventListener("click", onClick);
-	});
 </script>
 
-<div class="mt-8">
+<svelte:window on:click={windowClick} />
+
+<div>
 	<div class="flex justify-between items-center">
 		<h1 class="font-semibold">{title}</h1>
 		{#if required}
 			<Asterisk class="w-3 h-3" />
 		{/if}
 	</div>
-	<div bind:this={dropdownParent} class="relative cursor-pointer">
-		<div
+
+	<div bind:this={parent} class="relative">
+		<button
 			on:click={() => (open = !open)}
-			class:pointer-events-none={disabled}
 			class:rounded-b-lg={!open}
-			class="w-full flex items-center justify-between p-4 bg-gray-800 mt-4 rounded-t-lg select-none"
+			class:border-transparent={!changed}
+			class:border-red-light={changed && !isValid}
+			class:border-green-light={changed && isValid}
+			class="w-full px-4 bg-gray-800 flex items-center justify-between p-4 mt-2 rounded-t-lg select-none border-solid border-2 transition-[border-color]"
 		>
-			<h1>{count} {placeholder} selected</h1>
-			<DropArrow {open} class="w-6 h-6 transition-transform" />
-		</div>
-		<div
-			class:flex={open}
-			class:hidden={!open}
-			class="absolute w-full h-fit flex-col inset-0 top-14 bg-gray-800 z-10 rounded-b-lg max-h-[15rem] overflow-auto"
-		>
-			{#each options as option}
-				<DropdownOption on:change={onChange}>
-					{option}
-				</DropdownOption>
-			{/each}
-		</div>
+			<h1>
+				{radio
+					? selected[0]
+					: `${selected.length} ${placeholder} selected`}
+			</h1>
+
+			<DropArrow {open} class="w-6 h-6 shrink-0" />
+		</button>
+
+		{#if open}
+			<div
+				class:border-transparent={!changed}
+				class:border-red-light={changed && !isValid}
+				class:border-green-light={changed && isValid}
+				class="absolute w-full h-fit flex-col top-[calc(100%-2px)] bg-gray-800 z-50 rounded-b-lg max-h-[15rem] overflow-auto border-2 transition-[border-color]"
+				style="border-style: hidden solid solid solid;"
+			>
+				{#each options as option}
+					<DropdownItem
+						{radio}
+						selected={selected.includes(option)}
+						on:click={() =>
+							// Based on if the select is in radio mode or not either set the selections to just one value
+							// or remove/add the value to the selections. Also set the changed value to true
+							radio
+								? (selected = [option])
+								: selected.includes(option)
+								? (selected = selected.filter(
+										(item) => item !== option
+								  ))
+								: (selected = [...selected, option]) &&
+								  !changed &&
+								  (changed = true)}
+					>
+						{option}
+					</DropdownItem>
+				{/each}
+			</div>
+		{/if}
 	</div>
 </div>

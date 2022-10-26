@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
+import type { Prisma } from "@prisma/client";
+
 export const prisma = new PrismaClient();
 
 // Check if session token even exists and if it does check if it's valid.
@@ -17,7 +19,24 @@ export const userAuth = async ({ session }: App.Locals) => {
 
 	const sesh = await prisma.session.findUnique({
 		where: { token: session },
-		include: { user: { include: { links: true, pinnedProject: true } } }
+		include: {
+			user: {
+				include: {
+					links: {
+						select: {
+							userId: false,
+							Devto: true,
+							Facebook: true,
+							GitHub: true,
+							LinkedIn: true,
+							Twitter: true,
+							Website: true
+						}
+					},
+					pinnedProject: true
+				}
+			}
+		}
 	});
 
 	// Check if the session token is valid
@@ -27,3 +46,34 @@ export const userAuth = async ({ session }: App.Locals) => {
 
 	return { ...sesh.user } as App.UserWithMetadata;
 };
+
+// Grab multiple users based on a prisma where statement, used for search
+export const getUsers = (where: Prisma.UserWhereInput) =>
+	prisma.user.findMany({
+		where,
+		include: {
+			links: {
+				select: {
+					userId: false,
+					Devto: true,
+					Facebook: true,
+					GitHub: true,
+					LinkedIn: true,
+					Twitter: true,
+					Website: true
+				}
+			},
+			pinnedProject: true
+		}
+	});
+
+// Grab multiple projects based on a prisma where statement, used for search
+export const getProjects = (where: Prisma.ProjectWhereInput) =>
+	prisma.project
+		.findMany({
+			where,
+			include: {
+				authors: { select: { user: true, position: true } }
+			}
+		})
+		.then((projects) => projects);

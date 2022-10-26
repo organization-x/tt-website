@@ -1,6 +1,6 @@
 // Docs: https://kit.svelte.dev/docs/types#app
 
-import {
+import type {
 	Prisma,
 	Links,
 	User,
@@ -18,16 +18,19 @@ declare global {
 			session: string | null;
 		}
 
-		// Landing page project developer
+		// Interface for the landing page developer cards
 		interface Developer {
 			name: string;
-			position: string;
 			url: string;
+			about: string;
 		}
 
-		// Type for combining a user with their Links
+		// Type for removing the relational userId property from the links model
+		type UserLinks = Omit<Links, "userId">;
+
+		// Type for combining a user with their associated links and pinned project
 		type UserWithMetadata = User & {
-			links: Links;
+			links: UserLinks;
 			pinnedProject: Project?;
 		};
 
@@ -36,12 +39,13 @@ declare global {
 			where: Prisma.UserWhereUniqueInput;
 			user: {
 				id: string;
+				name?: string;
 				about?: string;
 				team?: Team;
 				positions?: Position[];
 				softSkills?: SoftSkill[];
 				techSkills?: TechSkill[];
-				links?: Links;
+				links?: UserLinks;
 				pinnedProjectId?: string;
 				visible?: boolean;
 			};
@@ -52,12 +56,13 @@ declare global {
 			where: Prisma.UserWhereInput;
 		}
 
-		// Project author data for project page, it differs from the one in the schema since
-		// that's how it has to be stored since it's relational, but this is how it's used
-		type ProjectAuthor = User & { position: Position };
+		// Type for authors on projects
+		type Author = { user: User; position: Position };
 
 		// Projects combined with their authors for easy access
-		type ProjectWithAuthors = Project & { authors: ProjectAuthor[] };
+		type ProjectWithMetadata = Project & {
+			authors: Author[];
+		};
 
 		// Interface for project update requests
 		interface ProjectUpdateRequest {
@@ -71,7 +76,7 @@ declare global {
 				skills?: TechSkill[];
 				content?: Prisma.InputJsonValue;
 				visible?: boolean;
-				authors?: ProjectAuthor[];
+				authors?: Author[];
 			};
 		}
 
@@ -83,6 +88,64 @@ declare global {
 		// Interface for project deletion
 		interface ProjectDeleteRequest {
 			id: string;
+		}
+
+		// Interface for grabbing analytics data
+		interface AnalyticsRequest {
+			startDate: string;
+			endDate: string;
+		}
+
+		// Type for graph data that will be plotted
+		type GraphData = { label: string; value: number; color: string };
+
+		// Interface for analytics response data
+		interface AnalyticsResponse {
+			returning: number;
+			new: number;
+			prevViews: number;
+			searches: number;
+			prevSearches: number;
+			softSkills: SoftSkill[];
+			techSkills: TechSkill[];
+			projects: {
+				searches: number;
+				prevSearches: number;
+				views: GraphData[];
+				scrolled: GraphData[];
+				techSkills: TechSkill[];
+			};
+		}
+
+		// Interface for contact form email requests
+		interface MailRequest {
+			name: string;
+			email: string;
+			phone?: string;
+			company: string;
+			skills: (TechSkill | SoftSkill)[];
+			website?: string;
+			doing: string;
+			hear?: string;
+			subject: string;
+			message: string;
+		}
+
+		// Interface for contact form response data
+		interface MailResponse {
+			success: boolean;
+		}
+
+		// Interface for inputs on the contact page form
+		interface Box {
+			type: BoxType;
+			name: string;
+			isValid: boolean;
+			required: boolean;
+			placeholder: string;
+			options?: string[];
+			value?: string;
+			selected?: string[];
 		}
 
 		// interface Platform {}
