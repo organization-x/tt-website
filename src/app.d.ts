@@ -124,7 +124,7 @@ declare global {
 			email: string;
 			phone?: string;
 			company: string;
-			talent: string;
+			talent: string[];
 			website?: string;
 			doing: string;
 			refer?: string;
