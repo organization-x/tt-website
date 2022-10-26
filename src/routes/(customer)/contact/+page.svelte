@@ -86,16 +86,6 @@
 
 	// Form submit
 	const submit = () => {
-		console.log(fields);
-		console.log(
-			Object.fromEntries(
-				Object.entries(fields).map((field) => [
-					field[0],
-					("selected" in field[1] && field[1].selected) ||
-						("value" in field[1] && field[1].value)
-				])
-			)
-		);
 		fetch("/api/mail", {
 			method: "POST",
 			headers: {
