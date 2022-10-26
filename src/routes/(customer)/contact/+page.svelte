@@ -231,7 +231,7 @@
 				bind:value={fields.message.value}
 				bind:isValid={fields.message.valid}
 				big={true}
-				title="Subject"
+				title="Message"
 				placeholder="Elaborate and give us plenty of details"
 			/>
 		{:else if pageNum === 3}
