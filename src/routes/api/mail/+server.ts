@@ -17,7 +17,7 @@ auth.setCredentials({
 
 const mail = gmail({ version: "v1", auth: auth });
 
-// Search for users, otherwise a +page.server.ts should be used
+// Insert an email into the hello@ai-camp.org account for contact form submissions
 // * INPUT: MailRequest
 // * OUTPUT: MailResponse
 export const POST: RequestHandler = async ({ request }) => {
