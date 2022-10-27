@@ -23,7 +23,6 @@ const mail = gmail({ version: "v1", auth: auth });
 export const POST: RequestHandler = async ({ request }) => {
 	try {
 		const data: App.MailRequest = await request.json();
-		const date = new Date();
 
 		// Create raw data for the email with the proper header information and a custom
 		// HTML template
