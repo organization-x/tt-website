@@ -61,17 +61,17 @@
 		on:click={() => innerWidth < 1024 && (open = !open)}
 		class="flex justify-between items-center p-4 lg:cursor-auto"
 	>
-		<!-- TODO: Replace Cloudflare image delivery URL -->
-
 		<img
 			width="512"
 			height="512"
 			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
-				.user.id}/avatar"
+				.user.id}/avatar?{new Date().getTime()}"
 			alt="{author.user.name}'s avatar"
 			class="w-10 h-10 rounded-full"
 		/>
+
 		<h1 class="text-lg sm:mr-auto sm:ml-4">{author.user.name}</h1>
+
 		<DropArrow {open} class="w-7 h-7 transition-transform lg:hidden" />
 		{#if !cantRemove}
 			<button on:click={() => dispatch("click", { id: author.user.id })}>

@@ -160,7 +160,7 @@ export const POST: RequestHandler = async ({ locals }) => {
 				projects.forEach((project) => {
 					try {
 						const url = project.url.split("-");
-						const int = Number.parseInt(url[url.length - 1]);
+						const int = parseInt(url[url.length - 1]);
 						int > biggest && (biggest = int);
 					} catch {
 						return;

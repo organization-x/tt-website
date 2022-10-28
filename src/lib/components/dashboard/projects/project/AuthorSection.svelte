@@ -52,7 +52,7 @@
 		<div
 			class="bg-gray-500/40 p-4 mt-3 rounded-lg lg:grid lg:grid-cols-2 lg:gap-x-4 lg:transition-[height]"
 		>
-			{#each authors as author}
+			{#each authors as author (author.user.id)}
 				<AuthorEditor
 					bind:author
 					cantRemove={author.user.id === $user.id ||
@@ -121,6 +121,8 @@
 								/>
 							</div>
 						{:then users}
+							{@const timestamp = new Date().getTime()}
+
 							{#each users as user}
 								<button
 									on:click={() => {
@@ -147,14 +149,12 @@
 									in:fly={{ y: 20, duration: 200 }}
 									class="flex gap-3 items-center"
 								>
-									<!-- TODO: Replace Cloudflare image delivery URL -->
-
 									<img
 										width="512"
 										height="512"
-										src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar"
+										src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{timestamp}"
 										alt="{user.name}'s avatar"
-										class="w-10 h-10 rounded-full"
+										class="w-10 h-10 bg-gray-400 rounded-full"
 									/>
 									<h1 class="text-lg">{user.name}</h1>
 								</button>

@@ -146,7 +146,7 @@
 			disabled={creatingProject}
 			class:opacity-70={creatingProject}
 			on:click={createProject}
-			class="bg-gray-500/40 rounded-lg w-full p-4 flex items-center justify-center gap-2 lg:w-40 lg:shrink-0"
+			class="bg-gray-500/40 rounded-lg w-full p-4 flex items-center transition-opacity justify-center gap-2 lg:w-40 lg:shrink-0"
 		>
 			<Plus class="w-6 h-6{creatingProject ? ' animate-spin' : ''}" />
 			New Project

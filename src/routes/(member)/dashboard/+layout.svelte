@@ -66,8 +66,6 @@
 			<Logo class="w-10 h-10" />
 		</a>
 		<div class="lg:hidden flex gap-3 items-center">
-			<!-- TODO: Replace Cloudflare image delivery URL -->
-
 			{#if !burgerOpen}
 				<div
 					in:receive={{ key: "user" }}
@@ -77,9 +75,9 @@
 					<img
 						width="512"
 						height="512"
-						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar"
+						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{new Date().getTime()}"
 						alt="{$user.name}'s avatar"
-						class=" w-9 h-9 rounded-full"
+						class=" w-9 h-9 rounded-full bg-gray-400"
 					/>
 					<h1
 						class="font-semibold text-sm overflow-auto scrollbar-hidden max-w-[7rem]"
@@ -111,15 +109,14 @@
 							out:send={{ key: "user" }}
 							class="flex gap-3 items-center w-fit z-50 mx-auto"
 						>
-							<!-- TODO: Replace Cloudflare image delivery URL -->
-
 							<img
 								width="512"
 								height="512"
-								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar"
+								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avata?{new Date().getTime()}"
 								alt="{$user.name}'s avatar"
-								class=" w-14 h-14 rounded-full"
+								class=" w-14 h-14 rounded-full bg-gray-400"
 							/>
+
 							<h1 class="font-semibold text-xl">
 								{firstName}
 							</h1>
@@ -206,14 +203,12 @@
 						on:transitionend={() => (disableTransition = false)}
 						on:click={() => (userOpen = !userOpen)}
 					>
-						<!-- TODO: Replace Cloudflare image delivery URL -->
-
 						<img
 							width="512"
 							height="512"
-							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar"
+							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{new Date().getTime()}"
 							alt="{$user.name}'s avatar"
-							class="w-8 h-8 rounded-full"
+							class="w-8 h-8 rounded-full bg-gray-400"
 						/>
 						<span class="font-semibold">{firstName}</span>
 						<DropArrow open={userOpen} class="w-6 h-6" />
@@ -221,7 +216,7 @@
 
 					{#if userOpen}
 						<div
-							class="absolute bg-gray-900 w-full p-1 rounded-b-lg"
+							class="absolute bg-gray-900 w-full p-1 rounded-b-lg z-50"
 						>
 							<ul class="flex flex-col gap-2 p-1">
 								<NavLink

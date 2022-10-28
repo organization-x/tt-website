@@ -8,8 +8,8 @@
 	<img
 		class="rounded-md mb-2"
 		loading="lazy"
-		width="500"
-		height="500"
+		width="512"
+		height="512"
 		alt="{name} from Team Tomorrow"
 		{src}
 	/>

@@ -34,6 +34,9 @@
 	let pinDebounce: NodeJS.Timeout;
 	let pinnedProjectId = $user.pinnedProjectId;
 
+	// Create a timestamp so the images from Cloudflare don't cache
+	const timestamp = new Date().getTime();
+
 	// Transform links into an array so it's easily iterable
 	const links = Object.keys($user.links).map((key) => {
 		return { key: key, link: $user.links[key as keyof typeof $user.links] };
@@ -115,8 +118,6 @@
 			title="Your Profile"
 			class="bg-gray-500/40 p-4 rounded-lg flex flex-col gap-8 lg:p-8 lg:gap-12"
 		>
-			<!-- TODO: Replace Cloudflare image delivery URL -->
-
 			<div class="lg:flex lg:gap-12">
 				<div class="shrink-0">
 					<div
@@ -126,11 +127,12 @@
 							<img
 								height="512"
 								width="512"
-								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar"
+								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{timestamp}"
 								alt="{$user.name}'s avatar"
 								loading="lazy"
-								class="rounded-full w-20 h-20 lg:w-24 lg:h-24"
+								class="rounded-full w-20 h-20 bg-gray-400 lg:w-24 lg:h-24"
 							/>
+
 							<div
 								class="absolute bg-gray-500 -bottom-3 -right-2 rounded-full p-2"
 							>
@@ -190,15 +192,13 @@
 							class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4"
 							style="border-color: #{pinnedProject.theme}"
 						>
-							<!-- TODO: Replace Cloudflare image delivery URL -->
-
 							<img
-								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{pinnedProject.id}/banner"
+								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{pinnedProject.id}/banner?{timestamp}"
 								width="1920"
 								height="1080"
 								loading="lazy"
 								alt="Banner for '{pinnedProject.title}'"
-								class="object-cover object-center w-full h-32 md:h-20"
+								class="object-cover object-center bg-gray-400 w-full h-32 md:h-20"
 							/>
 
 							<div class="flex flex-col py-4 px-3">

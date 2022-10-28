@@ -1,6 +1,6 @@
 import { error } from "@sveltejs/kit";
 
-import { prisma, checkSession, getUsers } from "$lib/prisma";
+import { prisma, checkSession, getUsers, userAuth } from "$lib/prisma";
 
 import type { Prisma } from "@prisma/client";
 import type { RequestHandler } from "./$types";
@@ -89,3 +89,89 @@ export const GET: RequestHandler = async ({ request }) => {
 		throw error(400, "Bad Request");
 	}
 };
+
+// Add/remove endorsements on one of a user's skills
+// * INPUT: EndorsementRequest
+// * OUTPUT: EndorsementWithMetadata | undefined
+export const POST: RequestHandler = async ({ locals, request }) => {
+	const user = await userAuth(locals);
+
+	// Only allow Leads and Admins to endorse
+	if (!user || user.role === "User") throw error(401, "Unauthorized");
+
+	try {
+		const data: App.EndorsementRequest = await request.json();
+
+		if (data.endorsing) {
+			const type = data.softSkill ? "softSkill" : "techSkill";
+			const skill = data.softSkill || data.techSkill;
+
+			// Check if the user being endorsed has the skill listed, if not, throw a bad request
+			if (
+				!(await prisma.user.count({
+					where: {
+						id: data.id as string,
+						[data.softSkill ? "softSkills" : "techSkills"]: {
+							has: skill
+						}
+					}
+				}))
+			)
+				throw error(400, "Bad Request");
+
+			// Check if this endorsement has already been made, if so, throw a bad request
+			if (
+				await prisma.endorsement.count({
+					where: {
+						fromId: user.id,
+						toId: data.id as string,
+						[type]: skill
+					}
+				})
+			)
+				throw error(400, "Bad Request");
+
+			const endorsement = await prisma.endorsement.create({
+				data: {
+					fromId: user.id,
+					toId: data.id as string,
+					[type]: skill
+				},
+				include: {
+					from: {
+						select: {
+							id: true,
+							name: true,
+							url: true
+						}
+					}
+				}
+			});
+
+			return new Response(
+				JSON.stringify({
+					id: endorsement.id,
+					from: {
+						id: endorsement.from.id,
+						url: endorsement.from.url,
+						name: endorsement.from.name
+					}
+				}),
+				{
+					status: 200
+				}
+			);
+		} else {
+			await prisma.endorsement.delete({
+				where: { id: data.id as number }
+			});
+
+			return new Response(undefined, { status: 200 });
+		}
+	} catch {
+		throw error(400, "Bad Request");
+	}
+};
+
+// TODO: Fix animation for endorsements
+// TODO: Cleanup overall design/code (rushed)

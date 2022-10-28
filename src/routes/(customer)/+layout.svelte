@@ -1,6 +1,7 @@
 <script lang="ts">
 	import "../../app.css";
 
+	import { setContext } from "svelte";
 	import { derived } from "svelte/store";
 	import { slide } from "svelte/transition";
 
@@ -24,6 +25,10 @@
 		page,
 		($page) => $page.routeId?.split("/")[2] || "home"
 	);
+
+	// Create a timestamp so the images from Cloudflare don't cache and generate
+	// a new one every time the user navigates
+	$: $page, setContext("timestamp", new Date().getTime());
 
 	afterNavigate(async () => {
 		open = false;
@@ -152,7 +157,9 @@
 	</div>
 </header>
 
-<slot />
+<div class="flex-1">
+	<slot />
+</div>
 
 <footer
 	class="flex flex-col justify-center gap-7 p-6 text-2xl mt-10 md:items-center lg:justify-between lg:flex-row xl:gap-12 xl:justify-center"

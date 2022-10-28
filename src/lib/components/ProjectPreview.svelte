@@ -3,6 +3,8 @@
 
 	import { getIcon } from "$lib/getIcon";
 
+	const timestamp = new Date().getTime();
+
 	export let project: App.ProjectWithMetadata;
 </script>
 
@@ -15,15 +17,13 @@
 	style="border-color: #{project.theme}"
 >
 	<div class="relative">
-		<!-- TODO: Replace Cloudflare image delivery URL -->
-
 		<img
-			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{project.id}/banner"
+			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{project.id}/banner?{timestamp}"
 			width="1920"
 			height="1080"
 			loading="lazy"
 			alt="Banner for '{project.title}'"
-			class="object-cover object-center w-full h-32"
+			class="object-cover object-center bg-gray-400 w-full h-32"
 		/>
 
 		<div
@@ -31,15 +31,13 @@
 		>
 			{#each project.authors as author, i}
 				{#if i <= 4}
-					<!-- TODO: Replace Cloudflare image delivery URL -->
-
 					<img
 						width="512"
 						height="512"
 						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
-							.user.id}/avatar"
+							.user.id}/avatar?{timestamp}"
 						alt="{author.user.name}'s avatar"
-						class="w-10 h-10 -mr-6 sm:-mr-8 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4"
+						class="w-10 h-10 bg-gray-400 -mr-6 sm:-mr-8 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4"
 						style="border-color: #{project.theme}; z-index: {project
 							.authors.length - i}"
 					/>

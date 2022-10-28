@@ -294,7 +294,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 					row.metricValues![0].value!
 				));
 
-			const views = Number.parseInt(row.metricValues![0].value!);
+			const views = parseInt(row.metricValues![0].value!);
 
 			// If this row is for returning users, add the views, otherwise add it to new users
 			row.dimensionValues![0].value! === "returning"
@@ -326,9 +326,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 					);
 
 				// Add search clicks to total
-				response.searches += Number.parseInt(
-					row.metricValues![0].value!
-				);
+				response.searches += parseInt(row.metricValues![0].value!);
 			});
 
 		if (projectIds.length) {
@@ -355,16 +353,14 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 					// Project views
 					response.projects.views.push({
 						label,
-						value: Number.parseInt(row.metricValues![0].value!)
+						value: parseInt(row.metricValues![0].value!)
 					} as App.GraphData);
 
 					// Percent scrolled
 					if (row.dimensionValues![0].value!.length)
 						response.projects.scrolled.push({
 							label,
-							value: Number.parseInt(
-								row.dimensionValues![0].value!
-							)
+							value: parseInt(row.dimensionValues![0].value!)
 						} as App.GraphData);
 				});
 
@@ -387,7 +383,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 					);
 
 					// Add search clicks to total
-					response.projects.searches += Number.parseInt(
+					response.projects.searches += parseInt(
 						row.metricValues![0].value!
 					);
 				});

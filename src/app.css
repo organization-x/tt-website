@@ -18,6 +18,10 @@
 		@apply font-main bg-black text-white text-base sm:text-lg lg:text-xl;
 	}
 
+	body {
+		@apply h-screen flex flex-col;
+	}
+
 	img {
 		user-drag: none;
 		-webkit-user-drag: none;

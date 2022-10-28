@@ -169,6 +169,9 @@
 			avatar.value = "";
 			avatar.disabled = false;
 		}
+
+		// Reassigned the user object to trigger a layout re-render
+		$original = $original;
 	};
 
 	// Update visility of user
@@ -201,20 +204,18 @@
 <svelte:window on:keydown={onKeydown} />
 
 <div class="relative pt-18 px-5 lg:px-10">
-	<label class="grid absolute top-0 inset-x-0 z-20">
-		<!-- TODO: Replace Cloudflare image delivery URL -->
-
+	<label class="grid absolute top-0 inset-x-0 z-20 cursor-pointer">
 		{#if banner && banner.disabled}
 			<div
 				class="animate-grays from-gray-400 to-gray-700 w-full h-32 row-start-1 col-start-1 lg:h-44"
 			/>
 		{:else}
 			<img
-				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{$original.id}/banner"
+				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{$original.id}/banner?{new Date().getTime()}"
 				width="1920"
 				height="1080"
 				alt="{$original.name}'s banner"
-				class="object-cover object-center w-full h-32 row-start-1 col-start-1 lg:h-44"
+				class="object-cover object-center bg-gray-400 w-full h-32 row-start-1 col-start-1 lg:h-44"
 			/>
 		{/if}
 
@@ -241,7 +242,7 @@
 
 	<div class="z-10 lg:flex lg:gap-8 lg:justify-center">
 		<div
-			class="flex flex-col gap-4 lg:shrink-0 lg:sticky lg:h-min lg:mt-10 lg:top-6 lg:w-60"
+			class="flex flex-col z-30 gap-4 lg:shrink-0 lg:sticky lg:h-min lg:mt-10 lg:top-6 lg:w-60"
 		>
 			<label
 				class="rounded-full z-30 cursor-pointer w-fit border-4 mt-4 border-black mx-auto grid lg:mx-0"
@@ -254,9 +255,9 @@
 					<img
 						width="512"
 						height="512"
-						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$original.id}/avatar"
+						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$original.id}/avatar?{new Date().getTime()}"
 						alt="{$original.name}'s avatar"
-						class="w-28 h-28 rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
+						class="w-28 h-28 bg-gray-400 rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
 					/>
 
 					<div

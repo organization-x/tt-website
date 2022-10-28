@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { getContext } from "svelte";
 	import { fade } from "svelte/transition";
 
 	import Plus from "$lib/components/icons/Plus.svelte";
@@ -7,6 +8,8 @@
 	export let position: string;
 	export let developer: App.Developer;
 	export let accomplishments: string[];
+
+	const timestamp = getContext("timestamp") as string;
 
 	let open = false;
 </script>
@@ -18,15 +21,13 @@
 		class="bg-gray-500/40 p-10 rounded-xl relative text-center max-w-lg mx-auto lg:mx-0 lg:p-8"
 	>
 		<div class="lg:flex lg:justify-center lg:gap-8">
-			<!-- TODO: Replace Cloudflare image delivery URL -->
-
 			<img
 				height="512"
 				width="512"
-				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{developer.id}/avatar"
+				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{developer.id}/avatar?{timestamp}"
 				alt="{developer.name}'s avatar"
 				loading="lazy"
-				class="rounded-full mx-auto w-20 h-20 lg:mx-0"
+				class="rounded-full bg-gray-400 mx-auto w-20 h-20 lg:mx-0"
 			/>
 			<div>
 				<h1 class="font-extrabold mt-3 mb-1 text-sm">

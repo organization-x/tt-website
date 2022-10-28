@@ -34,6 +34,13 @@ declare global {
 			pinnedProject: Project?;
 		};
 
+		// // Interface of a stripped down User object for endorsers on the profile page
+		interface Endorser {
+			id: string;
+			url: string;
+			name: string;
+		}
+
 		// Interface for user update requests
 		interface UserUpdateRequest {
 			where: Prisma.UserWhereUniqueInput;
@@ -118,6 +125,14 @@ declare global {
 		// Interface for contact form response data
 		interface MailResponse {
 			success: boolean;
+		}
+
+		// Interface for endorsement add/remove requests
+		interface EndorsementRequest {
+			id: string | number;
+			endorsing: boolean;
+			softSkill?: SoftSkill;
+			techSkill?: TechSkill;
 		}
 
 		// interface Platform {}

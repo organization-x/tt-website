@@ -240,25 +240,23 @@
 </script>
 
 <svelte:head>
-	<title>{original.title} - Project Editor</title>
+	<title>{original.title} / Project Editor</title>
 </svelte:head>
 
 <svelte:window on:keydown={onKeydown} />
 
 <label class="grid border-b-4" style="border-color: #{project.theme}">
-	<!-- TODO: Replace Cloudflare image delivery URL -->
-
 	{#if banner && banner.disabled}
 		<div
 			class="animate-grays from-gray-400 to-gray-700 w-full h-32 row-start-1 col-start-1"
 		/>
 	{:else}
 		<img
-			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{original.id}/banner"
+			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{original.id}/banner?{new Date().getTime()}"
 			width="1920"
 			height="1080"
 			alt="Banner for '{project.title}'"
-			class="object-cover object-center w-full h-32 row-start-1 col-start-1"
+			class="object-cover object-center bg-gray-400 w-full h-32 row-start-1 col-start-1"
 		/>
 	{/if}
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { getContext } from "svelte";
 	import { fly } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
@@ -10,6 +11,8 @@
 	import GradientText from "$lib/components/GradientText.svelte";
 
 	export let user: App.UserWithMetadata;
+
+	const timestamp = getContext("timestamp") as string;
 </script>
 
 <a
@@ -19,17 +22,15 @@
 	rel="noreferrer noopener"
 	class="bg-gray-500/40 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full"
 >
-	<!-- TODO: Replace Cloudflare image delivery URL -->
-
 	<div class="flex flex-col gap-6 items-center md:flex-row">
 		<div class="relative shrink-0">
 			<img
 				height="512"
 				width="512"
-				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar"
+				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{timestamp}"
 				alt="{user.name}'s avatar"
 				loading="lazy"
-				class="rounded-full w-20 h-20"
+				class="rounded-full bg-gray-400 w-20 h-20"
 			/>
 			<div
 				class="absolute bg-gray-500 -bottom-3 -right-2 rounded-full p-2"
@@ -70,16 +71,14 @@
 					class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4 lg:flex lg:p-4"
 					style="border-color: #{user.pinnedProject.theme}"
 				>
-					<!-- TODO: Replace Cloudflare image delivery URL -->
-
 					<img
 						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{user
-							.pinnedProject.id}/banner"
+							.pinnedProject.id}/banner?{timestamp}"
 						width="1920"
 						height="1080"
 						loading="lazy"
 						alt="Banner for '{user.pinnedProject.title}'"
-						class="object-cover object-center w-full h-32 md:h-20 lg:w-24 lg:h-auto lg:rounded-lg"
+						class="object-cover object-center bg-gray-400 w-full h-32 md:h-20 lg:w-24 lg:h-auto lg:rounded-lg"
 					/>
 
 					<div
