@@ -13,7 +13,7 @@ export const validate = (value: string, type: FieldType | null) => {
 		case FieldType.Phone:
 			return /^[0-9]*$/g.test(value);
 		case FieldType.Website:
-			return /^(http(s)?:\/\/)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/g.test(
+			return /^(http(s)?:\/\/)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#?&//=]*)$/g.test(
 				value
 			);
 		default:
