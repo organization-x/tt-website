@@ -235,7 +235,7 @@
 				(banner.disabled = true) &&
 				updateImage("banner")}
 			type="file"
-			accept="image/*"
+			accept=".png, .jpg, .jpeg, .webp, .avif"
 			class="hidden"
 		/>
 	</label>

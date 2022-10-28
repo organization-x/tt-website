@@ -43,6 +43,19 @@
 			behavior: "smooth"
 		});
 	};
+
+	// Verticle scroll without holding shift for desktop
+	const onWheel = (event: WheelEvent) => {
+		if (event.deltaX || disabledSide === Side.Both) return;
+
+		// Prevent the page from scrolling
+		event.preventDefault();
+
+		scrollable.scrollTo({
+			left: event.deltaY * 5 + scrollable.scrollLeft,
+			behavior: "smooth"
+		});
+	};
 </script>
 
 {#if arrows}
@@ -71,6 +84,7 @@
 				bind:clientWidth
 				bind:this={scrollable}
 				on:scroll={checkArrows}
+				on:wheel={onWheel}
 				class="flex gap-5 w-full overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
 			>
 				<slot />
@@ -103,6 +117,7 @@
 			bind:clientWidth
 			bind:this={scrollable}
 			on:scroll={checkArrows}
+			on:wheel={onWheel}
 			class="flex gap-5 overflow-auto py-2 scrollbar-hidden"
 		>
 			<slot />

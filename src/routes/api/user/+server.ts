@@ -172,6 +172,3 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		throw error(400, "Bad Request");
 	}
 };
-
-// TODO: Fix animation for endorsements
-// TODO: Cleanup overall design/code (rushed)

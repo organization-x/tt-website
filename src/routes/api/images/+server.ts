@@ -1,3 +1,4 @@
+import Sharp from "sharp";
 import { error } from "@sveltejs/kit";
 
 import { prisma, userAuth } from "$lib/prisma";
@@ -39,6 +40,35 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		else {
 			// Otherwise check if the user owns the project they're updating and set the type to
 			// banner since it is the only type for projects. Also update the ID to be the project id
+
+			Sharp(Buffer.from(await (data.get("file") as Blob).arrayBuffer()))
+				.toColourspace("rgb16")
+				.toFormat("raw")
+				.toBuffer((err, buffer) => {
+					if (err) throw error(400, "Bad Request");
+
+					let iter = 0;
+
+					// Store an object of colors with each key being a string rgb value and
+					// the value being the amount of times that color has occured
+					const colors = {};
+
+					buffer.forEach((byte, i, bytes) => {
+						if (iter === 3) {
+							// Create a string with all 3 RGB values for indexing
+							const rgb = (
+								bytes[i - 2] +
+								bytes[i - 1] +
+								byte
+							).toString();
+
+							if (colors[rgb])
+								rgb[(bytes[i - 2], bytes[i - 1], bytes[i])];
+
+							iter = 0;
+						} else iter++;
+					});
+				});
 
 			id = data.get("id") as string;
 

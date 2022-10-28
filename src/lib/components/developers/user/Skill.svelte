@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fly, slide } from "svelte/transition";
+	import { slide } from "svelte/transition";
 	import { createEventDispatcher, getContext, onMount } from "svelte";
 
 	import { getIcon } from "$lib/getIcon";
@@ -43,7 +43,7 @@
 <svelte:window on:resize={() => (innerWidth = window.innerWidth)} />
 
 <div
-	class:bg-red-light={!endorsements.length}
+	class:bg-gray-800={!endorsements.length}
 	class:bg-blue-light={endorsements.length > 0 && endorsements.length <= 3}
 	class:bg-teal-dark={3 < endorsements.length && endorsements.length <= 10}
 	class:bg-green-light={endorsements.length > 10}
@@ -57,15 +57,18 @@
 		<button
 			on:click={() =>
 				innerWidth < 600 && endorsements.length && (open = !open)}
-			class:border-red-light={!endorsements.length}
+			class:border-transparent={!endorsements.length}
 			class:border-blue-light={endorsements.length > 0 &&
 				endorsements.length <= 3}
 			class:border-teal-dark={3 < endorsements.length &&
 				endorsements.length <= 10}
 			class:border-green-light={endorsements.length > 10}
-			class="flex w-full items-center justify-center gap-2 transition-border font-semibold bg-gray-800 rounded-lg duration-200 border-4 py-4 px-3 overflow-hidden md:justify-center md:cursor-auto"
+			class="flex w-full items-center gap-2 transition-border justify-center font-semibold bg-gray-800 rounded-lg duration-200 border-4 py-4 px-3 overflow-hidden md:justify-center md:cursor-auto"
 		>
-			<div class="flex items-center gap-4">
+			<div
+				class:ml-12={!endorsements.length}
+				class="flex items-center gap-4 transition-[margin]"
+			>
 				<svelte:component
 					this={getIcon(name)}
 					class="w-7 h-7 shrink-0"
@@ -90,7 +93,7 @@
 						endorsing: !isEndorsed
 					})}
 				disabled={endorsing}
-				class:border-red-light={!endorsements.length}
+				class:border-transparent={!endorsements.length}
 				class:border-blue-light={endorsements.length > 0 &&
 					endorsements.length <= 3}
 				class:border-teal-dark={3 < endorsements.length &&
@@ -119,13 +122,15 @@
 			</h1>
 
 			<Scrollable
-				class={!endorsements.length
-					? "before:from-red-light after:to-red-light"
+				class="transition-opacity {!endorsements.length
+					? 'before:from-red-light after:to-red-light'
 					: endorsements.length <= 3
-					? "before:from-blue-light after:to-blue-light"
+					? 'before:from-blue-light after:to-blue-light'
 					: endorsements.length <= 10
-					? "before:from-teal-dark after:to-teal-dark"
-					: "before:from-green-light after:to-green-light"}
+					? 'before:from-teal-dark after:to-teal-dark'
+					: 'before:from-green-light after:to-green-light'}{endorsing
+					? ' opacity-0'
+					: ''}"
 			>
 				<h1
 					class:md:mx-auto={!endorsements.length}
@@ -143,11 +148,9 @@
 						class="shrink-0"
 					>
 						<img
-							transition:fly={{ duration: 200 }}
 							width="512"
 							height="512"
-							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{endorsement
-								.from.id}/avatar?{timestamp}"
+							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-340324858405847042/avatar?{timestamp}"
 							alt="{endorsement.from.name}'s avatar"
 							class="w-10 h-10 rounded-full"
 						/>

@@ -49,14 +49,7 @@
 		})
 	);
 
-	endorsements["Teamwork"].push({
-		id: 1,
-		from: {
-			id: "340324858405847049",
-			name: "Zahtec",
-			url: "zahtec"
-		}
-	});
+	// data.endorserId = null;
 
 	// Construct links based off of their name
 	const createLink = (key: keyof App.UserLinks, link: string) => {
@@ -200,7 +193,7 @@
 		</div>
 
 		<div
-			class="max-w-xl lg:min-w-[28rem] lg:mt-40 3xl:flex 3xl:gap-10 3xl:min-w-[65rem]"
+			class="max-w-xl lg:min-w-[28rem] lg:mt-40 3xl:flex 3xl:gap-10 3xl:min-w-[58rem]"
 		>
 			<div class="flex flex-col gap-8 mb-8 3xl:w-full">
 				<ProfileSection title="Positions">

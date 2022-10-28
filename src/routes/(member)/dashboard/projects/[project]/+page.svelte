@@ -245,7 +245,11 @@
 
 <svelte:window on:keydown={onKeydown} />
 
-<label class="grid border-b-4" style="border-color: #{project.theme}">
+<label
+	class:cursor-pointer={isOwner}
+	class="grid border-b-4"
+	style="border-color: #{project.theme}"
+>
 	{#if banner && banner.disabled}
 		<div
 			class="animate-grays from-gray-400 to-gray-700 w-full h-32 row-start-1 col-start-1"
@@ -272,7 +276,7 @@
 			bind:this={banner}
 			on:change={updateImage}
 			type="file"
-			accept="image/*"
+			accept=".png, .jpg, .jpeg, .webp, .avif"
 			class="hidden"
 		/>
 	{/if}
