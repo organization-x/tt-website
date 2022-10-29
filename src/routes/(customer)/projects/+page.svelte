@@ -102,7 +102,7 @@
 </script>
 
 <svelte:head>
-	<title>Projectsssss</title>
+	<title>Projects</title>
 </svelte:head>
 
 <Hero
