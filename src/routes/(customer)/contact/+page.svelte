@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
+	import Button from "$lib/components/Button.svelte";
 	import Field from "$lib/components/contact/Field.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
@@ -8,6 +10,28 @@
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
 	import { FieldType, techSkills, softSkills } from "$lib/enums";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
+
+	import type { PageData } from "./$types";
+	import type { AnalyticsInstance } from "analytics";
+
+	export let data: PageData;
+
+	let analytics: AnalyticsInstance | undefined;
+
+	onMount(async () => {
+		if (!data.track) return;
+
+		analytics = await import("$lib/analytics")
+			.then(({ analytics }) => analytics)
+			.catch(() => undefined);
+	});
+
+	// Grab tracking utilities for clicking buttons
+	const trackClick = (name: string) => async () =>
+		analytics &&
+		(await analytics.track("button_click", {
+			id: name
+		}));
 
 	// Titles for each page of the contact form
 	const titles = [
@@ -118,16 +142,22 @@
 </Hero>
 
 <Section>
-	<TextHeader>Before you contact us.</TextHeader>
+	<TextHeader>Have you seen our developers?</TextHeader>
 
 	<Text>
-		When contacting us, please make sure to fill out every part with
-		exclusive information so we can respond swiftly with accurate
-		information. On the subject field of this form, primarily explain what
-		times are availible to meet, who you are interested in and for what
-		reason, and any other detail you wish to include that could help the
-		both of us as a team.
+		Discover professional talents and find who fits your project best first.
+		Telling us who you want will make us able to provide the precise
+		skillset you are looking for in no time. Search through the various
+		skills, projects and social profiles our developers have and let us know
+		who strikes your interest the most in the message field.
 	</Text>
+	<Button
+		on:click={() => trackClick("developers_on_contact")}
+		href="/developers"
+		class="mb-12"
+	>
+		Discover Developers
+	</Button>
 </Section>
 
 <Section filled={true}>

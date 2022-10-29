@@ -212,7 +212,7 @@
 		href="/projects"
 		class="my-8"
 	>
-		Uncover all our projects
+		Uncover
 	</Button>
 
 	<Project project={data.projects[0]}>
@@ -236,7 +236,7 @@
 		href="/projects"
 		class="mb-12 mt-12"
 	>
-		Uncover all our projects
+		Uncover our projects
 	</Button>
 </Section>
 
@@ -296,10 +296,10 @@
 	</Carousel>
 
 	<Button
-		on:click={() => trackClick("discover_developers")}
+		on:click={() => trackClick("developers_under_devcards")}
 		href="/developers"
 	>
-		Discover
+		Discover Developers
 	</Button>
 
 	<TextHeader>Experience rapid takeoff with experience that fits.</TextHeader>
@@ -383,7 +383,7 @@
 </Carousel>
 
 <Button
-	on:click={() => trackClick("explore_developers")}
+	on:click={() => trackClick("developers_bottom")}
 	href="/developers"
 	class="mt-8">Discover Developers</Button
 >
