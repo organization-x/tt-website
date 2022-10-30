@@ -48,7 +48,7 @@
 			<button
 				type="button"
 				aria-label="Menu"
-				class="z-50 relative"
+				class="z-50 relative hover:text-teal-light duration-500"
 				on:click={() => {
 					open = !open;
 					window.scrollTo(0, 0);
@@ -65,30 +65,45 @@
 						<ul
 							class="text-3xl divide-y max-w-md mx-auto list-disc lg:list-none"
 						>
-							<NavLink href="/" active={$pageId === "home"}>
+							<NavLink
+								href="/"
+								active={$pageId === "home"}
+								class="hover:text-teal-light duration-300"
+							>
 								Home
 							</NavLink>
-							<NavLink href="/about" active={$pageId === "about"}>
+							<NavLink
+								href="/about"
+								active={$pageId === "about"}
+								class="hover:text-teal-light duration-300"
+							>
 								About
 							</NavLink>
 							<NavLink
 								href="/developers"
 								active={$pageId === "developers"}
+								class="hover:text-teal-light duration-300"
 							>
 								Developers
 							</NavLink>
 							<NavLink
 								href="/projects"
 								active={$pageId === "projects"}
+								class="hover:text-teal-light duration-300"
 							>
 								Projects
 							</NavLink>
-							<NavLink href="https://ai-camp.org" target="_blank">
+							<NavLink
+								href="https://ai-camp.org"
+								target="_blank"
+								class="hover:text-teal-light duration-300"
+							>
 								AI Camp
 							</NavLink>
 							<NavLink
 								href="/contact"
 								active={$pageId === "contact"}
+								class="hover:text-teal-light duration-300"
 							>
 								Contact Us
 							</NavLink>
@@ -102,7 +117,9 @@
 								rel="noreferrer noopener"
 								title="AI Camp Instagram"
 							>
-								<Instagram class="w-10 h-10" />
+								<Instagram
+									class="w-10 h-10 hover:text-teal-light duration-300"
+								/>
 							</a>
 							<a
 								href="https://www.youtube.com/channel/UCUGJzo5EwViLGpAgYphNyzg"
@@ -110,7 +127,9 @@
 								rel="noreferrer noopener"
 								title="AI Camp YouTube"
 							>
-								<YouTube class="w-12 h-12" />
+								<YouTube
+									class="w-12 h-12 hover:text-teal-light duration-300"
+								/>
 							</a>
 							<a
 								href="mailto:hello@ai-camp.org"
@@ -118,7 +137,9 @@
 								rel="noreferrer noopener"
 								title="AI Camp Email"
 							>
-								<Envelope class="w-10 h-10" />
+								<Envelope
+									class="w-10 h-10 hover:text-teal-light duration-300"
+								/>
 							</a>
 						</div>
 					</div>
