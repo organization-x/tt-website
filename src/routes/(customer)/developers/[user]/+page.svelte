@@ -3,10 +3,17 @@
 	import { getIcon } from "$lib/getIcon";
 	import DevTag from "$lib/components/DevTag.svelte";
 	import Button from "$lib/components/Button.svelte";
+	import TenKudos from "$lib/components/badges/TenKudos.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import Skill from "$lib/components/developers/user/Skill.svelte";
+	import Badge from "$lib/components/developers/user/Badge.svelte";
+	import FiftyKudos from "$lib/components/badges/FiftyKudos.svelte";
 	import ProfileSection from "$lib/components/ProfileSection.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
+	import TenProjects from "$lib/components/badges/TenProjects.svelte";
+	import AllEndorsed from "$lib/components/badges/AllEndorsed.svelte";
+	import HundredKudos from "$lib/components/badges/HundredKudos.svelte";
+	import TwentyProjects from "$lib/components/badges/TwentyProjects.svelte";
 
 	import type { PageData } from "./$types";
 	import type { SoftSkill, TechSkill } from "@prisma/client";
@@ -48,8 +55,6 @@
 			from: endorsement.from
 		})
 	);
-
-	// data.endorserId = null;
 
 	// Construct links based off of their name
 	const createLink = (key: keyof App.UserLinks, link: string) => {
@@ -135,61 +140,52 @@
 	/>
 
 	<div
-		class="mx-auto max-w-xl lg:max-w-none lg:flex lg:gap-10 lg:justify-center"
+		class="mx-auto max-w-xl lg:flex lg:gap-10 lg:justify-between lg:max-w-screen-lg lg:mx-auto 3xl:max-w-screen-3xl "
 	>
 		<div
-			class="mb-8 max-w-sm mx-auto md:max-w-none md:flex md:gap-10 lg:mt-10 lg:mb-0 lg:flex-col lg:items-start lg:gap-0 lg:shrink-0 lg:sticky lg:top-6 lg:mx-0 lg:h-fit"
+			class="mb-8 max-w-sm mx-auto flex flex-col gap-2 items-center lg:mt-10 lg:mb-0 lg:flex-col lg:items-start lg:shrink-0 lg:sticky lg:top-6 lg:mx-0 lg:h-fit"
 		>
-			<div
-				class="flex flex-col gap-4 items-center mb-4 md:shrink-0 lg:items-start"
+			<img
+				width="512"
+				height="512"
+				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
+					.user.id}/avatar?{timestamp}"
+				alt="{data.user.name}'s avatar"
+				class="border-4 mt-4 border-black bg-gray-400 box-content w-28 h-28 rounded-full lg:w-32 lg:mx-0 lg:h-32 lg:mb-2"
+			/>
+
+			<h1 class="font-semibold text-lg text-center lg:text-start">
+				{data.user.team || "No Team"}
+			</h1>
+
+			<GradientText
+				class="from-green-light to-green-dark text-center font-bold text-3xl break-words w-full lg:text-start"
 			>
-				<img
-					width="512"
-					height="512"
-					src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
-						.user.id}/avatar?{timestamp}"
-					alt="{data.user.name}'s avatar"
-					class="border-4 mt-4 border-black bg-gray-400 box-content w-28 h-28 rounded-full lg:w-32 lg:mx-0 lg:h-32"
-				/>
+				{data.user.name}
+			</GradientText>
 
+			<p class="mx-auto lg:w-64 lg:mx-0">
+				{data.user.about}
+			</p>
+
+			{#if links.length}
 				<div
-					class="flex flex-col gap-1 text-center md:flex-col-reverse lg:text-start"
+					class="p-3 w-full flex items-center justify-evenly md:px-0 md:gap-4"
 				>
-					<h1 class="font-semibold text-lg">
-						{data.user.team || "No Team"}
-					</h1>
-					<GradientText
-						class="from-green-light to-green-dark font-bold text-3xl break-words w-full lg:text-start"
-					>
-						{data.user.name}
-					</GradientText>
+					{#each links as link}
+						<a
+							href={createLink(link.key, link.link)}
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							<svelte:component
+								this={getIcon(link.key)}
+								class="w-8 h-8 lg:w-7 lg:h-7"
+							/>
+						</a>
+					{/each}
 				</div>
-			</div>
-
-			<div>
-				<p class="mx-auto mb-4 md:mt-20 lg:mt-0 lg:w-64 lg:mx-0">
-					{data.user.about}
-				</p>
-
-				{#if links.length}
-					<div
-						class="p-3 w-full flex items-center justify-evenly md:justify-start md:px-0 md:gap-4"
-					>
-						{#each links as link}
-							<a
-								href={createLink(link.key, link.link)}
-								rel="noopener noreferrer"
-								target="_blank"
-							>
-								<svelte:component
-									this={getIcon(link.key)}
-									class="w-8 h-8 lg:w-7 lg:h-7"
-								/>
-							</a>
-						{/each}
-					</div>
-				{/if}
-			</div>
+			{/if}
 		</div>
 
 		<div
@@ -220,12 +216,17 @@
 
 			<div class="flex flex-col gap-8 w-full 3xl:w-full">
 				<ProfileSection title="Skills">
+					{@const endorser =
+						data.endorserId && data.endorserId !== data.user.id
+							? data.endorserId
+							: null}
+
 					<div class="flex flex-col gap-6">
 						<h1 class="font-semibold text-xl text-center">Soft</h1>
 						{#each data.user.softSkills as name}
 							<Skill
 								{name}
-								endorser={data.endorserId}
+								{endorser}
 								endorsements={endorsements[name]}
 								endorsing={endorsingSkills.has(name)}
 								on:endorsement={({ detail }) =>
@@ -245,7 +246,7 @@
 						{#each data.user.techSkills as name}
 							<Skill
 								{name}
-								endorser={data.endorserId}
+								{endorser}
 								endorsements={endorsements[name]}
 								endorsing={endorsingSkills.has(name)}
 								on:endorsement={({ detail }) =>
@@ -258,6 +259,52 @@
 						{/each}
 					</div>
 				</ProfileSection>
+
+				<ProfileSection title="Badges">
+					<Badge name="Project Starter">
+						<TenProjects slot="badge" class="w-12 h-12 shrink-0" />
+
+						Created 10 public projects
+					</Badge>
+
+					<Badge name="Project Master">
+						<TwentyProjects
+							slot="badge"
+							class="w-12 h-12 shrink-0"
+						/>
+
+						Created 20 public projects
+					</Badge>
+
+					<Badge name="All Endorsed">
+						<AllEndorsed slot="badge" class="w-12 h-12 shrink-0" />
+
+						Has all their skills endorsed
+					</Badge>
+
+					<Badge name="Kudo Starter">
+						<TenKudos slot="badge" class="w-12 h-12 shrink-0" />
+
+						Has 10 kudos from others
+					</Badge>
+
+					<Badge name="Kudo Starter">
+						<FiftyKudos slot="badge" class="w-12 h-12 shrink-0" />
+
+						Has 50 kudos from others
+					</Badge>
+
+					<Badge name="Kudo Starter">
+						<HundredKudos slot="badge" class="w-12 h-12 shrink-0" />
+
+						Has 100 kudos from others
+					</Badge>
+				</ProfileSection>
+
+				<!-- TODO: Finish badges layout -->
+				<!-- TODO; Add more soft/tech skills -->
+				<!-- TODO: Organize this page better -->
+				<!-- TODO: Work on name overflow in various places -->
 
 				<!-- TODO: Add kudos -->
 			</div>

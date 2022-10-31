@@ -53,15 +53,17 @@
 			AI Camp's Team Tomorrow provides motivated students with internships
 			and the opportunity to work for external companies. Through this
 			program, students learn by doing and gain real job experience while
-			attending school.
+			attending school. See all our
 			<a
 				href="/developers"
-				class="text-teal-light"
-				rel="noopener noreferrer">Developers</a
+				class="text-teal-light inline"
+				rel="noopener noreferrer"
 			>
+				developers
+			</a>
 		</Stat>
 		<Stat
-			title="$70K+ in Revenue"
+			title="Proof In Profit"
 			amount={70}
 			postFix="K"
 			caption="in revenue"

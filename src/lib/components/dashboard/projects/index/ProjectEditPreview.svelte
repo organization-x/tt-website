@@ -47,12 +47,8 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: {
-					id: project.id
-				},
-				project: {
-					visible
-				}
+				id: project.id,
+				visible
 			} as App.ProjectUpdateRequest)
 		}).then(() => (project.visible = visible));
 	};

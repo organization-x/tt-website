@@ -63,11 +63,11 @@
 			class:border-teal-dark={3 < endorsements.length &&
 				endorsements.length <= 10}
 			class:border-green-light={endorsements.length > 10}
-			class="flex w-full items-center gap-2 transition-border justify-center font-semibold bg-gray-800 rounded-lg duration-200 border-4 py-4 px-3 overflow-hidden md:justify-center md:cursor-auto"
+			class="flex w-full items-center gap-2 transition-[border,padding] justify-center font-semibold bg-gray-800 rounded-lg duration-200 border-4 py-4 px-3 overflow-hidden md:justify-center md:cursor-auto"
 		>
 			<div
-				class:ml-12={!endorsements.length}
-				class="flex items-center gap-4 transition-[margin]"
+				class:ml-12={!endorsements.length && endorser}
+				class="flex items-center gap-4 transition-[margin] lg:duration-[0ms]"
 			>
 				<svelte:component
 					this={getIcon(name)}
@@ -114,8 +114,10 @@
 		<div
 			transition:slide={{ duration: innerWidth < 600 ? 200 : 0 }}
 			class:m-2={innerWidth < 600}
-			class:mx-2={innerWidth >= 600}
-			class="select-none w-full md:flex md:items-center"
+			class:mx-2={innerWidth >= 600 && endorsements.length}
+			class="md:flex md:items-center md:transition-[width,margin] md:duration-200 {endorsements.length
+				? 'md:w-1/2'
+				: 'md:w-0'}"
 		>
 			<h1 class="text-sm text-center mb-1 font-semibold md:hidden">
 				{message}

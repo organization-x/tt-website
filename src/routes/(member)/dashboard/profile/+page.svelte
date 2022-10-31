@@ -128,8 +128,7 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: { id: user.id },
-				user
+				...user
 			} as App.UserUpdateRequest)
 		}).then(() => {
 			disableForm = false;
@@ -182,8 +181,8 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: { id: $original.id },
-				user: { visible }
+				id: user.id,
+				visible
 			} as App.UserUpdateRequest)
 		}).then(() => ($original.visible = visible));
 	};

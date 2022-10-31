@@ -24,5 +24,5 @@
 		class="rounded-full w-10 bg-gray-400"
 	/>
 
-	<h1>{user.name.split(" ")[0]}</h1>
+	<h1 class="overflow-auto scrollbar-hidden">{user.name.split(" ")[0]}</h1>
 </button>

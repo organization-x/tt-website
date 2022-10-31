@@ -46,25 +46,19 @@
 	<svelte:fragment slot="expanded">
 		<button
 			on:click={() => onClick(1)}
-			class="rounded-lg h-fit p-2 my-auto {selected === 1
-				? ' bg-gray-500/40'
-				: ''}"
+			class="h-fit p-2 my-auto {selected === 1 ? ' bg-gray-500/40' : ''}"
 		>
 			<HeadOneIcon class="w-8 h-8" />
 		</button>
 		<button
 			on:click={() => onClick(2)}
-			class="rounded-lg h-fit p-2 my-auto {selected === 2
-				? ' bg-gray-500/40'
-				: ''}"
+			class="h-fit p-2 my-auto {selected === 2 ? ' bg-gray-500/40' : ''}"
 		>
 			<HeadTwoIcon class="w-8 h-8" />
 		</button>
 		<button
 			on:click={() => onClick(3)}
-			class="rounded-lg h-fit p-2 my-auto {selected === 3
-				? ' bg-gray-500/40'
-				: ''}"
+			class="h-fit p-2 my-auto {selected === 3 ? ' bg-gray-500/40' : ''}"
 		>
 			<HeadThreeIcon class="w-8 h-8" />
 		</button>

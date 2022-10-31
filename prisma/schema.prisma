@@ -14,6 +14,10 @@ enum Team {
     Marketing
     Engineering
     Design
+    Operations
+    Product
+    Leadership
+    Data
 }
 
 // Positions that can be viewed and searched for linked to users
@@ -62,7 +66,7 @@ model Links {
     userId   String  @id
 }
 
-// A seperate model referencing an author ob a project, this way the role the user played and other information can be stored
+// A seperate model referencing an author of a project, this way the role the user played and other information can be stored
 model ProjectAuthor {
     user      User     @relation(fields: [userId], references: [id])
     userId    String
@@ -79,15 +83,13 @@ model Project {
     url         String          @unique
     title       String
     description String
-    // Hex code representing a common color pulled from the banner
     theme       String
-    // Contains the projects url basis (name-of-project), structured as /projects/{name-of-project}.
-    // For banners we can do /projects/{name-of-project}/banner.webp
     date        DateTime
     skills      TechSkill[]
     authors     ProjectAuthor[]
     ownerId     String
-    content     Json // Contains generated tiptap json
+    content     Json
+    images      String[]
     visible     Boolean         @default(true)
     pinnedBy    User?
 

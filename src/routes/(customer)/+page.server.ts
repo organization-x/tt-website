@@ -14,8 +14,6 @@ export const load: PageServerLoad<{
 		}
 	});
 
-	// The reason the getUsers function isn't used here is we want the loading of this
-	// page to be super fast and don't want to grab any extra data we don't need
 	// TODO: Add top 3 developer's Discord ids to the database and use them here
 	const developers = await prisma.user.findMany({
 		where: {

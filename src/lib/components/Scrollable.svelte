@@ -33,7 +33,7 @@
 	$: clientWidth, scrollable && checkArrows();
 
 	// Scroll on arrow click
-	const scroller = (side: Side) => {
+	const scroller = (side: Side) =>
 		scrollable.scrollTo({
 			left:
 				side === Side.Left
@@ -42,17 +42,24 @@
 					  scrollable.children[0].clientWidth,
 			behavior: "smooth"
 		});
-	};
 
 	// Verticle scroll without holding shift for desktop
 	const onWheel = (event: WheelEvent) => {
-		if (event.deltaX || disabledSide === Side.Both) return;
+		if (
+			Math.abs(event.deltaX) > 2 ||
+			Math.abs(event.deltaY) < 10 ||
+			disabledSide === Side.Both
+		)
+			return;
 
 		// Prevent the page from scrolling
 		event.preventDefault();
 
-		scrollable.scrollTo({
-			left: event.deltaY * 5 + scrollable.scrollLeft,
+		// The default will be unable to be prevented if it's a top level scroll
+		if (!event.defaultPrevented) return;
+
+		scrollable.scrollBy({
+			left: -event.deltaY,
 			behavior: "smooth"
 		});
 	};
@@ -84,7 +91,7 @@
 				bind:clientWidth
 				bind:this={scrollable}
 				on:scroll={checkArrows}
-				on:wheel={onWheel}
+				on:wheel|nonpassive={onWheel}
 				class="flex gap-5 w-full overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
 			>
 				<slot />

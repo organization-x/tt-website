@@ -30,7 +30,7 @@
 	let softSkillFilter = new Set<SoftSkill>();
 	let techSkillFilter = new Set<TechSkill>();
 	let analytics: AnalyticsInstance | undefined;
-	let request: Promise<App.UserWithMetadata[]> = new Promise(() => {});
+	let request: Promise<App.UserSearchResponse[]> = new Promise(() => {});
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
 	$: search, (request = new Promise(() => {})), (page = 0);
@@ -53,7 +53,7 @@
 				})}`
 			)
 				.then((res) => res.json())
-				.then(async (users: App.UserWithMetadata[]) => {
+				.then(async (users: App.UserSearchResponse[]) => {
 					// Random search sampling so the search data isn't spammed
 					if (
 						analytics &&
@@ -271,6 +271,9 @@
 							>
 								<div
 									class="rounded-full h-7 w-56 bg-gray-400"
+								/>
+								<div
+									class="rounded-full h-5 w-44 bg-gray-400"
 								/>
 								<div
 									class="rounded-full h-4 mt-1 w-24 bg-gray-400"

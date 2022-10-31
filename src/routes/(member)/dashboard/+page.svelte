@@ -1,24 +1,35 @@
 <script lang="ts">
 	import { user } from "$lib/stores";
 	import { getIcon } from "$lib/getIcon";
+	import Id from "$lib/components/icons/Id.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
 	import Pin from "$lib/components/icons/Pin.svelte";
 	import Bulb from "$lib/components/icons/Bulb.svelte";
+	import Plus from "$lib/components/icons/Plus.svelte";
 	import Wrench from "$lib/components/icons/Wrench.svelte";
 	import Pencil from "$lib/components/icons/Pencil.svelte";
+	import TrendUp from "$lib/components/icons/TrendUp.svelte";
 	import DevSection from "$lib/components/DevSection.svelte";
 	import LinkIcon from "$lib/components/icons/LinkIcon.svelte";
 	import ShowHide from "$lib/components/icons/ShowHide.svelte";
+	import TenKudos from "$lib/components/badges/TenKudos.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 	import DashLink from "$lib/components/dashboard/DashLink.svelte";
+	import FiftyKudos from "$lib/components/badges/FiftyKudos.svelte";
+	import HundredKudos from "$lib/components/badges/HundredKudos.svelte";
+	import TenProjects from "$lib/components/badges/TenProjects.svelte";
 	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 	import DashSection from "$lib/components/dashboard/DashSection.svelte";
+	import AllEndorsed from "$lib/components/badges/AllEndorsed.svelte";
+	import TwentyProjects from "$lib/components/badges/TwentyProjects.svelte";
+	import BadgeProgress from "$lib/components/dashboard/index/BadgeProgress.svelte";
 	import ProjectEditPreview from "$lib/components/dashboard/projects/index/ProjectEditPreview.svelte";
 
 	import type { PageData } from "./$types";
+	import { onMount } from "svelte";
 
 	export let data: PageData;
 
@@ -33,6 +44,17 @@
 	// Add functionality for pinning projects on the main dashboard
 	let pinDebounce: NodeJS.Timeout;
 	let pinnedProjectId = $user.pinnedProjectId;
+
+	// Store badges parent element and the indicies of the active badges for scroll progress effect
+	let badges: HTMLDivElement;
+	let playing = new Set<number>();
+
+	// Create set to determine whether all of this user's skills are endorsed
+	const endorsed = new Set(
+		data.endorsementsReceived.map(
+			(endorsement) => endorsement.softSkill || endorsement.techSkill
+		)
+	).size;
 
 	// Create a timestamp so the images from Cloudflare don't cache
 	const timestamp = new Date().getTime();
@@ -60,8 +82,8 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: { id: $user.id },
-				user: { visible }
+				id: $user.id,
+				visible
 			} as App.UserUpdateRequest)
 		}).then(() => ($user.visible = visible));
 	};
@@ -77,12 +99,8 @@
 					"Content-Type": "application/json"
 				},
 				body: JSON.stringify({
-					where: {
-						id: $user.id
-					},
-					user: {
-						pinnedProjectId
-					}
+					id: $user.id,
+					pinnedProjectId
 				} as App.UserUpdateRequest)
 			}).then(async () => {
 				$user.pinnedProjectId = pinnedProjectId;
@@ -104,6 +122,30 @@
 			});
 		}, 300);
 	};
+
+	onMount(() => {
+		const children = Array.from(badges.children);
+
+		const observer: IntersectionObserver = new IntersectionObserver(
+			(entries) =>
+				playing.size === children.length
+					? observer.disconnect()
+					: entries.forEach(
+							(entry) =>
+								entry.isIntersecting &&
+								playing.add(children.indexOf(entry.target)) &&
+								(playing = playing)
+					  ),
+			{ threshold: 0.9 }
+		);
+
+		// Get all badges as children and observe them for the scrolling animation
+		children.forEach((badge) => {
+			observer.observe(badge);
+		});
+
+		return () => observer.disconnect();
+	});
 </script>
 
 <svelte:head>
@@ -114,6 +156,100 @@
 	<DashHero title="{greet(new Date().getHours())}, {nameSplit[0]}" />
 
 	<div class="flex flex-col gap-12">
+		<DashSection
+			title="Get Started"
+			class="bg-gray-500/40 p-4 rounded-lg lg:flex lg:gap-8 lg:items-center"
+		>
+			<p class="mb-8 lg:mb-0 lg:max-w-sm lg:mx-auto">
+				{#if $user.role === "User"}
+					Top developers on the home page will be rotated every month,
+					so to secure your spot, participate by learning new skills,
+					creating projects, and helping out Team Tomorrow members
+					around you. Your kudos and badges play a role in your
+					ranking as well, so make sure to engage whenever you can and
+					keep your profile up to date.
+				{:else if $user.role === "Lead"}
+					Empoyer other Team Tomorrow members by endorsing their
+					skills and leading them in the right direction. To endorse a
+					skill, simply go to the user's profile and use the plus
+					button on whichever skill you wish. Your endorsements will
+					be used to help employers find the right people for their
+					projects, and serve as proof of Team Tomorrow's capability.
+				{:else}
+					Take control of the Team Tomorrow website by checking
+					sitewide analytics to see what employers are most interested
+					in, directly editing user profiles to ensure they are up to
+					date, and by managing projects so they are never left in the
+					dust. Like leads, you are also able to endorse skills, and
+					serve proof of Team Tomorrow's capability.
+				{/if}
+			</p>
+
+			<div class="flex flex-col gap-4 lg:w-1/2">
+				{#if $user.role === "User"}
+					<DashLink
+						href="/dashboard/projects"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+					>
+						<Plus class="w-6 h-6" />
+						Create a New Project
+					</DashLink>
+				{:else if $user.role === "Lead"}
+					<DashLink
+						href="/developers"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+					>
+						<Plus class="w-6 h-6" />
+						Endorse a skill
+					</DashLink>
+				{:else}
+					<DashLink
+						href="/developers"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+					>
+						<Plus class="w-6 h-6" />
+						Manage All Projects
+					</DashLink>
+				{/if}
+
+				{#if $user.role !== "Admin"}
+					<DashLink
+						href="/dashboard/profile"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+					>
+						<Id class="w-6 h-6" />
+						Update Your Profile
+					</DashLink>
+				{:else}
+					<DashLink
+						href="/dashboard/profile"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+					>
+						<Id class="w-6 h-6" />
+						Manage All Users
+					</DashLink>
+				{/if}
+
+				{#if $user.role !== "Admin"}
+					<DashLink
+						href="/dashboard/analytics"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+					>
+						<TrendUp class="w-6 h-6" />
+						Check Your Analytics
+					</DashLink>
+				{:else}
+					<DashLink
+						href="/dashboard/analytics"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+					>
+						<TrendUp class="w-6 h-6" />
+						Check Sitewide Analytics
+					</DashLink>
+				{/if}
+			</div>
+		</DashSection>
+
 		<DashSection
 			title="Your Profile"
 			class="bg-gray-500/40 p-4 rounded-lg flex flex-col gap-8 lg:p-8 lg:gap-12"
@@ -148,11 +284,37 @@
 							<h1 class="font-semibold">
 								{$user.team || "No Team"}
 							</h1>
+
+							<div class="flex gap-2 items-center">
+								<!-- TODO: Kudos Data-->
+
+								<TenProjects
+									class="w-5 h-5"
+									active={data.projects.length >= 10}
+								/>
+
+								<TwentyProjects
+									class="w-5 h-5"
+									active={data.projects.length >= 20}
+								/>
+
+								<AllEndorsed
+									class="w-5 h-5"
+									active={endorsed === 10}
+								/>
+
+								<TenKudos class="w-5 h-5" active={false} />
+
+								<FiftyKudos class="w-5 h-5" active={false} />
+
+								<HundredKudos class="w-5 h-5" active={false} />
+							</div>
+
 							<div
 								class="text-3xl text-center sm:flex sm:items-center sm:gap-2"
 							>
 								<GradientText
-									class="from-green-light to-green-dark"
+									class="from-green-light to-green-dark scrollbar-hidden"
 								>
 									{$user.name}
 								</GradientText>
@@ -303,6 +465,82 @@
 				</div>
 			</div>
 		</DashSection>
+
+		<div class="flex flex-col gap-5">
+			<h1 class="font-semibold text-2xl text-center">Your Badges</h1>
+			<div
+				bind:this={badges}
+				class="h-full bg-gray-500/40 p-4 rounded-lg flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-flow-row-dense"
+			>
+				<!-- TODO: Kudos Data-->
+
+				<BadgeProgress
+					name="Project Starter"
+					playing={playing.has(0)}
+					progress={data.projects.length / 10}
+					class="bg-blue-light"
+				>
+					<TenProjects slot="badge" />
+
+					Create 10 projects that anyone can view
+				</BadgeProgress>
+
+				<BadgeProgress
+					name="Project Master"
+					playing={playing.has(1)}
+					progress={data.projects.length / 20}
+					class="bg-pink-light"
+				>
+					<TwentyProjects slot="badge" />
+
+					Create 20 projects that anyone can view
+				</BadgeProgress>
+
+				<BadgeProgress
+					name="All Endorsed"
+					playing={playing.has(2)}
+					progress={endorsed / 10}
+					class="bg-purple-light"
+				>
+					<AllEndorsed slot="badge" />
+
+					Have the max of 10 skills all endorsed
+				</BadgeProgress>
+
+				<BadgeProgress
+					name="Kudo Starter"
+					playing={playing.has(3)}
+					progress={0}
+					class="bg-red-light"
+				>
+					<TenKudos slot="badge" />
+
+					Get 10 kudos from other developers
+				</BadgeProgress>
+
+				<BadgeProgress
+					name="Kudo Master"
+					playing={playing.has(4)}
+					progress={0}
+					class="bg-teal-light"
+				>
+					<FiftyKudos slot="badge" />
+
+					Get 50 kudos from other developers
+				</BadgeProgress>
+
+				<BadgeProgress
+					name="Kudo King"
+					playing={playing.has(5)}
+					progress={0}
+					class="bg-green-light"
+				>
+					<HundredKudos slot="badge" />
+
+					Get 100 kudos from other developers
+				</BadgeProgress>
+			</div>
+		</div>
 
 		<DashSection
 			title="Your Projects"

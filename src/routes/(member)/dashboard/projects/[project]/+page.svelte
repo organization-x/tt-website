@@ -35,6 +35,10 @@
 	// Store a reference to the editor for generation of the content
 	let editor: Editor;
 
+	// Store the blob URL's of images corresponded to their Cloudflare ID, this is used to
+	// prevent double uploading and keep track of which blobs belong to which URL
+	let blobs: { [key: string]: string } = {};
+
 	let titleError = false;
 	let disableForm = false;
 	let disableButtons = true;
@@ -108,7 +112,7 @@
 		project.authors = JSON.parse(JSON.stringify(original.authors));
 	};
 
-	const save = () => {
+	const save = async () => {
 		checkConstraints();
 
 		if (disableButtons || disableForm) return;
@@ -120,27 +124,83 @@
 		disableForm = true;
 		disableButtons = true;
 
+		const content = editor.getJSON();
+
+		// Create a new array to keep track of image ID's as to remove images that do not
+		// appear in the document anymore
+		const images: string[] = [];
+
+		// Upload all the new images to Cloudflare so they can be shown to users without blobs
+		await Promise.all(
+			content.content!.map(async (node) => {
+				if (
+					node.type !== "image" ||
+					!(node.attrs!.src as string).startsWith("blob:")
+				)
+					return;
+
+				const url = blobs[node.attrs!.src as string];
+
+				// If the image already existed, switch back to it's already existing URL
+				if (url)
+					return (
+						(node.attrs!.src = url) &&
+						images.push(url.split("/")[4])
+					);
+
+				const body = new FormData();
+
+				// Append the project ID for imge uploading
+				body.append("id", project.id);
+
+				// Append the image file
+				body.append(
+					"file",
+					new File(
+						[
+							await fetch(node.attrs!.src).then((res) =>
+								res.blob()
+							)
+						],
+						"image"
+					)
+				);
+
+				await fetch("/api/images", {
+					method: "PUT",
+					body
+				})
+					.then((res) => res.json())
+					.then(
+						({ id }: App.ImageUploadResponse) =>
+							images.push(id) &&
+							(node.attrs!.src = `https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/${id}/banner`)
+					);
+			})
+		);
+
 		// Send an update request to the API
 		fetch("/api/project", {
 			method: "PATCH",
 			headers: {
 				"Content-Type": "application/json"
 			},
-			body: JSON.stringify({
-				where: {
-					id: original.id
-				},
-				project: isOwner
-					? {
-							...project
-					  }
-					: {
-							content: project.content
-					  }
-			} as App.ProjectUpdateRequest)
+			body: JSON.stringify(
+				isOwner
+					? ({
+							...project,
+							content,
+							images
+					  } as App.ProjectUpdateRequest)
+					: ({
+							id: project.id,
+							content,
+							images
+					  } as App.ProjectUpdateRequest)
+			)
 		})
 			.then((res) => res.json())
-			.then(async (response) => {
+			.then(async (response: App.ProjectUpdateResponse) => {
 				// If an error occurs and it's the title, tell the user
 				if (response.error === "SAME_TITLE") titleError = true;
 				// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading and update the local copy of the project
@@ -203,8 +263,8 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: { id: original.id },
-				project: { visible }
+				id: original.id,
+				visible: visible
 			} as App.ProjectUpdateRequest)
 		}).then(() => {
 			original.visible = visible;
@@ -222,10 +282,8 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: {
-					id: $user.id
-				},
-				user: { pinnedProjectId }
+				id: $user.id,
+				pinnedProjectId
 			} as App.UserUpdateRequest)
 		}).then(() => ($user.pinnedProjectId = pinnedProjectId));
 	};
@@ -385,6 +443,7 @@
 	<Seperator class="max-w-screen-xl" />
 
 	<TipTap
+		bind:blobs
 		bind:project
 		on:editor={({ detail }) => {
 			// For some reason tiptap re-orders some data once it's lodaded into the editor, so we need to change the original to that

@@ -112,7 +112,7 @@
 							<img
 								width="512"
 								height="512"
-								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avata?{new Date().getTime()}"
+								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{new Date().getTime()}"
 								alt="{$user.name}'s avatar"
 								class=" w-14 h-14 rounded-full bg-gray-400"
 							/>
@@ -210,8 +210,12 @@
 							alt="{$user.name}'s avatar"
 							class="w-8 h-8 rounded-full bg-gray-400"
 						/>
-						<span class="font-semibold">{firstName}</span>
-						<DropArrow open={userOpen} class="w-6 h-6" />
+						<span
+							class="font-semibold overflow-auto scrollbar-hidden"
+						>
+							{firstName}
+						</span>
+						<DropArrow open={userOpen} class="w-6 h-6 shrink-0" />
 					</button>
 
 					{#if userOpen}

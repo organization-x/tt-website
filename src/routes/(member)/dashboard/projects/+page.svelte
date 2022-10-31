@@ -63,7 +63,7 @@
 			}
 		})
 			.then((res) => res.json())
-			.then((res: { url: string }) =>
+			.then((res: App.ProjectCreateResponse) =>
 				goto(`/dashboard/projects/${res.url}`)
 			);
 	};
@@ -103,12 +103,8 @@
 					"Content-Type": "application/json"
 				},
 				body: JSON.stringify({
-					where: {
-						id: $user.id
-					},
-					user: {
-						pinnedProjectId: pinnedProject
-					}
+					id: $user.id,
+					pinnedProjectId: pinnedProject
 				} as App.UserUpdateRequest)
 			}).then(async () => {
 				$user.pinnedProjectId = pinnedProject;

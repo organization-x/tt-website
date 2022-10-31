@@ -4,7 +4,15 @@ import type { Team, Position, SoftSkill, TechSkill } from "@prisma/client";
 // They should stay updated with the schema at all times. It is also used for TypeScript
 // enums which can't easily be defined in the app namespace
 
-export const teams: Team[] = ["Design", "Engineering", "Marketing"];
+export const teams: Team[] = [
+	"Design",
+	"Engineering",
+	"Marketing",
+	"Operations",
+	"Product",
+	"Leadership",
+	"Data"
+];
 
 export const positions: Position[] = [
 	"Backend",

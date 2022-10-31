@@ -8,9 +8,15 @@
 	import Bulb from "$lib/components/icons/Bulb.svelte";
 	import Wrench from "$lib/components/icons/Wrench.svelte";
 	import DevSection from "$lib/components/DevSection.svelte";
+	import TenKudos from "$lib/components/badges/TenKudos.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
+	import FiftyKudos from "$lib/components/badges/FiftyKudos.svelte";
+	import TenProjects from "$lib/components/badges/TenProjects.svelte";
+	import AllEndorsed from "$lib/components/badges/AllEndorsed.svelte";
+	import HundredKudos from "$lib/components/badges/HundredKudos.svelte";
+	import TwentyProjects from "$lib/components/badges/TwentyProjects.svelte";
 
-	export let user: App.UserWithMetadata;
+	export let user: App.UserSearchResponse;
 
 	const timestamp = getContext("timestamp") as string;
 </script>
@@ -44,10 +50,42 @@
 		<div
 			class="flex flex-col-reverse gap-1 items-center text-center md:flex-col md:text-start md:items-start md:gap-0"
 		>
-			<GradientText class="from-green-light to-green-dark text-3xl">
+			<GradientText
+				class="from-green-light to-green-dark text-3xl break-all"
+			>
 				{user.name}
 			</GradientText>
-			<h1 class="font-semibold">{user.team || "No Team"}</h1>
+
+			<div
+				class="flex flex-col gap-2 md:flex-row md:gap-3 md:items-center"
+			>
+				<h1 class="font-semibold">{user.team || "No Team"}</h1>
+
+				<div class="flex gap-2 items-center">
+					<!-- TODO: Kudos Data-->
+
+					<TenProjects
+						class="w-5 h-5"
+						active={user._count.projects >= 10}
+					/>
+
+					<TwentyProjects
+						class="w-5 h-5"
+						active={user._count.projects >= 20}
+					/>
+
+					<AllEndorsed
+						class="w-5 h-5"
+						active={user._count.endorsements === 10}
+					/>
+
+					<TenKudos class="w-5 h-5" active={false} />
+
+					<FiftyKudos class="w-5 h-5" active={false} />
+
+					<HundredKudos class="w-5 h-5" active={false} />
+				</div>
+			</div>
 		</div>
 	</div>
 

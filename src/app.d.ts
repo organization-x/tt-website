@@ -8,7 +8,8 @@ import type {
 	Project,
 	TechSkill,
 	Team,
-	SoftSkill
+	SoftSkill,
+	Endorsement
 } from "@prisma/client";
 
 declare global {
@@ -28,13 +29,25 @@ declare global {
 		// Type for removing the relational userId property from the links model
 		type UserLinks = Omit<Links, "userId">;
 
-		// Type for combining a user with their associated links and pinned project
+		// Type for combining a user with their associated links and pinned project. Used for the
+		// dashboard initial load
 		type UserWithMetadata = User & {
 			links: UserLinks;
 			pinnedProject: Project?;
+			endorsementsReceived: Endorsement[];
 		};
 
-		// // Interface of a stripped down User object for endorsers on the profile page
+		// Type for response data from a user search
+		type UserSearchResponse = User & {
+			links: UserLinks;
+			pinnedProject: Project?;
+			_count: {
+				projects: number;
+				endorsements: number;
+			};
+		};
+
+		// Interface of a stripped down User object for endorsers on the profile page
 		interface Endorser {
 			id: string;
 			url: string;
@@ -43,19 +56,16 @@ declare global {
 
 		// Interface for user update requests
 		interface UserUpdateRequest {
-			where: Prisma.UserWhereUniqueInput;
-			user: {
-				id: string;
-				name?: string;
-				about?: string;
-				team?: Team;
-				positions?: Position[];
-				softSkills?: SoftSkill[];
-				techSkills?: TechSkill[];
-				links?: UserLinks;
-				pinnedProjectId?: string;
-				visible?: boolean;
-			};
+			id: string;
+			name?: string;
+			about?: string;
+			team?: Team;
+			positions?: Position[];
+			softSkills?: SoftSkill[];
+			techSkills?: TechSkill[];
+			links?: UserLinks;
+			pinnedProjectId?: string;
+			visible?: boolean;
 		}
 
 		// Type for authors on projects
@@ -68,18 +78,27 @@ declare global {
 
 		// Interface for project update requests
 		interface ProjectUpdateRequest {
-			where: Prisma.ProjectWhereUniqueInput;
-			project: {
-				id: string;
-				title?: string;
-				description?: string;
-				theme?: string;
-				date?: Date;
-				skills?: TechSkill[];
-				content?: Prisma.InputJsonValue;
-				visible?: boolean;
-				authors?: Author[];
-			};
+			id: string;
+			title?: string;
+			description?: string;
+			theme?: string;
+			date?: Date;
+			skills?: TechSkill[];
+			content?: Prisma.InputJsonValue;
+			images: string[];
+			visible?: boolean;
+			authors?: Author[];
+		}
+
+		// Interface for response data after updating a project
+		interface ProjectUpdateResponse {
+			error?: string;
+			url: string;
+		}
+
+		// Interface for project creation response data
+		interface ProjectCreateResponse {
+			url: string;
 		}
 
 		// Interface for project deletion
@@ -133,6 +152,11 @@ declare global {
 			endorsing: boolean;
 			softSkill?: SoftSkill;
 			techSkill?: TechSkill;
+		}
+
+		// Interface for image upload response data
+		interface ImageUploadResponse {
+			id: string;
 		}
 
 		// interface Platform {}

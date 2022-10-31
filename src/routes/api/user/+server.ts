@@ -1,9 +1,9 @@
 import { error } from "@sveltejs/kit";
 
-import { prisma, checkSession, getUsers, userAuth } from "$lib/prisma";
+import { prisma, checkSession, userAuth } from "$lib/prisma";
 
-import type { Prisma } from "@prisma/client";
 import type { RequestHandler } from "./$types";
+import type { Endorsement, Prisma } from "@prisma/client";
 
 // Request handlers for managing user data in prisma, it uses the users session token to verify the API call
 
@@ -16,51 +16,49 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	// If the session token is invalid, throw unauthorized
 	if (!session) throw error(401, "Unauthorized");
 
+	const data: App.UserUpdateRequest = await request.json().catch(() => {
+		throw error(400, "Bad Request");
+	});
+
+	// If the token isn't the same as for the user they are updating, throw unauthorized
+	if (data.id !== session.userId) throw error(401, "Unauthorized");
+
 	try {
-		const data: App.UserUpdateRequest = await request.json();
-
-		// If the token isn't the same as for the user they are updating, throw unauthorized
-		if (data.where.id !== session.userId) throw error(401, "Unauthorized");
-
 		// Input validation
 		if (
-			(data.user.name &&
-				(data.user.name.length > 25 || data.user.name.length < 1)) ||
-			(data.user.positions &&
-				(data.user.positions.length < 2 ||
-					data.user.positions.length > 4)) ||
-			(data.user.softSkills &&
-				(data.user.softSkills.length < 2 ||
-					data.user.softSkills.length > 5)) ||
-			(data.user.techSkills &&
-				(data.user.techSkills.length < 2 ||
-					data.user.techSkills.length > 5))
+			(data.name && (data.name.length > 25 || data.name.length < 1)) ||
+			(data.positions &&
+				(data.positions.length < 2 || data.positions.length > 4)) ||
+			(data.softSkills &&
+				(data.softSkills.length < 2 || data.softSkills.length > 5)) ||
+			(data.techSkills &&
+				(data.techSkills.length < 2 || data.techSkills.length > 5))
 		)
 			throw error(400, "Bad Request");
 
-		const name = data.user.name?.trim();
+		const name = data.name?.trim();
 
 		// Update the user
 		await prisma.user.update({
-			where: data.where,
+			where: { id: data.id },
 			data: {
 				name,
 				url: name?.toLowerCase().replaceAll(" ", "-"),
-				about: data.user.about?.trim(),
-				team: data.user.team,
-				positions: data.user.positions,
-				softSkills: data.user.softSkills,
-				techSkills: data.user.techSkills,
-				pinnedProjectId: data.user.pinnedProjectId,
-				visible: data.user.visible,
+				about: data.about?.trim(),
+				team: data.team,
+				positions: data.positions,
+				softSkills: data.softSkills,
+				techSkills: data.techSkills,
+				pinnedProjectId: data.pinnedProjectId,
+				visible: data.visible,
 				links: {
 					update: {
-						GitHub: data.user.links?.GitHub,
-						LinkedIn: data.user.links?.LinkedIn,
-						Devto: data.user.links?.Devto,
-						Twitter: data.user.links?.Twitter,
-						Facebook: data.user.links?.Facebook,
-						Website: data.user.links?.Website
+						GitHub: data.links?.GitHub,
+						LinkedIn: data.links?.LinkedIn,
+						Devto: data.links?.Devto,
+						Twitter: data.links?.Twitter,
+						Facebook: data.links?.Facebook,
+						Website: data.links?.Website
 					}
 				}
 			}
@@ -74,15 +72,48 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 
 // Search for users, otherwise a +page.server.ts should be used
 // * INPUT: where=Prisma.UserWhereInput
-// * OUTPUT: User[]
+// * OUTPUT:
 export const GET: RequestHandler = async ({ request }) => {
 	try {
-		// Grab users using request, if an error occurs throw a bad request
-		const users = await getUsers(
-			JSON.parse(
+		// Grab users using request
+		const users = await prisma.user.findMany({
+			where: JSON.parse(
 				new URL(request.url).searchParams.get("where")!
-			) as Prisma.UserWhereInput
-		);
+			) as Prisma.UserWhereInput,
+			include: {
+				links: {
+					select: {
+						userId: false,
+						Devto: true,
+						Facebook: true,
+						GitHub: true,
+						LinkedIn: true,
+						Twitter: true,
+						Website: true
+					}
+				},
+				pinnedProject: true,
+				endorsementsReceived: {
+					distinct: ["softSkill", "techSkill"]
+				},
+				_count: {
+					select: {
+						projects: true
+					}
+				}
+			}
+		});
+
+		(
+			users as (Omit<typeof users[0], "endorsementsReceived"> & {
+				_count: { endorsements: number };
+				endorsementsReceived?: Endorsement[];
+			})[]
+		).map((user) => {
+			user._count.endorsements = user.endorsementsReceived!.length;
+
+			delete user.endorsementsReceived;
+		});
 
 		return new Response(JSON.stringify(users), { status: 200 });
 	} catch {
