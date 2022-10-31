@@ -96,10 +96,8 @@
 <p
 	class="my-4 px-4 max-w-lg mx-auto sm:px-10 lg:px-6 lg:mt-0 lg:text-center lg:max-w-2xl xl:px-10"
 >
-	<strong>
-		Team Tomorrow is an ever expanding team of developers looking to provide
-		companies access to our skills and our interests.
-	</strong>
+	Team Tomorrow is an <strong>ever expanding team of developers</strong>
+	looking to provide companies access to our skills and interests.
 	You have access to developers that are
 	<strong>eager to learn and collaborate</strong>, willing to communicate
 	about in-depth and technical products, and are confident in doing what it

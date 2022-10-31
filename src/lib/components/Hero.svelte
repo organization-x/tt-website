@@ -11,13 +11,13 @@
 >
 	<div class="flex flex-col justify-center shrink-0">
 		<h1
-			class="font-extrabold text-2xl sm:text-3xl text-center bg-clip-text text-transparent bg-gradient-radial max-w-sm mx-auto mt-6 lg:mt-0 lg:text-left lg:mx-0 lg:max-w-xs lg:text-4xl xl:text-5xl xl:max-w-md xl:leading-14 {className}"
+			class="font-extrabold text-3xl sm:text-4xl text-center bg-clip-text text-transparent bg-gradient-radial max-w-sm mx-auto mt-6 lg:mt-0 lg:text-left lg:mx-0 lg:max-w-xs lg:text-4xl xl:text-5xl xl:max-w-md xl:leading-14 {className}"
 		>
 			{title}
 		</h1>
 
 		<p
-			class="text-center text-sm sm:text-base max-w-sm mt-4 mx-auto px-8 lg:text-left lg:mx-0 lg:px-0 lg:max-w-xs"
+			class="text-center max-w-sm mt-4 mx-auto px-8 lg:text-left lg:leading-6 lg:mx-0 lg:px-0 lg:max-w-xs"
 		>
 			<slot />
 		</p>
