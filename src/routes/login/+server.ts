@@ -51,7 +51,7 @@ export const GET: RequestHandler = async (request) => {
 
 		// Get the users info from Discor. If an error occurs fetching the user data, its
 		// most likely an invalid token, so redirect back to the login
-		const { id, username } = (await fetch(
+		const { id, username, avatar } = (await fetch(
 			"https://discord.com/api/v10/users/@me",
 			{
 				headers: {
@@ -65,6 +65,7 @@ export const GET: RequestHandler = async (request) => {
 			})) as {
 			id: string;
 			username: string;
+			avatar: string | null;
 		};
 
 		// Check if the user exists already
@@ -82,7 +83,7 @@ export const GET: RequestHandler = async (request) => {
 					about: "I'm a member of Team Tomorrow!",
 					positions: ["Fullstack", "Designer"],
 					techSkills: ["JavaScript", "Python"],
-					softSkills: ["Teamwork", "Leadership"]
+					softSkills: ["Teamwork", "Leader"]
 				}
 			});
 
@@ -92,13 +93,14 @@ export const GET: RequestHandler = async (request) => {
 			// Give them the default profile picture and banner on Cloudflare Images
 			const body = new FormData();
 
-			// TODO: Update the URLs once this is deployed and the new routes can be used
-
-			// Append the appropriate data
-			body.append("id", "avatar" + id);
+			// TODO: Replace URL for production
+			// Append the appropriate data, try to use the discord avatar if possible
+			body.append("id", "avatar-" + id);
 			body.append(
 				"url",
-				"https://tt-alpha.fly.dev/assets/developers/user/placeholder/icon.webp"
+				avatar
+					? "https://tt-alpha.fly.dev/assets/default/avatar.webp"
+					: `https://cdn.discordapp.com/avatars/${id}/${avatar}.webp`
 			);
 
 			// Add avatar
@@ -113,10 +115,11 @@ export const GET: RequestHandler = async (request) => {
 				}
 			);
 
-			body.set("id", "banner" + id);
+			// TODO: Replace URL for production
+			body.set("id", "banner-" + id);
 			body.set(
 				"url",
-				"https://tt-alpha.fly.dev/assets/projects/project/placeholder/banner.webp"
+				"https://tt-alpha.fly.dev/assets/default/banner.webp"
 			);
 
 			// Add banner

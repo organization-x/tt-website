@@ -1,23 +1,23 @@
 <script lang="ts">
 	import { user as original } from "$lib/stores";
-	import Id from "$lib/components/icons/Id.svelte";
-	import Devto from "$lib/components/icons/Devto.svelte";
-	import Group from "$lib/components/icons/Group.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import GitHub from "$lib/components/icons/GitHub.svelte";
-	import Pencil from "$lib/components/icons/Pencil.svelte";
-	import Twitter from "$lib/components/icons/Twitter.svelte";
+	import Id from "$lib/components/icons/general/Id.svelte";
 	import Input from "$lib/components/dashboard/Input.svelte";
-	import LinkedIn from "$lib/components/icons/LinkedIn.svelte";
-	import Facebook from "$lib/components/icons/Facebook.svelte";
-	import LinkIcon from "$lib/components/icons/LinkIcon.svelte";
-	import ShowHide from "$lib/components/icons/ShowHide.svelte";
+	import Devto from "$lib/components/icons/logos/Devto.svelte";
+	import Group from "$lib/components/icons/general/Group.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
+	import GitHub from "$lib/components/icons/logos/GitHub.svelte";
+	import Pencil from "$lib/components/icons/general/Pencil.svelte";
+	import Twitter from "$lib/components/icons/logos/Twitter.svelte";
 	import ProfileSection from "$lib/components/ProfileSection.svelte";
-	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
+	import LinkedIn from "$lib/components/icons/logos/LinkedIn.svelte";
+	import Facebook from "$lib/components/icons/logos/Facebook.svelte";
+	import LinkIcon from "$lib/components/icons/general/LinkIcon.svelte";
+	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 	import { teams, positions, softSkills, techSkills } from "$lib/enums";
+	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
 
 	import type { PageParentData } from "./$types";
 	import type { Position, SoftSkill, TechSkill, Team } from "@prisma/client";
@@ -128,8 +128,7 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: { id: user.id },
-				user
+				...user
 			} as App.UserUpdateRequest)
 		}).then(() => {
 			disableForm = false;
@@ -140,7 +139,7 @@
 	};
 
 	// Update profile picture/banner of user
-	const updateImage = (type: "banner" | "avatar") => {
+	const updateImage = async (type: "banner" | "avatar") => {
 		const body = new FormData();
 
 		// Append the newly uploaded image to the body
@@ -153,18 +152,25 @@
 		);
 
 		// Apend the type
-		body.append("type", type);
+		body.append("type", `user-${type}`);
 
 		// Update the image
-		fetch("/api/images", {
+		await fetch("/api/images", {
 			method: "PATCH",
 			body
-		}).catch(() => {}); // Ignore errors
+		}).catch(() => {}); // Ignore errors, the avatar will just stay the same
 
 		// Reset the selected input value and enabled it
-		type === "banner"
-			? (banner.value = "") && (banner.disabled = false)
-			: (avatar.value = "") && (avatar.disabled = false);
+		if (type === "banner") {
+			banner.value = "";
+			banner.disabled = false;
+		} else {
+			avatar.value = "";
+			avatar.disabled = false;
+		}
+
+		// Reassigned the user object to trigger a layout re-render
+		$original = $original;
 	};
 
 	// Update visility of user
@@ -175,8 +181,8 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: { id: $original.id },
-				user: { visible }
+				id: user.id,
+				visible
 			} as App.UserUpdateRequest)
 		}).then(() => ($original.visible = visible));
 	};
@@ -197,30 +203,48 @@
 <svelte:window on:keydown={onKeydown} />
 
 <div class="relative pt-18 px-5 lg:px-10">
-	<div class="grid absolute top-0 inset-x-0 -z-10">
-		<!-- TODO: Replace placeholder -->
-		<img
-			src="/assets/projects/project/placeholder/banner.webp"
-			width="1920"
-			height="1080"
-			alt="{$original.name}'s banner"
-			class="object-cover object-center w-full h-32 row-start-1 col-start-1 lg:h-44"
-		/>
+	<label class="grid absolute top-0 inset-x-0 z-20 cursor-pointer">
+		{#if banner && banner.disabled}
+			<div
+				class="animate-grays from-gray-400 to-gray-700 w-full h-32 row-start-1 col-start-1 lg:h-44"
+			/>
+		{:else}
+			<img
+				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{$original.id}/banner?{new Date().getTime()}"
+				width="1920"
+				height="1080"
+				alt="{$original.name}'s banner"
+				class="object-cover object-center bg-gray-400 w-full h-32 row-start-1 col-start-1 lg:h-44"
+			/>
+		{/if}
 
-		<button
+		<div
 			class="w-full h-full bg-black/40 flex justify-center items-center gap-2 row-start-1 col-start-1"
 		>
 			<Pencil class="w-6 h-6 lg:w-8 lg:h-8" />
 			<h1 class="text-xl select-none font-semibold lg:text-2xl">Edit</h1>
-		</button>
-	</div>
+		</div>
 
-	<div class="lg:flex lg:gap-8 lg:justify-center">
+		<input
+			bind:this={banner}
+			on:change={() =>
+				banner.files?.length &&
+				// Limit file size to 1MB
+				banner.files[0].size <= 1048576 &&
+				(banner.disabled = true) &&
+				updateImage("banner")}
+			type="file"
+			accept=".png, .jpg, .jpeg, .webp, .avif"
+			class="hidden"
+		/>
+	</label>
+
+	<div class="z-10 lg:flex lg:gap-8 lg:justify-center">
 		<div
-			class="flex flex-col gap-4 lg:shrink-0 lg:sticky lg:h-min lg:mt-10 lg:top-6 lg:w-60"
+			class="flex flex-col z-30 gap-4 lg:shrink-0 lg:sticky lg:h-min lg:mt-10 lg:top-6 lg:w-60"
 		>
 			<label
-				class="rounded-full cursor-pointer w-fit border-4 mt-4 border-black mx-auto grid lg:mx-0"
+				class="rounded-full z-30 cursor-pointer w-fit border-4 mt-4 border-black mx-auto grid lg:mx-0"
 			>
 				{#if avatar && avatar.disabled}
 					<div
@@ -228,11 +252,11 @@
 					/>
 				{:else}
 					<img
-						width="200"
-						height="200"
-						src="/assets/developers/user/placeholder/icon.webp"
+						width="512"
+						height="512"
+						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$original.id}/avatar?{new Date().getTime()}"
 						alt="{$original.name}'s avatar"
-						class="w-28 h-28 rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
+						class="w-28 h-28 bg-gray-400 rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
 					/>
 
 					<div
@@ -246,6 +270,8 @@
 					bind:this={avatar}
 					on:change={() =>
 						avatar.files?.length &&
+						// Limit file size to 1MB
+						avatar.files[0].size <= 1048576 &&
 						(avatar.disabled = true) &&
 						updateImage("avatar")}
 					type="file"
@@ -384,7 +410,7 @@
 					{/each}
 				</ProfileSection>
 
-				<ProfileSection largeGrid={true} title="Skills">
+				<ProfileSection largeGrid={true} title="Top Skills">
 					<div class="flex flex-col gap-6">
 						<h1 class="font-semibold text-xl text-center">Soft</h1>
 						{#each { length: 5 } as _, i}

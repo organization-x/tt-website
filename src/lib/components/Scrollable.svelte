@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CarouselArrow from "$lib/components/icons/CarouselArrow.svelte";
+	import CarouselArrow from "$lib/components/icons/general/CarouselArrow.svelte";
 
 	let className: string;
 	export let arrows = false;
@@ -33,13 +33,33 @@
 	$: clientWidth, scrollable && checkArrows();
 
 	// Scroll on arrow click
-	const scroller = (side: Side) => {
+	const scroller = (side: Side) =>
 		scrollable.scrollTo({
 			left:
 				side === Side.Left
 					? scrollable.scrollLeft - scrollable.children[0].clientWidth
 					: scrollable.scrollLeft +
 					  scrollable.children[0].clientWidth,
+			behavior: "smooth"
+		});
+
+	// Verticle scroll without holding shift for desktop
+	const onWheel = (event: WheelEvent) => {
+		if (
+			Math.abs(event.deltaX) > 2 ||
+			Math.abs(event.deltaY) < 10 ||
+			disabledSide === Side.Both
+		)
+			return;
+
+		// Prevent the page from scrolling
+		event.preventDefault();
+
+		// The default will be unable to be prevented if it's a top level scroll
+		if (!event.defaultPrevented) return;
+
+		scrollable.scrollBy({
+			left: -event.deltaY,
 			behavior: "smooth"
 		});
 	};
@@ -71,6 +91,7 @@
 				bind:clientWidth
 				bind:this={scrollable}
 				on:scroll={checkArrows}
+				on:wheel|nonpassive={onWheel}
 				class="flex gap-5 w-full overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
 			>
 				<slot />
@@ -103,6 +124,7 @@
 			bind:clientWidth
 			bind:this={scrollable}
 			on:scroll={checkArrows}
+			on:wheel={onWheel}
 			class="flex gap-5 overflow-auto py-2 scrollbar-hidden"
 		>
 			<slot />

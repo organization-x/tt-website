@@ -3,7 +3,7 @@
 	import { createEventDispatcher } from "svelte";
 
 	import DropdownItem from "$lib/components/DropdownItem.svelte";
-	import DropArrow from "$lib/components/icons/DropArrow.svelte";
+	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
 
 	const dispatch = createEventDispatcher<{
 		change: { selected: string | undefined; previous: string | undefined };

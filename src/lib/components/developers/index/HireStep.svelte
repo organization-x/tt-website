@@ -12,8 +12,8 @@
 >
 	<img
 		class="w-32 md:shrink-0"
-		height="500"
-		width="500"
+		height="1024"
+		width="1024"
 		loading="lazy"
 		{src}
 		{alt}

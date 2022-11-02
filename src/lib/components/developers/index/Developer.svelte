@@ -1,15 +1,24 @@
 <script lang="ts">
+	import { getContext } from "svelte";
 	import { fly } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
-	import Pin from "$lib/components/icons/Pin.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
-	import Bulb from "$lib/components/icons/Bulb.svelte";
-	import Wrench from "$lib/components/icons/Wrench.svelte";
+	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import DevSection from "$lib/components/DevSection.svelte";
+	import Bulb from "$lib/components/icons/general/Bulb.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
+	import Wrench from "$lib/components/icons/general/Wrench.svelte";
+	import TenKudos from "$lib/components/icons/badges/TenKudos.svelte";
+	import FiftyKudos from "$lib/components/icons/badges/FiftyKudos.svelte";
+	import TenProjects from "$lib/components/icons/badges/TenProjects.svelte";
+	import AllEndorsed from "$lib/components/icons/badges/AllEndorsed.svelte";
+	import HundredKudos from "$lib/components/icons/badges/HundredKudos.svelte";
+	import TwentyProjects from "$lib/components/icons/badges/TwentyProjects.svelte";
 
-	export let user: App.UserWithMetadata;
+	export let user: App.UserSearchResponse;
+
+	const timestamp = getContext("timestamp") as string;
 </script>
 
 <a
@@ -19,17 +28,15 @@
 	rel="noreferrer noopener"
 	class="bg-gray-500/40 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full"
 >
-	<!-- TODO: Replace placeholder -->
-
 	<div class="flex flex-col gap-6 items-center md:flex-row">
 		<div class="relative shrink-0">
 			<img
-				height="200"
-				width="200"
-				src="/assets/developers/user/placeholder/icon.webp"
+				height="512"
+				width="512"
+				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{timestamp}"
 				alt="{user.name}'s avatar"
 				loading="lazy"
-				class="rounded-full w-20 h-20"
+				class="rounded-full bg-gray-400 w-20 h-20"
 			/>
 			<div
 				class="absolute bg-gray-500 -bottom-3 -right-2 rounded-full p-2"
@@ -41,12 +48,42 @@
 			</div>
 		</div>
 		<div
-			class="flex flex-col-reverse gap-1 items-center text-center md:flex-col md:text-start md:items-start md:gap-0"
+			class="flex flex-col gap-1 items-center text-center md:flex-col-reverse md:text-start md:items-start md:gap-0"
 		>
+			<div
+				class="flex flex-col gap-2 md:flex-row md:gap-3 md:items-center"
+			>
+				<h1 class="font-semibold">{user.team || "No Team"}</h1>
+
+				<div class="flex gap-2 items-center">
+					<!-- TODO: Kudos Data-->
+
+					<TenProjects
+						class="w-5 h-5"
+						active={user._count.projects >= 10}
+					/>
+
+					<TwentyProjects
+						class="w-5 h-5"
+						active={user._count.projects >= 20}
+					/>
+
+					<AllEndorsed
+						class="w-5 h-5"
+						active={user._count.endorsements === 10}
+					/>
+
+					<TenKudos class="w-5 h-5" active={false} />
+
+					<FiftyKudos class="w-5 h-5" active={false} />
+
+					<HundredKudos class="w-5 h-5" active={false} />
+				</div>
+			</div>
+
 			<GradientText class="from-green-light to-green-dark text-3xl">
 				{user.name}
 			</GradientText>
-			<h1 class="font-semibold">{user.team || "No Team"}</h1>
 		</div>
 	</div>
 
@@ -70,15 +107,14 @@
 					class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4 lg:flex lg:p-4"
 					style="border-color: #{user.pinnedProject.theme}"
 				>
-					<!-- TODO: Replace placeholders -->
-
 					<img
-						src="/assets/projects/project/placeholder/banner.webp"
+						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{user
+							.pinnedProject.id}/banner?{timestamp}"
 						width="1920"
 						height="1080"
 						loading="lazy"
 						alt="Banner for '{user.pinnedProject.title}'"
-						class="object-cover object-center w-full h-32 md:h-20 lg:w-24 lg:h-auto lg:rounded-lg"
+						class="object-cover object-center bg-gray-400 w-full h-32 md:h-20 lg:w-24 lg:h-auto lg:rounded-lg"
 					/>
 
 					<div
@@ -105,7 +141,7 @@
 			{/each}
 		</DevSection>
 
-		<DevSection title="Skills">
+		<DevSection title="Top Skills">
 			<Wrench slot="icon" class="w-6 h-6" />
 
 			{#each user.techSkills as skill, i}

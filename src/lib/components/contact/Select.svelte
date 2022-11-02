@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Asterisk from "$lib/components/icons/Asterisk.svelte";
 	import DropdownItem from "$lib/components/DropdownItem.svelte";
-	import DropArrow from "$lib/components/icons/DropArrow.svelte";
+	import Asterisk from "$lib/components/icons/general/Asterisk.svelte";
+	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
 
 	export let title: string;
 	export let radio: boolean;

@@ -1,19 +1,20 @@
 <script lang="ts">
 	import "../../app.css";
 
+	import { setContext } from "svelte";
 	import { derived } from "svelte/store";
 	import { slide } from "svelte/transition";
 
 	import { page } from "$app/stores";
 	import { afterNavigate } from "$app/navigation";
 	import AICamp from "$lib/components/AICamp.svelte";
-	import Logo from "$lib/components/icons/Logo.svelte";
 	import NavLink from "$lib/components/NavLink.svelte";
 	import FootLink from "$lib/components/FootLink.svelte";
-	import Burger from "$lib/components/icons/Burger.svelte";
-	import YouTube from "$lib/components/icons/YouTube.svelte";
-	import Envelope from "$lib/components/icons/Envelope.svelte";
-	import Instagram from "$lib/components/icons/Instagram.svelte";
+	import Logo from "$lib/components/icons/logos/Logo.svelte";
+	import Burger from "$lib/components/icons/general/Burger.svelte";
+	import YouTube from "$lib/components/icons/logos/YouTube.svelte";
+	import Envelope from "$lib/components/icons/general/Envelope.svelte";
+	import Instagram from "$lib/components/icons/general/Instagram.svelte";
 
 	import type { LayoutServerData } from "./$types";
 
@@ -24,6 +25,10 @@
 		page,
 		($page) => $page.routeId?.split("/")[2] || "home"
 	);
+
+	// Create a timestamp so the images from Cloudflare don't cache and generate
+	// a new one every time the user navigates
+	$: $page, setContext("timestamp", new Date().getTime());
 
 	afterNavigate(async () => {
 		open = false;
@@ -152,7 +157,9 @@
 	</div>
 </header>
 
-<slot />
+<div class="flex-1">
+	<slot />
+</div>
 
 <footer
 	class="flex flex-col justify-center gap-7 p-6 text-2xl mt-10 md:items-center lg:justify-between lg:flex-row xl:gap-12 xl:justify-center"

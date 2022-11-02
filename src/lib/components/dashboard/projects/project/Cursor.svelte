@@ -20,7 +20,7 @@
 	};
 
 	// Custom slide transition for revealing the cursor name
-	const slide = (node: Element) => {
+	const slide = (_: Element) => {
 		return {
 			duration: 50,
 			css: (t: number, u: number) => `clip-path: inset(0 0 % ${u * 100}%)`

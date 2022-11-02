@@ -1,9 +1,9 @@
 <script lang="ts">
 	import "$lib/hljsTheme.css";
 
-	import { onMount } from "svelte";
 	import hljs from "highlight.js/es/core";
 	import { generateHTML } from "@tiptap/html";
+	import { onMount, getContext } from "svelte";
 
 	import { getIcon } from "$lib/getIcon";
 	import { extensions } from "$lib/tiptapExtensions";
@@ -17,6 +17,7 @@
 
 	export let data: PageData;
 
+	const timestamp = getContext("timestamp") as string;
 	const html = generateHTML(data.content as JSONContent, extensions);
 
 	onMount(async () => {
@@ -36,17 +37,15 @@
 </script>
 
 <svelte:head>
-	<title>{data.title}</title>
+	<title>{data.title} / Team Tomorrow</title>
 </svelte:head>
 
-<!-- TODO: Replace placeholder -->
-
 <img
-	src="/assets/projects/project/placeholder/banner.webp"
+	src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.id}/banner?{timestamp}"
 	width="1920"
 	height="1080"
 	alt="Banner for '{data.title}'"
-	class="object-cover object-center w-full h-32 border-b-4 lg:h-44 lg:border-b-8"
+	class="object-cover object-center bg-gray-400 w-full h-32 border-b-4 lg:h-44 lg:border-b-8"
 	style="border-color: #{data.theme}"
 />
 

@@ -4,14 +4,14 @@
 
 	import { user } from "$lib/stores";
 	import { getIcon } from "$lib/getIcon";
-	import Pin from "$lib/components/icons/Pin.svelte";
-	import Trash from "$lib/components/icons/Trash.svelte";
-	import Pencil from "$lib/components/icons/Pencil.svelte";
-	import ShowHide from "$lib/components/icons/ShowHide.svelte";
-	import DropArrow from "$lib/components/icons/DropArrow.svelte";
+	import Pin from "$lib/components/icons/general/Pin.svelte";
+	import Trash from "$lib/components/icons/general/Trash.svelte";
+	import Pencil from "$lib/components/icons/general/Pencil.svelte";
 	import DashLink from "$lib/components/dashboard/DashLink.svelte";
-	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
+	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
+	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
+	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
 
 	const dispatch = createEventDispatcher<{
 		pinned: undefined;
@@ -23,6 +23,8 @@
 
 	// Disable a few buttons that should only be used on the project management page
 	export let minified = false;
+
+	const timestamp = new Date().getTime();
 
 	// Keep track whether this the user is an owner or a collaborator
 	const isOwner = $user.id === project.ownerId;
@@ -45,12 +47,8 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: {
-					id: project.id
-				},
-				project: {
-					visible
-				}
+				id: project.id,
+				visible
 			} as App.ProjectUpdateRequest)
 		}).then(() => (project.visible = visible));
 	};
@@ -73,14 +71,12 @@
 		style="border-color: #{project.theme}"
 	>
 		<div class="relative">
-			<!-- TODO: Replace placeholders -->
-
 			<img
-				src="/assets/projects/project/placeholder/banner.webp"
+				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{project.id}/banner?{timestamp}"
 				width="1920"
 				height="1080"
 				alt="Banner for '{project.title}'"
-				class="object-cover object-center w-full h-32 row-start-1 col-start-1"
+				class="object-cover object-center bg-gray-400 w-full h-32 row-start-1 col-start-1"
 			/>
 
 			<div
@@ -89,11 +85,12 @@
 				{#each project.authors as author, i}
 					{#if author.user.id !== $user.id && i <= 4}
 						<img
-							width="200"
-							height="200"
-							src="/assets/developers/user/placeholder/icon.webp"
+							width="512"
+							height="512"
+							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
+								.user.id}/avatar?{timestamp}"
 							alt="{author.user.name}'s avatar"
-							class="w-10 h-10 -mr-6 sm:-mr-8 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4"
+							class="w-10 h-10 bg-gray-400 -mr-6 sm:-mr-8 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4"
 							style="border-color: #{project.theme}; z-index: {project
 								.authors.length - i}"
 						/>

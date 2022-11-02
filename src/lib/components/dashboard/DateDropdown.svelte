@@ -3,9 +3,9 @@
 
 	import { DateOption } from "$lib/enums";
 	import { debounce } from "$lib/debounce";
-	import Arrow from "$lib/components/icons/Arrow.svelte";
+	import Arrow from "$lib/components/icons/general/Arrow.svelte";
 	import DropdownItem from "$lib/components/DropdownItem.svelte";
-	import DropArrow from "$lib/components/icons/DropArrow.svelte";
+	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
 
 	const dispatch = createEventDispatcher<{
 		change: undefined;

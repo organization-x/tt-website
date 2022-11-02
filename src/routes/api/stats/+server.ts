@@ -12,7 +12,6 @@ import type { SoftSkill, TechSkill } from "@prisma/client";
 
 // Request handlers for managing user data in prisma, it uses the users session token to verify the API call
 
-// TODO: Switch to proper connection for fly during production
 const redis = new Redis(env.REDIS_URL);
 
 // Create google analytics fetching client
@@ -25,9 +24,9 @@ const analytics = new BetaAnalyticsDataClient({
 });
 
 // Get analytics data for the specific user
-// * INPUT: AnalyticsRequest
+// * INPUT: startDate=string, endDate=string
 // * OUTPUT: AnalyticsResponse
-export const POST: RequestHandler = async ({ locals, request }) => {
+export const GET: RequestHandler = async ({ locals, request }) => {
 	const user = await userAuth(locals);
 
 	if (!user) throw error(401, "Unauthorized");
@@ -41,7 +40,12 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const projectIds = projects.map((project) => project.id);
 
 	try {
-		const data: App.AnalyticsRequest = await request.json();
+		const url = new URL(request.url).searchParams;
+
+		const data = {
+			startDate: url.get("startDate")!,
+			endDate: url.get("endDate")!
+		};
 
 		// Create a unique hash of this request
 		const hash = createHash("shake128", { outputLength: 10 })
@@ -290,7 +294,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					row.metricValues![0].value!
 				));
 
-			const views = Number.parseInt(row.metricValues![0].value!);
+			const views = parseInt(row.metricValues![0].value!);
 
 			// If this row is for returning users, add the views, otherwise add it to new users
 			row.dimensionValues![0].value! === "returning"
@@ -322,9 +326,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					);
 
 				// Add search clicks to total
-				response.searches += Number.parseInt(
-					row.metricValues![0].value!
-				);
+				response.searches += parseInt(row.metricValues![0].value!);
 			});
 
 		if (projectIds.length) {
@@ -351,16 +353,14 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					// Project views
 					response.projects.views.push({
 						label,
-						value: Number.parseInt(row.metricValues![0].value!)
+						value: parseInt(row.metricValues![0].value!)
 					} as App.GraphData);
 
 					// Percent scrolled
 					if (row.dimensionValues![0].value!.length)
 						response.projects.scrolled.push({
 							label,
-							value: Number.parseInt(
-								row.dimensionValues![0].value!
-							)
+							value: parseInt(row.dimensionValues![0].value!)
 						} as App.GraphData);
 				});
 
@@ -383,7 +383,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					);
 
 					// Add search clicks to total
-					response.projects.searches += Number.parseInt(
+					response.projects.searches += parseInt(
 						row.metricValues![0].value!
 					);
 				});
@@ -406,8 +406,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		await redis.set(hash, json);
 
 		return new Response(json, { status: 200 });
-	} catch (e) {
-		console.log(e);
+	} catch {
 		throw error(400, "Bad Request");
 	}
 };

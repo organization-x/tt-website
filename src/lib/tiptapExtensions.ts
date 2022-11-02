@@ -104,55 +104,55 @@ export const extensions = [
 					}
 
 					// TODO: Fix weird bullet point behavoir, currently can't unselect node
-					if (
-						this.editor.state.selection.empty &&
-						this.editor.state.selection.$from.parentOffset === 0 &&
-						this.editor.state.doc.content.childCount > 1
-					) {
-						// If the editor is on an empty newline with no offset to the parent
-						// Grab the current node at the cursor.
+					// if (
+					// 	this.editor.state.selection.empty &&
+					// 	this.editor.state.selection.$from.parentOffset === 0 &&
+					// 	this.editor.state.doc.content.childCount > 1
+					// ) {
+					// 	// If the editor is on an empty newline with no offset to the parent
+					// 	// Grab the current node at the cursor.
 
-						this.editor.commands.selectNodeBackward();
+					// 	this.editor.commands.selectNodeBackward();
 
-						// If the the previous node is non existant or the type isn't a bulletList ignore
-						const isList =
-							this.editor.state.selection.content().content
-								.firstChild?.type.name !== "bulletList";
+					// 	// If the the previous node is non existant or the type isn't a bulletList ignore
+					// 	const isList =
+					// 		this.editor.state.selection.content().content
+					// 			.firstChild?.type.name !== "bulletList";
 
-						if (isList) return false;
+					// 	if (isList) return false;
 
-						this.editor.commands.deleteSelection();
+					// 	this.editor.commands.deleteSelection();
 
-						// If there is content, shift it up to the next line
-						// if (node.textContent.length) {
-						// 	// Insert the stored content
-						// 	this.editor.commands.insertContent(
-						// 		node.textContent
-						// 	);
+					// If there is content, shift it up to the next line
+					// if (node.textContent.length) {
+					// 	// Insert the stored content
+					// 	this.editor.commands.insertContent(
+					// 		node.textContent
+					// 	);
 
-						// 	// Move the cursor to the start of the inserted content
-						// 	this.editor.commands.setTextSelection(
-						// 		this.editor.state.selection.anchor -
-						// 			node.textContent.length
-						// 	);
-						// }
+					// 	// Move the cursor to the start of the inserted content
+					// 	this.editor.commands.setTextSelection(
+					// 		this.editor.state.selection.anchor -
+					// 			node.textContent.length
+					// 	);
+					// }
 
-						// If there is content, shift it up to the next line
-						// if (node.textContent.length) {
-						// 	// Insert the stored content
-						// 	this.editor.commands.insertContent(
-						// 		node.textContent
-						// 	);
+					// If there is content, shift it up to the next line
+					// if (node.textContent.length) {
+					// 	// Insert the stored content
+					// 	this.editor.commands.insertContent(
+					// 		node.textContent
+					// 	);
 
-						// 	// Move the cursor to the start of the inserted content
-						// 	this.editor.commands.setTextSelection(
-						// 		this.editor.state.selection.anchor -
-						// 			node.textContent.length
-						// 	);
-						// }
+					// 	// Move the cursor to the start of the inserted content
+					// 	this.editor.commands.setTextSelection(
+					// 		this.editor.state.selection.anchor -
+					// 			node.textContent.length
+					// 	);
+					// }
 
-						return true;
-					}
+					// 	return true;
+					// }
 
 					return false;
 				}
@@ -169,7 +169,9 @@ export const extensions = [
 		}
 	}),
 	Image.configure({
-		HTMLAttributes: { class: "w-full rounded-lg max-w-xs mx-auto" }
+		HTMLAttributes: {
+			class: "rounded-lg max-h-96 mx-auto"
+		}
 	}),
 	CodeBlockLowlight.configure({
 		HTMLAttributes: {

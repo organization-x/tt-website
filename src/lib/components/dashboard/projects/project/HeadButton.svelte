@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { Editor } from "@tiptap/core";
 
-	import HeadingIcon from "$lib/components/icons/HeadingIcon.svelte";
-	import HeadOneIcon from "$lib/components/icons/HeadOneIcon.svelte";
-	import HeadTwoIcon from "$lib/components/icons/HeadTwoIcon.svelte";
-	import HeadThreeIcon from "$lib/components/icons/HeadThreeIcon.svelte";
+	import HeadingIcon from "$lib/components/icons/general/HeadingIcon.svelte";
+	import HeadOneIcon from "$lib/components/icons/general/HeadOneIcon.svelte";
+	import HeadTwoIcon from "$lib/components/icons/general/HeadTwoIcon.svelte";
+	import HeadThreeIcon from "$lib/components/icons/general/HeadThreeIcon.svelte";
 	import ExpandButton from "$lib/components/dashboard/projects/project/ExpandButton.svelte";
 
 	export let editor: Editor;
@@ -46,25 +46,19 @@
 	<svelte:fragment slot="expanded">
 		<button
 			on:click={() => onClick(1)}
-			class="rounded-lg h-fit p-2 my-auto {selected === 1
-				? ' bg-gray-500/40'
-				: ''}"
+			class="h-fit p-2 my-auto {selected === 1 ? ' bg-gray-500/40' : ''}"
 		>
 			<HeadOneIcon class="w-8 h-8" />
 		</button>
 		<button
 			on:click={() => onClick(2)}
-			class="rounded-lg h-fit p-2 my-auto {selected === 2
-				? ' bg-gray-500/40'
-				: ''}"
+			class="h-fit p-2 my-auto {selected === 2 ? ' bg-gray-500/40' : ''}"
 		>
 			<HeadTwoIcon class="w-8 h-8" />
 		</button>
 		<button
 			on:click={() => onClick(3)}
-			class="rounded-lg h-fit p-2 my-auto {selected === 3
-				? ' bg-gray-500/40'
-				: ''}"
+			class="h-fit p-2 my-auto {selected === 3 ? ' bg-gray-500/40' : ''}"
 		>
 			<HeadThreeIcon class="w-8 h-8" />
 		</button>
