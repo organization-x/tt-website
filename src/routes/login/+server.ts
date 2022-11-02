@@ -5,6 +5,9 @@ import { env } from "$env/dynamic/private";
 
 import type { RequestHandler } from "./$types";
 
+const redirectUrl = "https://tt-alpha.fly.dev/login";
+const redirectUrlEncoded = encodeURIComponent(redirectUrl);
+
 export const GET: RequestHandler = async (request) => {
 	// Date used for determining session expiry
 	const date = new Date();
@@ -38,7 +41,7 @@ export const GET: RequestHandler = async (request) => {
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded"
 				},
-				body: `client_id=${env.DISCORD_ID}&client_secret=${env.DISCORD_SECRET}&grant_type=authorization_code&code=${code}&redirect_uri=http://localhost:5173/login`
+				body: `client_id=${env.DISCORD_ID}&client_secret=${env.DISCORD_SECRET}&grant_type=authorization_code&code=${code}&redirect_uri=${redirectUrl}`
 			})
 				.then((res) => res.json())
 				.catch(() => {
@@ -167,7 +170,7 @@ export const GET: RequestHandler = async (request) => {
 		// TODO: Switch to actual redirect URI for production
 		throw redirect(
 			302,
-			`https://discord.com/api/oauth2/authorize?redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Flogin&response_type=code&scope=identify&client_id=${env.DISCORD_ID}&state=${state}`
+			`https://discord.com/api/oauth2/authorize?redirect_uri=${redirectUrlEncoded}&response_type=code&scope=identify&client_id=${env.DISCORD_ID}&state=${state}`
 		);
 	}
 };
