@@ -9,7 +9,7 @@
 
 	progress = Math.floor(progress * 100);
 
-	const percent = tweened(0, {
+	const percent = tweened(progress === 100 ? 100 : 0, {
 		duration: 500,
 		easing: quadOut
 	});

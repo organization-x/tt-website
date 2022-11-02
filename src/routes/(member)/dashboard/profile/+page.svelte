@@ -1,23 +1,23 @@
 <script lang="ts">
 	import { user as original } from "$lib/stores";
-	import Id from "$lib/components/icons/Id.svelte";
-	import Devto from "$lib/components/icons/Devto.svelte";
-	import Group from "$lib/components/icons/Group.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import GitHub from "$lib/components/icons/GitHub.svelte";
-	import Pencil from "$lib/components/icons/Pencil.svelte";
-	import Twitter from "$lib/components/icons/Twitter.svelte";
+	import Id from "$lib/components/icons/general/Id.svelte";
 	import Input from "$lib/components/dashboard/Input.svelte";
-	import LinkedIn from "$lib/components/icons/LinkedIn.svelte";
-	import Facebook from "$lib/components/icons/Facebook.svelte";
-	import LinkIcon from "$lib/components/icons/LinkIcon.svelte";
-	import ShowHide from "$lib/components/icons/ShowHide.svelte";
+	import Devto from "$lib/components/icons/logos/Devto.svelte";
+	import Group from "$lib/components/icons/general/Group.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
+	import GitHub from "$lib/components/icons/logos/GitHub.svelte";
+	import Pencil from "$lib/components/icons/general/Pencil.svelte";
+	import Twitter from "$lib/components/icons/logos/Twitter.svelte";
 	import ProfileSection from "$lib/components/ProfileSection.svelte";
-	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
+	import LinkedIn from "$lib/components/icons/logos/LinkedIn.svelte";
+	import Facebook from "$lib/components/icons/logos/Facebook.svelte";
+	import LinkIcon from "$lib/components/icons/general/LinkIcon.svelte";
+	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 	import { teams, positions, softSkills, techSkills } from "$lib/enums";
+	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
 
 	import type { PageParentData } from "./$types";
 	import type { Position, SoftSkill, TechSkill, Team } from "@prisma/client";
@@ -410,7 +410,7 @@
 					{/each}
 				</ProfileSection>
 
-				<ProfileSection largeGrid={true} title="Skills">
+				<ProfileSection largeGrid={true} title="Top Skills">
 					<div class="flex flex-col gap-6">
 						<h1 class="font-semibold text-xl text-center">Soft</h1>
 						{#each { length: 5 } as _, i}

@@ -3,11 +3,11 @@
 	import { createEventDispatcher } from "svelte";
 
 	import { positions } from "$lib/enums";
-	import Trash from "$lib/components/icons/Trash.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import DropArrow from "$lib/components/icons/DropArrow.svelte";
-	import RadioSelect from "$lib/components/icons/RadioSelect.svelte";
+	import Trash from "$lib/components/icons/general/Trash.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
+	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
+	import RadioSelect from "$lib/components/icons/general/RadioSelect.svelte";
 
 	import type { Position } from "@prisma/client";
 	import type { TransitionConfig } from "svelte/transition";
@@ -93,7 +93,7 @@
 							selected={author.position === position}
 							class="w-8 h-8"
 						/>
-						<h1 class="text-lg">{position}</h1>
+						<h1 class="text-lg">{position.replaceAll("_", " ")}</h1>
 					</button>
 				{/each}
 			</div>

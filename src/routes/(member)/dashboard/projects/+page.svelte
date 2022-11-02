@@ -3,8 +3,8 @@
 
 	import { user } from "$lib/stores";
 	import { goto } from "$app/navigation";
-	import Plus from "$lib/components/icons/Plus.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
+	import Plus from "$lib/components/icons/general/Plus.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 	import ProjectLoading from "$lib/components/ProjectLoading.svelte";

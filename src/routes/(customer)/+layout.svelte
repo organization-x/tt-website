@@ -8,13 +8,13 @@
 	import { page } from "$app/stores";
 	import { afterNavigate } from "$app/navigation";
 	import AICamp from "$lib/components/AICamp.svelte";
-	import Logo from "$lib/components/icons/Logo.svelte";
 	import NavLink from "$lib/components/NavLink.svelte";
 	import FootLink from "$lib/components/FootLink.svelte";
-	import Burger from "$lib/components/icons/Burger.svelte";
-	import YouTube from "$lib/components/icons/YouTube.svelte";
-	import Envelope from "$lib/components/icons/Envelope.svelte";
-	import Instagram from "$lib/components/icons/Instagram.svelte";
+	import Logo from "$lib/components/icons/logos/Logo.svelte";
+	import Burger from "$lib/components/icons/general/Burger.svelte";
+	import YouTube from "$lib/components/icons/logos/YouTube.svelte";
+	import Envelope from "$lib/components/icons/general/Envelope.svelte";
+	import Instagram from "$lib/components/icons/general/Instagram.svelte";
 
 	import type { LayoutServerData } from "./$types";
 

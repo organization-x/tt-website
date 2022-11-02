@@ -3,17 +3,14 @@
 	import { getIcon } from "$lib/getIcon";
 	import DevTag from "$lib/components/DevTag.svelte";
 	import Button from "$lib/components/Button.svelte";
-	import TenKudos from "$lib/components/badges/TenKudos.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import Skill from "$lib/components/developers/user/Skill.svelte";
 	import Badge from "$lib/components/developers/user/Badge.svelte";
-	import FiftyKudos from "$lib/components/badges/FiftyKudos.svelte";
 	import ProfileSection from "$lib/components/ProfileSection.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
-	import TenProjects from "$lib/components/badges/TenProjects.svelte";
-	import AllEndorsed from "$lib/components/badges/AllEndorsed.svelte";
-	import HundredKudos from "$lib/components/badges/HundredKudos.svelte";
-	import TwentyProjects from "$lib/components/badges/TwentyProjects.svelte";
+	import TenProjects from "$lib/components/icons/badges/TenProjects.svelte";
+	import AllEndorsed from "$lib/components/icons/badges/AllEndorsed.svelte";
+	import TwentyProjects from "$lib/components/icons/badges/TwentyProjects.svelte";
 
 	import type { PageData } from "./$types";
 	import type { SoftSkill, TechSkill } from "@prisma/client";
@@ -143,7 +140,7 @@
 		class="mx-auto max-w-xl lg:flex lg:gap-10 lg:justify-between lg:max-w-screen-lg lg:mx-auto 3xl:max-w-screen-3xl "
 	>
 		<div
-			class="mb-8 max-w-sm mx-auto flex flex-col gap-2 items-center lg:mt-10 lg:mb-0 lg:flex-col lg:items-start lg:shrink-0 lg:sticky lg:top-6 lg:mx-0 lg:h-fit"
+			class="mb-8 max-w-sm mx-auto flex flex-col gap-2 items-center lg:mt-10 lg:mb-0 lg:flex-col lg:items-start lg:w-1/2 lg:sticky lg:top-6 lg:mx-0 lg:h-fit"
 		>
 			<img
 				width="512"
@@ -170,7 +167,7 @@
 
 			{#if links.length}
 				<div
-					class="p-3 w-full flex items-center justify-evenly md:px-0 md:gap-4"
+					class="p-3 w-full flex items-center justify-evenly md:px-0 md:gap-4 lg:justify-start"
 				>
 					{#each links as link}
 						<a
@@ -189,7 +186,7 @@
 		</div>
 
 		<div
-			class="max-w-xl lg:min-w-[28rem] lg:mt-40 3xl:flex 3xl:gap-10 3xl:min-w-[58rem]"
+			class="max-w-xl lg:min-w-[28rem] lg:mt-40 lg:w-1/2 3xl:flex 3xl:gap-10 3xl:min-w-[58rem]"
 		>
 			<div class="flex flex-col gap-8 mb-8 3xl:w-full">
 				<ProfileSection title="Positions">
@@ -198,24 +195,28 @@
 					{/each}
 				</ProfileSection>
 
-				{#if data.projects.length}
-					<ProfileSection title="Projects">
-						{#each { length: 2 } as _, i}
-							{#if data.projects[i]}
-								<ProjectPreview project={data.projects[i]} />
-							{/if}
-						{/each}
+				<ProfileSection title="Projects" minHeight={true}>
+					{#each { length: 2 } as _, i}
+						{#if data.projects[i]}
+							<ProjectPreview project={data.projects[i]} />
+						{/if}
+					{/each}
 
+					{#if data.projects.length}
 						<Button
 							href="/developers/{data.user.url}/projects"
 							class="mb-2">View More</Button
 						>
-					</ProfileSection>
-				{/if}
+					{:else}
+						<h1 class="font-semibold text-xl m-auto">
+							No Projects
+						</h1>
+					{/if}
+				</ProfileSection>
 			</div>
 
 			<div class="flex flex-col gap-8 w-full 3xl:w-full">
-				<ProfileSection title="Skills">
+				<ProfileSection title="Top Skills">
 					{@const endorser =
 						data.endorserId && data.endorserId !== data.user.id
 							? data.endorserId
@@ -260,51 +261,59 @@
 					</div>
 				</ProfileSection>
 
-				<ProfileSection title="Badges">
-					<Badge name="Project Starter">
-						<TenProjects slot="badge" class="w-12 h-12 shrink-0" />
+				<ProfileSection title="Badges" minHeight={true}>
+					<!-- Store the badge booleans in an array so we can figure out of the user has none -->
+					{@const badges = [
+						data.projects.length >= 10,
+						data.projects.length >= 20,
+						new Set(
+							data.user.endorsementsReceived.map(
+								(endorsement) =>
+									endorsement.softSkill ||
+									endorsement.techSkill
+							)
+						).size === 10
+					]}
 
-						Created 10 public projects
-					</Badge>
+					{#if badges[0]}
+						<Badge name="Project Starter">
+							<TenProjects
+								slot="badge"
+								class="w-12 h-12 shrink-0"
+							/>
 
-					<Badge name="Project Master">
-						<TwentyProjects
-							slot="badge"
-							class="w-12 h-12 shrink-0"
-						/>
+							Created 10+ public projects
+						</Badge>
+					{/if}
 
-						Created 20 public projects
-					</Badge>
+					{#if badges[1]}
+						<Badge name="Project Master">
+							<TwentyProjects
+								slot="badge"
+								class="w-12 h-12 shrink-0"
+							/>
 
-					<Badge name="All Endorsed">
-						<AllEndorsed slot="badge" class="w-12 h-12 shrink-0" />
+							Created 20+ public projects
+						</Badge>
+					{/if}
 
-						Has all their skills endorsed
-					</Badge>
+					{#if badges[2]}
+						<Badge name="All Endorsed">
+							<AllEndorsed
+								slot="badge"
+								class="w-12 h-12 shrink-0"
+							/>
 
-					<Badge name="Kudo Starter">
-						<TenKudos slot="badge" class="w-12 h-12 shrink-0" />
+							Has all their skills endorsed
+						</Badge>
+					{/if}
 
-						Has 10 kudos from others
-					</Badge>
+					<!-- TODO: Kudos Badges -->
 
-					<Badge name="Kudo Starter">
-						<FiftyKudos slot="badge" class="w-12 h-12 shrink-0" />
-
-						Has 50 kudos from others
-					</Badge>
-
-					<Badge name="Kudo Starter">
-						<HundredKudos slot="badge" class="w-12 h-12 shrink-0" />
-
-						Has 100 kudos from others
-					</Badge>
+					{#if badges.every((badge) => !badge)}
+						<h1 class="font-semibold text-xl m-auto">No Badges</h1>
+					{/if}
 				</ProfileSection>
-
-				<!-- TODO: Finish badges layout -->
-				<!-- TODO; Add more soft/tech skills -->
-				<!-- TODO: Organize this page better -->
-				<!-- TODO: Work on name overflow in various places -->
 
 				<!-- TODO: Add kudos -->
 			</div>

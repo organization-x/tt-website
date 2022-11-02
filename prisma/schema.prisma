@@ -26,6 +26,31 @@ enum Position {
     Backend
     Fullstack
     Designer
+    Product_Manager
+    Data_Scientist
+    Engineer_Manager
+    Design_Manager
+    Engineer
+}
+
+// Enum for soft skills which are only used on users
+enum SoftSkill {
+    Teamwork
+    Leader
+    Writing
+    Proactive
+    Time_Management
+    Communication
+    Critical_Thinking
+    Motivation
+    Independent
+    Responsible
+    Reliable
+    Mentor
+    Initiative
+    Adaptable
+    Perseverance
+    Meticulous
 }
 
 // Enum for skills that can be "tagged" to users and projects
@@ -37,14 +62,73 @@ enum TechSkill {
     Pytorch
     Google_Cloud
     AWS
-}
-
-// Enum for soft skills which are only used on users
-enum SoftSkill {
-    Teamwork
-    Leadership
-    Writing
-    Proactive
+    GraphQL
+    Java
+    Golang
+    Docker
+    PHP
+    Tailwind
+    SQL
+    NoSQL
+    Angular
+    Svelte
+    Vue
+    Node
+    Rust
+    CSharp
+    CPP
+    C
+    Figma
+    Bash
+    Deno
+    Prisma
+    Ruby
+    Vercel
+    Next
+    Vite
+    WebAssembly
+    Flutter
+    Dart
+    Kotlin
+    Swift
+    Blockchain
+    Kubernetes
+    DevOps
+    CICD
+    Nuxt
+    Git
+    Elixir
+    Perl
+    Firebase
+    Unity
+    DigitalOcean
+    Linux
+    Nginx
+    Heroku
+    MongoDB
+    Postgres
+    Redis
+    Django
+    Flask
+    Express
+    Remix
+    Astro
+    Qwik
+    Surreal
+    Cassandra
+    Fresh
+    Bun
+    Redwood
+    Tauri
+    Electron
+    LaTeX
+    Lua
+    Haskell
+    Assembly
+    R
+    SupaBase
+    Fly
+    Railway
 }
 
 // Enum for user permission roles

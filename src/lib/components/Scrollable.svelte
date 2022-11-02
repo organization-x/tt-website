@@ -1,5 +1,5 @@
 <script lang="ts">
-	import CarouselArrow from "$lib/components/icons/CarouselArrow.svelte";
+	import CarouselArrow from "$lib/components/icons/general/CarouselArrow.svelte";
 
 	let className: string;
 	export let arrows = false;

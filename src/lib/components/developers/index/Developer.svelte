@@ -3,18 +3,18 @@
 	import { fly } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
-	import Pin from "$lib/components/icons/Pin.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
-	import Bulb from "$lib/components/icons/Bulb.svelte";
-	import Wrench from "$lib/components/icons/Wrench.svelte";
+	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import DevSection from "$lib/components/DevSection.svelte";
-	import TenKudos from "$lib/components/badges/TenKudos.svelte";
+	import Bulb from "$lib/components/icons/general/Bulb.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
-	import FiftyKudos from "$lib/components/badges/FiftyKudos.svelte";
-	import TenProjects from "$lib/components/badges/TenProjects.svelte";
-	import AllEndorsed from "$lib/components/badges/AllEndorsed.svelte";
-	import HundredKudos from "$lib/components/badges/HundredKudos.svelte";
-	import TwentyProjects from "$lib/components/badges/TwentyProjects.svelte";
+	import Wrench from "$lib/components/icons/general/Wrench.svelte";
+	import TenKudos from "$lib/components/icons/badges/TenKudos.svelte";
+	import FiftyKudos from "$lib/components/icons/badges/FiftyKudos.svelte";
+	import TenProjects from "$lib/components/icons/badges/TenProjects.svelte";
+	import AllEndorsed from "$lib/components/icons/badges/AllEndorsed.svelte";
+	import HundredKudos from "$lib/components/icons/badges/HundredKudos.svelte";
+	import TwentyProjects from "$lib/components/icons/badges/TwentyProjects.svelte";
 
 	export let user: App.UserSearchResponse;
 
@@ -48,14 +48,8 @@
 			</div>
 		</div>
 		<div
-			class="flex flex-col-reverse gap-1 items-center text-center md:flex-col md:text-start md:items-start md:gap-0"
+			class="flex flex-col gap-1 items-center text-center md:flex-col-reverse md:text-start md:items-start md:gap-0"
 		>
-			<GradientText
-				class="from-green-light to-green-dark text-3xl break-all"
-			>
-				{user.name}
-			</GradientText>
-
 			<div
 				class="flex flex-col gap-2 md:flex-row md:gap-3 md:items-center"
 			>
@@ -86,6 +80,10 @@
 					<HundredKudos class="w-5 h-5" active={false} />
 				</div>
 			</div>
+
+			<GradientText class="from-green-light to-green-dark text-3xl">
+				{user.name}
+			</GradientText>
 		</div>
 	</div>
 
@@ -143,7 +141,7 @@
 			{/each}
 		</DevSection>
 
-		<DevSection title="Skills">
+		<DevSection title="Top Skills">
 			<Wrench slot="icon" class="w-6 h-6" />
 
 			{#each user.techSkills as skill, i}

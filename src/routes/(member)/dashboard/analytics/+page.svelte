@@ -174,7 +174,7 @@
 							<div
 								class="absolute inset-3 rounded-full bg-gray-800 flex items-center justify-center shadow-[0_0_5px_3px_rgba(0,0,0,0.4)]"
 							>
-								<h1 class="font-semibold">
+								<h1 class="font-semibold max-w-[10rem]">
 									{#if views}
 										<!-- Whichever category of users is higher will be displayed inside the circle -->
 										{#if analytics.returning > analytics.new}

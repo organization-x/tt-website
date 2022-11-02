@@ -11,9 +11,9 @@
 	import { CollaborationCursor } from "@tiptap/extension-collaboration-cursor";
 
 	import { user } from "$lib/stores";
-	import OrList from "$lib/components/icons/OrList.svelte";
-	import UnList from "$lib/components/icons/UnList.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
+	import OrList from "$lib/components/icons/general/OrList.svelte";
+	import UnList from "$lib/components/icons/general/UnList.svelte";
 	import Cursor from "$lib/components/dashboard/projects/project/Cursor.svelte";
 	import LinkButton from "$lib/components/dashboard/projects/project/LinkButton.svelte";
 	import HeadButton from "$lib/components/dashboard/projects/project/HeadButton.svelte";

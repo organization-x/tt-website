@@ -1,14 +1,14 @@
 -- CreateEnum
-CREATE TYPE "Team" AS ENUM ('Marketing', 'Engineering', 'Design');
+CREATE TYPE "Team" AS ENUM ('Marketing', 'Engineering', 'Design', 'Operations', 'Product', 'Leadership', 'Data');
 
 -- CreateEnum
-CREATE TYPE "Position" AS ENUM ('Frontend', 'Backend', 'Fullstack', 'Designer');
+CREATE TYPE "Position" AS ENUM ('Frontend', 'Backend', 'Fullstack', 'Designer', 'Product_Manager', 'Data_Scientist', 'Engineer_Manager', 'Design_Manager', 'Engineer');
 
 -- CreateEnum
-CREATE TYPE "TechSkill" AS ENUM ('JavaScript', 'Python', 'React', 'TensorFlow', 'Pytorch', 'Google_Cloud', 'AWS');
+CREATE TYPE "SoftSkill" AS ENUM ('Teamwork', 'Leader', 'Writing', 'Proactive', 'Time_Management', 'Communication', 'Critical_Thinking', 'Motivation', 'Independent', 'Responsible', 'Reliable', 'Mentor', 'Initiative', 'Adaptable', 'Perseverance', 'Meticulous');
 
 -- CreateEnum
-CREATE TYPE "SoftSkill" AS ENUM ('Teamwork', 'Leadership', 'Writing', 'Proactive');
+CREATE TYPE "TechSkill" AS ENUM ('JavaScript', 'Python', 'React', 'TensorFlow', 'Pytorch', 'Google_Cloud', 'AWS', 'GraphQL', 'Java', 'Golang', 'Docker', 'PHP', 'Tailwind', 'SQL', 'NoSQL', 'Angular', 'Svelte', 'Vue', 'Node', 'Rust', 'CSharp', 'CPP', 'C', 'Figma', 'Bash', 'Deno', 'Prisma', 'Ruby', 'Vercel', 'Next', 'Vite', 'WebAssembly', 'Flutter', 'Dart', 'Kotlin', 'Swift', 'Blockchain', 'Kubernetes', 'DevOps', 'CICD', 'Nuxt', 'Git', 'Elixir', 'Perl', 'Firebase', 'Unity', 'DigitalOcean', 'Linux', 'Nginx', 'Heroku', 'MongoDB', 'Postgres', 'Redis', 'Django', 'Flask', 'Express', 'Remix', 'Astro', 'Qwik', 'Surreal', 'Cassandra', 'Fresh', 'Bun', 'Redwood', 'Tauri', 'Electron', 'LaTeX', 'Lua', 'Haskell', 'Assembly', 'R', 'SupaBase', 'Fly', 'Railway');
 
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('Admin', 'Lead', 'User');
@@ -46,6 +46,7 @@ CREATE TABLE "Project" (
     "skills" "TechSkill"[],
     "ownerId" TEXT NOT NULL,
     "content" JSONB NOT NULL,
+    "images" TEXT[],
     "visible" BOOLEAN NOT NULL DEFAULT true,
 
     CONSTRAINT "Project_pkey" PRIMARY KEY ("id")

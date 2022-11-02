@@ -80,7 +80,7 @@ export const GET: RequestHandler = async (request) => {
 					about: "I'm a member of Team Tomorrow!",
 					positions: ["Fullstack", "Designer"],
 					techSkills: ["JavaScript", "Python"],
-					softSkills: ["Teamwork", "Leadership"]
+					softSkills: ["Teamwork", "Leader"]
 				}
 			});
 

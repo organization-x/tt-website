@@ -4,14 +4,14 @@
 
 	import { user } from "$lib/stores";
 	import { getIcon } from "$lib/getIcon";
-	import Pin from "$lib/components/icons/Pin.svelte";
-	import Trash from "$lib/components/icons/Trash.svelte";
-	import Pencil from "$lib/components/icons/Pencil.svelte";
-	import ShowHide from "$lib/components/icons/ShowHide.svelte";
-	import DropArrow from "$lib/components/icons/DropArrow.svelte";
+	import Pin from "$lib/components/icons/general/Pin.svelte";
+	import Trash from "$lib/components/icons/general/Trash.svelte";
+	import Pencil from "$lib/components/icons/general/Pencil.svelte";
 	import DashLink from "$lib/components/dashboard/DashLink.svelte";
-	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
+	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
+	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
+	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
 
 	const dispatch = createEventDispatcher<{
 		pinned: undefined;

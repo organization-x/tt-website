@@ -3,13 +3,13 @@
 
 	import { user } from "$lib/stores";
 	import { techSkills } from "$lib/enums";
-	import Pin from "$lib/components/icons/Pin.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import Pencil from "$lib/components/icons/Pencil.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
+	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import Input from "$lib/components/dashboard/Input.svelte";
-	import ShowHide from "$lib/components/icons/ShowHide.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
+	import Pencil from "$lib/components/icons/general/Pencil.svelte";
+	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 	import InputSection from "$lib/components/dashboard/InputSection.svelte";
 	import TipTap from "$lib/components/dashboard/projects/project/TipTap.svelte";

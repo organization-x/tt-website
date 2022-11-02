@@ -5,9 +5,9 @@ import type { Team, Position, SoftSkill, TechSkill } from "@prisma/client";
 // enums which can't easily be defined in the app namespace
 
 export const teams: Team[] = [
-	"Design",
-	"Engineering",
 	"Marketing",
+	"Engineering",
+	"Design",
 	"Operations",
 	"Product",
 	"Leadership",
@@ -15,27 +15,83 @@ export const teams: Team[] = [
 ];
 
 export const positions: Position[] = [
-	"Backend",
-	"Designer",
 	"Frontend",
-	"Fullstack"
+	"Backend",
+	"Fullstack",
+	"Designer",
+	"Product_Manager",
+	"Data_Scientist",
+	"Engineer_Manager",
+	"Design_Manager",
+	"Engineer"
 ];
 
 export const softSkills: SoftSkill[] = [
-	"Leadership",
-	"Proactive",
 	"Teamwork",
-	"Writing"
+	"Leadership",
+	"Writing",
+	"Proactive",
+	"Time_Management",
+	"Communication",
+	"Critical_Thinking",
+	"Motivation",
+	"Independent",
+	"Responsible",
+	"Reliable",
+	"Mentor",
+	"Initiative",
+	"Adaptable",
+	"Perseverance",
+	"Meticulous"
 ];
 
 export const techSkills: TechSkill[] = [
-	"AWS",
-	"Google_Cloud",
 	"JavaScript",
 	"Python",
-	"Pytorch",
 	"React",
-	"TensorFlow"
+	"TensorFlow",
+	"Pytorch",
+	"Google_Cloud",
+	"AWS",
+	"GraphQL",
+	"Java",
+	"Golang",
+	"Docker",
+	"PHP",
+	"Tailwind",
+	"SQL",
+	"NoSQL",
+	"Angular",
+	"Svelte",
+	"Vue",
+	"Node",
+	"Rust",
+	"CSharp",
+	"CPP",
+	"C",
+	"Figma",
+	"Bash",
+	"Deployment",
+	"Deno",
+	"Prisma",
+	"Ruby",
+	"Vercel",
+	"Next",
+	"Vite",
+	"WebAssembly",
+	"Flutter",
+	"Dart",
+	"Kotlin",
+	"Swift",
+	"Blockchain",
+	"Kubernetes",
+	"DevOps",
+	"DevOps",
+	"CICD",
+	"Nuxt",
+	"Git",
+	"Elixir",
+	"Perl"
 ];
 
 // Enum for date dropdowns

@@ -3,7 +3,7 @@
 
 	import { user } from "$lib/stores";
 	import { debounce } from "$lib/debounce";
-	import Search from "$lib/components/icons/Search.svelte";
+	import Search from "$lib/components/icons/general/Search.svelte";
 	import AuthorEditor from "$lib/components/dashboard/projects/project/AuthorEditor.svelte";
 
 	import type { User } from "@prisma/client";

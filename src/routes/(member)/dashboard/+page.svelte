@@ -1,30 +1,30 @@
 <script lang="ts">
 	import { user } from "$lib/stores";
 	import { getIcon } from "$lib/getIcon";
-	import Id from "$lib/components/icons/Id.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
-	import Pin from "$lib/components/icons/Pin.svelte";
-	import Bulb from "$lib/components/icons/Bulb.svelte";
-	import Plus from "$lib/components/icons/Plus.svelte";
-	import Wrench from "$lib/components/icons/Wrench.svelte";
-	import Pencil from "$lib/components/icons/Pencil.svelte";
-	import TrendUp from "$lib/components/icons/TrendUp.svelte";
+	import Id from "$lib/components/icons/general/Id.svelte";
+	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import DevSection from "$lib/components/DevSection.svelte";
-	import LinkIcon from "$lib/components/icons/LinkIcon.svelte";
-	import ShowHide from "$lib/components/icons/ShowHide.svelte";
-	import TenKudos from "$lib/components/badges/TenKudos.svelte";
+	import Bulb from "$lib/components/icons/general/Bulb.svelte";
+	import Plus from "$lib/components/icons/general/Plus.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
+	import Wrench from "$lib/components/icons/general/Wrench.svelte";
+	import Pencil from "$lib/components/icons/general/Pencil.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 	import DashLink from "$lib/components/dashboard/DashLink.svelte";
-	import FiftyKudos from "$lib/components/badges/FiftyKudos.svelte";
-	import HundredKudos from "$lib/components/badges/HundredKudos.svelte";
-	import TenProjects from "$lib/components/badges/TenProjects.svelte";
-	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
+	import TrendUp from "$lib/components/icons/general/TrendUp.svelte";
+	import TenKudos from "$lib/components/icons/badges/TenKudos.svelte";
+	import LinkIcon from "$lib/components/icons/general/LinkIcon.svelte";
+	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 	import DashSection from "$lib/components/dashboard/DashSection.svelte";
-	import AllEndorsed from "$lib/components/badges/AllEndorsed.svelte";
-	import TwentyProjects from "$lib/components/badges/TwentyProjects.svelte";
+	import FiftyKudos from "$lib/components/icons/badges/FiftyKudos.svelte";
+	import TenProjects from "$lib/components/icons/badges/TenProjects.svelte";
+	import AllEndorsed from "$lib/components/icons/badges/AllEndorsed.svelte";
+	import HundredKudos from "$lib/components/icons/badges/HundredKudos.svelte";
+	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
+	import TwentyProjects from "$lib/components/icons/badges/TwentyProjects.svelte";
 	import BadgeProgress from "$lib/components/dashboard/index/BadgeProgress.svelte";
 	import ProjectEditPreview from "$lib/components/dashboard/projects/index/ProjectEditPreview.svelte";
 
@@ -254,12 +254,14 @@
 			title="Your Profile"
 			class="bg-gray-500/40 p-4 rounded-lg flex flex-col gap-8 lg:p-8 lg:gap-12"
 		>
-			<div class="lg:flex lg:gap-12">
-				<div class="shrink-0">
-					<div
-						class="flex flex-col gap-2 items-center mb-6 shrink-0 md:flex-row md:gap-6 md:justify-center"
-					>
-						<div class="relative shrink-0 w-fit">
+			<div class="lg:flex lg:gap-8">
+				<div
+					class="flex flex-col gap-2 items-center mb-6 md:gap-8 md:mt-4 md:items-start lg:w-1/2"
+				>
+					<div class="shrink-0 md:flex md:gap-6">
+						<div
+							class="relative w-fit h-fit mx-auto md:mx-0 lg:shrink-0"
+						>
 							<img
 								height="512"
 								width="512"
@@ -278,67 +280,30 @@
 								/>
 							</div>
 						</div>
+
 						<div
-							class="flex flex-col gap-2 items-center pt-4 w-fit md:flex-col-reverse md:items-start"
+							class="flex flex-col justify-center items-center pt-4 w-fit md:flex-col-reverse md:items-start md:pt-0"
 						>
-							<h1 class="font-semibold">
+							<h1 class="font-semibold lg:-mt-1">
 								{$user.team || "No Team"}
 							</h1>
 
-							<div class="flex gap-2 items-center">
-								<!-- TODO: Kudos Data-->
-
-								<TenProjects
-									class="w-5 h-5"
-									active={data.projects.length >= 10}
-								/>
-
-								<TwentyProjects
-									class="w-5 h-5"
-									active={data.projects.length >= 20}
-								/>
-
-								<AllEndorsed
-									class="w-5 h-5"
-									active={endorsed === 10}
-								/>
-
-								<TenKudos class="w-5 h-5" active={false} />
-
-								<FiftyKudos class="w-5 h-5" active={false} />
-
-								<HundredKudos class="w-5 h-5" active={false} />
-							</div>
-
-							<div
-								class="text-3xl text-center sm:flex sm:items-center sm:gap-2"
+							<GradientText
+								class="from-green-light to-green-dark scrollbar-hidden text-3xl text-center md:text-start"
 							>
-								<GradientText
-									class="from-green-light to-green-dark scrollbar-hidden"
-								>
-									{$user.name}
-								</GradientText>
-								<a
-									target="_blank"
-									rel="noopener noreferrer"
-									href="/developers/{$user.url}"
-								>
-									<ExternalLink
-										class="w-6 h-6 text-green-dark mx-auto mt-1.5"
-									/>
-								</a>
-							</div>
+								{$user.name}
+							</GradientText>
 						</div>
 					</div>
 
 					<p
-						class="my-12 text-center md:text-lg lg:text-left lg:max-w-sm lg:min-w-[24rem] lg:my-0"
+						class="mb-12 text-center md:text-lg md:text-start lg:my-0"
 					>
 						{$user.about}
 					</p>
 				</div>
 
-				<div class="mt-4 w-full min-h-[18rem]">
+				<div class="mt-4 w-full min-h-[18rem] lg:w-1/2">
 					<div
 						class="flex font-semibold justify-center items-center gap-2"
 					>
@@ -393,7 +358,7 @@
 				</DevSection>
 
 				<DevSection
-					title="Skills"
+					title="Top Skills"
 					class="lg:col-start-2 lg:row-start-1"
 				>
 					<Wrench slot="icon" class="w-6 h-6" />
@@ -442,6 +407,15 @@
 				<div
 					class="flex gap-4 ml-auto lg:col-start-2 lg:row-start-1 lg:self-end"
 				>
+					<DashLink
+						icon={true}
+						href="/developers/{data.url}"
+						target="_blank"
+						class="bg-gray-500/40 hover:bg-gray-500/20"
+					>
+						<ExternalLink class="w-5 h-5" />
+					</DashLink>
+
 					<DashButton
 						icon={true}
 						on:click={() => (visible = !visible)}
@@ -482,7 +456,7 @@
 				>
 					<TenProjects slot="badge" />
 
-					Create 10 projects that anyone can view
+					Create 10+ projects that anyone can view
 				</BadgeProgress>
 
 				<BadgeProgress
@@ -493,7 +467,7 @@
 				>
 					<TwentyProjects slot="badge" />
 
-					Create 20 projects that anyone can view
+					Create 20+ projects that anyone can view
 				</BadgeProgress>
 
 				<BadgeProgress
@@ -515,7 +489,7 @@
 				>
 					<TenKudos slot="badge" />
 
-					Get 10 kudos from other developers
+					Get 10+ kudos from other developers
 				</BadgeProgress>
 
 				<BadgeProgress
@@ -526,18 +500,18 @@
 				>
 					<FiftyKudos slot="badge" />
 
-					Get 50 kudos from other developers
+					Get 50+ kudos from other developers
 				</BadgeProgress>
 
 				<BadgeProgress
-					name="Kudo King"
+					name="Kudo Legend"
 					playing={playing.has(5)}
 					progress={0}
 					class="bg-green-light"
 				>
 					<HundredKudos slot="badge" />
 
-					Get 100 kudos from other developers
+					Get 100+ kudos from other developers
 				</BadgeProgress>
 			</div>
 		</div>

@@ -33,9 +33,11 @@
 	let request: Promise<App.UserSearchResponse[]> = new Promise(() => {});
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
-	$: search, (request = new Promise(() => {})), (page = 0);
+	$: search, (request = new Promise(() => {}));
 
 	const onSearch = () => {
+		page = 0;
+
 		request = new Promise((res, rej) =>
 			fetch(
 				`/api/user?where=${JSON.stringify({
@@ -229,12 +231,26 @@
 
 		<Seperator />
 
-		<div class="min-h-[100rem] md:min-h-[73rem]">
+		<div class="min-h-[100rem] md:min-h-[80rem]">
 			<Scrollable
 				class="before:from-gray-900 after:to-gray-900"
 				arrows={true}
 			>
 				{#await request}
+					<div
+						class="h-14 flex animate-pulse items-center gap-4 justify-center bg-gray-500 rounded-lg px-4 shrink-0 w-56"
+					>
+						<div class="rounded-full bg-gray-400 w-10 h-10" />
+						<div class="rounded-full bg-gray-400 w-32 h-5" />
+					</div>
+
+					<div
+						class="h-14 flex animate-pulse items-center gap-4 justify-center bg-gray-500 rounded-lg px-4 shrink-0 w-56"
+					>
+						<div class="rounded-full bg-gray-400 w-10 h-10" />
+						<div class="rounded-full bg-gray-400 w-32 h-5" />
+					</div>
+
 					<div
 						class="h-14 flex animate-pulse items-center gap-4 justify-center bg-gray-500 rounded-lg px-4 shrink-0 w-56"
 					>
@@ -263,20 +279,25 @@
 						class="bg-gray-500 animate-pulse flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full hmin-h-[72rem] md:min-h-[54rem]"
 					>
 						<div
-							class="flex flex-col gap-6 items-center md:flex-row"
+							class="flex flex-col gap-7 items-center md:flex-row"
 						>
 							<div class="w-20 h-20 bg-gray-400 rounded-full" />
 							<div
-								class="flex flex-col-reverse gap-4 items-center text-center md:flex-col md:text-start md:items-start"
+								class="flex flex-col gap-2 items-center text-center md:flex-col-reverse md:text-start md:items-start"
 							>
 								<div
-									class="rounded-full h-7 w-56 bg-gray-400"
-								/>
+									class="flex flex-col gap-3 items-center md:flex-row"
+								>
+									<div
+										class="rounded-full h-4 w-24 bg-gray-400 md:mt-0.5"
+									/>
+									<div
+										class="rounded-full h-5 w-44 bg-gray-400"
+									/>
+								</div>
+
 								<div
-									class="rounded-full h-5 w-44 bg-gray-400"
-								/>
-								<div
-									class="rounded-full h-4 mt-1 w-24 bg-gray-400"
+									class="rounded-full h-7 w-60 bg-gray-400"
 								/>
 							</div>
 						</div>
@@ -334,6 +355,8 @@
 							>
 								<DevTagLoading />
 								<DevTagLoading />
+								<DevTagLoading />
+								<DevTagLoading />
 							</div>
 
 							<div
@@ -343,6 +366,8 @@
 							<div
 								class="flex flex-col gap-4 md:grid md:grid-cols-2 w-full"
 							>
+								<DevTagLoading />
+								<DevTagLoading />
 								<DevTagLoading />
 								<DevTagLoading />
 								<DevTagLoading />

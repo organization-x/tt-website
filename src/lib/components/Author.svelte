@@ -29,6 +29,6 @@
 		<h1 class="leading-4 font-semibold text-xl">
 			{author.user.name.split(" ")[0]}
 		</h1>
-		<p class="text-xs mt-1">{author.position}</p>
+		<p class="text-xs mt-1">{author.position.replaceAll("_", " ")}</p>
 	</div>
 </a>

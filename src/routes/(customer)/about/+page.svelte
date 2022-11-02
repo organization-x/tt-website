@@ -40,11 +40,9 @@
 <Section filled={true}>
 	<TextHeader>A fully-fueled rocketship already blasting off.</TextHeader>
 
-	<!-- TODO: Put actual info in stat counters -->
-
 	<div class="flex flex-col gap-8 mt-8">
 		<Stat
-			title="Team Tomorrow Members"
+			title="Constantly Expanding"
 			amount={50}
 			postFix="+"
 			caption="members and counting"
@@ -52,71 +50,62 @@
 		>
 			AI Camp's Team Tomorrow provides motivated students with internships
 			and the opportunity to work for external companies. Through this
-			program, students learn by doing and gain real job experience while
-			attending school. See all our
-			<a
-				href="/developers"
-				class="text-teal-light inline"
-				rel="noopener noreferrer"
-			>
-				developers
-			</a>
+			program, passionate students learn by doing and gain real job
+			experience while attending school. These top junior developers are
+			ready for real work experience and have the skills to do it yet
+			don't have an open door to the industry. Team Tomorrow creates this
+			door and allows these students to show their true professionalism.
 		</Stat>
+
 		<Stat
 			title="Proof In Profit"
 			amount={70}
 			postFix="K"
 			caption="in revenue"
-			class="before:bg-pink-dark"
+			class="before:bg-purple-dark"
 			side="right"
 		>
 			Hippo2 is our custom-built internal and customer-facing interface
 			that facilitates course registration, dashboard, automated
 			communication, back office, and other operations that are vital
 			towards helping AI Camp generate millions in revenue annually.
-			<a
-				href="/projects"
-				class="text-teal-light"
-				rel="noopener noreferrer">Projects</a
-			>
 		</Stat>
+
 		<Stat
 			title="Multiple Partnerships"
 			amount={100}
 			postFix="+"
-			caption="partnerships where we have applied our skills"
-			class="before:bg-pink-dark"
+			caption="partnerships where skills have been applied"
+			class="before:bg-teal-dark"
 		>
 			Today, AI is helping us make drugs, get to work, and fill out
 			paperwork. Tomorrow, AI will be composing our music, delivering our
-			goods, and more. We believe it's critical to prepare for tomorrow,
-			learning about AI, and expanding our knowledge as a team.
-			<a href="/" class="text-teal-light" rel="noopener noreferrer">
-				Landing Page
-			</a>
+			goods, and more. We believe it's critical to prepare for tomorrow by
+			learning about AI and expanding our knowledge as a team. We strive
+			toward being one of the best knowledge bases out there, with our
+			members constantly exercizing and practicing their skills on several
+			different proejcts with multiple different companies. After only a
+			few years, we've contracted 100+ of our developers out and learned
+			from the best.
 		</Stat>
+
 		<Stat
-			title="Hundreds of Projects"
+			title="Always Innovating"
 			amount={500}
 			postFix="+"
 			caption="projects made by students"
-			class="before:bg-pink-dark"
+			class="before:bg-blue-dark"
 			side="right"
 		>
 			Our students build their foundation in core technical skills by
-			utilizing tools like Python, computer vision, natural language
-			processing, and data analytics to create revolutionary products
-			deployed live on the web. However, Team Tomorrow doesn't stop there.
-			TT developers apply their knowledge and experience in AI, ML,
-			software engineering, and product design to build pipelines, data
-			dashboards, AI models, and more for companies like yours.
-			<a
-				href="https://www.ai-camp.org/student-products"
-				rel="noopener noreferrer"
-				class="text-teal-light"
-			>
-				AI Camp Student Products
-			</a>
+			utilize things like DevOps, best practices, analytics and AI fields
+			like computer vision, natural language processing, and analytics to
+			create revolutionary products deployed in multiple fields. However,
+			Team Tomorrow doesn't stop there. Our developers apply their
+			knowledge and experience to build pipelines, data dashboards, AI
+			models, advanced web infrastructure, and more for companies like
+			yours. Making sure to build stable and reliable platforms and
+			services that follow the best practices in the industry.
 		</Stat>
 	</div>
 </Section>
@@ -143,7 +132,7 @@
 </Section>
 
 <Section filled={true}>
-	<TextHeader>Meet the masters of their craft.</TextHeader>
+	<TextHeader>Meet the ones behind it all.</TextHeader>
 
 	<div
 		class="grid grid-cols-2 gap-6 pt-10 max-w-xl mx-auto md:gap-14 lg:grid-cols-4"

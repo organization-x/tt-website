@@ -3,9 +3,9 @@
 	import { createEventDispatcher, getContext, onMount } from "svelte";
 
 	import { getIcon } from "$lib/getIcon";
-	import Plus from "$lib/components/icons/Plus.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
-	import DropArrow from "$lib/components/icons/DropArrow.svelte";
+	import Plus from "$lib/components/icons/general/Plus.svelte";
+	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
 
 	import type { SoftSkill, TechSkill } from "@prisma/client";
 
@@ -47,7 +47,7 @@
 	class:bg-blue-light={endorsements.length > 0 && endorsements.length <= 3}
 	class:bg-teal-dark={3 < endorsements.length && endorsements.length <= 10}
 	class:bg-green-light={endorsements.length > 10}
-	class="rounded-lg overflow-hidden transition-colors duration-200 md:flex"
+	class="rounded-lg overflow-hidden transition-colors duration-200 md:flex lg:max-w-[26rem]"
 >
 	<div
 		class="flex shrink-0 transition-widpad duration-200 {endorsements.length
@@ -67,7 +67,7 @@
 		>
 			<div
 				class:ml-12={!endorsements.length && endorser}
-				class="flex items-center gap-4 transition-[margin] lg:duration-[0ms]"
+				class="flex items-center gap-4 transition-[margin]"
 			>
 				<svelte:component
 					this={getIcon(name)}

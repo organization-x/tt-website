@@ -7,12 +7,12 @@
 	import { user } from "$lib/stores";
 	import { page } from "$app/stores";
 	import { afterNavigate } from "$app/navigation";
-	import Logo from "$lib/components/icons/Logo.svelte";
 	import NavLink from "$lib/components/NavLink.svelte";
-	import Burger from "$lib/components/icons/Burger.svelte";
-	import LogOut from "$lib/components/icons/LogOut.svelte";
-	import DropArrow from "$lib/components/icons/DropArrow.svelte";
-	import ExternalLink from "$lib/components/icons/ExternalLink.svelte";
+	import Logo from "$lib/components/icons/logos/Logo.svelte";
+	import Burger from "$lib/components/icons/general/Burger.svelte";
+	import LogOut from "$lib/components/icons/general/LogOut.svelte";
+	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
+	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
 
 	import type { LayoutServerData } from "./$types";
 

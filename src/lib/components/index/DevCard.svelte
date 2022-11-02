@@ -2,7 +2,7 @@
 	import { getContext } from "svelte";
 	import { fade } from "svelte/transition";
 
-	import Plus from "$lib/components/icons/Plus.svelte";
+	import Plus from "$lib/components/icons/general/Plus.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 
 	export let position: string;
@@ -31,7 +31,7 @@
 			/>
 			<div>
 				<h1 class="font-extrabold mt-3 mb-1 text-sm">
-					{position.toUpperCase()}
+					{position.replaceAll("_", " ").toUpperCase()}
 				</h1>
 
 				<GradientText

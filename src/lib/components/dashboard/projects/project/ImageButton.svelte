@@ -2,10 +2,10 @@
 	import { Action } from "$lib/enums";
 	import { FieldType } from "$lib/enums";
 	import { validate } from "$lib/validate";
-	import Check from "$lib/components/icons/Check.svelte";
-	import Trash from "$lib/components/icons/Trash.svelte";
-	import Upload from "$lib/components/icons/Upload.svelte";
-	import ImageIcon from "$lib/components/icons/ImageIcon.svelte";
+	import Check from "$lib/components/icons/general/Check.svelte";
+	import Trash from "$lib/components/icons/general/Trash.svelte";
+	import Upload from "$lib/components/icons/general/Upload.svelte";
+	import ImageIcon from "$lib/components/icons/general/ImageIcon.svelte";
 	import ExpandButton from "$lib/components/dashboard/projects/project/ExpandButton.svelte";
 
 	import type { Editor } from "@tiptap/core";

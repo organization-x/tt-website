@@ -6,10 +6,10 @@
 	import Step from "$lib/components/index/Step.svelte";
 	import Gear from "$lib/components/index/Gear.svelte";
 	import Aiot from "$lib/components/index/Aiot.svelte";
-	import Logo from "$lib/components/icons/Logo.svelte";
 	import Hippo from "$lib/components/index/Hippo.svelte";
 	import Crane from "$lib/components/index/Crane.svelte";
 	import AicBot from "$lib/components/index/AICBot.svelte";
+	import Logo from "$lib/components/icons/logos/Logo.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Company from "$lib/components/index/Company.svelte";
 	import DevCard from "$lib/components/index/DevCard.svelte";
