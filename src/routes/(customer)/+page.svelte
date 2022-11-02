@@ -215,21 +215,32 @@
 		Uncover all our projects
 	</Button>
 
-	<Project project={data.projects[0]}>
-		<Hippo slot="svg" />
-	</Project>
+	{#if data.projects[0]}
+		<Project project={data.projects[0]}>
+			<Hippo slot="svg" />
+		</Project>
+	{/if}
 
-	<Project project={data.projects[1]}>
-		<Aiot slot="svg" />
-	</Project>
+	{#if data.projects[1]}
+		<Project project={data.projects[1]}>
+			<Aiot slot="svg" />
+		</Project>
+	{/if}
 
-	<Project project={data.projects[2]}>
-		<AicBot slot="svg" />
-	</Project>
+	{#if data.projects[2]}
+		<Project project={data.projects[2]}>
+			<AicBot slot="svg" />
+		</Project>
+	{/if}
 
-	<Project project={data.projects[3]}>
-		<Logo slot="svg" class="w-20 absolute -top-8 right-0 left-0 mx-auto" />
-	</Project>
+	{#if data.projects[3]}
+		<Project project={data.projects[3]}>
+			<Logo
+				slot="svg"
+				class="w-20 absolute -top-8 right-0 left-0 mx-auto"
+			/>
+		</Project>
+	{/if}
 
 	<Button
 		on:click={() => trackClick("uncover_projects")}
@@ -261,38 +272,40 @@
 	<!-- TODO: Switch indexing to proper values -->
 
 	<Carousel class="lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:max-w-screen-xl">
-		<DevCard
-			developer={data.developers[0]}
-			position="Software Engineer"
-			accomplishments={[
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects."
-			]}
-		/>
+		{#if data.developers[0]}
+			<DevCard
+				developer={data.developers[0]}
+				position="Software Engineer"
+				accomplishments={[
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects."
+				]}
+			/>
 
-		<DevCard
-			developer={data.developers[0]}
-			position="Software Engineer"
-			accomplishments={[
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects."
-			]}
-		/>
+			<DevCard
+				developer={data.developers[0]}
+				position="Software Engineer"
+				accomplishments={[
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects."
+				]}
+			/>
 
-		<DevCard
-			developer={data.developers[0]}
-			position="Software Engineer"
-			accomplishments={[
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects."
-			]}
-		/>
+			<DevCard
+				developer={data.developers[0]}
+				position="Software Engineer"
+				accomplishments={[
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects."
+				]}
+			/>
+		{/if}
 	</Carousel>
 
 	<Button
@@ -313,9 +326,11 @@
 	</Text>
 
 	<!-- TODO: Put actual important project here -->
-	<div class="max-w-lg mx-auto lg:max-w-2xl">
-		<ProjectPreview project={data.projects[0]} />
-	</div>
+	{#if data.projects[0]}
+		<div class="max-w-lg mx-auto lg:max-w-2xl">
+			<ProjectPreview project={data.projects[0]} />
+		</div>
+	{/if}
 </Section>
 
 <MajorHeader>
