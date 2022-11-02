@@ -169,7 +169,7 @@
 					ranking as well, so make sure to engage whenever you can and
 					keep your profile up to date.
 				{:else if $user.role === "Lead"}
-					Empoyer other Team Tomorrow members by endorsing their
+					Empower other Team Tomorrow members by endorsing their
 					skills and leading them in the right direction. To endorse a
 					skill, simply go to the user's profile and use the plus
 					button on whichever skill you wish. Your endorsements will
