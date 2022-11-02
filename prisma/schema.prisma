@@ -56,6 +56,7 @@ enum SoftSkill {
 // Enum for skills that can be "tagged" to users and projects
 enum TechSkill {
     JavaScript
+    TypeScript
     Python
     React
     TensorFlow
@@ -69,9 +70,7 @@ enum TechSkill {
     PHP
     Tailwind
     SQL
-    NoSQL
     Angular
-    Svelte
     Vue
     Node
     Rust
@@ -85,7 +84,6 @@ enum TechSkill {
     Ruby
     Vercel
     Next
-    Vite
     WebAssembly
     Flutter
     Dart
@@ -129,6 +127,8 @@ enum TechSkill {
     SupaBase
     Fly
     Railway
+    Svelte
+    Vite
 }
 
 // Enum for user permission roles
