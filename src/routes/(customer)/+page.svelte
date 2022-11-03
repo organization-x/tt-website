@@ -68,10 +68,9 @@
 		slot="button"
 		on:click={() => trackClick("contact_top")}
 		href="/contact"
-		class="hidden lg:block lg:mt-6 lg:mx-0 contact-desktop-arrow"
+		class="hidden lg:block lg:mt-6 lg:mx-0"
 	>
 		Contact Us
-		<DrawnArrow mobileArrow={true} />
 	</Button>
 </Hero>
 
@@ -98,8 +97,8 @@
 	class="my-4 px-4 max-w-lg mx-auto sm:px-10 lg:px-6 lg:mt-0 lg:text-center lg:max-w-2xl xl:px-10"
 >
 	Team Tomorrow is an <strong>ever expanding team of developers</strong>
-	looking to provide companies access to our skills and interests. You have access
-	to developers that are
+	looking to provide companies access to our skills and interests.
+	You have access to developers that are
 	<strong>eager to learn and collaborate</strong>, willing to communicate
 	about in-depth and technical products, and are confident in doing what it
 	takes to get a product done and polished fast.
