@@ -56,4 +56,25 @@
 	.section-clip {
 		clip-path: polygon(0 1%, 100% 0, 100% 99%, 0 100%);
 	}
+
+	@keyframes hoz-bounce {
+		0% {
+			right: -2.25rem;
+		}
+		60% {
+			right: -3.25rem;
+		}
+		100% {
+			right: -2.25rem;
+		}
+	}
+
+	.contact-desktop-arrow svg {
+		animation: hoz-bounce 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+	}
+
+	.contact-desktop-arrow:hover svg {
+		animation: none;
+		right: -2.25rem;
+	}
 }
