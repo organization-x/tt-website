@@ -28,7 +28,9 @@
 
 	// Create a message based on how many endorsements there are
 	$: message = endorsements.length
-		? `This skill is verified by ${endorsements.length} other pro(s)`
+		? `This skill is verified by ${endorsements.length} other pro${
+				endorsements.length > 1 ? "s" : ""
+		  }`
 		: "";
 
 	// Detect whether the current user has endorsed this skill

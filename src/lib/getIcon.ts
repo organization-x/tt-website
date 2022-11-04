@@ -86,6 +86,7 @@ import Express from "$lib/components/icons/logos/Express.svelte";
 import Haskell from "$lib/components/icons/logos/Haskell.svelte";
 import Surreal from "$lib/components/icons/logos/Surreal.svelte";
 import Clojure from "$lib/components/icons/logos/Clojure.svelte";
+import TailScale from "./components/icons/logos/TailScale.svelte";
 import Firebase from "$lib/components/icons/logos/Firebase.svelte";
 import Postgres from "$lib/components/icons/logos/Postgres.svelte";
 import Factory from "$lib/components/icons/general/Factory.svelte";
@@ -253,6 +254,7 @@ const icons: { [key: string]: ComponentType } = {
 	OpenAI: OpenAI,
 	Tokio: Tokio,
 	Yew: Yew,
+	TailScale: TailScale,
 	GitHub: GitHub,
 	LinkedIn: LinkedIn,
 	Devto: Devto,

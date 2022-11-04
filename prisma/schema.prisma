@@ -145,6 +145,7 @@ enum TechSkill {
     OpenAI
     Tokio
     Yew
+    Tailscale
 }
 
 // Enum for user permission roles
@@ -183,12 +184,12 @@ model Project {
     url         String          @unique
     title       String
     description String
-    theme       String
+    theme       String // A hex code extracted from the projects banner for theming
     date        DateTime
     skills      TechSkill[]
     authors     ProjectAuthor[]
     ownerId     String
-    content     Json
+    content     Json // TipTap JSON content
     images      String[]
     visible     Boolean         @default(true)
     pinnedBy    User?
