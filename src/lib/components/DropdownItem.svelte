@@ -15,5 +15,6 @@
 	{:else}
 		<Checkbox checked={selected} class="w-4 h-4 shrink-0" />
 	{/if}
+
 	<slot />
 </button>

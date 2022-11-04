@@ -37,7 +37,7 @@
 	let disableTransition = false;
 
 	// Close the user menu when it's clicked outside of
-	const onClick = ({ target }: Event) =>
+	const windowClick = ({ target }: Event) =>
 		userOpen &&
 		!element.contains(target as Node) &&
 		(disableTransition = true) &&
@@ -51,7 +51,7 @@
 	});
 </script>
 
-<svelte:window on:click={onClick} />
+<svelte:window on:click={windowClick} />
 
 <header class="bg-black">
 	<div
@@ -96,7 +96,7 @@
 					window.scrollTo(0, 0);
 				}}
 			>
-				<Burger open={burgerOpen} />
+				<Burger {burgerOpen} />
 			</button>
 			{#if burgerOpen}
 				<nav
@@ -130,36 +130,42 @@
 							>
 								Dashboard
 							</NavLink>
+
 							<NavLink
 								href="/dashboard/analytics"
 								active={$pageId === "analytics"}
 							>
 								Analytics
 							</NavLink>
+
 							<NavLink
 								href="/dashboard/profile"
 								active={$pageId === "profile"}
 							>
 								Profile
 							</NavLink>
+
 							<NavLink
 								href="/dashboard/projects"
 								active={$pageId === "projects"}
 							>
 								Projects
 							</NavLink>
+
 							<NavLink
 								href="/dashboard/kudos"
 								active={$pageId === "kudos"}
 							>
 								Kudos
 							</NavLink>
+
 							<NavLink
 								target="_blank"
 								href="/developers/{$user.url}"
 							>
 								View Profile
 							</NavLink>
+
 							<NavLink href="/logout">Log Out</NavLink>
 						</ul>
 					</div>
@@ -171,24 +177,28 @@
 				<NavLink href="/dashboard" active={$pageId === "home"}>
 					Dashboard
 				</NavLink>
+
 				<NavLink
 					href="/dashboard/analytics"
 					active={$pageId === "analytics"}
 				>
 					Analytics
 				</NavLink>
+
 				<NavLink
 					href="/dashboard/profile"
 					active={$pageId === "profile"}
 				>
 					Profile
 				</NavLink>
+
 				<NavLink
 					href="/dashboard/projects"
 					active={$pageId === "projects"}
 				>
 					Projects
 				</NavLink>
+
 				<NavLink href="/dashboard/kudos" active={$pageId === "kudos"}>
 					Kudos
 				</NavLink>

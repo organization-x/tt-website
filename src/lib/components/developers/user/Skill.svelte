@@ -28,7 +28,9 @@
 
 	// Create a message based on how many endorsements there are
 	$: message = endorsements.length
-		? `This skill is verified by ${endorsements.length} other pro(s)`
+		? `This skill is verified by ${endorsements.length} other pro${
+				endorsements.length > 1 ? "s" : ""
+		  }`
 		: "";
 
 	// Detect whether the current user has endorsed this skill
@@ -152,7 +154,8 @@
 						<img
 							width="512"
 							height="512"
-							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-340324858405847042/avatar?{timestamp}"
+							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{endorsement
+								.from.id}/avatar?{timestamp}"
 							alt="{endorsement.from.name}'s avatar"
 							class="w-10 h-10 rounded-full"
 						/>

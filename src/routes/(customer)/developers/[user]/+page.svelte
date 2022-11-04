@@ -27,6 +27,13 @@
 	// animations play correctly
 	let endorsingSkills = new Set<TechSkill | SoftSkill>();
 
+	// Create a timestamp so the images from Cloudflare don't cache
+	const timestamp = getContext("timestamp") as string;
+
+	// Keep track of the current projects being endorsed by the current user so
+	// animations play correctly
+	let endorsingSkills = new Set<TechSkill | SoftSkill>();
+
 	if (data.user.pinnedProject)
 		previewedProjects.unshift(data.user.pinnedProject);
 

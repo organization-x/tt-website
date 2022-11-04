@@ -86,7 +86,21 @@
 
 	// Form submit
 	const submit = () => {
-		// fetch
+		fetch("/api/mail", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(
+				Object.fromEntries(
+					Object.entries(fields).map((field) => [
+						field[0],
+						("selected" in field[1] && field[1].selected) ||
+							("value" in field[1] && field[1].value)
+					])
+				)
+			)
+		});
 	};
 </script>
 
@@ -207,7 +221,7 @@
 				bind:value={fields.message.value}
 				bind:isValid={fields.message.valid}
 				big={true}
-				title="Subject"
+				title="Message"
 				placeholder="Elaborate and give us plenty of details"
 			/>
 		{:else if pageNum === 3}

@@ -2,10 +2,10 @@
 	import { onMount } from "svelte";
 	import { fly } from "svelte/transition";
 
-	import { getIcon } from "$lib/getIcon";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import { softSkills, techSkills } from "$lib/enums";
+	import Dropdown from "$lib/components/Dropdown.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
@@ -13,8 +13,9 @@
 	import Section from "$lib/components/index/Section.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
-	import SkillFilter from "$lib/components/SkillFilter.svelte";
+	import Star from "$lib/components/icons/general/Star.svelte";
 	import DevTagLoading from "$lib/components/DevTagLoading.svelte";
+	import Wrench from "$lib/components/icons/general/Wrench.svelte";
 	import HireStep from "$lib/components/developers/index/HireStep.svelte";
 	import Developer from "$lib/components/developers/index/Developer.svelte";
 	import DeveloperFilter from "$lib/components/developers/index/DevFilter.svelte";
@@ -27,8 +28,8 @@
 
 	let page = 0;
 	let search = "";
-	let softSkillFilter = new Set<SoftSkill>();
-	let techSkillFilter = new Set<TechSkill>();
+	let softSkillFilter: SoftSkill[] = [];
+	let techSkillFilter: TechSkill[] = [];
 	let analytics: AnalyticsInstance | undefined;
 	let request: Promise<App.UserSearchResponse[]> = new Promise(() => {});
 
@@ -45,11 +46,11 @@
 						contains: search.trim(),
 						mode: "insensitive"
 					},
-					softSkills: softSkillFilter.size
-						? { hasEvery: Array.from(softSkillFilter) }
+					softSkills: softSkillFilter.length
+						? { hasEvery: softSkillFilter }
 						: undefined,
-					techSkills: techSkillFilter.size
-						? { hasEvery: Array.from(techSkillFilter) }
+					techSkills: techSkillFilter.length
+						? { hasEvery: techSkillFilter }
 						: undefined,
 					visible: true
 				})}`
@@ -59,12 +60,12 @@
 					// Random search sampling so the search data isn't spammed
 					if (
 						analytics &&
-						(softSkillFilter.size || techSkillFilter.size) &&
+						(softSkillFilter.length || techSkillFilter.length) &&
 						Math.random() < 0.2
 					)
 						await analytics.track("user_search", {
-							soft_skills: Array.from(softSkillFilter),
-							tech_skills: Array.from(techSkillFilter)
+							soft_skills: softSkillFilter,
+							tech_skills: techSkillFilter
 						});
 
 					return users.length ? res(users) : rej();
@@ -87,11 +88,11 @@
 	// Track if a user was clicked on and what filters were used
 	const trackUser = async (id: string) =>
 		analytics &&
-		(softSkillFilter.size || techSkillFilter.size) &&
+		(softSkillFilter.length || techSkillFilter.length) &&
 		(await analytics.track("user_click", {
 			id,
-			soft_skills: Array.from(softSkillFilter),
-			tech_skills: Array.from(techSkillFilter)
+			soft_skills: softSkillFilter,
+			tech_skills: techSkillFilter
 		}));
 </script>
 
@@ -179,59 +180,33 @@
 			placeholder="Search developers..."
 		/>
 
-		<Scrollable
-			class="before:from-gray-900 after:to-gray-900"
-			arrows={true}
-		>
-			{#each softSkills as skill}
-				<SkillFilter
-					on:click={() => {
-						// Add a filter if its not there and delete it if it's not, then tell
-						// the component whether it's active or or not based off the initial has value
-						const has = softSkillFilter.has(skill);
-						has
-							? softSkillFilter.delete(skill)
-							: softSkillFilter.add(skill);
-						softSkillFilter = softSkillFilter;
+		<div class="flex flex-col gap-4 md:flex-row">
+			<Dropdown
+				bind:selected={softSkillFilter}
+				radio={false}
+				required={false}
+				options={softSkills}
+				selectedItems={[]}
+				on:change={onSearch}
+			>
+				<Star class="h-8 w-8" />
+			</Dropdown>
 
-						onSearch();
-					}}
-					name={skill.replace("_", " ")}
-					active={softSkillFilter.has(skill)}
-				>
-					<svelte:component this={getIcon(skill)} class="h-6 w-6" />
-				</SkillFilter>
-			{/each}
-		</Scrollable>
-
-		<Scrollable
-			class="before:from-gray-900 after:to-gray-900"
-			arrows={true}
-		>
-			{#each techSkills as skill}
-				<SkillFilter
-					on:click={() => {
-						// Add a filter if its not there and delete it if it's not, then tell
-						// the component whether it's active or or not based off the initial has value
-						const has = techSkillFilter.has(skill);
-						has
-							? techSkillFilter.delete(skill)
-							: techSkillFilter.add(skill);
-						techSkillFilter = techSkillFilter;
-
-						onSearch();
-					}}
-					name={skill.replace("_", " ")}
-					active={techSkillFilter.has(skill)}
-				>
-					<svelte:component this={getIcon(skill)} class="h-6 w-6" />
-				</SkillFilter>
-			{/each}
-		</Scrollable>
+			<Dropdown
+				bind:selected={techSkillFilter}
+				radio={false}
+				required={false}
+				options={techSkills}
+				selectedItems={[]}
+				on:change={onSearch}
+			>
+				<Wrench class="h-8 w-8" />
+			</Dropdown>
+		</div>
 
 		<Seperator />
 
-		<div class="min-h-[100rem] md:min-h-[80rem]">
+		<div class="min-h-[133rem] md:min-h-[96rem]">
 			<Scrollable
 				class="before:from-gray-900 after:to-gray-900"
 				arrows={true}
@@ -286,15 +261,8 @@
 								class="flex flex-col gap-2 items-center text-center md:flex-col-reverse md:text-start md:items-start"
 							>
 								<div
-									class="flex flex-col gap-3 items-center md:flex-row"
-								>
-									<div
-										class="rounded-full h-4 w-24 bg-gray-400 md:mt-0.5"
-									/>
-									<div
-										class="rounded-full h-5 w-44 bg-gray-400"
-									/>
-								</div>
+									class="rounded-full h-4 w-24 bg-gray-400 md:mt-0.5"
+								/>
 
 								<div
 									class="rounded-full h-7 w-60 bg-gray-400"
@@ -351,7 +319,7 @@
 							<div class="rounded-full h-5 w-32 bg-gray-400" />
 
 							<div
-								class="flex flex-col gap-4 md:grid md:grid-cols-2 w-full"
+								class="flex flex-col gap-4 w-full md:grid md:grid-cols-2"
 							>
 								<DevTagLoading />
 								<DevTagLoading />
@@ -364,9 +332,22 @@
 							/>
 
 							<div
-								class="flex flex-col gap-4 md:grid md:grid-cols-2 w-full"
+								class="flex flex-col gap-4 w-full md:grid md:grid-cols-2"
 							>
 								<DevTagLoading />
+								<DevTagLoading />
+								<DevTagLoading />
+								<DevTagLoading />
+								<DevTagLoading />
+							</div>
+
+							<div
+								class="rounded-full h-5 w-32 bg-gray-400 mt-4"
+							/>
+
+							<div
+								class="flex flex-col gap-4 w-full md:grid md:grid-cols-2"
+							>
 								<DevTagLoading />
 								<DevTagLoading />
 								<DevTagLoading />

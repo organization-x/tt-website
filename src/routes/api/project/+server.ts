@@ -105,7 +105,11 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		// If the title is being changed, do some more input validation
 		if (data.title) {
 			// Create a url out of the title if it exists
-			url = data.title.trim().replaceAll(" ", "-").toLowerCase();
+			url = data.title
+				.trim()
+				.replaceAll(/[^a-zA-Z0-9\s]/g, "")
+				.replaceAll(/\s/g, "-")
+				.toLowerCase();
 
 			// Check if project has the same url (so title) as another project
 			if (
@@ -183,7 +187,7 @@ export const POST: RequestHandler = async ({ locals }) => {
 
 	try {
 		// Remove any spaces from the name for url encoding
-		const name = user.name.replaceAll(" ", "-");
+		const name = user.name.replaceAll(/\s/g, "-");
 
 		// Check for other projects and postfix this one
 		const postfix = await prisma.project

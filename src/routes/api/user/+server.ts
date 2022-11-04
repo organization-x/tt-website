@@ -26,7 +26,10 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	try {
 		// Input validation
 		if (
-			(data.name && (data.name.length > 25 || data.name.length < 1)) ||
+			(data.name &&
+				(data.name.length > 25 ||
+					data.name.length < 1 ||
+					/[^a-zA-Z\s]/g.test(data.name))) ||
 			(data.positions &&
 				(data.positions.length < 2 || data.positions.length > 4)) ||
 			(data.softSkills &&

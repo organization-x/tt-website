@@ -2,10 +2,10 @@
 	import { onMount } from "svelte";
 	import { fly } from "svelte/transition";
 
-	import { getIcon } from "$lib/getIcon";
 	import { techSkills } from "$lib/enums";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
+	import Dropdown from "$lib/components/Dropdown.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import Section from "$lib/components/index/Section.svelte";
@@ -13,7 +13,7 @@
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import MajorHeader from "$lib/components/MajorHeader.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
-	import SkillFilter from "$lib/components/SkillFilter.svelte";
+	import Wrench from "$lib/components/icons/general/Wrench.svelte";
 	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
 	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
@@ -26,14 +26,16 @@
 
 	let page = 0;
 	let search = "";
-	let filters = new Set<TechSkill>();
+	let filters: TechSkill[] = [];
 	let analytics: AnalyticsInstance | undefined;
 	let request: Promise<App.ProjectWithMetadata[][]> = new Promise(() => {});
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
-	$: search, (request = new Promise(() => {})), (page = 0);
+	$: search, (request = new Promise(() => {}));
 
 	const onSearch = () => {
+		page = 0;
+
 		request = new Promise((res, rej) =>
 			fetch(
 				`/api/project?where=${JSON.stringify({
@@ -42,17 +44,15 @@
 						mode: "insensitive"
 					},
 					visible: true,
-					skills: filters.size
-						? { hasEvery: Array.from(filters) }
-						: undefined
+					skills: filters.length ? { hasEvery: filters } : undefined
 				} as Prisma.ProjectWhereInput)}`
 			)
 				.then((res) => res.json())
 				.then(async (projects: App.ProjectWithMetadata[]) => {
 					// Random search sampling so the search data isn't spammed
-					if (analytics && filters.size && Math.random() < 0.2)
+					if (analytics && filters.length && Math.random() < 0.2)
 						await analytics.track("project_search", {
-							tech_skills: Array.from(filters)
+							tech_skills: filters
 						});
 
 					// Put projects into pairs of 2 or reject if there's no results
@@ -87,11 +87,11 @@
 
 	// Track if a project was clicked on and what filters were used
 	const trackProject = async (id: string) =>
-		filters.size &&
+		filters.length &&
 		analytics &&
 		(await analytics.track("project_click", {
 			id,
-			tech_skills: Array.from(filters)
+			tech_skills: filters
 		}));
 </script>
 
@@ -143,29 +143,16 @@
 			placeholder="Search projects..."
 		/>
 
-		<Scrollable
-			class="before:from-gray-900 after:to-gray-900"
-			arrows={true}
+		<Dropdown
+			bind:selected={filters}
+			radio={false}
+			required={false}
+			options={techSkills}
+			selectedItems={[]}
+			on:change={onSearch}
 		>
-			{#each techSkills as skill}
-				<SkillFilter
-					on:click={() => {
-						// Add a filter if its not there and delete it if it's not, then tell
-						// the component whether it's active or or not based off the initial has value
-						const has = filters.has(skill);
-						has ? filters.delete(skill) : filters.add(skill);
-
-						onSearch();
-
-						filters = filters;
-					}}
-					name={skill.replace("_", " ")}
-					active={filters.has(skill)}
-				>
-					<svelte:component this={getIcon(skill)} class="h-6 w-6" />
-				</SkillFilter>
-			{/each}
-		</Scrollable>
+			<Wrench class="h-8 w-8" />
+		</Dropdown>
 
 		<Seperator />
 

@@ -88,6 +88,8 @@
 		checkConstraints();
 	};
 
+	$: user.name, (user.name = user.name.replaceAll(/[^a-zA-Z\s]/g, ""));
+
 	$: user.about, checkConstraints();
 
 	$: user.links,
@@ -202,7 +204,7 @@
 
 <svelte:window on:keydown={onKeydown} />
 
-<div class="relative pt-18 px-5 lg:px-10">
+<div class="relative pt-18 px-5 lg:px-6">
 	<label class="grid absolute top-0 inset-x-0 z-20 cursor-pointer">
 		{#if banner && banner.disabled}
 			<div
@@ -318,144 +320,151 @@
 			disabled={disableForm}
 			class:opacity-60={disableForm}
 			class:pointer-events-none={disableForm}
-			class="flex flex-col mt-8 gap-12 max-w-xl mx-auto transition-opacity duration-300 lg:max-w-screen-2xl lg:mt-40 lg:mx-0 3xl:grid 3xl:grid-cols-2 3xl:text-sm"
 		>
-			<div class="flex flex-col gap-12 justify-between">
-				<ProfileSection title="About Me">
-					<Input
-						bind:value={user.name}
-						max={20}
-						placeholder="Your name"
-					>
-						<Id class="w-6 h-6 mx-auto" />
-					</Input>
-					<TextBox
-						bind:value={user.about}
-						placeholder="Include previous projects, skills, and your experience level..."
-						max={150}
-					/>
-
-					<Dropdown
-						options={teams}
-						required={false}
-						selectedItems={[user.team]}
-						on:change={updateTeam}
-					>
-						<Group class="w-8 h-8 shrink-0" />
-					</Dropdown>
-				</ProfileSection>
-
-				<ProfileSection largeGrid={true} title="Links">
-					<Input
-						bind:value={user.links.GitHub}
-						placeholder="GitHub username"
-					>
-						<GitHub class="w-6 h-6 mx-auto" />
-					</Input>
-
-					<Input
-						bind:value={user.links.LinkedIn}
-						placeholder="LinkedIn username"
-					>
-						<LinkedIn class="w-6 h-6 mx-auto" />
-					</Input>
-
-					<Input
-						bind:value={user.links.Devto}
-						placeholder="Dev.to username"
-					>
-						<Devto class="w-6 h-6 mx-auto" />
-					</Input>
-
-					<Input
-						bind:value={user.links.Twitter}
-						placeholder="Twitter username"
-					>
-						<Twitter class="w-6 h-6 mx-auto" />
-					</Input>
-
-					<Input
-						bind:value={user.links.Facebook}
-						placeholder="Facebook username"
-					>
-						<Facebook class="w-6 h-6 mx-auto" />
-					</Input>
-
-					<Input
-						bind:value={user.links.Website}
-						placeholder="Website link"
-					>
-						<LinkIcon class="w-6 h-6 mx-auto" />
-					</Input>
-				</ProfileSection>
-			</div>
-
-			<div class="flex flex-col gap-12 justify-between">
-				<ProfileSection largeGrid={true} title="Positions">
-					{#each { length: 4 } as _, i}
-						<Dropdown
-							{i}
-							required={i < 2}
-							options={positions}
-							selectedItems={user.positions}
-							on:change={({ detail }) => {
-								dropdownUpdate(
-									user.positions,
-									detail.selected,
-									detail.previous
-								);
-								user.positions = user.positions;
-							}}
+			<div
+				class="flex flex-col mt-8 gap-12 max-w-xl mx-auto transition-opacity duration-300 lg:text-sm lg:max-w-screen-2xl lg:mt-40 lg:mx-0 3xl:flex-row 3xl:items-stretch 3xl:text-sm"
+			>
+				<div class="flex flex-col gap-12 justify-between">
+					<ProfileSection title="About Me">
+						<Input
+							bind:value={user.name}
+							max={20}
+							placeholder="Your name"
+						>
+							<Id class="w-6 h-6 mx-auto" />
+						</Input>
+						<TextBox
+							bind:value={user.about}
+							placeholder="Include previous projects, skills, and your experience level..."
+							max={150}
 						/>
-					{/each}
-				</ProfileSection>
 
-				<ProfileSection largeGrid={true} title="Top Skills">
-					<div class="flex flex-col gap-6">
-						<h1 class="font-semibold text-xl text-center">Soft</h1>
-						{#each { length: 5 } as _, i}
+						<Dropdown
+							options={teams}
+							required={false}
+							selectedItems={[user.team]}
+							on:change={updateTeam}
+						>
+							<Group class="w-8 h-8 shrink-0" />
+						</Dropdown>
+					</ProfileSection>
+
+					<ProfileSection largeGrid={true} title="Links">
+						<Input
+							bind:value={user.links.GitHub}
+							placeholder="GitHub username"
+						>
+							<GitHub class="w-6 h-6 mx-auto" />
+						</Input>
+
+						<Input
+							bind:value={user.links.LinkedIn}
+							placeholder="LinkedIn username"
+						>
+							<LinkedIn class="w-6 h-6 mx-auto" />
+						</Input>
+
+						<Input
+							bind:value={user.links.Devto}
+							placeholder="Dev.to username"
+						>
+							<Devto class="w-6 h-6 mx-auto" />
+						</Input>
+
+						<Input
+							bind:value={user.links.Twitter}
+							placeholder="Twitter username"
+						>
+							<Twitter class="w-6 h-6 mx-auto" />
+						</Input>
+
+						<Input
+							bind:value={user.links.Facebook}
+							placeholder="Facebook username"
+						>
+							<Facebook class="w-6 h-6 mx-auto" />
+						</Input>
+
+						<Input
+							bind:value={user.links.Website}
+							placeholder="Website link"
+						>
+							<LinkIcon class="w-6 h-6 mx-auto" />
+						</Input>
+					</ProfileSection>
+				</div>
+
+				<div class="flex flex-col gap-12 justify-between 3xl:shrink-0">
+					<ProfileSection largeGrid={true} title="Positions">
+						{#each { length: 4 } as _, i}
 							<Dropdown
 								{i}
 								required={i < 2}
-								options={softSkills}
-								selectedItems={user.softSkills}
+								options={positions}
+								selectedItems={user.positions}
 								on:change={({ detail }) => {
 									dropdownUpdate(
-										user.softSkills,
+										user.positions,
 										detail.selected,
 										detail.previous
 									);
-									user.softSkills = user.softSkills;
+									user.positions = user.positions;
 								}}
 							/>
 						{/each}
-					</div>
+					</ProfileSection>
 
-					<div class="flex flex-col gap-6">
-						<h1 class="font-semibold text-xl text-center">
-							Technical
-						</h1>
-						{#each { length: 5 } as _, i}
-							<Dropdown
-								{i}
-								required={i < 2}
-								options={techSkills}
-								selectedItems={user.techSkills}
-								on:change={({ detail }) => {
-									dropdownUpdate(
-										user.techSkills,
-										detail.selected,
-										detail.previous
-									);
-									user.techSkills = user.techSkills;
-								}}
-							/>
-						{/each}
-					</div>
-				</ProfileSection>
+					<ProfileSection largeGrid={true} title="Top Skills">
+						<div class="flex flex-col gap-6">
+							<h1 class="font-semibold text-xl text-center">
+								Soft
+							</h1>
+							{#each { length: 5 } as _, i}
+								<Dropdown
+									{i}
+									required={i < 2}
+									options={softSkills}
+									selectedItems={user.softSkills}
+									on:change={({ detail }) => {
+										dropdownUpdate(
+											user.softSkills,
+											detail.selected,
+											detail.previous
+										);
+										user.softSkills = user.softSkills;
+									}}
+								/>
+							{/each}
+						</div>
+
+						<div class="flex flex-col gap-6">
+							<h1 class="font-semibold text-xl text-center">
+								Technical
+							</h1>
+							{#each { length: 5 } as _, i}
+								<Dropdown
+									{i}
+									required={i < 2}
+									options={techSkills}
+									selectedItems={user.techSkills}
+									on:change={({ detail }) => {
+										dropdownUpdate(
+											user.techSkills,
+											detail.selected,
+											detail.previous
+										);
+										user.techSkills = user.techSkills;
+									}}
+								/>
+							{/each}
+						</div>
+					</ProfileSection>
+				</div>
 			</div>
 
-			<div class="flex gap-6 mx-auto lg:mr-0 xl:col-span-2 xl:h-12">
+			<div
+				class="flex gap-6 justify-center mt-8 h-14 lg:h-12 3xl:justify-end"
+			>
 				<DashButton
 					on:click={cancel}
 					disabled={disableButtons}

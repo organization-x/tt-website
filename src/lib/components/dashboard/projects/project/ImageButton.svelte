@@ -82,7 +82,7 @@
 		}
 	};
 
-	// Upload an image to Cloudflafe images
+	// Upload an image to Cloudflare images
 	const uploader = () =>
 		upload.files?.length &&
 		upload.files[0].size <= 1048576 &&

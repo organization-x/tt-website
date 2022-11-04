@@ -1,24 +1,37 @@
 import { lowlight } from "lowlight";
 import { Extension } from "@tiptap/core";
+import c from "highlight.js/lib/languages/c";
 import { Text } from "@tiptap/extension-text";
 import { Bold } from "@tiptap/extension-bold";
 import { Code } from "@tiptap/extension-code";
 import { Link } from "@tiptap/extension-link";
 import { Placeholder } from "$lib/placeholder";
+import go from "highlight.js/lib/languages/go";
 import { Image } from "@tiptap/extension-image";
 import css from "highlight.js/lib/languages/css";
-import html from "highlight.js/lib/languages/xml";
+import xml from "highlight.js/lib/languages/xml";
+import cpp from "highlight.js/lib/languages/cpp";
+import sql from "highlight.js/lib/languages/sql";
+import php from "highlight.js/lib/languages/php";
 import { Italic } from "@tiptap/extension-italic";
 import { Strike } from "@tiptap/extension-strike";
+import java from "highlight.js/lib/languages/java";
 import json from "highlight.js/lib/languages/json";
 import bash from "highlight.js/lib/languages/bash";
+import rust from "highlight.js/lib/languages/rust";
+import perl from "highlight.js/lib/languages/perl";
+import ruby from "highlight.js/lib/languages/ruby";
+import yaml from "highlight.js/lib/languages/yaml";
 import { Heading } from "@tiptap/extension-heading";
+import swift from "highlight.js/lib/languages/swift";
 import { Document } from "@tiptap/extension-document";
 import { ListItem } from "@tiptap/extension-list-item";
-import js from "highlight.js/lib/languages/javascript";
 import python from "highlight.js/lib/languages/python";
+import kotlin from "highlight.js/lib/languages/kotlin";
+import csharp from "highlight.js/lib/languages/csharp";
 import { Paragraph } from "@tiptap/extension-paragraph";
 import { Underline } from "@tiptap/extension-underline";
+import graphql from "highlight.js/lib/languages/graphql";
 import { Dropcursor } from "@tiptap/extension-dropcursor";
 import { Typography } from "@tiptap/extension-typography";
 import { BulletList } from "@tiptap/extension-bullet-list";
@@ -26,19 +39,34 @@ import markdown from "highlight.js/lib/languages/markdown";
 import { OrderedList } from "@tiptap/extension-ordered-list";
 import typescript from "highlight.js/lib/languages/typescript";
 import javascript from "highlight.js/lib/languages/javascript";
+
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 
 // Generating HTML using Tiptap requires me to re-define all the HTML attributes for every extension.
 // It's super annoying but if we want SSR there's no workaround so I decided to just host them all in one file
 
-// These languages were picked based off of the most common languages at tt.
-// We don't want to import everything since that will send 3MB+ of data to the client
-lowlight.registerLanguage("js", js);
+// These languages were picked based off of the languages provided in the skill icons and what
+// HLJS supports. We don't want to import everything since that will send 3MB+ of data to the client
+lowlight.registerLanguage("c", c);
+lowlight.registerLanguage("go", go);
 lowlight.registerLanguage("css", css);
-lowlight.registerLanguage("html", html);
+lowlight.registerLanguage("sql", sql);
+lowlight.registerLanguage("php", php);
+lowlight.registerLanguage("cpp", cpp);
+lowlight.registerLanguage("xml", xml);
+lowlight.registerLanguage("html", xml);
 lowlight.registerLanguage("json", json);
 lowlight.registerLanguage("bash", bash);
+lowlight.registerLanguage("rust", rust);
+lowlight.registerLanguage("perl", perl);
+lowlight.registerLanguage("ruby", ruby);
+lowlight.registerLanguage("java", java);
+lowlight.registerLanguage("yaml", yaml);
+lowlight.registerLanguage("swift", swift);
 lowlight.registerLanguage("python", python);
+lowlight.registerLanguage("kotlin", kotlin);
+lowlight.registerLanguage("csharp", csharp);
+lowlight.registerLanguage("graphql", graphql);
 lowlight.registerLanguage("markdown", markdown);
 lowlight.registerLanguage("typescript", typescript);
 lowlight.registerLanguage("javascript", javascript);

@@ -56,6 +56,11 @@
 		)
 	).size;
 
+	// Create a count of projects that are visible
+	const projectCount = data.projects.filter(
+		(project) => project.visible
+	).length;
+
 	// Create a timestamp so the images from Cloudflare don't cache
 	const timestamp = new Date().getTime();
 
@@ -451,7 +456,7 @@
 				<BadgeProgress
 					name="Project Starter"
 					playing={playing.has(0)}
-					progress={data.projects.length / 10}
+					progress={projectCount / 10}
 					class="bg-blue-light"
 				>
 					<TenProjects slot="badge" />
@@ -462,7 +467,7 @@
 				<BadgeProgress
 					name="Project Master"
 					playing={playing.has(1)}
-					progress={data.projects.length / 20}
+					progress={projectCount / 20}
 					class="bg-pink-light"
 				>
 					<TwentyProjects slot="badge" />
