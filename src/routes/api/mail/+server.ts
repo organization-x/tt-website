@@ -82,9 +82,9 @@ export const POST: RequestHandler = async ({ request }) => {
 						</div>
 						<div style="margin-top: 2rem;">
 							<h1 class="font-semibold" style="font-size: inherit;">What Talent Do You Need?</h1>
-							<div style="width:calc(100% - 24px);min-height:35px;background-color:rgb(235,235,235);border-radius:10px;color:rgb(21,21,21);padding:20px 10px;border:2px solid rgb(31,189,103);">${
-								data.talent.join(", ")
-							}</div>
+							<div style="width:calc(100% - 24px);min-height:35px;background-color:rgb(235,235,235);border-radius:10px;color:rgb(21,21,21);padding:20px 10px;border:2px solid rgb(31,189,103);">${data.talent.join(
+								", "
+							)}</div>
 						</div>
 						<div style="margin-top: 2rem;">
 							<h1 class="font-semibold" style="font-size: inherit;">Company Website</h1>
