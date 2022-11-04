@@ -136,7 +136,8 @@ export const techSkills: TechSkill[] = [
 	"OpenAI",
 	"Tokio",
 	"Yew",
-	"Tailscale"
+	"Tailscale",
+	"Analytics"
 ];
 
 // Enum for date dropdowns

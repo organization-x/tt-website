@@ -146,6 +146,7 @@ enum TechSkill {
     Tokio
     Yew
     Tailscale
+    Analytics
 }
 
 // Enum for user permission roles
