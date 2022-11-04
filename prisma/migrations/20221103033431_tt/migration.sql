@@ -5,10 +5,10 @@ CREATE TYPE "Team" AS ENUM ('Marketing', 'Engineering', 'Design', 'Operations', 
 CREATE TYPE "Position" AS ENUM ('Frontend', 'Backend', 'Fullstack', 'Designer', 'Product_Manager', 'Data_Scientist', 'Engineer_Manager', 'Design_Manager', 'Engineer');
 
 -- CreateEnum
-CREATE TYPE "SoftSkill" AS ENUM ('Teamwork', 'Leader', 'Writing', 'Proactive', 'Time_Management', 'Communication', 'Critical_Thinking', 'Motivation', 'Independent', 'Responsible', 'Reliable', 'Mentor', 'Initiative', 'Adaptable', 'Perseverance', 'Meticulous');
+CREATE TYPE "SoftSkill" AS ENUM ('Teamwork', 'Leading', 'Writing', 'Proactive', 'Organization', 'Communication', 'Problem_Solving', 'Motivation', 'Independent', 'Responsible', 'Reliable', 'Mentor', 'Initiative', 'Adaptable', 'Perserverance', 'Meticulous');
 
 -- CreateEnum
-CREATE TYPE "TechSkill" AS ENUM ('JavaScript', 'Python', 'React', 'TensorFlow', 'Pytorch', 'Google_Cloud', 'AWS', 'GraphQL', 'Java', 'Golang', 'Docker', 'PHP', 'Tailwind', 'SQL', 'NoSQL', 'Angular', 'Svelte', 'Vue', 'Node', 'Rust', 'CSharp', 'CPP', 'C', 'Figma', 'Bash', 'Deno', 'Prisma', 'Ruby', 'Vercel', 'Next', 'Vite', 'WebAssembly', 'Flutter', 'Dart', 'Kotlin', 'Swift', 'Blockchain', 'Kubernetes', 'DevOps', 'CICD', 'Nuxt', 'Git', 'Elixir', 'Perl', 'Firebase', 'Unity', 'DigitalOcean', 'Linux', 'Nginx', 'Heroku', 'MongoDB', 'Postgres', 'Redis', 'Django', 'Flask', 'Express', 'Remix', 'Astro', 'Qwik', 'Surreal', 'Cassandra', 'Fresh', 'Bun', 'Redwood', 'Tauri', 'Electron', 'LaTeX', 'Lua', 'Haskell', 'Assembly', 'R', 'SupaBase', 'Fly', 'Railway');
+CREATE TYPE "TechSkill" AS ENUM ('JavaScript', 'TypeScript', 'Python', 'React', 'TensorFlow', 'Pytorch', 'Google_Cloud', 'AWS', 'GraphQL', 'Java', 'Golang', 'Docker', 'PHP', 'Tailwind', 'SQL', 'Angular', 'Vue', 'Node', 'Rust', 'CSharp', 'CPP', 'C', 'Figma', 'Bash', 'Deno', 'Prisma', 'Ruby', 'Vercel', 'Next', 'WebAssembly', 'Flutter', 'Dart', 'Kotlin', 'Swift', 'Blockchain', 'Kubernetes', 'DevOps', 'CICD', 'Nuxt', 'Git', 'Elixir', 'Perl', 'Firebase', 'Unity', 'Digital_Ocean', 'Linux', 'Nginx', 'Heroku', 'Mongo', 'Postgres', 'Redis', 'Django', 'Flask', 'Express', 'Remix', 'Astro', 'Qwik', 'Surreal', 'Cassandra', 'Bun', 'Tauri', 'Electron', 'LaTeX', 'Lua', 'Haskell', 'R', 'SupaBase', 'Fly', 'Railway', 'Svelte', 'Vite', 'Azure', 'Bootstrap', 'Clojure', 'DiscordJS', 'Gatsby', 'Gradle', 'Ionic', 'Markdown', 'Numpy', 'Pandas', 'Rails', 'Scala', 'Solidity', 'Terraform', 'Zig', 'OpenCV', 'OpenAI', 'Tokio', 'Yew');
 
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('Admin', 'Lead', 'User');

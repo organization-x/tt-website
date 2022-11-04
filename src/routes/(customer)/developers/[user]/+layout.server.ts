@@ -65,7 +65,7 @@ export const load: LayoutServerLoad<{
 
 	if (!user) throw redirect(302, "/developers");
 
-	const projects = await getProjects({ ownerId: user.id });
+	const projects = await getProjects({ ownerId: user.id, visible: true });
 
 	let endorserId: string | null = null;
 

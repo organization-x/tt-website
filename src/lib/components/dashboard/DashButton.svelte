@@ -22,7 +22,7 @@
 	class:w-24={!icon}
 	class:px-4={!icon}
 	class:px-3={icon}
-	class="rounded-lg relative py-3 text-center shrink-0 transition-[background-color,opacity] duration-200 disabled:opacity-60 disabled:pointer-events-none {className}"
+	class="rounded-lg relative py-3 text-center shrink-0 leading-none transition-[background-color,opacity] duration-200 disabled:opacity-60 disabled:pointer-events-none {className}"
 >
 	<slot />
 </button>

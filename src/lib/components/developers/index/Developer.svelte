@@ -9,12 +9,7 @@
 	import Bulb from "$lib/components/icons/general/Bulb.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import Wrench from "$lib/components/icons/general/Wrench.svelte";
-	import TenKudos from "$lib/components/icons/badges/TenKudos.svelte";
-	import FiftyKudos from "$lib/components/icons/badges/FiftyKudos.svelte";
-	import TenProjects from "$lib/components/icons/badges/TenProjects.svelte";
-	import AllEndorsed from "$lib/components/icons/badges/AllEndorsed.svelte";
-	import HundredKudos from "$lib/components/icons/badges/HundredKudos.svelte";
-	import TwentyProjects from "$lib/components/icons/badges/TwentyProjects.svelte";
+	import Star from "$lib/components/icons/general/Star.svelte";
 
 	export let user: App.UserSearchResponse;
 
@@ -50,36 +45,7 @@
 		<div
 			class="flex flex-col gap-1 items-center text-center md:flex-col-reverse md:text-start md:items-start md:gap-0"
 		>
-			<div
-				class="flex flex-col gap-2 md:flex-row md:gap-3 md:items-center"
-			>
-				<h1 class="font-semibold">{user.team || "No Team"}</h1>
-
-				<div class="flex gap-2 items-center">
-					<!-- TODO: Kudos Data-->
-
-					<TenProjects
-						class="w-5 h-5"
-						active={user._count.projects >= 10}
-					/>
-
-					<TwentyProjects
-						class="w-5 h-5"
-						active={user._count.projects >= 20}
-					/>
-
-					<AllEndorsed
-						class="w-5 h-5"
-						active={user._count.endorsements === 10}
-					/>
-
-					<TenKudos class="w-5 h-5" active={false} />
-
-					<FiftyKudos class="w-5 h-5" active={false} />
-
-					<HundredKudos class="w-5 h-5" active={false} />
-				</div>
-			</div>
+			<h1 class="font-semibold xl:-mt-1">{user.team || "No Team"}</h1>
 
 			<GradientText class="from-green-light to-green-dark text-3xl">
 				{user.name}
@@ -134,25 +100,24 @@
 		<DevSection title="Positions">
 			<Bulb slot="icon" class="w-6 h-6" />
 
-			{#each user.positions as position, i}
-				{#if i <= 4}
-					<DevTag name={position} />
-				{/if}
+			{#each user.positions as position}
+				<DevTag name={position} />
 			{/each}
 		</DevSection>
 
-		<DevSection title="Top Skills">
+		<DevSection title="Top Soft Skills">
+			<Star slot="icon" class="w-6 h-6" />
+
+			{#each user.softSkills as skill}
+				<DevTag name={skill} />
+			{/each}
+		</DevSection>
+
+		<DevSection title="Top Tech Skills">
 			<Wrench slot="icon" class="w-6 h-6" />
 
-			{#each user.techSkills as skill, i}
-				{#if i <= 2}
-					<DevTag name={skill} />
-				{/if}
-			{/each}
-			{#each user.softSkills as skill, i}
-				{#if i <= 2}
-					<DevTag name={skill} />
-				{/if}
+			{#each user.techSkills as skill}
+				<DevTag name={skill} />
 			{/each}
 		</DevSection>
 	</div>
