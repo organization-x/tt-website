@@ -1,9 +1,12 @@
 import { error } from "@sveltejs/kit";
 import { gmail } from "@googleapis/gmail";
-import { env } from "$env/dynamic/private";
 import { OAuth2Client } from "googleapis-common";
 
+import { env } from "$env/dynamic/private";
+
 import type { RequestHandler } from "./$types";
+
+// Request handler for managing form submission from the contact form and inserting them into Gmail
 
 const auth = new OAuth2Client({
 	clientId: env.GOOGLE_ID,

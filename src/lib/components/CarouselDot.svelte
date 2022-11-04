@@ -2,7 +2,7 @@
 	export let active: boolean;
 </script>
 
-<div
+<button
 	on:click
 	class:text-white={active}
 	class:text-gray-500={!active}
@@ -15,4 +15,4 @@
 	>
 		<circle cx="12" cy="12" r="12" />
 	</svg>
-</div>
+</button>

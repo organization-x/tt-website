@@ -6,10 +6,10 @@
 	import Step from "$lib/components/index/Step.svelte";
 	import Gear from "$lib/components/index/Gear.svelte";
 	import Aiot from "$lib/components/index/Aiot.svelte";
-	import Logo from "$lib/components/icons/Logo.svelte";
 	import Hippo from "$lib/components/index/Hippo.svelte";
 	import Crane from "$lib/components/index/Crane.svelte";
 	import AicBot from "$lib/components/index/AICBot.svelte";
+	import Logo from "$lib/components/icons/logos/Logo.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Company from "$lib/components/index/Company.svelte";
 	import DevCard from "$lib/components/index/DevCard.svelte";
@@ -215,21 +215,33 @@
 		Uncover all our projects
 	</Button>
 
-	<Project project={data.projects[0]}>
-		<Hippo slot="svg" />
-	</Project>
+	<!-- TODO: Remove these if statements once the database has these selected projects -->
+	{#if data.projects[0]}
+		<Project project={data.projects[0]}>
+			<Hippo slot="svg" />
+		</Project>
+	{/if}
 
-	<Project project={data.projects[1]}>
-		<Aiot slot="svg" />
-	</Project>
+	{#if data.projects[1]}
+		<Project project={data.projects[1]}>
+			<Aiot slot="svg" />
+		</Project>
+	{/if}
 
-	<Project project={data.projects[2]}>
-		<AicBot slot="svg" />
-	</Project>
+	{#if data.projects[2]}
+		<Project project={data.projects[2]}>
+			<AicBot slot="svg" />
+		</Project>
+	{/if}
 
-	<Project project={data.projects[3]}>
-		<Logo slot="svg" class="w-20 absolute -top-8 right-0 left-0 mx-auto" />
-	</Project>
+	{#if data.projects[3]}
+		<Project project={data.projects[3]}>
+			<Logo
+				slot="svg"
+				class="w-20 absolute -top-8 right-0 left-0 mx-auto"
+			/>
+		</Project>
+	{/if}
 
 	<Button
 		on:click={() => trackClick("uncover_projects")}
@@ -258,41 +270,47 @@
 		to best suite your needs
 	</MajorCaption>
 
-	<!-- TODO: Switch indexing to proper values -->
+	<!-- TODO: Remove these if statements once the database has these selected developers -->
 
 	<Carousel class="lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:max-w-screen-xl">
-		<DevCard
-			developer={data.developers[0]}
-			position="Software Engineer"
-			accomplishments={[
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects."
-			]}
-		/>
+		{#if data.developers[0]}
+			<DevCard
+				developer={data.developers[0]}
+				position="Software Engineer"
+				accomplishments={[
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects."
+				]}
+			/>
+		{/if}
 
-		<DevCard
-			developer={data.developers[0]}
-			position="Software Engineer"
-			accomplishments={[
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects."
-			]}
-		/>
+		{#if data.developers[1]}
+			<DevCard
+				developer={data.developers[1]}
+				position="Software Engineer"
+				accomplishments={[
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects."
+				]}
+			/>
+		{/if}
 
-		<DevCard
-			developer={data.developers[0]}
-			position="Software Engineer"
-			accomplishments={[
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects.",
-				"Worked on 80000 projects."
-			]}
-		/>
+		{#if data.developers[2]}
+			<DevCard
+				developer={data.developers[2]}
+				position="Software Engineer"
+				accomplishments={[
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects.",
+					"Worked on 80000 projects."
+				]}
+			/>
+		{/if}
 	</Carousel>
 
 	<Button
@@ -313,9 +331,11 @@
 	</Text>
 
 	<!-- TODO: Put actual important project here -->
-	<div class="max-w-lg mx-auto lg:max-w-2xl">
-		<ProjectPreview project={data.projects[0]} />
-	</div>
+	{#if data.projects[4]}
+		<div class="max-w-lg mx-auto lg:max-w-2xl">
+			<ProjectPreview project={data.projects[4]} />
+		</div>
+	{/if}
 </Section>
 
 <MajorHeader>

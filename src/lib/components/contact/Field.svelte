@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { validate } from "$lib/validate";
-	import Asterisk from "$lib/components/icons/Asterisk.svelte";
+	import Asterisk from "$lib/components/icons/general/Asterisk.svelte";
 
 	import type { FieldType } from "$lib/enums";
 

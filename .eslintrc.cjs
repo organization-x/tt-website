@@ -2,9 +2,9 @@ module.exports = {
 	root: true,
 	parser: "@typescript-eslint/parser",
 	extends: [
+		"prettier",
 		"eslint:recommended",
-		"plugin:@typescript-eslint/recommended",
-		"prettier"
+		"plugin:@typescript-eslint/recommended"
 	],
 	plugins: ["svelte3", "@typescript-eslint"],
 	ignorePatterns: ["*.cjs"],
@@ -22,10 +22,12 @@ module.exports = {
 		node: true
 	},
 	rules: {
-		"@typescript-eslint/no-non-null-assertion": "off",
-		"@typescript-eslint/no-empty-function": "off",
+		"no-control-regex": "off",
+		"no-case-declarations": "off",
+		"no-mixed-spaces-and-tabs": "off",
 		"@typescript-eslint/ban-ts-comment": "off",
-		"no-control-regex": "off"
+		"@typescript-eslint/no-empty-function": "off",
+		"@typescript-eslint/no-non-null-assertion": "off"
 	},
 	globals: {
 		App: "readonly",

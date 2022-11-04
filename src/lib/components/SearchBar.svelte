@@ -2,7 +2,7 @@
 	import { createEventDispatcher, onMount } from "svelte";
 
 	import { debounce } from "$lib/debounce";
-	import Search from "$lib/components/icons/Search.svelte";
+	import Search from "$lib/components/icons/general/Search.svelte";
 
 	const dispatch = createEventDispatcher<{ search: undefined }>();
 

@@ -1,7 +1,9 @@
+import Redis from "ioredis";
 import { error } from "@sveltejs/kit";
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
 
 import { colors } from "$lib/enums";
+import { createHash } from "node:crypto";
 import { env } from "$env/dynamic/private";
 import { prisma, userAuth } from "$lib/prisma";
 
@@ -10,7 +12,7 @@ import type { SoftSkill, TechSkill } from "@prisma/client";
 
 // Request handlers for managing user data in prisma, it uses the users session token to verify the API call
 
-// TODO: Redis cache
+const redis = new Redis(env.REDIS_URL);
 
 // Create google analytics fetching client
 const analytics = new BetaAnalyticsDataClient({
@@ -22,9 +24,9 @@ const analytics = new BetaAnalyticsDataClient({
 });
 
 // Get analytics data for the specific user
-// * INPUT: AnalyticsRequest
+// * INPUT: startDate=string, endDate=string
 // * OUTPUT: AnalyticsResponse
-export const POST: RequestHandler = async ({ locals, request }) => {
+export const GET: RequestHandler = async ({ locals, request }) => {
 	const user = await userAuth(locals);
 
 	if (!user) throw error(401, "Unauthorized");
@@ -38,7 +40,22 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const projectIds = projects.map((project) => project.id);
 
 	try {
-		const data: App.AnalyticsRequest = await request.json();
+		const url = new URL(request.url).searchParams;
+
+		const data = {
+			startDate: url.get("startDate")!,
+			endDate: url.get("endDate")!
+		};
+
+		// Create a unique hash of this request
+		const hash = createHash("shake128", { outputLength: 10 })
+			.update(data.startDate + data.endDate + user.id)
+			.digest("hex");
+
+		// Check if this request has been cached
+		const cached = await redis.get(hash);
+
+		if (cached) return new Response(cached, { status: 200 });
 
 		// Provide comparisons to the previous data within the same selected time period. For example if month
 		// is selected provide a comparison to the previous month, if week is then compare to the previous week
@@ -277,7 +294,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					row.metricValues![0].value!
 				));
 
-			const views = Number.parseInt(row.metricValues![0].value!);
+			const views = parseInt(row.metricValues![0].value!);
 
 			// If this row is for returning users, add the views, otherwise add it to new users
 			row.dimensionValues![0].value! === "returning"
@@ -309,9 +326,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					);
 
 				// Add search clicks to total
-				response.searches += Number.parseInt(
-					row.metricValues![0].value!
-				);
+				response.searches += parseInt(row.metricValues![0].value!);
 			});
 
 		if (projectIds.length) {
@@ -338,16 +353,14 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					// Project views
 					response.projects.views.push({
 						label,
-						value: Number.parseInt(row.metricValues![0].value!)
+						value: parseInt(row.metricValues![0].value!)
 					} as App.GraphData);
 
 					// Percent scrolled
 					if (row.dimensionValues![0].value!.length)
 						response.projects.scrolled.push({
 							label,
-							value: Number.parseInt(
-								row.dimensionValues![0].value!
-							)
+							value: parseInt(row.dimensionValues![0].value!)
 						} as App.GraphData);
 				});
 
@@ -370,7 +383,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 					);
 
 					// Add search clicks to total
-					response.projects.searches += Number.parseInt(
+					response.projects.searches += parseInt(
 						row.metricValues![0].value!
 					);
 				});
@@ -384,7 +397,15 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			response.projects.views[i].color = color;
 			response.projects.scrolled[i].color = color;
 		});
-		return new Response(JSON.stringify(response), { status: 200 });
+
+		const json = JSON.stringify(response);
+
+		// Add the response to the cache so that we don't reach the Google Analytics API limit.
+		// The key is the date selected along with the users ID all hashed to improve performance, we
+		// don't want to be using that entire string as the key
+		await redis.set(hash, json);
+
+		return new Response(json, { status: 200 });
 	} catch {
 		throw error(400, "Bad Request");
 	}
