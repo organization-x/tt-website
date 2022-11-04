@@ -6,7 +6,7 @@ kill_timeout = 5
 processes = []
 
 [deploy]
-  release_command = "yarn prisma db push"
+  release_command = "yarn prisma migrate deploy"
 
 [env]
 
