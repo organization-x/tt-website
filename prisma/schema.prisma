@@ -14,6 +14,10 @@ enum Team {
     Marketing
     Engineering
     Design
+    Operations
+    Product
+    Leadership
+    Data
 }
 
 // Positions that can be viewed and searched for linked to users
@@ -22,30 +26,133 @@ enum Position {
     Backend
     Fullstack
     Designer
+    Product_Manager
+    Data_Scientist
+    Engineer_Manager
+    Design_Manager
+    Engineer
+}
+
+// Enum for soft skills which are only used on users
+enum SoftSkill {
+    Teamwork
+    Leading
+    Writing
+    Proactive
+    Organization
+    Communication
+    Problem_Solver
+    Motivation
+    Independent
+    Responsible
+    Reliable
+    Mentor
+    Initiative
+    Adaptable
+    Perserverance
+    Meticulous
 }
 
 // Enum for skills that can be "tagged" to users and projects
 enum TechSkill {
     JavaScript
+    TypeScript
     Python
     React
     TensorFlow
     Pytorch
     Google_Cloud
     AWS
-}
-
-// Enum for soft skills which are only used on users
-enum SoftSkill {
-    Teamwork
-    Leadership
-    Writing
-    Proactive
+    GraphQL
+    Java
+    Golang
+    Docker
+    PHP
+    Tailwind
+    SQL
+    Angular
+    Vue
+    Node
+    Rust
+    CSharp
+    CPP
+    C
+    Figma
+    Bash
+    Deno
+    Prisma
+    Ruby
+    Vercel
+    Next
+    WebAssembly
+    Flutter
+    Dart
+    Kotlin
+    Swift
+    Blockchain
+    Kubernetes
+    DevOps
+    CICD
+    Nuxt
+    Git
+    Elixir
+    Perl
+    Firebase
+    Unity
+    Digital_Ocean
+    Linux
+    Nginx
+    Heroku
+    Mongo
+    Postgres
+    Redis
+    Django
+    Flask
+    Express
+    Remix
+    Astro
+    Qwik
+    Surreal
+    Cassandra
+    Bun
+    Tauri
+    Electron
+    LaTeX
+    Lua
+    Haskell
+    R
+    SupaBase
+    Fly
+    Railway
+    Svelte
+    Vite
+    Azure
+    Bootstrap
+    Clojure
+    DiscordJS
+    Gatsby
+    Gradle
+    Ionic
+    Markdown
+    Numpy
+    Pandas
+    Rails
+    Scala
+    Solidity
+    Terraform
+    Zig
+    OpenCV
+    OpenAI
+    Tokio
+    Yew
+    Tailscale
+    Analytics
 }
 
 // Enum for user permission roles
 enum Role {
     Admin
+    Lead
     User
 }
 
@@ -61,7 +168,7 @@ model Links {
     userId   String  @id
 }
 
-// A seperate model referencing an author ob a project, this way the role the user played and other information can be stored
+// A seperate model referencing an author of a project, this way the role the user played and other information can be stored
 model ProjectAuthor {
     user      User     @relation(fields: [userId], references: [id])
     userId    String
@@ -78,15 +185,13 @@ model Project {
     url         String          @unique
     title       String
     description String
-    // Hex code representing a common color pulled from the banner
-    theme       String
-    // Contains the projects url basis (name-of-project), structured as /projects/{name-of-project}.
-    // For banners we can do /projects/{name-of-project}/banner.webp
+    theme       String // A hex code extracted from the projects banner for theming
     date        DateTime
     skills      TechSkill[]
     authors     ProjectAuthor[]
     ownerId     String
-    content     Json // Contains generated tiptap json
+    content     Json // TipTap JSON content
+    images      String[]
     visible     Boolean         @default(true)
     pinnedBy    User?
 
@@ -103,23 +208,34 @@ model Session {
 
 // The user model for storing tt members
 model User {
-    id              String          @id
-    sessions        Session[]
-    // Contains the users url basis (firstlast), structured as /users/{firstlast}.
-    // For banners and icons we can do /users/{firstlast}/banner.webp and /users/{firstlast}/icon.webp
-    url             String          @unique
-    role            Role            @default(User)
-    name            String
-    about           String
-    team            Team?
-    links           Links?
-    positions       Position[]
-    softSkills      SoftSkill[]
-    techSkills      TechSkill[]
-    projects        ProjectAuthor[]
-    pinnedProject   Project?        @relation(fields: [pinnedProjectId], references: [id])
-    pinnedProjectId String?         @unique
-    visible         Boolean         @default(true)
+    id                   String          @id
+    sessions             Session[]
+    url                  String          @unique
+    role                 Role            @default(User)
+    name                 String
+    about                String
+    team                 Team?
+    links                Links?
+    positions            Position[]
+    softSkills           SoftSkill[]
+    techSkills           TechSkill[]
+    projects             ProjectAuthor[]
+    pinnedProject        Project?        @relation(fields: [pinnedProjectId], references: [id])
+    pinnedProjectId      String?         @unique
+    visible              Boolean         @default(true)
+    endorsementsReceived Endorsement[]   @relation("to")
+    endorsementsSent     Endorsement[]   @relation("from")
 
     @@index([name, softSkills, techSkills, positions, url])
+}
+
+// The endorsement model for storing lead/admin to user endorsements
+model Endorsement {
+    id        Int        @id @default(autoincrement())
+    techSkill TechSkill?
+    softSkill SoftSkill?
+    to        User       @relation("to", fields: [toId], references: [id])
+    toId      String
+    from      User       @relation("from", fields: [fromId], references: [id])
+    fromId    String
 }

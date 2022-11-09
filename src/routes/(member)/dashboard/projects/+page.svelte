@@ -3,12 +3,14 @@
 
 	import { user } from "$lib/stores";
 	import { goto } from "$app/navigation";
-	import Plus from "$lib/components/icons/Plus.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
+	import Plus from "$lib/components/icons/general/Plus.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
 	import ProjectEditPreview from "$lib/components/dashboard/projects/index/ProjectEditPreview.svelte";
+
+	import type { Prisma } from "@prisma/client";
 
 	let search = "";
 	let creatingProject = false;
@@ -23,33 +25,27 @@
 
 	const onSearch = () => {
 		request = new Promise((res, rej) =>
-			fetch("/api/project", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					where: {
-						title: {
-							contains: search.trim(),
-							mode: "insensitive"
-						},
+			fetch(
+				`/api/project?where=${JSON.stringify({
+					title: {
+						contains: search.trim(),
+						mode: "insensitive"
+					},
 
-						OR: [
-							{
-								ownerId: $user.id
-							},
-							{
-								authors: {
-									some: {
-										userId: $user.id
-									}
+					OR: [
+						{
+							ownerId: $user.id
+						},
+						{
+							authors: {
+								some: {
+									userId: $user.id
 								}
 							}
-						]
-					}
-				} as App.ProjectSearchRequest)
-			})
+						}
+					]
+				} as Prisma.ProjectWhereInput)}`
+			)
 				.then((res) => res.json())
 				.then((data: App.ProjectWithMetadata[]) =>
 					data.length ? res(data) : rej()
@@ -61,13 +57,13 @@
 		creatingProject = true;
 
 		fetch("/api/project", {
-			method: "PUT",
+			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
 			}
 		})
 			.then((res) => res.json())
-			.then((res: { url: string }) =>
+			.then((res: App.ProjectCreateResponse) =>
 				goto(`/dashboard/projects/${res.url}`)
 			);
 	};
@@ -107,12 +103,8 @@
 					"Content-Type": "application/json"
 				},
 				body: JSON.stringify({
-					where: {
-						id: $user.id
-					},
-					user: {
-						pinnedProjectId: pinnedProject
-					}
+					id: $user.id,
+					pinnedProjectId: pinnedProject
 				} as App.UserUpdateRequest)
 			}).then(async () => {
 				$user.pinnedProjectId = pinnedProject;
@@ -150,7 +142,7 @@
 			disabled={creatingProject}
 			class:opacity-70={creatingProject}
 			on:click={createProject}
-			class="bg-gray-500/40 rounded-lg w-full p-4 flex items-center justify-center gap-2 lg:w-40 lg:shrink-0"
+			class="bg-gray-500/40 rounded-lg w-full p-4 flex items-center transition-opacity justify-center gap-2 lg:w-40 lg:shrink-0"
 		>
 			<Plus class="w-6 h-6{creatingProject ? ' animate-spin' : ''}" />
 			New Project

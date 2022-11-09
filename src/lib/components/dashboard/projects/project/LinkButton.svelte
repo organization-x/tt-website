@@ -2,9 +2,9 @@
 	import type { Editor } from "@tiptap/core";
 
 	import { Action } from "$lib/enums";
-	import Check from "$lib/components/icons/Check.svelte";
-	import Trash from "$lib/components/icons/Trash.svelte";
-	import LinkIcon from "$lib/components/icons/LinkIcon.svelte";
+	import Check from "$lib/components/icons/general/Check.svelte";
+	import Trash from "$lib/components/icons/general/Trash.svelte";
+	import LinkIcon from "$lib/components/icons/general/LinkIcon.svelte";
 	import ExpandButton from "$lib/components/dashboard/projects/project/ExpandButton.svelte";
 
 	export let editor: Editor;

@@ -33,7 +33,8 @@ export const userAuth = async ({ session }: App.Locals) => {
 							Website: true
 						}
 					},
-					pinnedProject: true
+					pinnedProject: true,
+					endorsementsReceived: true
 				}
 			}
 		}
@@ -46,26 +47,6 @@ export const userAuth = async ({ session }: App.Locals) => {
 
 	return { ...sesh.user } as App.UserWithMetadata;
 };
-
-// Grab multiple users based on a prisma where statement, used for search
-export const getUsers = (where: Prisma.UserWhereInput) =>
-	prisma.user.findMany({
-		where,
-		include: {
-			links: {
-				select: {
-					userId: false,
-					Devto: true,
-					Facebook: true,
-					GitHub: true,
-					LinkedIn: true,
-					Twitter: true,
-					Website: true
-				}
-			},
-			pinnedProject: true
-		}
-	});
 
 // Grab multiple projects based on a prisma where statement, used for search
 export const getProjects = (where: Prisma.ProjectWhereInput) =>

@@ -3,11 +3,11 @@
 	import { createEventDispatcher } from "svelte";
 
 	import { positions } from "$lib/enums";
-	import Trash from "$lib/components/icons/Trash.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import DropArrow from "$lib/components/icons/DropArrow.svelte";
-	import RadioSelect from "$lib/components/icons/RadioSelect.svelte";
+	import Trash from "$lib/components/icons/general/Trash.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
+	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
+	import RadioSelect from "$lib/components/icons/general/RadioSelect.svelte";
 
 	import type { Position } from "@prisma/client";
 	import type { TransitionConfig } from "svelte/transition";
@@ -16,7 +16,6 @@
 	export let author: App.Author;
 
 	let open = false;
-	let innerWidth: number;
 	let parent: HTMLDivElement;
 
 	const dispatch = createEventDispatcher<{ click: { id: string } }>();
@@ -29,8 +28,10 @@
 	// Have to do it in a seperate function since svelte doesn't allow for typescript within the on directive
 	const onChange = ({
 		detail
-	}: CustomEvent<{ selected: string; previous: string }>) =>
-		(author.position = detail.selected as Position);
+	}: CustomEvent<{
+		selected: string | undefined;
+		previous: string | undefined;
+	}>) => (author.position = detail.selected as Position);
 
 	// Transition for when an author is removed
 	const transition = (node: Element): TransitionConfig => {
@@ -48,7 +49,7 @@
 	};
 </script>
 
-<svelte:window on:click={onClick} bind:innerWidth />
+<svelte:window on:click={onClick} />
 
 <div
 	in:slide|local={{ duration: 200 }}
@@ -60,16 +61,17 @@
 		on:click={() => innerWidth < 1024 && (open = !open)}
 		class="flex justify-between items-center p-4 lg:cursor-auto"
 	>
-		<!-- TODO: Replace placeholder -->
-
 		<img
-			width="200"
-			height="200"
-			src="/assets/developers/user/placeholder/icon.webp"
+			width="512"
+			height="512"
+			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
+				.user.id}/avatar?{new Date().getTime()}"
 			alt="{author.user.name}'s avatar"
 			class="w-10 h-10 rounded-full"
 		/>
+
 		<h1 class="text-lg sm:mr-auto sm:ml-4">{author.user.name}</h1>
+
 		<DropArrow {open} class="w-7 h-7 transition-transform lg:hidden" />
 		{#if !cantRemove}
 			<button on:click={() => dispatch("click", { id: author.user.id })}>
@@ -91,7 +93,7 @@
 							selected={author.position === position}
 							class="w-8 h-8"
 						/>
-						<h1 class="text-lg">{position}</h1>
+						<h1 class="text-lg">{position.replaceAll("_", " ")}</h1>
 					</button>
 				{/each}
 			</div>
@@ -109,7 +111,6 @@
 	<div class="hidden lg:block bg-gray-800 rounded-b-lg">
 		<Dropdown
 			i={0}
-			radio={true}
 			options={positions}
 			required={true}
 			selectedItems={[author.position]}

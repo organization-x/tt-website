@@ -1,14 +1,16 @@
 import { error } from "@sveltejs/kit";
 
+import { env } from "$env/dynamic/private";
 import { prisma, userAuth, getProjects } from "$lib/prisma";
 
+import type { Prisma } from "@prisma/client";
 import type { RequestHandler } from "./$types";
 
 // Request handlers for managing project data in prisma, it uses the users session token to verify the API call
 
 // Update project information
 // * INPUT: ProjectUpdateRequest
-// * OUTPUT: None
+// * OUTPUT: ProjectUpdateResponse
 export const PATCH: RequestHandler = async ({ locals, request }) => {
 	const user = await userAuth(locals);
 
@@ -20,7 +22,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 
 		// Grab the project from the database for validation
 		const project = await prisma.project.findUnique({
-			where: data.where,
+			where: { id: data.id },
 			include: { pinnedBy: true, authors: { select: { userId: true } } }
 		});
 
@@ -32,16 +34,15 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		if (project.ownerId === user.id) {
 			// Input validation
 			if (
-				(data.project.title &&
-					(data.project.title.length < 1 ||
-						data.project.title.length > 50)) ||
-				(data.project.description &&
-					(data.project.description.length < 1 ||
-						data.project.description.length > 300)) ||
-				(data.project.skills && data.project.skills.length < 2) ||
-				(data.project.authors &&
-					(data.project.authors.length < 1 ||
-						!data.project.authors.some(
+				(data.title &&
+					(data.title.length < 1 || data.title.length > 50)) ||
+				(data.description &&
+					(data.description.length < 1 ||
+						data.description.length > 300)) ||
+				(data.skills && data.skills.length < 2) ||
+				(data.authors &&
+					(data.authors.length < 1 ||
+						!data.authors.some(
 							(author) => author.user.id === project.ownerId
 						)))
 			)
@@ -49,21 +50,66 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		} else if (
 			project.authors.some((author) => author.userId === user.id)
 		) {
-			// Input validation, check if the collaborator is submitting any data besides content
+			// Input validation, check if the collaborator is submitting any data besides the content, images, or ID
 			if (
-				Object.keys(data.project).some(
-					(key) => key !== "content" && key !== "date"
+				Object.keys(data).some(
+					(key) =>
+						key !== "content" && key !== "images" && key !== "id"
 				)
 			)
 				throw error(400, "Bad Request");
 		} else throw error(401, "Unauthorized");
 
+		// Basic check to make sure every image ID starts with the project ID
+		if (
+			data.images &&
+			!data.images.every((image) => image.startsWith(project.id))
+		) {
+			throw error(400, "Bad Request");
+		}
+
+		// Update the image IDs inside of the project content
+		if (data.images) {
+			// Check if the newly submitted images exist on Cloudflare
+			await Promise.all(
+				data.images.map(
+					async (image) =>
+						!project.images.includes(image) &&
+						(await fetch(
+							`https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/${image}/banner`
+						).catch(() => {
+							throw error(400, "Bad Request");
+						}))
+				)
+			);
+
+			// Delete all images that are no longer included in the project. This
+			// doesn't need to be awaited since it does interact with the postgres database
+			project.images.map(
+				(image) =>
+					!data.images.includes(image) &&
+					fetch(
+						`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1/${image}`,
+						{
+							method: "DELETE",
+							headers: {
+								Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+							}
+						}
+					).catch(() => {}) // Ignore errors if one somehow occurs
+			);
+		}
+
 		let url: string | undefined;
 
 		// If the title is being changed, do some more input validation
-		if (data.project.title) {
+		if (data.title) {
 			// Create a url out of the title if it exists
-			url = data.project.title.trim().replaceAll(" ", "-").toLowerCase();
+			url = data.title
+				.trim()
+				.replaceAll(/[^a-zA-Z0-9\s]/g, "")
+				.replaceAll(/\s/g, "-")
+				.toLowerCase();
 
 			// Check if project has the same url (so title) as another project
 			if (
@@ -78,21 +124,22 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 
 		// Update the project
 		await prisma.project.update({
-			where: data.where,
+			where: { id: project.id },
 			data: {
 				url,
-				title: data.project.title,
-				description: data.project.description,
-				theme: data.project.theme,
+				title: data.title,
+				description: data.description,
+				theme: data.theme,
 				date: new Date(),
-				skills: data.project.skills,
-				content: data.project.content,
-				visible: data.project.visible,
-				authors: data.project.authors
+				skills: data.skills,
+				content: data.content,
+				images: data.images,
+				visible: data.visible,
+				authors: data.authors
 					? {
 							deleteMany: {},
 							createMany: {
-								data: data.project.authors.map(
+								data: data.authors.map(
 									({ user, position }) => ({
 										userId: user.id,
 										position
@@ -111,13 +158,15 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 };
 
 // Search for projects, otherwise a +page.server.ts should be used
-// * INPUT: ProjectSearchRequest
+// * INPUT: where=Prisma.ProjectWhereInput
 // * OUTPUT: ProjectWithAuthors[]
-export const POST: RequestHandler = async ({ request }) => {
+export const GET: RequestHandler = async ({ request }) => {
 	try {
-		const data: App.ProjectSearchRequest = await request.json();
-
-		const projects = await getProjects(data.where);
+		const projects = await getProjects(
+			JSON.parse(
+				new URL(request.url).searchParams.get("where")!
+			) as Prisma.ProjectWhereInput
+		);
 
 		// Sort projects by most recently updated
 		projects.sort((p, n) => (p.date.getDate() < n.date.getDate() ? 1 : -1));
@@ -130,15 +179,15 @@ export const POST: RequestHandler = async ({ request }) => {
 
 // Create a new project
 // * INPUT: None
-// * OUTPUT: String (url)
-export const PUT: RequestHandler = async ({ locals }) => {
+// * OUTPUT: ProjectCreateResponse
+export const POST: RequestHandler = async ({ locals }) => {
 	const user = await userAuth(locals);
 
 	if (!user) throw error(401, "Unauthorized");
 
 	try {
 		// Remove any spaces from the name for url encoding
-		const name = user.name.replaceAll(" ", "-");
+		const name = user.name.replaceAll(/\s/g, "-");
 
 		// Check for other projects and postfix this one
 		const postfix = await prisma.project
@@ -156,7 +205,7 @@ export const PUT: RequestHandler = async ({ locals }) => {
 				projects.forEach((project) => {
 					try {
 						const url = project.url.split("-");
-						const int = Number.parseInt(url[url.length - 1]);
+						const int = parseInt(url[url.length - 1]);
 						int > biggest && (biggest = int);
 					} catch {
 						return;
@@ -186,11 +235,29 @@ export const PUT: RequestHandler = async ({ locals }) => {
 			}
 		});
 
+		const body = new FormData();
+
+		// TODO: Replace URL for production
+		// The users and proejects share the same ID structure since they will never clash
+		body.set("id", "banner-" + project.id);
+		body.set("url", "https://tt-alpha.fly.dev/assets/default/banner.webp");
+
+		// Add default banner
+		await fetch(
+			`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1`,
+			{
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+				},
+				body
+			}
+		);
+
 		return new Response(JSON.stringify({ url: project.url }), {
 			status: 200
 		});
-	} catch (e) {
-		console.log(e);
+	} catch {
 		throw error(400, "Bad Request");
 	}
 };
@@ -206,15 +273,12 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 	try {
 		const data: App.ProjectDeleteRequest = await request.json();
 
-		// Check if the project exists
-		const project = await prisma.project.findUnique({
-			where: { id: data.id }
+		// Check if the project exists and owns the project
+		const project = await prisma.project.findFirst({
+			where: { id: data.id, ownerId: user.id }
 		});
 
 		if (!project) throw error(400, "Bad Request");
-
-		// Check if the user owns the project
-		if (project.ownerId !== user.id) throw error(401, "Unauthorized");
 
 		// Delete the projects authors
 		await prisma.projectAuthor.deleteMany({
@@ -224,6 +288,30 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 		// Delete the project
 		await prisma.project.delete({
 			where: { id: data.id }
+		});
+
+		// Delete the banner
+		fetch(
+			`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1/banner-${project.id}`,
+			{
+				method: "DELETE",
+				headers: {
+					Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+				}
+			}
+		);
+
+		// Delete the images inside the content
+		project.images.forEach((id) => {
+			fetch(
+				`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1/${id}`,
+				{
+					method: "DELETE",
+					headers: {
+						Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+					}
+				}
+			);
 		});
 
 		return new Response(undefined, { status: 200 });

@@ -35,26 +35,18 @@
 
 				break;
 			case DateOption.Custom:
-				return {
-					startDate: custom.toLocaleDateString("en-CA"),
-					endDate: custom.toLocaleDateString("en-CA")
-				};
+				const date = custom.toLocaleDateString("en-CA");
+
+				return `startDate=${date}&endDate=${date}`;
 		}
 
-		return {
-			startDate: now.toLocaleDateString("en-CA"),
-			endDate: new Date().toLocaleDateString("en-CA")
-		};
+		return `startDate=${now.toLocaleDateString(
+			"en-CA"
+		)}&endDate=${new Date().toLocaleDateString("en-CA")}`;
 	};
 
 	const search = () => {
-		request = fetch("/api/stats", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(encodeDate(selected) as App.AnalyticsRequest)
-		})
+		request = fetch(`/api/stats?${encodeDate(selected)}`)
 			.then((res) => res.json())
 			.then((analytics: App.AnalyticsResponse) => {
 				percent.set(
@@ -182,7 +174,7 @@
 							<div
 								class="absolute inset-3 rounded-full bg-gray-800 flex items-center justify-center shadow-[0_0_5px_3px_rgba(0,0,0,0.4)]"
 							>
-								<h1 class="font-semibold">
+								<h1 class="font-semibold max-w-[10rem]">
 									{#if views}
 										<!-- Whichever category of users is higher will be displayed inside the circle -->
 										{#if analytics.returning > analytics.new}

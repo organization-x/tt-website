@@ -11,18 +11,23 @@
 	import { CollaborationCursor } from "@tiptap/extension-collaboration-cursor";
 
 	import { user } from "$lib/stores";
-	import OrList from "$lib/components/icons/OrList.svelte";
-	import UnList from "$lib/components/icons/UnList.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
+	import OrList from "$lib/components/icons/general/OrList.svelte";
+	import UnList from "$lib/components/icons/general/UnList.svelte";
 	import Cursor from "$lib/components/dashboard/projects/project/Cursor.svelte";
 	import LinkButton from "$lib/components/dashboard/projects/project/LinkButton.svelte";
 	import HeadButton from "$lib/components/dashboard/projects/project/HeadButton.svelte";
 	import ImageButton from "$lib/components/dashboard/projects/project/ImageButton.svelte";
 	import EditorButton from "$lib/components/dashboard/projects/project/EditorButton.svelte";
 
-	import type { Content } from "@tiptap/core";
+	import type { JSONContent } from "@tiptap/core";
 
-	const dispatch = createEventDispatcher<{ editor: Editor }>();
+	const dispatch = createEventDispatcher<{
+		editor: Editor;
+		save: undefined;
+	}>();
+
+	export let blobs: { [key: string]: string };
 
 	// Get the project data from the parent, this is also bound to for comparison
 	export let project: App.ProjectWithMetadata;
@@ -40,11 +45,32 @@
 		orderedList: false,
 		link: false,
 		image: false,
-		heading: false,
-		youtube: false
+		heading: false
 	};
 
-	onMount(() => {
+	onMount(async () => {
+		// Go through all the images and convert them to blobs for the editor
+		await Promise.all(
+			(project.content as JSONContent).content!.map(async (node) => {
+				if (
+					node.type !== "image" ||
+					!(node.attrs!.src as string).startsWith(
+						"https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/"
+					)
+				)
+					return;
+
+				const blob = URL.createObjectURL(
+					await fetch(node.attrs!.src).then((res) => res.blob())
+				);
+
+				// Assign the blob as the source and add it to the blobs object so when the project
+				// is saved so we can figure out what images are already uploaded
+				node.attrs!.src = blob;
+				blobs[blob] = node.attrs!.src as string;
+			})
+		);
+
 		// Register document with yjs for collaborative editing
 		const doc = new Doc();
 
@@ -66,7 +92,7 @@
 
 		editor = new Editor({
 			element: editorElement,
-			content: project.content as Content,
+			content: project.content as JSONContent,
 			editorProps: {
 				attributes: {
 					class: "focus-visible:outline-none"
@@ -129,7 +155,6 @@
 	});
 
 	// TODO: Add image resizing capabilities
-	// TODO: Add image upload implementation with cloudflare images
 	// TODO: Fix collaboration issues like the empty cursor being way too large
 </script>
 

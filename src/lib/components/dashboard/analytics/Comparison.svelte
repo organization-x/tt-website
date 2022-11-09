@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Arrow from "$lib/components/icons/Arrow.svelte";
+	import Arrow from "$lib/components/icons/general/Arrow.svelte";
 
 	let className = "";
 	export let label: string;

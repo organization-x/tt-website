@@ -48,7 +48,7 @@ export const GET: RequestHandler = async (request) => {
 
 		// Get the users info from Discor. If an error occurs fetching the user data, its
 		// most likely an invalid token, so redirect back to the login
-		const { id, username } = (await fetch(
+		const { id, username, avatar } = (await fetch(
 			"https://discord.com/api/v10/users/@me",
 			{
 				headers: {
@@ -62,6 +62,7 @@ export const GET: RequestHandler = async (request) => {
 			})) as {
 			id: string;
 			username: string;
+			avatar: string | null;
 		};
 
 		// Check if the user exists already
@@ -79,12 +80,56 @@ export const GET: RequestHandler = async (request) => {
 					about: "I'm a member of Team Tomorrow!",
 					positions: ["Fullstack", "Designer"],
 					techSkills: ["JavaScript", "Python"],
-					softSkills: ["Teamwork", "Leadership"]
+					softSkills: ["Teamwork", "Leading"]
 				}
 			});
 
 			// Create empty links object for the user
 			await prisma.links.create({ data: { userId: id } });
+
+			// Give them the default profile picture and banner on Cloudflare Images
+			const body = new FormData();
+
+			// TODO: Replace URL for production
+			// Append the appropriate data, try to use the discord avatar if possible
+			body.append("id", "avatar-" + id);
+			body.append(
+				"url",
+				avatar
+					? "https://tt-alpha.fly.dev/assets/default/avatar.webp"
+					: `https://cdn.discordapp.com/avatars/${id}/${avatar}.webp`
+			);
+
+			// Add avatar
+			await fetch(
+				`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1`,
+				{
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+					},
+					body
+				}
+			);
+
+			// TODO: Replace URL for production
+			body.set("id", "banner-" + id);
+			body.set(
+				"url",
+				"https://tt-alpha.fly.dev/assets/default/banner.webp"
+			);
+
+			// Add banner
+			await fetch(
+				`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1`,
+				{
+					method: "POST",
+					headers: {
+						Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+					},
+					body
+				}
+			);
 		} else {
 			// Otherwise, if they do exists, do some cleanup and check if they have any expired session
 			// tokens inside postgres, if they do, remove them

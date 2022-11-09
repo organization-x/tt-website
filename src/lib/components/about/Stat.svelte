@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+	import { quintIn } from "svelte/easing";
 
 	let className: string;
 	export let title: string;
@@ -15,11 +16,6 @@
 
 	const isLeft = side === "left";
 
-	// Easing function for numbers increasing.
-	const easing = (x: number): number => {
-		return Math.sqrt(1 - Math.pow(x - 1, 2));
-	};
-
 	// When the number counter enters the viewport, start the animation of it counting upwards.
 	onMount(() => {
 		const observer = new IntersectionObserver(
@@ -28,8 +24,8 @@
 
 				Array.from({ length: amount }).forEach((_, i) =>
 					setTimeout(() => {
-						count = i;
-					}, easing(i / amount) * 1000)
+						count = i + 1;
+					}, quintIn(i / amount) * 2000)
 				);
 
 				observer.disconnect();

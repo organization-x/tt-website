@@ -3,13 +3,13 @@
 
 	import { user } from "$lib/stores";
 	import { techSkills } from "$lib/enums";
-	import Pin from "$lib/components/icons/Pin.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import Pencil from "$lib/components/icons/Pencil.svelte";
 	import Seperator from "$lib/components/Seperator.svelte";
+	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import Input from "$lib/components/dashboard/Input.svelte";
-	import ShowHide from "$lib/components/icons/ShowHide.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
+	import Pencil from "$lib/components/icons/general/Pencil.svelte";
+	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 	import InputSection from "$lib/components/dashboard/InputSection.svelte";
 	import TipTap from "$lib/components/dashboard/projects/project/TipTap.svelte";
@@ -35,9 +35,14 @@
 	// Store a reference to the editor for generation of the content
 	let editor: Editor;
 
+	// Store the blob URL's of images corresponded to their Cloudflare ID, this is used to
+	// prevent double uploading and keep track of which blobs belong to which URL
+	let blobs: { [key: string]: string } = {};
+
 	let titleError = false;
 	let disableForm = false;
 	let disableButtons = true;
+	let banner: HTMLInputElement;
 	let visible = original.visible;
 	let pinned = $user.pinnedProjectId === original.id;
 
@@ -107,7 +112,7 @@
 		project.authors = JSON.parse(JSON.stringify(original.authors));
 	};
 
-	const save = () => {
+	const save = async () => {
 		checkConstraints();
 
 		if (disableButtons || disableForm) return;
@@ -119,27 +124,83 @@
 		disableForm = true;
 		disableButtons = true;
 
+		const content = editor.getJSON();
+
+		// Create a new array to keep track of image ID's as to remove images that do not
+		// appear in the document anymore
+		const images: string[] = [];
+
+		// Upload all the new images to Cloudflare so they can be shown to users without blobs
+		await Promise.all(
+			content.content!.map(async (node) => {
+				if (
+					node.type !== "image" ||
+					!(node.attrs!.src as string).startsWith("blob:")
+				)
+					return;
+
+				const url = blobs[node.attrs!.src as string];
+
+				// If the image already existed, switch back to it's already existing URL
+				if (url)
+					return (
+						(node.attrs!.src = url) &&
+						images.push(url.split("/")[4])
+					);
+
+				const body = new FormData();
+
+				// Append the project ID for imge uploading
+				body.append("id", project.id);
+
+				// Append the image file
+				body.append(
+					"file",
+					new File(
+						[
+							await fetch(node.attrs!.src).then((res) =>
+								res.blob()
+							)
+						],
+						"image"
+					)
+				);
+
+				await fetch("/api/images", {
+					method: "PUT",
+					body
+				})
+					.then((res) => res.json())
+					.then(
+						({ id }: App.ImageUploadResponse) =>
+							images.push(id) &&
+							(node.attrs!.src = `https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/${id}/banner`)
+					);
+			})
+		);
+
 		// Send an update request to the API
 		fetch("/api/project", {
 			method: "PATCH",
 			headers: {
 				"Content-Type": "application/json"
 			},
-			body: JSON.stringify({
-				where: {
-					id: original.id
-				},
-				project: isOwner
-					? {
-							...project
-					  }
-					: {
-							content: project.content
-					  }
-			} as App.ProjectUpdateRequest)
+			body: JSON.stringify(
+				isOwner
+					? ({
+							...project,
+							content,
+							images
+					  } as App.ProjectUpdateRequest)
+					: ({
+							id: project.id,
+							content,
+							images
+					  } as App.ProjectUpdateRequest)
+			)
 		})
 			.then((res) => res.json())
-			.then(async (response) => {
+			.then(async (response: App.ProjectUpdateResponse) => {
 				// If an error occurs and it's the title, tell the user
 				if (response.error === "SAME_TITLE") titleError = true;
 				// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading and update the local copy of the project
@@ -166,6 +227,34 @@
 		disableButtons = true;
 	};
 
+	// Update the project's banner
+	const updateImage = async () => {
+		if (!banner.files?.length || banner.files[0].size > 1048576) return;
+
+		banner.disabled = true;
+
+		const body = new FormData();
+
+		// Append the newly uploaded image to the body
+		body.append("file", new File([banner.files![0]], "banner"));
+
+		// Apend the type
+		body.append("type", "project-banner");
+
+		// Add the project ID
+		body.append("id", original.id);
+
+		// Update the image
+		await fetch("/api/images", {
+			method: "PATCH",
+			body
+		}).catch(() => {}); // Ignore errors, the avatar will just stay the same
+
+		// Reset the selected input value and enabled it
+		banner.value = "";
+		banner.disabled = false;
+	};
+
 	// Update visility of the project
 	const toggleVisible = () => {
 		fetch("/api/project", {
@@ -174,8 +263,8 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: { id: original.id },
-				project: { visible }
+				id: original.id,
+				visible: visible
 			} as App.ProjectUpdateRequest)
 		}).then(() => {
 			original.visible = visible;
@@ -193,10 +282,8 @@
 				"Content-Type": "application/json"
 			},
 			body: JSON.stringify({
-				where: {
-					id: $user.id
-				},
-				user: { pinnedProjectId }
+				id: $user.id,
+				pinnedProjectId
 			} as App.UserUpdateRequest)
 		}).then(() => ($user.pinnedProjectId = pinnedProjectId));
 	};
@@ -211,30 +298,47 @@
 </script>
 
 <svelte:head>
-	<title>{original.title} - Project Editor</title>
+	<title>{original.title} / Project Editor</title>
 </svelte:head>
 
 <svelte:window on:keydown={onKeydown} />
 
-<div class="grid border-b-4" style="border-color: #{project.theme}">
-	<!-- TODO: Replace placeholder -->
-	<img
-		src="/assets/projects/project/placeholder/banner.webp"
-		width="1920"
-		height="1080"
-		alt="Banner for '{project.title}'"
-		class="object-cover object-center w-full h-32 row-start-1 col-start-1"
-	/>
+<label
+	class:cursor-pointer={isOwner}
+	class="grid border-b-4"
+	style="border-color: #{project.theme}"
+>
+	{#if banner && banner.disabled}
+		<div
+			class="animate-grays from-gray-400 to-gray-700 w-full h-32 row-start-1 col-start-1"
+		/>
+	{:else}
+		<img
+			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{original.id}/banner?{new Date().getTime()}"
+			width="1920"
+			height="1080"
+			alt="Banner for '{project.title}'"
+			class="object-cover object-center bg-gray-400 w-full h-32 row-start-1 col-start-1"
+		/>
+	{/if}
 
 	{#if isOwner}
-		<button
+		<div
 			class="w-full h-full bg-black/40 flex justify-center items-center gap-2 row-start-1 col-start-1"
 		>
 			<Pencil class="w-6 h-6 lg:w-8 lg:h-8" />
 			<h1 class="text-xl select-none font-semibold lg:text-2xl">Edit</h1>
-		</button>
+		</div>
+
+		<input
+			bind:this={banner}
+			on:change={updateImage}
+			type="file"
+			accept=".png, .jpg, .jpeg, .webp, .avif"
+			class="hidden"
+		/>
 	{/if}
-</div>
+</label>
 
 <div
 	class="flex flex-col gap-8 p-4 max-w-xl mx-auto mt-2 lg:px-12 lg:max-w-screen-xl xl:items-center"
@@ -339,6 +443,7 @@
 	<Seperator class="max-w-screen-xl" />
 
 	<TipTap
+		bind:blobs
 		bind:project
 		on:editor={({ detail }) => {
 			// For some reason tiptap re-orders some data once it's lodaded into the editor, so we need to change the original to that
