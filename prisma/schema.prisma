@@ -51,6 +51,7 @@ enum SoftSkill {
     Adaptable
     Perserverance
     Meticulous
+    Resourceful
 }
 
 // Enum for skills that can be "tagged" to users and projects
@@ -147,6 +148,10 @@ enum TechSkill {
     Yew
     Tailscale
     Analytics
+    CAD
+    Networking
+    Expo
+    React_Native
 }
 
 // Enum for user permission roles
@@ -225,6 +230,8 @@ model User {
     visible              Boolean         @default(true)
     endorsementsReceived Endorsement[]   @relation("to")
     endorsementsSent     Endorsement[]   @relation("from")
+    lastUpdated          DateTime        @updatedAt
+    homepage             Boolean         @default(false) // A boolean representing whether the user has been selected to be on the homepage
 
     @@index([name, softSkills, techSkills, positions, url])
 }

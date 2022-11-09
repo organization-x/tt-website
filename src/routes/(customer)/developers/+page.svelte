@@ -6,7 +6,7 @@
 	import Hero from "$lib/components/Hero.svelte";
 	import { softSkills, techSkills } from "$lib/enums";
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import Seperator from "$lib/components/Seperator.svelte";
+	import Separator from "$lib/components/Separator.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
@@ -31,7 +31,7 @@
 	let softSkillFilter: SoftSkill[] = [];
 	let techSkillFilter: TechSkill[] = [];
 	let analytics: AnalyticsInstance | undefined;
-	let request: Promise<App.UserSearchResponse[]> = new Promise(() => {});
+	let request: Promise<App.UserWithMetadata[]> = new Promise(() => {});
 
 	// On search set request to never resolve so the loading animation is shown before the debounce
 	$: search, (request = new Promise(() => {}));
@@ -56,7 +56,7 @@
 				})}`
 			)
 				.then((res) => res.json())
-				.then(async (users: App.UserSearchResponse[]) => {
+				.then(async (users: App.UserWithMetadata[]) => {
 					// Random search sampling so the search data isn't spammed
 					if (
 						analytics &&
@@ -130,7 +130,7 @@
 			through our team members below to pinpoint your ideal candidates.
 		</HireStep>
 
-		<Seperator />
+		<Separator />
 
 		<HireStep
 			title="Evaluate options."
@@ -143,7 +143,7 @@
 			intrigues you most.
 		</HireStep>
 
-		<Seperator />
+		<Separator />
 
 		<HireStep
 			title="Create a contract and blastoff."
@@ -189,7 +189,7 @@
 				selectedItems={[]}
 				on:change={onSearch}
 			>
-				<Star class="h-8 w-8" />
+				<Star class="h-6 w-6" />
 			</Dropdown>
 
 			<Dropdown
@@ -200,11 +200,11 @@
 				selectedItems={[]}
 				on:change={onSearch}
 			>
-				<Wrench class="h-8 w-8" />
+				<Wrench class="h-6 w-6" />
 			</Dropdown>
 		</div>
 
-		<Seperator />
+		<Separator />
 
 		<div class="min-h-[133rem] md:min-h-[96rem]">
 			<Scrollable

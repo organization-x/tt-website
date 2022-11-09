@@ -13,8 +13,11 @@
 	onMount(() => dispatch("search"));
 </script>
 
-<div class="bg-gray-500/40 flex p-4 rounded-lg select-none w-full items-center">
-	<Search class="w-5 h-5" />
+<div
+	class="bg-gray-500/40 flex gap-1 p-4 rounded-lg select-none w-full items-center"
+>
+	<Search class="w-4 h-4" />
+
 	<input
 		bind:value={search}
 		on:input

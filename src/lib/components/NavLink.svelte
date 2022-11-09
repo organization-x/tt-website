@@ -12,7 +12,7 @@
 	<a
 		{href}
 		{target}
-		class="lg:flex lg:items-center lg:gap-2 lg:px-4 lg:py-3 lg:rounded-lg lg:transition-colors lg:duration-200 lg:hover:bg-gray-500/40 {active
+		class="lg:flex lg:items-center lg:justify-center lg:gap-2 lg:px-4 lg:py-3 lg:rounded-lg lg:transition-colors lg:duration-200 lg:hover:bg-gray-500/40 {active
 			? ' lg:bg-gray-500/40'
 			: ''}"
 		rel="noreferrer noopener"

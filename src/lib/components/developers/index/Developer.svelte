@@ -11,7 +11,7 @@
 	import Wrench from "$lib/components/icons/general/Wrench.svelte";
 	import Star from "$lib/components/icons/general/Star.svelte";
 
-	export let user: App.UserSearchResponse;
+	export let user: App.UserWithMetadata;
 
 	const timestamp = getContext("timestamp") as string;
 </script>
@@ -33,15 +33,17 @@
 				loading="lazy"
 				class="rounded-full bg-gray-400 w-20 h-20"
 			/>
+
 			<div
 				class="absolute bg-gray-500 -bottom-3 -right-2 rounded-full p-2"
 			>
 				<svelte:component
 					this={getIcon(user.team || "")}
-					class="w-5 h-5"
+					class="w-4 h-4 lg:w-5 lg:h-5"
 				/>
 			</div>
 		</div>
+
 		<div
 			class="flex flex-col gap-1 items-center text-center md:flex-col-reverse md:text-start md:items-start md:gap-0"
 		>
@@ -63,7 +65,7 @@
 				<div
 					class="flex font-semibold justify-center items-center gap-2"
 				>
-					<Pin class="w-6 h-6" />
+					<Pin class="w-5 h-5" />
 					<h1 class="text-lg">Pinned Project</h1>
 				</div>
 
@@ -98,7 +100,7 @@
 		{/if}
 
 		<DevSection title="Positions">
-			<Bulb slot="icon" class="w-6 h-6" />
+			<Bulb slot="icon" class="w-5 h-5" />
 
 			{#each user.positions as position}
 				<DevTag name={position} />
@@ -106,7 +108,7 @@
 		</DevSection>
 
 		<DevSection title="Top Soft Skills">
-			<Star slot="icon" class="w-6 h-6" />
+			<Star slot="icon" class="w-5 h-5" />
 
 			{#each user.softSkills as skill}
 				<DevTag name={skill} />
@@ -114,7 +116,7 @@
 		</DevSection>
 
 		<DevSection title="Top Tech Skills">
-			<Wrench slot="icon" class="w-6 h-6" />
+			<Wrench slot="icon" class="w-5 h-5" />
 
 			{#each user.techSkills as skill}
 				<DevTag name={skill} />

@@ -75,14 +75,14 @@
 	<button
 		on:click={() => (open = !open)}
 		class:rounded-b-lg={!open}
-		class="flex items-center justify-between p-4 w-full bg-gray-800 rounded-t-lg h-16"
+		class="flex items-center justify-between p-5 w-full bg-gray-800 rounded-t-lg h-16"
 	>
 		<h1>
 			{selected === DateOption.Custom
 				? current.toLocaleDateString("en-US")
 				: selected}
 		</h1>
-		<DropArrow {open} class="w-6 h-6" />
+		<DropArrow {open} class="w-3 h-3" />
 	</button>
 
 	{#if open}
@@ -93,10 +93,10 @@
 				<button
 					on:click={() => (childOpen = !childOpen)}
 					class:rounded-b-lg={!childOpen}
-					class="flex items-center justify-between p-4 w-full bg-gray-900 rounded-t-lg"
+					class="flex items-center justify-between p-5 w-full bg-gray-900 rounded-t-lg"
 				>
 					<h1>{selected}</h1>
-					<DropArrow open={childOpen} class="w-6 h-6" />
+					<DropArrow open={childOpen} class="w-3 h-3" />
 				</button>
 
 				{#if childOpen}
@@ -137,7 +137,7 @@
 								current = current;
 							}}
 						>
-							<Arrow class="w-5 h-5 -rotate-90" />
+							<Arrow class="w-4 h-4 -rotate-90" />
 						</button>
 						<button
 							on:click={() => {
@@ -145,7 +145,7 @@
 								current = current;
 							}}
 						>
-							<Arrow class="w-5 h-5 rotate-90" />
+							<Arrow class="w-4 h-4 rotate-90" />
 						</button>
 					</div>
 				</div>

@@ -3,7 +3,7 @@
 
 	import { getIcon } from "$lib/getIcon";
 
-	const timestamp = new Date().getTime();
+	const timestamp = Date.now();
 
 	export let project: App.ProjectWithMetadata;
 </script>
@@ -51,7 +51,10 @@
 		<p class="mt-2">{project.description}</p>
 		<div class="flex gap-2 mt-auto pt-4">
 			{#each project.skills as icon}
-				<svelte:component this={getIcon(icon)} class="w-8 h-8" />
+				<svelte:component
+					this={getIcon(icon)}
+					class="w-7 h-7 md:w-8 md:h-8"
+				/>
 			{/each}
 		</div>
 	</div>

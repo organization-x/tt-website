@@ -48,7 +48,7 @@
 		{#if percent === 1}
 			<div class="bg-gray-500 h-1 w-5 rounded-full" />
 		{:else}
-			<Arrow class="w-5 h-5 {color}" />
+			<Arrow class="w-4 h-4 {color}" />
 		{/if}
 		<h1 class="font-normal">
 			{current}

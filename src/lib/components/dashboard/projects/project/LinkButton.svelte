@@ -57,12 +57,13 @@
 	on:click={() => onAction(open ? Action.Confirm : Action.Open)}
 	{open}
 	{active}
+	class={active ? "w-60" : "w-48"}
 >
 	<svelte:fragment slot="button">
 		{#if open}
-			<Check class="w-7 h-7 m-auto" />
+			<Check class="w-5 h-5" />
 		{:else}
-			<LinkIcon class="w-6 h-6 m-auto" />
+			<LinkIcon class="w-4 h-4" />
 		{/if}
 	</svelte:fragment>
 

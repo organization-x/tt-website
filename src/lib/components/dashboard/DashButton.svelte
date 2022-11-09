@@ -20,9 +20,12 @@
 	use:debounce={props}
 	{disabled}
 	class:w-24={!icon}
-	class:px-4={!icon}
-	class:px-3={icon}
-	class="rounded-lg relative py-3 text-center shrink-0 leading-none transition-[background-color,opacity] duration-200 disabled:opacity-60 disabled:pointer-events-none {className}"
+	class:py-5={!icon}
+	class:lg:px-5={!icon}
+	class:py-4={icon}
+	class:lg:px-3.5={icon}
+	class:lg:py-3.5={icon}
+	class="rounded-lg relative px-4 text-center shrink-0 leading-none transition-[background-color,opacity] duration-200 disabled:opacity-60 disabled:pointer-events-none {className}"
 >
 	<slot />
 </button>

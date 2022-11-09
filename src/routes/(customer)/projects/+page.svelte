@@ -6,7 +6,7 @@
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import Seperator from "$lib/components/Seperator.svelte";
+	import Separator from "$lib/components/Separator.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
@@ -151,10 +151,10 @@
 			selectedItems={[]}
 			on:change={onSearch}
 		>
-			<Wrench class="h-8 w-8" />
+			<Wrench class="h-6 w-6" />
 		</Dropdown>
 
-		<Seperator />
+		<Separator />
 
 		<div class="h-[70rem]">
 			<Scrollable

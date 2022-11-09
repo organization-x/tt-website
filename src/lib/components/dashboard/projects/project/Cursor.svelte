@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { TransitionConfig } from "svelte/transition";
+
 	export let name: string;
 	export let color: string;
 
@@ -20,10 +22,10 @@
 	};
 
 	// Custom slide transition for revealing the cursor name
-	const slide = (_: Element) => {
+	const slide = (_: Element): TransitionConfig => {
 		return {
 			duration: 50,
-			css: (t: number, u: number) => `clip-path: inset(0 0 % ${u * 100}%)`
+			css: (t, u) => `clip-path: inset(0 0 % ${u * 100}%)`
 		};
 	};
 </script>

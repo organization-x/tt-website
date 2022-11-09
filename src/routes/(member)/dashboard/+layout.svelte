@@ -159,6 +159,15 @@
 								Kudos
 							</NavLink>
 
+							{#if $user.role === "Admin"}
+								<NavLink
+									href="/dashboard/users"
+									active={$pageId === "users"}
+								>
+									Users
+								</NavLink>
+							{/if}
+
 							<NavLink
 								target="_blank"
 								href="/developers/{$user.url}"
@@ -172,6 +181,7 @@
 				</nav>
 			{/if}
 		</div>
+
 		<div class="hidden lg:block">
 			<ul class="flex gap-2 items-center">
 				<NavLink href="/dashboard" active={$pageId === "home"}>
@@ -202,13 +212,23 @@
 				<NavLink href="/dashboard/kudos" active={$pageId === "kudos"}>
 					Kudos
 				</NavLink>
+
+				{#if $user.role === "Admin"}
+					<NavLink
+						href="/dashboard/users"
+						active={$pageId === "users"}
+					>
+						Users
+					</NavLink>
+				{/if}
+
 				<div bind:this={element} class="relative ml-4 w-44">
 					<button
 						class:rounded-lg={!userOpen}
 						class:rounded-t-lg={userOpen}
 						class:duration-200={!disableTransition}
 						class:transition-colors={!disableTransition}
-						class="flex gap-2 items-center justify-center py-3 w-full
+						class="flex gap-3 items-center justify-center py-3 w-full
                     {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
 						on:transitionend={() => (disableTransition = false)}
 						on:click={() => (userOpen = !userOpen)}
@@ -220,12 +240,14 @@
 							alt="{$user.name}'s avatar"
 							class="w-8 h-8 rounded-full bg-gray-400"
 						/>
+
 						<span
 							class="font-semibold overflow-auto scrollbar-hidden"
 						>
 							{firstName}
 						</span>
-						<DropArrow open={userOpen} class="w-6 h-6 shrink-0" />
+
+						<DropArrow open={userOpen} class="w-3 h-3 shrink-0" />
 					</button>
 
 					{#if userOpen}
@@ -237,9 +259,10 @@
 									target="_blank"
 									href="/developers/{$user.url}"
 								>
-									<ExternalLink class="w-5 h-5" />
+									<ExternalLink class="w-4 h-4" />
 									View Profile
 								</NavLink>
+
 								<NavLink href="/logout">
 									<LogOut class="w-5 h-5" />
 									Log Out

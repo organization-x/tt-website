@@ -7,9 +7,9 @@
 
 	import { page } from "$app/stores";
 	import { afterNavigate } from "$app/navigation";
-	import AICamp from "$lib/components/AICamp.svelte";
 	import NavLink from "$lib/components/NavLink.svelte";
 	import FootLink from "$lib/components/FootLink.svelte";
+	import AICamp from "$lib/components/index/AICamp.svelte";
 	import Logo from "$lib/components/icons/logos/Logo.svelte";
 	import Burger from "$lib/components/icons/general/Burger.svelte";
 	import YouTube from "$lib/components/icons/logos/YouTube.svelte";
@@ -47,7 +47,7 @@
 
 	// Create a timestamp so the images from Cloudflare don't cache and generate
 	// a new one every time the user navigates
-	$: $page, setContext("timestamp", new Date().getTime());
+	$: $page, setContext("timestamp", Date.now());
 
 	afterNavigate(async () => {
 		burgerOpen = userOpen = false;
@@ -151,7 +151,7 @@
 							{/if}
 						</ul>
 						<div
-							class="mt-8 flex gap-4 text-4xl justify-center items-center"
+							class="mt-8 flex gap-6 text-4xl justify-center items-center"
 						>
 							<a
 								href="https://instagram.com/aicamp1"
@@ -159,7 +159,7 @@
 								rel="noreferrer noopener"
 								title="AI Camp Instagram"
 							>
-								<Instagram class="w-10 h-10" />
+								<Instagram class="w-7 h-7" />
 							</a>
 
 							<a
@@ -168,7 +168,7 @@
 								rel="noreferrer noopener"
 								title="AI Camp YouTube"
 							>
-								<YouTube class="w-12 h-12" />
+								<YouTube class="w-9 h-9" />
 							</a>
 
 							<a
@@ -177,7 +177,7 @@
 								rel="noreferrer noopener"
 								title="AI Camp Email"
 							>
-								<Envelope class="w-10 h-10" />
+								<Envelope class="w-8 h-8" />
 							</a>
 						</div>
 					</div>
@@ -211,7 +211,7 @@
 							class:rounded-t-lg={userOpen}
 							class:duration-200={!disableTransition}
 							class:transition-colors={!disableTransition}
-							class="flex gap-2 items-center justify-center py-3 w-full
+							class="flex gap-3 items-center justify-center py-3 w-full
                     {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
 							on:transitionend={() => (disableTransition = false)}
 							on:click={() => (userOpen = !userOpen)}
@@ -224,14 +224,16 @@
 								alt="{data.user.name}'s avatar"
 								class="w-8 h-8 rounded-full bg-gray-400"
 							/>
+
 							<span
 								class="font-semibold overflow-auto scrollbar-hidden"
 							>
 								{firstName}
 							</span>
+
 							<DropArrow
 								open={userOpen}
-								class="w-6 h-6 shrink-0"
+								class="w-3 h-3 shrink-0"
 							/>
 						</button>
 
@@ -241,9 +243,10 @@
 							>
 								<ul class="flex flex-col gap-2 p-1">
 									<NavLink target="_blank" href="/dashboard">
-										<ExternalLink class="w-5 h-5" />
+										<ExternalLink class="w-4 h-4" />
 										Dashboard
 									</NavLink>
+
 									<NavLink href="/logout">
 										<LogOut class="w-5 h-5" />
 										Log Out
@@ -284,7 +287,7 @@
 	<div class="flex justify-center gap-8 lg:flex-row-reverse">
 		<div class="flex gap-4 items-center">
 			<Logo class="w-8 h-8" />
-			<AICamp class="w-8 h-8" />
+			<AICamp />
 		</div>
 		<div class="flex gap-4 items-center">
 			<a
@@ -293,7 +296,7 @@
 				rel="noreferrer noopener"
 				title="AI Camp Instagram"
 			>
-				<Instagram class="w-8 h-8" />
+				<Instagram class="w-6 h-6" />
 			</a>
 			<a
 				href="https://www.youtube.com/channel/UCUGJzo5EwViLGpAgYphNyzg"
@@ -301,7 +304,7 @@
 				rel="noreferrer noopener"
 				title="AI Camp YouTube"
 			>
-				<YouTube class="w-10 h-10" />
+				<YouTube class="w-8 h-8" />
 			</a>
 			<a
 				href="mailto:hello@ai-camp.org"
@@ -309,7 +312,7 @@
 				rel="noreferrer noopener"
 				title="AI Camp Email"
 			>
-				<Envelope class="w-8 h-8" />
+				<Envelope class="w-7 h-7" />
 			</a>
 		</div>
 	</div>

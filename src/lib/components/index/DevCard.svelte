@@ -53,11 +53,11 @@
 			class="absolute flex bg-gray-700 mx-auto transition-[border-radius,height] left-0 right-0 bottom-0 rounded-b-lg w-full lg:hidden"
 		>
 			<button
-				class="flex gap-2 items-center m-auto mb-2 cursor-pointer w-full justify-center"
+				class="flex gap-3 items-center m-auto mb-2 cursor-pointer w-full justify-center"
 				on:click={() => (open = !open)}
 			>
 				<Plus
-					class="w-6 h-6 transition-transform {open
+					class="w-4 h-4 transition-transform {open
 						? 'rotate-45'
 						: ''}"
 				/>

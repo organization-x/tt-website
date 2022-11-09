@@ -26,14 +26,14 @@
 			Uncover {project.title}
 		</Button>
 
-		<div class="flex gap-2 items-center justify-center mt-4 lg:mt-8">
+		<div class="flex gap-2 items-center justify-center my-8 lg:mt-8">
 			{#each project.skills as skill}
-				<svelte:component this={getIcon(skill)} class="w-10 h-10" />
+				<svelte:component this={getIcon(skill)} class="w-8 h-8" />
 			{/each}
 		</div>
 
 		<div
-			class="bg-gray-800 rounded-lg drop-shadow-lg mt-6 relative mx-auto max-w-md lg:hidden
+			class="bg-gray-800 rounded-lg drop-shadow-lg relative mx-auto max-w-md lg:hidden
 
             before:z-10 before:absolute before:rounded-lg before:top-0 before:left-0 before:w-8 before:h-full before:bg-gradient-to-r before:from-gray-800 before:to-transparent before:pointer-events-none
 

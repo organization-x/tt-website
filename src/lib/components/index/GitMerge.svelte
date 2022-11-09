@@ -4,34 +4,16 @@
 	export { className as class };
 </script>
 
-<svg class="w-full mt-5 {className}" viewBox="0 0 159 30" fill="none">
+<svg
+	class="w-full mt-5 {className}"
+	viewBox="0 0 155 30"
+	fill="none"
+	stroke="#fff"
+	stroke-width="1.5"
+>
 	<path
-		d="M54.5 18H27"
-		stroke="white"
-		stroke-width="1.5"
+		d="M52.5 20H25m131 0H41M55 7c-8.84 0-13.259 13-29.464 13H-1M69 7h87"
 		stroke-linecap="square"
 	/>
-	<path
-		d="M159 18H43.5"
-		stroke="white"
-		stroke-width="1.5"
-		stroke-linecap="square"
-	/>
-	<path
-		d="M57 5C48 4.99998 43.5 18 27 18H0"
-		stroke="white"
-		stroke-width="1.5"
-		stroke-linecap="square"
-	/>
-	<path
-		d="M70.5 5H159"
-		stroke="white"
-		stroke-width="1.5"
-		stroke-linecap="square"
-	/>
-	<path
-		d="M68.25 5C68.25 7.34721 66.3472 9.25 64 9.25C61.6528 9.25 59.75 7.34721 59.75 5C59.75 2.65279 61.6528 0.75 64 0.75C66.3472 0.75 68.25 2.65279 68.25 5Z"
-		stroke="white"
-		stroke-width="1.5"
-	/>
+	<path d="M66.25 7a4.25 4.25 0 1 1-8.5 0 4.25 4.25 0 0 1 8.5 0Z" />
 </svg>

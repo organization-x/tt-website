@@ -24,7 +24,7 @@
 	// Disable a few buttons that should only be used on the project management page
 	export let minified = false;
 
-	const timestamp = new Date().getTime();
+	const timestamp = Date.now();
 
 	// Keep track whether this the user is an owner or a collaborator
 	const isOwner = $user.id === project.ownerId;
@@ -64,7 +64,7 @@
 	class:mb-10={!minified}
 	class:opacity-70={deleting}
 	class:pointer-events-none={deleting}
-	class="transition-opacity"
+	class="transition-opacity relative"
 >
 	<div
 		class="rounded-lg border-t-4 overflow-hidden relative bg-gray-900 w-full shadow-black/30 shadow-lg z-20"
@@ -99,7 +99,7 @@
 			</div>
 		</div>
 
-		<div class="flex flex-col py-4 px-3 min-h-72 lg:px-5">
+		<div class="flex flex-col py-4 px-3 min-h-72 lg:px-4">
 			<div class="flex items-center gap-2">
 				<h1 class="font-semibold text-2xl">{project.title}</h1>
 				<a
@@ -107,23 +107,29 @@
 					target="_blank"
 					rel="noopener noreferrer"
 				>
-					<ExternalLink class="w-6 h-6" />
+					<ExternalLink class="w-5 h-5 mt-0.5" />
 				</a>
 			</div>
+
 			<p class="mt-2">{project.description}</p>
-			<div class="flex gap-2 mt-auto pt-4 md:items-center md:px-1">
+
+			<div class="flex gap-3 mt-auto px-1 pt-4 items-center">
 				{#each project.skills as icon}
-					<svelte:component this={getIcon(icon)} class="w-8 h-8" />
+					<svelte:component
+						this={getIcon(icon)}
+						class="w-7 h-7 md:w-8 md:h-8"
+					/>
 				{/each}
+
 				<button
 					on:click={() => (open = !open)}
 					class="ml-auto md:hidden"
 				>
-					<DropArrow {open} class="w-8 h-8" />
+					<DropArrow {open} class="w-4 h-4" />
 				</button>
 
 				<div
-					class="hidden md:flex md:gap-5 md:justify-center md:ml-auto"
+					class="hidden md:flex md:gap-4 md:justify-center md:ml-auto"
 				>
 					{#if isOwner}
 						<DashButton
@@ -136,7 +142,7 @@
 							}}
 							class="bg-gray-500/40 shrink-0 rounded-lg p-3 hover:bg-gray-500/20"
 						>
-							<ShowHide class="w-5 h-5" crossed={visible} />
+							<ShowHide class="w-4 h-4" crossed={visible} />
 						</DashButton>
 
 						<DashButton
@@ -152,7 +158,7 @@
 								? "bg-blue-light hover:bg-blue-light/80"
 								: "bg-gray-500/40 hover:bg-gray-500/20"}
 						>
-							<Pin class="w-5 h-5" />
+							<Pin class="w-4 h-4" />
 						</DashButton>
 					{/if}
 
@@ -161,7 +167,7 @@
 						href="/dashboard/projects/{project.url}"
 						class="bg-blue-light hover:bg-blue-light/80"
 					>
-						<Pencil class="w-5 h-5" />
+						<Pencil class="w-3.5 h-3.5" />
 					</DashLink>
 
 					{#if !minified && isOwner}
@@ -173,7 +179,7 @@
 							}}
 							class="bg-red-light hover:bg-red-light/80"
 						>
-							<Trash class="w-5 h-5" />
+							<Trash class="w-4 h-4" />
 						</DashButton>
 					{/if}
 				</div>
@@ -184,7 +190,7 @@
 	{#if open}
 		<div
 			transition:slide|local={{ duration: 200 }}
-			class="flex justify-center px-3 gap-5 bg-gray-900 pb-4 pt-8 rounded-b-lg -mt-2 relative z-10 md:hidden"
+			class="flex justify-center px-3 gap-5 bg-gray-900 pb-4 pt-8 rounded-b-lg -top-2 relative z-10 md:hidden"
 		>
 			{#if isOwner}
 				<DashButton
@@ -197,7 +203,7 @@
 					}}
 					class="bg-gray-500/40 hover:bg-gray-500/20"
 				>
-					<ShowHide class="w-5 h-5" crossed={visible} />
+					<ShowHide class="w-4 h-4" crossed={visible} />
 				</DashButton>
 
 				<DashButton
@@ -211,7 +217,7 @@
 						? "bg-blue-light hover:bg-blue-light/80"
 						: "bg-gray-500/40 hover:bg-gray-500/20"}
 				>
-					<Pin class="w-5 h-5" />
+					<Pin class="w-4 h-4" />
 				</DashButton>
 			{/if}
 
@@ -220,7 +226,7 @@
 				href="/dashboard/projects/{project.url}"
 				class="bg-blue-light hover:bg-blue-light/80"
 			>
-				<Pencil class="w-5 h-5" />
+				<Pencil class="w-4 h-4" />
 			</DashLink>
 
 			{#if !minified && isOwner}
@@ -232,7 +238,7 @@
 					}}
 					class="bg-red-light hover:bg-red-light/80"
 				>
-					<Trash class="w-5 h-5" />
+					<Trash class="w-4 h-4" />
 				</DashButton>
 			{/if}
 		</div>

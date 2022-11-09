@@ -9,7 +9,7 @@ import type { LayoutServerLoad } from "./$types";
 // The reason the typing on this is so weird is because we are selecting only specific properties of each
 // object and there isn't an easy way to type it
 export const load: LayoutServerLoad<{
-	user: User & {
+	userPage: User & {
 		links: App.UserLinks;
 		pinnedProject?: App.ProjectWithMetadata;
 		endorsementsReceived: (Endorsement & {
@@ -17,9 +17,8 @@ export const load: LayoutServerLoad<{
 		})[];
 	};
 	projects: App.ProjectWithMetadata[];
-	endorserId: string | null;
-}> = async ({ locals, params }) => {
-	const user = (await prisma.user.findUnique({
+}> = async ({ params }) => {
+	const userPage = (await prisma.user.findUnique({
 		where: { url: params.user },
 		include: {
 			links: {
@@ -63,32 +62,12 @@ export const load: LayoutServerLoad<{
 		})[];
 	};
 
-	if (!user) throw redirect(302, "/developers");
+	if (!userPage) throw redirect(302, "/developers");
 
-	const projects = await getProjects({ ownerId: user.id, visible: true });
-
-	let endorserId: string | null = null;
-
-	// If the user accesing this profile page is permitted to endorse, grab their id
-	if (locals.session) {
-		const sesh = await prisma.session.findUnique({
-			where: { token: locals.session },
-			include: {
-				user: {
-					select: {
-						id: true,
-						role: true
-					}
-				}
-			}
-		});
-
-		sesh && sesh.user.role !== "User" && (endorserId = sesh.user.id);
-	}
+	const projects = await getProjects({ ownerId: userPage.id, visible: true });
 
 	return {
-		user,
-		projects,
-		endorserId
+		userPage,
+		projects
 	};
 };

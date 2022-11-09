@@ -38,29 +38,29 @@
 	};
 </script>
 
-<ExpandButton on:click={() => (open = !open)} {open} {active}>
+<ExpandButton on:click={() => (open = !open)} {open} {active} class="w-40">
 	<svelte:fragment slot="button">
-		<HeadingIcon class="w-6 h-6 m-auto" />
+		<HeadingIcon class="w-4 h-4" />
 	</svelte:fragment>
 
 	<svelte:fragment slot="expanded">
 		<button
 			on:click={() => onClick(1)}
-			class="h-fit p-2 my-auto {selected === 1 ? ' bg-gray-500/40' : ''}"
+			class="p-2 h-full {selected === 1 ? ' bg-gray-500/40' : ''}"
 		>
-			<HeadOneIcon class="w-8 h-8" />
+			<HeadOneIcon class="w-5 h-5" />
 		</button>
 		<button
 			on:click={() => onClick(2)}
-			class="h-fit p-2 my-auto {selected === 2 ? ' bg-gray-500/40' : ''}"
+			class="p-2 h-full {selected === 2 ? ' bg-gray-500/40' : ''}"
 		>
-			<HeadTwoIcon class="w-8 h-8" />
+			<HeadTwoIcon class="w-6 h-6" />
 		</button>
 		<button
 			on:click={() => onClick(3)}
-			class="h-fit p-2 my-auto {selected === 3 ? ' bg-gray-500/40' : ''}"
+			class="p-2 h-full {selected === 3 ? ' bg-gray-500/40' : ''}"
 		>
-			<HeadThreeIcon class="w-8 h-8" />
+			<HeadThreeIcon class="w-6 h-6" />
 		</button>
 	</svelte:fragment>
 </ExpandButton>

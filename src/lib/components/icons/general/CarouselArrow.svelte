@@ -11,10 +11,12 @@
 		class:opacity-0={hidden}
 		class:opacity-50={disabled}
 		class:transition-opacity={!hidden}
-		class="w-7 h- {className}"
+		class="w-5 h-5 {className}"
 		fill="currentColor"
 		viewBox="0 0 24 24"
 	>
-		<path d="M17 24L5 12L17 0L19.13 2.13L9.26 12L19.13 21.87L17 24Z" />
+		<path
+			d="M17.354 23.646a.5.5 0 0 1-.708 0L5.354 12.354a.5.5 0 0 1 0-.708L16.646.354a.5.5 0 0 1 .708 0l1.422 1.422a.5.5 0 0 1 0 .708l-9.162 9.162a.5.5 0 0 0 0 .708l9.162 9.162a.5.5 0 0 1 0 .708l-1.422 1.422Z"
+		/>
 	</svg>
 </button>

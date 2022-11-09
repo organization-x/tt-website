@@ -22,9 +22,10 @@
 	<p class="my-4">
 		<slot />
 	</p>
-	<div class="flex gap-2 items-center">
+
+	<div class="flex gap-4 items-center mt-1">
 		{#each skills as skill}
-			<svelte:component this={getIcon(skill)} class="w-10 h-10" />
+			<svelte:component this={getIcon(skill)} class="w-8 h-8" />
 		{/each}
 	</div>
 </div>

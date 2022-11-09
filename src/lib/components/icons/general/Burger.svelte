@@ -2,20 +2,20 @@
 	export let burgerOpen: boolean;
 </script>
 
-<svg viewBox="0 0 38 25" fill="currentColor" class="w-8 h-8">
+<svg viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
 	<path
-		d="M0 25V21H37.5V25H0Z"
+		d="M0 18.5a.5.5 0 0 1 .5-.5h23a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H.5a.5.5 0 0 1-.5-.5v-2Z"
 		class="origin-center transition-transform"
-		style={burgerOpen ? "transform: rotate(-45deg) translateY(-10px)" : ""}
+		style={burgerOpen ? "transform: rotate(-45deg) translateY(-7.5px)" : ""}
 	/>
 	<path
-		d="M0 15V11H37.5V15H0Z"
+		d="M0 11a.5.5 0 0 1 .5-.5h23a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H.5A.5.5 0 0 1 0 13v-2Z"
 		class:opacity-0={burgerOpen}
 		class="origin-center transition-opacity"
 	/>
 	<path
-		d="M0 4.5V0.5H37.5V4.5H0Z"
+		d="M0 3.5A.5.5 0 0 1 .5 3h23a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H.5a.5.5 0 0 1-.5-.5v-2Z"
 		class="origin-center transition-transform"
-		style={burgerOpen ? "transform: rotate(45deg) translateY(10px)" : ""}
+		style={burgerOpen ? "transform: rotate(45deg) translateY(7.5px)" : ""}
 	/>
 </svg>

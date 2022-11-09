@@ -29,7 +29,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			(data.name &&
 				(data.name.length > 25 ||
 					data.name.length < 1 ||
-					/[^a-zA-Z\s]/g.test(data.name))) ||
+					/[^a-zA-Z\s-]/g.test(data.name))) ||
 			(data.positions &&
 				(data.positions.length < 2 || data.positions.length > 4)) ||
 			(data.softSkills &&
@@ -46,7 +46,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			where: { id: data.id },
 			data: {
 				name,
-				url: name?.toLowerCase().replaceAll(" ", "-"),
+				url: name?.toLowerCase().replaceAll(/\s+/g, "-"),
 				about: data.about?.trim(),
 				team: data.team,
 				positions: data.positions,
@@ -75,50 +75,33 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 
 // Search for users, otherwise a +page.server.ts should be used
 // * INPUT: where=Prisma.UserWhereInput
-// * OUTPUT:
+// * OUTPUT: UserWithMetadata[]
 export const GET: RequestHandler = async ({ request }) => {
 	try {
-		// Grab users using request
-		const users = await prisma.user.findMany({
-			where: JSON.parse(
-				new URL(request.url).searchParams.get("where")!
-			) as Prisma.UserWhereInput,
-			include: {
-				links: {
-					select: {
-						userId: false,
-						Devto: true,
-						Facebook: true,
-						GitHub: true,
-						LinkedIn: true,
-						Twitter: true,
-						Website: true
+		return new Response(
+			JSON.stringify(
+				await prisma.user.findMany({
+					where: JSON.parse(
+						new URL(request.url).searchParams.get("where")!
+					) as Prisma.UserWhereInput,
+					include: {
+						links: {
+							select: {
+								userId: false,
+								Devto: true,
+								Facebook: true,
+								GitHub: true,
+								LinkedIn: true,
+								Twitter: true,
+								Website: true
+							}
+						},
+						pinnedProject: true
 					}
-				},
-				pinnedProject: true,
-				endorsementsReceived: {
-					distinct: ["softSkill", "techSkill"]
-				},
-				_count: {
-					select: {
-						projects: true
-					}
-				}
-			}
-		});
-
-		(
-			users as (Omit<typeof users[0], "endorsementsReceived"> & {
-				_count: { endorsements: number };
-				endorsementsReceived?: Endorsement[];
-			})[]
-		).map((user) => {
-			user._count.endorsements = user.endorsementsReceived!.length;
-
-			delete user.endorsementsReceived;
-		});
-
-		return new Response(JSON.stringify(users), { status: 200 });
+				})
+			),
+			{ status: 200 }
+		);
 	} catch {
 		throw error(400, "Bad Request");
 	}
@@ -130,11 +113,13 @@ export const GET: RequestHandler = async ({ request }) => {
 export const POST: RequestHandler = async ({ locals, request }) => {
 	const user = await userAuth(locals);
 
-	// Only allow Leads and Admins to endorse
-	if (!user || user.role === "User") throw error(401, "Unauthorized");
+	if (!user) throw error(401, "Unauthorized");
 
 	try {
 		const data: App.EndorsementRequest = await request.json();
+
+		// Don't let the user control their own endorsements
+		if (data.id === user.id) throw error(400, "Bad Request");
 
 		if (data.endorsing) {
 			const type = data.softSkill ? "softSkill" : "techSkill";

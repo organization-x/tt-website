@@ -42,7 +42,8 @@ export const softSkills: SoftSkill[] = [
 	"Initiative",
 	"Adaptable",
 	"Perserverance",
-	"Meticulous"
+	"Meticulous",
+	"Resourceful"
 ];
 
 export const techSkills: TechSkill[] = [
@@ -137,7 +138,11 @@ export const techSkills: TechSkill[] = [
 	"Tokio",
 	"Yew",
 	"Tailscale",
-	"Analytics"
+	"Analytics",
+	"CAD",
+	"Networking",
+	"Expo",
+	"React_Native"
 ];
 
 // Enum for date dropdowns

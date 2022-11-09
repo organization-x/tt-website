@@ -108,7 +108,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			url = data.title
 				.trim()
 				.replaceAll(/[^a-zA-Z0-9\s]/g, "")
-				.replaceAll(/\s/g, "-")
+				.replaceAll(/\s+/g, "-")
 				.toLowerCase();
 
 			// Check if project has the same url (so title) as another project

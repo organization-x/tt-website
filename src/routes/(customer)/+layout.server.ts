@@ -9,7 +9,7 @@ export const load: LayoutServerLoad<{
 	track: boolean;
 	user: App.UserWithMetadata | null;
 }> = async ({ locals, request }) => {
-	// If a user is logged in grab their data
+	// If a user is logged in grab their data for a dashboard shortcut and for endorsements
 	const user = (await userAuth(locals)) || null;
 
 	// If a user is logged in or if they're identified as a bot, don't track them

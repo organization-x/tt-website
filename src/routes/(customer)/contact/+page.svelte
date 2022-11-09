@@ -18,6 +18,7 @@
 	];
 
 	let pageNum = 0;
+	let element: HTMLDivElement;
 
 	// Keep track of all information entered in the form, if a field is option
 	// then it is valid by default
@@ -102,11 +103,40 @@
 			)
 		});
 	};
+
+	// When the user presses enter and they're inside the form, attempt to go the next page
+	const onKeydown = (e: KeyboardEvent) =>
+		e.key === "Enter" &&
+		element.contains(e.target as Node) &&
+		isValid &&
+		(pageNum += 1) &&
+		pageNum === 3 &&
+		submit();
+
+	// Reset the form when the user presses the send another message button
+	const reset = () => {
+		pageNum = 0;
+		isValid = false;
+		Object.keys(fields).forEach((key) => {
+			// Assign field as a variable so typescript doesn't complain about the typing multiple
+			// times
+			const field = fields[key as keyof typeof fields] as {
+				value?: string;
+				selected?: string[];
+				valid: boolean;
+				page: number;
+			};
+
+			field.value ? (field.value = "") : (field.selected = []);
+		});
+	};
 </script>
 
 <svelte:head>
 	<title>Contact Us</title>
 </svelte:head>
+
+<svelte:window on:keydown={onKeydown} />
 
 <Hero
 	class="from-purple-light to-purple-dark"
@@ -133,7 +163,7 @@
 <Section filled={true}>
 	<MajorHeader>{titles[pageNum]}</MajorHeader>
 
-	<div class="flex flex-col gap-10 mt-8 h-[40rem]">
+	<div bind:this={element} class="flex flex-col gap-10 mt-8 h-[40rem]">
 		{#if pageNum === 0}
 			<Field
 				bind:value={fields.firstName.value}
@@ -178,7 +208,6 @@
 				bind:isValid={fields.talent.valid}
 				radio={false}
 				title="What Talent Do You Need?"
-				placeholder="skill(s)"
 				options={[...softSkills, ...techSkills]}
 			/>
 
@@ -197,8 +226,9 @@
 				title="What Are We Doing?"
 				options={[
 					"Creating a brand new product",
-					"Building on an existing project",
-					"Deploying a new product"
+					"Building on an existing product",
+					"Maintaining an existing product",
+					"Unsure/Other"
 				]}
 			/>
 
@@ -229,10 +259,18 @@
 				<h1 class="text-2xl font-semibold text-center">
 					Your message has been sent!
 				</h1>
+
 				<Text>
 					We'll get back to you very soon, stay posted and get ready
 					for something new.
 				</Text>
+
+				<button
+					on:click={reset}
+					class="px-4 py-3 mt-8 bg-white text-black rounded-lg"
+				>
+					Send another message
+				</button>
 			</div>
 		{/if}
 	</div>
@@ -249,7 +287,8 @@
 		<FormButton
 			disabled={!isValid || pageNum === 3}
 			hidden={pageNum === 3}
-			on:click={() => (pageNum += 1) && pageNum === 3 && submit()}
+			on:click={() =>
+				isValid && (pageNum += 1) && pageNum === 3 && submit()}
 		>
 			{pageNum === 2 ? "Send" : "Next"}
 		</FormButton>

@@ -53,11 +53,15 @@
 			class="bg-gray-500/40 p-4 mt-3 rounded-lg lg:grid lg:grid-cols-2 lg:gap-x-4 lg:transition-[height]"
 		>
 			{#each authors as author (author.user.id)}
+				{@const cantRemove =
+					author.user.id === $user.id || author.user.id === ownerId}
+
 				<AuthorEditor
 					bind:author
-					cantRemove={author.user.id === $user.id ||
-						author.user.id === ownerId}
+					{cantRemove}
 					on:click={() => {
+						if (cantRemove) return;
+
 						authors.splice(
 							authors.findIndex(
 								(user) => user.user.id === author.user.id
@@ -82,7 +86,7 @@
 						class:w-14={!search.length}
 						class="bg-gray-500/40 py-4 rounded-l-lg overflow-hidden transition-widpad"
 					>
-						<Search class="w-6 h-6 mx-auto" />
+						<Search class="w-5 h-5 mx-auto" />
 					</div>
 					<input
 						bind:value={search}
@@ -93,7 +97,7 @@
 							delay: 300
 						}}
 						type="text"
-						class="w-full h-full px-4 py-4 bg-transparent focus:outline-none my-auto"
+						class="w-full h-full px-3 py-4 bg-transparent focus:outline-none my-auto"
 						placeholder="Search for collaborators..."
 					/>
 				</div>
@@ -121,7 +125,7 @@
 								/>
 							</div>
 						{:then users}
-							{@const timestamp = new Date().getTime()}
+							{@const timestamp = Date.now()}
 
 							{#each users as user}
 								<button

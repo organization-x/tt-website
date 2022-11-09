@@ -59,21 +59,24 @@
 		<button
 			on:click={() =>
 				innerWidth < 600 && endorsements.length && (open = !open)}
+			class:justify-between={endorser}
+			class:justify-center={!endorser}
+			class:cursor-auto={!endorsements.length}
 			class:border-transparent={!endorsements.length}
 			class:border-blue-light={endorsements.length > 0 &&
 				endorsements.length <= 3}
 			class:border-teal-dark={3 < endorsements.length &&
 				endorsements.length <= 10}
 			class:border-green-light={endorsements.length > 10}
-			class="flex w-full items-center gap-2 transition-[border,padding] justify-center font-semibold bg-gray-800 rounded-lg duration-200 border-4 py-4 px-3 overflow-hidden md:justify-center md:cursor-auto"
+			class="flex w-full select-text items-center transition-[border,padding] font-semibold bg-gray-800 rounded-lg duration-200 border-4 p-4 overflow-hidden md:justify-center md:cursor-auto"
 		>
 			<div
-				class:ml-12={!endorsements.length && endorser}
-				class="flex items-center gap-4 transition-[margin]"
+				class:md:ml-12={!isEndorsed && endorser}
+				class="flex items-center gap-4 transition-[margin] md:ml-12"
 			>
 				<svelte:component
 					this={getIcon(name)}
-					class="w-7 h-7 shrink-0"
+					class="w-6 h-6 shrink-0"
 				/>
 
 				<h1 class="text-sm">{name.replaceAll("_", " ")}</h1>
@@ -81,8 +84,8 @@
 
 			<DropArrow
 				{open}
-				class="transition-[transform,width] h-7 md:hidden {endorsements.length
-					? 'w-7'
+				class="transition-[transform,width] h-3 md:hidden {endorsements.length
+					? 'w-3'
 					: 'w-0'}"
 			/>
 		</button>
@@ -101,10 +104,10 @@
 				class:border-teal-dark={3 < endorsements.length &&
 					endorsements.length <= 10}
 				class:border-green-light={endorsements.length > 10}
-				class="rounded-lg bg-gray-800 shrink-0 p-4 border-4 transition-border duration-200"
+				class="rounded-lg bg-gray-800 shrink-0 py-4 px-5 border-4 transition-border duration-200"
 			>
 				<Plus
-					class="w-7 h-7 transition-[opacity,transform] {endorsing
+					class="w-4 h-4 transition-[opacity,transform] {endorsing
 						? ' opacity-70'
 						: ''}{isEndorsed ? ' rotate-45' : ''}"
 				/>

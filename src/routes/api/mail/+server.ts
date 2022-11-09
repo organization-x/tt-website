@@ -8,17 +8,23 @@ import type { RequestHandler } from "./$types";
 
 // Request handler for managing form submission from the contact form and inserting them into Gmail
 
-const auth = new OAuth2Client({
-	clientId: env.GOOGLE_ID,
-	clientSecret: env.GOOGLE_SECRET,
-	redirectUri: "localhost:3000"
-});
+// Authorize the Gmail client but put it in a try catch block just incase the refresh token for
+// some reason becomes invalid. This way it won't crash the server if it fails
+try {
+	const auth = new OAuth2Client({
+		clientId: env.GOOGLE_ID,
+		clientSecret: env.GOOGLE_SECRET,
+		redirectUri: "localhost:3000"
+	});
 
-auth.setCredentials({
-	refresh_token: env.GOOGLE_REFRESH
-});
+	auth.setCredentials({
+		refresh_token: env.GOOGLE_REFRESH
+	});
 
-const mail = gmail({ version: "v1", auth: auth });
+	const mail = gmail({ version: "v1", auth: auth });
+} catch (error) {
+	console.error("Google Refresh Token Error", error);
+}
 
 // Insert an email into the hello@ai-camp.org account for contact form submissions
 // * INPUT: MailRequest
@@ -82,9 +88,9 @@ export const POST: RequestHandler = async ({ request }) => {
 						</div>
 						<div style="margin-top: 2rem;">
 							<h1 class="font-semibold" style="font-size: inherit;">What Talent Do You Need?</h1>
-							<div style="width:calc(100% - 24px);min-height:35px;background-color:rgb(235,235,235);border-radius:10px;color:rgb(21,21,21);padding:20px 10px;border:2px solid rgb(31,189,103);">${
-								data.talent.join(", ")
-							}</div>
+							<div style="width:calc(100% - 24px);min-height:35px;background-color:rgb(235,235,235);border-radius:10px;color:rgb(21,21,21);padding:20px 10px;border:2px solid rgb(31,189,103);">${data.talent.join(
+								", "
+							)}</div>
 						</div>
 						<div style="margin-top: 2rem;">
 							<h1 class="font-semibold" style="font-size: inherit;">Company Website</h1>

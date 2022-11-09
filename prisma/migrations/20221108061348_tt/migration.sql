@@ -5,10 +5,10 @@ CREATE TYPE "Team" AS ENUM ('Marketing', 'Engineering', 'Design', 'Operations', 
 CREATE TYPE "Position" AS ENUM ('Frontend', 'Backend', 'Fullstack', 'Designer', 'Product_Manager', 'Data_Scientist', 'Engineer_Manager', 'Design_Manager', 'Engineer');
 
 -- CreateEnum
-CREATE TYPE "SoftSkill" AS ENUM ('Teamwork', 'Leading', 'Writing', 'Proactive', 'Organization', 'Communication', 'Problem_Solving', 'Motivation', 'Independent', 'Responsible', 'Reliable', 'Mentor', 'Initiative', 'Adaptable', 'Perserverance', 'Meticulous');
+CREATE TYPE "SoftSkill" AS ENUM ('Teamwork', 'Leading', 'Writing', 'Proactive', 'Organization', 'Communication', 'Problem_Solver', 'Motivation', 'Independent', 'Responsible', 'Reliable', 'Mentor', 'Initiative', 'Adaptable', 'Perserverance', 'Meticulous', 'Resourceful');
 
 -- CreateEnum
-CREATE TYPE "TechSkill" AS ENUM ('JavaScript', 'TypeScript', 'Python', 'React', 'TensorFlow', 'Pytorch', 'Google_Cloud', 'AWS', 'GraphQL', 'Java', 'Golang', 'Docker', 'PHP', 'Tailwind', 'SQL', 'Angular', 'Vue', 'Node', 'Rust', 'CSharp', 'CPP', 'C', 'Figma', 'Bash', 'Deno', 'Prisma', 'Ruby', 'Vercel', 'Next', 'WebAssembly', 'Flutter', 'Dart', 'Kotlin', 'Swift', 'Blockchain', 'Kubernetes', 'DevOps', 'CICD', 'Nuxt', 'Git', 'Elixir', 'Perl', 'Firebase', 'Unity', 'Digital_Ocean', 'Linux', 'Nginx', 'Heroku', 'Mongo', 'Postgres', 'Redis', 'Django', 'Flask', 'Express', 'Remix', 'Astro', 'Qwik', 'Surreal', 'Cassandra', 'Bun', 'Tauri', 'Electron', 'LaTeX', 'Lua', 'Haskell', 'R', 'SupaBase', 'Fly', 'Railway', 'Svelte', 'Vite', 'Azure', 'Bootstrap', 'Clojure', 'DiscordJS', 'Gatsby', 'Gradle', 'Ionic', 'Markdown', 'Numpy', 'Pandas', 'Rails', 'Scala', 'Solidity', 'Terraform', 'Zig', 'OpenCV', 'OpenAI', 'Tokio', 'Yew');
+CREATE TYPE "TechSkill" AS ENUM ('JavaScript', 'TypeScript', 'Python', 'React', 'TensorFlow', 'Pytorch', 'Google_Cloud', 'AWS', 'GraphQL', 'Java', 'Golang', 'Docker', 'PHP', 'Tailwind', 'SQL', 'Angular', 'Vue', 'Node', 'Rust', 'CSharp', 'CPP', 'C', 'Figma', 'Bash', 'Deno', 'Prisma', 'Ruby', 'Vercel', 'Next', 'WebAssembly', 'Flutter', 'Dart', 'Kotlin', 'Swift', 'Blockchain', 'Kubernetes', 'DevOps', 'CICD', 'Nuxt', 'Git', 'Elixir', 'Perl', 'Firebase', 'Unity', 'Digital_Ocean', 'Linux', 'Nginx', 'Heroku', 'Mongo', 'Postgres', 'Redis', 'Django', 'Flask', 'Express', 'Remix', 'Astro', 'Qwik', 'Surreal', 'Cassandra', 'Bun', 'Tauri', 'Electron', 'LaTeX', 'Lua', 'Haskell', 'R', 'SupaBase', 'Fly', 'Railway', 'Svelte', 'Vite', 'Azure', 'Bootstrap', 'Clojure', 'DiscordJS', 'Gatsby', 'Gradle', 'Ionic', 'Markdown', 'Numpy', 'Pandas', 'Rails', 'Scala', 'Solidity', 'Terraform', 'Zig', 'OpenCV', 'OpenAI', 'Tokio', 'Yew', 'Tailscale', 'Analytics', 'CAD', 'Networking', 'Expo', 'React_Native');
 
 -- CreateEnum
 CREATE TYPE "Role" AS ENUM ('Admin', 'Lead', 'User');
@@ -74,6 +74,7 @@ CREATE TABLE "User" (
     "techSkills" "TechSkill"[],
     "pinnedProjectId" TEXT,
     "visible" BOOLEAN NOT NULL DEFAULT true,
+    "lastUpdated" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

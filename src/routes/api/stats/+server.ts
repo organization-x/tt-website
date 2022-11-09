@@ -24,23 +24,150 @@ const analytics = new BetaAnalyticsDataClient({
 });
 
 // Get analytics data for the specific user
-// * INPUT: startDate=string, endDate=string
-// * OUTPUT: AnalyticsResponse
+// * INPUT: startDate=string, endDate=string, ids?=string[]
+// * OUTPUT: AnalyticsResponse | UsersAnalyticsResponse
 export const GET: RequestHandler = async ({ locals, request }) => {
 	const user = await userAuth(locals);
 
 	if (!user) throw error(401, "Unauthorized");
 
-	// Grab all projects this person is an author on to pull up relevant analytics
-	const projects = await prisma.project.findMany({
-		where: { ownerId: user.id },
-		select: { id: true, title: true }
-	});
-
-	const projectIds = projects.map((project) => project.id);
-
 	try {
 		const url = new URL(request.url).searchParams;
+
+		// If the user is an admin, check if id's are provided to grab other users data. Otherwise
+		// proceed as normal
+		let ids = url.get("ids")?.split(",");
+
+		if (user.role === "Admin" && ids) {
+			const data: App.UsersAnalyticsResponse = {};
+			const requests: Parameters<typeof analytics.runReport>[0][] = [];
+
+			// Check if any of the ids have already been cached and grab their cached data instead
+			await Promise.all(
+				ids.map(async (id) => {
+					const now = new Date();
+
+					now.setDate(now.getDate() - 30);
+
+					// Get the cached data from redis, the hash is different from the normal analytics since we keep them
+					// seperate. The reason for this is because this request only gets view data while the others get much
+					// more for per-user analytics and we can't keep partial data under the same hash
+					const cached = JSON.parse(
+						(await redis.get(
+							createHash("shake128", { outputLength: 10 })
+								.update("30daysAgo" + "today" + id)
+								.digest("hex")
+						)) || "{}"
+					) as App.AnalyticsResponse | {};
+
+					// If cache was found then remove them from the IDs and add their data, otherwise
+					// add a request in for them
+					if ("new" in cached)
+						(data[id] = {
+							new: cached.new,
+							returning: cached.returning
+						}) && (ids = ids!.filter((i) => i !== id));
+					else
+						requests.push({
+							dateRanges: [
+								{ startDate: "30daysAgo", endDate: "today" }
+							],
+							metrics: [
+								{
+									name: "eventCount"
+								}
+							],
+							dimensions: [
+								{
+									name: "newVsReturning"
+								},
+								{
+									name: "customEvent:id"
+								}
+							],
+							dimensionFilter: {
+								andGroup: {
+									expressions: [
+										{
+											filter: {
+												fieldName: "eventName",
+												stringFilter: {
+													value: "user_view"
+												}
+											}
+										},
+										{
+											filter: {
+												fieldName: "customEvent:id",
+												stringFilter: {
+													value: id
+												}
+											}
+										}
+									]
+								}
+							}
+						});
+				})
+			);
+
+			// Grab all the remaining waiting to be fetched data
+			if (requests.length) {
+				const reports = (
+					await analytics
+						.batchRunReports({
+							property: "properties/336430086",
+							requests
+						})
+						.catch(() => {
+							throw error(400, "Bad Request");
+						})
+				)[0].reports!;
+
+				await Promise.all(
+					reports.map(async (report) => {
+						const analytics = {
+							new: parseInt(
+								report.rows![1].metricValues![0].value!
+							),
+							returning: parseInt(
+								report.rows![0].metricValues![0].value!
+							)
+						};
+
+						// Add it to the return data
+						data[report.rows![0].dimensionValues![1].value!] =
+							analytics;
+
+						const hash = createHash("shake128", {
+							outputLength: 10
+						})
+							.update(
+								"30daysAgo" +
+									"today" +
+									report.rows![0].dimensionValues![1].value!
+							)
+							.digest("hex");
+
+						// Cache the data
+						await redis.set(hash, JSON.stringify(analytics));
+
+						// Create a 6 hour caching period
+						await redis.expire(hash, 60 * 60 * 6);
+					})
+				);
+			}
+
+			return new Response(JSON.stringify(data), { status: 200 });
+		}
+
+		// Grab all projects this person is an author on to pull up relevant analytics
+		const projects = await prisma.project.findMany({
+			where: { ownerId: user.id },
+			select: { id: true, title: true }
+		});
+
+		const projectIds = projects.map((project) => project.id);
 
 		const data = {
 			startDate: url.get("startDate")!,
@@ -404,6 +531,9 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 		// The key is the date selected along with the users ID all hashed to improve performance, we
 		// don't want to be using that entire string as the key
 		await redis.set(hash, json);
+
+		// Create a 6 hour caching period
+		await redis.expire(hash, 60 * 60 * 6);
 
 		return new Response(json, { status: 200 });
 	} catch {

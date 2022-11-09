@@ -45,7 +45,7 @@
 
 		if (
 			name.length < 1 ||
-			name.length > 20 ||
+			name.length > 25 ||
 			about.length > 150 ||
 			user.positions.length < 2 ||
 			user.softSkills.length < 2 ||
@@ -88,7 +88,7 @@
 		checkConstraints();
 	};
 
-	$: user.name, (user.name = user.name.replaceAll(/[^a-zA-Z\s]/g, ""));
+	$: user.name, (user.name = user.name.replaceAll(/[^a-zA-Z\s-]/g, ""));
 
 	$: user.about, checkConstraints();
 
@@ -223,7 +223,7 @@
 		<div
 			class="w-full h-full bg-black/40 flex justify-center items-center gap-2 row-start-1 col-start-1"
 		>
-			<Pencil class="w-6 h-6 lg:w-8 lg:h-8" />
+			<Pencil class="w-5 h-5" />
 			<h1 class="text-xl select-none font-semibold lg:text-2xl">Edit</h1>
 		</div>
 
@@ -264,7 +264,7 @@
 					<div
 						class="bg-black/40 rounded-full flex row-start-1 col-start-1 z-10"
 					>
-						<Pencil class="w-7 h-7 m-auto" />
+						<Pencil class="w-6 h-6 m-auto" />
 					</div>
 				{/if}
 
@@ -295,10 +295,10 @@
 					target="_blank"
 					rel="noopener noreferrer"
 					href="/developers/{$original.url}"
-					class="px-4 py-3 rounded-lg bg-gray-500 flex items-center justify-center max-w-xs gap-4 w-full transition-colors hover:bg-gray-500/80"
+					class="px-4 py-3 rounded-lg bg-gray-500 text-lg flex items-center justify-center max-w-xs gap-4 w-full transition-colors hover:bg-gray-500/80"
 				>
 					View Profile
-					<ExternalLink class="w-6 h-6" />
+					<ExternalLink class="w-4 h-4 mt-0.5" />
 				</a>
 
 				<DashButton
@@ -309,7 +309,7 @@
 						func: toggleVisible,
 						delay: 300
 					}}
-					class="bg-gray-500 px-3.5 sm:px-4 hover:bg-gray-500/80"
+					class="bg-gray-500 hover:bg-gray-500/80"
 				>
 					<ShowHide class="w-5 h-5" crossed={visible} />
 				</DashButton>
@@ -320,18 +320,19 @@
 			disabled={disableForm}
 			class:opacity-60={disableForm}
 			class:pointer-events-none={disableForm}
+			class="transition-opacity duration-300"
 		>
 			<div
-				class="flex flex-col mt-8 gap-12 max-w-xl mx-auto transition-opacity duration-300 lg:text-sm lg:max-w-screen-2xl lg:mt-40 lg:mx-0 3xl:flex-row 3xl:items-stretch 3xl:text-sm"
+				class="flex flex-col mt-8 gap-12 max-w-xl mx-auto lg:text-sm lg:max-w-screen-2xl lg:mt-40 lg:mx-0 3xl:flex-row 3xl:items-stretch 3xl:text-sm"
 			>
 				<div class="flex flex-col gap-12 justify-between">
 					<ProfileSection title="About Me">
 						<Input
 							bind:value={user.name}
-							max={20}
+							max={25}
 							placeholder="Your name"
 						>
-							<Id class="w-6 h-6 mx-auto" />
+							<Id class="w-5 h-5 mx-auto" />
 						</Input>
 						<TextBox
 							bind:value={user.about}
@@ -345,7 +346,7 @@
 							selectedItems={[user.team]}
 							on:change={updateTeam}
 						>
-							<Group class="w-8 h-8 shrink-0" />
+							<Group class="w-6 h-6 shrink-0" />
 						</Dropdown>
 					</ProfileSection>
 
@@ -354,47 +355,49 @@
 							bind:value={user.links.GitHub}
 							placeholder="GitHub username"
 						>
-							<GitHub class="w-6 h-6 mx-auto" />
+							<GitHub class="w-5 h-5 mx-auto" />
 						</Input>
 
 						<Input
 							bind:value={user.links.LinkedIn}
 							placeholder="LinkedIn username"
 						>
-							<LinkedIn class="w-6 h-6 mx-auto" />
+							<LinkedIn class="w-5 h-5 mx-auto" />
 						</Input>
 
 						<Input
 							bind:value={user.links.Devto}
 							placeholder="Dev.to username"
 						>
-							<Devto class="w-6 h-6 mx-auto" />
+							<Devto class="w-5 h-5 mx-auto" />
 						</Input>
 
 						<Input
 							bind:value={user.links.Twitter}
 							placeholder="Twitter username"
 						>
-							<Twitter class="w-6 h-6 mx-auto" />
+							<Twitter class="w-5 h-5 mx-auto" />
 						</Input>
 
 						<Input
 							bind:value={user.links.Facebook}
 							placeholder="Facebook username"
 						>
-							<Facebook class="w-6 h-6 mx-auto" />
+							<Facebook class="w-5 h-5 mx-auto" />
 						</Input>
 
 						<Input
 							bind:value={user.links.Website}
 							placeholder="Website link"
 						>
-							<LinkIcon class="w-6 h-6 mx-auto" />
+							<LinkIcon class="w-5 h-5 mx-auto" />
 						</Input>
 					</ProfileSection>
 				</div>
 
-				<div class="flex flex-col gap-12 justify-between 3xl:shrink-0">
+				<div
+					class="flex flex-col gap-12 justify-between 3xl:shrink-0 3xl:w-[53%]"
+				>
 					<ProfileSection largeGrid={true} title="Positions">
 						{#each { length: 4 } as _, i}
 							<Dropdown
@@ -462,9 +465,7 @@
 				</div>
 			</div>
 
-			<div
-				class="flex gap-6 justify-center mt-8 h-14 lg:h-12 3xl:justify-end"
-			>
+			<div class="flex gap-6 justify-center mt-8 3xl:justify-end">
 				<DashButton
 					on:click={cancel}
 					disabled={disableButtons}

@@ -62,12 +62,18 @@
 	).length;
 
 	// Create a timestamp so the images from Cloudflare don't cache
-	const timestamp = new Date().getTime();
+	const timestamp = Date.now();
 
 	// Transform links into an array so it's easily iterable
-	const links = Object.keys($user.links).map((key) => {
-		return { key: key, link: $user.links[key as keyof typeof $user.links] };
-	});
+	const links: { key: string; link: string }[] = [];
+	Object.keys($user.links).map(
+		(key) =>
+			$user.links[key as keyof typeof $user.links] &&
+			links.push({
+				key: key,
+				link: $user.links[key as keyof typeof $user.links]!
+			})
+	);
 
 	// Split the name to get the first name and rest of the name seperated
 	$: nameSplit = $user.name.split(/ (.*)/);
@@ -194,25 +200,25 @@
 				{#if $user.role === "User"}
 					<DashLink
 						href="/dashboard/projects"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
 					>
-						<Plus class="w-6 h-6" />
+						<Plus class="w-4 h-4" />
 						Create a New Project
 					</DashLink>
 				{:else if $user.role === "Lead"}
 					<DashLink
 						href="/developers"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
 					>
-						<Plus class="w-6 h-6" />
+						<Plus class="w-4 h-4" />
 						Endorse a skill
 					</DashLink>
 				{:else}
 					<DashLink
 						href="/developers"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
 					>
-						<Plus class="w-6 h-6" />
+						<Plus class="w-4 h-4" />
 						Manage All Projects
 					</DashLink>
 				{/if}
@@ -220,17 +226,17 @@
 				{#if $user.role !== "Admin"}
 					<DashLink
 						href="/dashboard/profile"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
 					>
-						<Id class="w-6 h-6" />
+						<Id class="w-5 h-5" />
 						Update Your Profile
 					</DashLink>
 				{:else}
 					<DashLink
-						href="/dashboard/profile"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+						href="/dashboard/users"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
 					>
-						<Id class="w-6 h-6" />
+						<Id class="w-5 h-5" />
 						Manage All Users
 					</DashLink>
 				{/if}
@@ -238,17 +244,17 @@
 				{#if $user.role !== "Admin"}
 					<DashLink
 						href="/dashboard/analytics"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
 					>
-						<TrendUp class="w-6 h-6" />
+						<TrendUp class="w-5 h-5" />
 						Check Your Analytics
 					</DashLink>
 				{:else}
 					<DashLink
 						href="/dashboard/analytics"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-2 items-center justify-center"
+						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
 					>
-						<TrendUp class="w-6 h-6" />
+						<TrendUp class="w-5 h-5" />
 						Check Sitewide Analytics
 					</DashLink>
 				{/if}
@@ -257,7 +263,7 @@
 
 		<DashSection
 			title="Your Profile"
-			class="bg-gray-500/40 p-4 rounded-lg flex flex-col gap-8 lg:p-8 lg:gap-12"
+			class="bg-gray-500/40 p-4 rounded-lg flex flex-col gap-8 lg:p-6 lg:gap-12"
 		>
 			<div class="lg:flex lg:gap-8">
 				<div
@@ -281,7 +287,7 @@
 							>
 								<svelte:component
 									this={getIcon($user.team || "")}
-									class="w-5 h-5"
+									class="w-4 h-4 lg:w-5 lg:h-5"
 								/>
 							</div>
 						</div>
@@ -310,9 +316,9 @@
 
 				<div class="mt-4 w-full min-h-[18rem] lg:w-1/2">
 					<div
-						class="flex font-semibold justify-center items-center gap-2"
+						class="flex font-semibold justify-center items-center gap-3"
 					>
-						<Pin class="w-6 h-6" />
+						<Pin class="w-5 h-5" />
 						<h1 class="text-lg">Pinned Project</h1>
 					</div>
 
@@ -350,97 +356,95 @@
 				</div>
 			</div>
 
-			<div class="grid gap-8 lg:gap-y-0 lg:grid-cols-2">
-				<DevSection
-					title="Positions"
-					class="lg:row-start-1 lg:col-start-1"
-				>
-					<Bulb slot="icon" class="w-6 h-6" />
+			<div>
+				<div class="flex flex-col gap-8 lg:flex-row">
+					<DevSection title="Positions" class="lg:w-7/12">
+						<Bulb slot="icon" class="w-5 h-5" />
 
-					{#each { length: 4 } as _, i}
-						<DevTag name={$user.positions[i]} />
-					{/each}
-				</DevSection>
+						{#each { length: 4 } as _, i}
+							<DevTag name={$user.positions[i]} />
+						{/each}
+					</DevSection>
 
-				<DevSection
-					title="Top Skills"
-					class="lg:col-start-2 lg:row-start-1"
-				>
-					<Wrench slot="icon" class="w-6 h-6" />
+					<DevSection title="Top Skills" class="lg:w-6/12">
+						<Wrench slot="icon" class="w-5 h-5" />
 
-					{#each $user.techSkills as name}
-						<DevTag {name} />
-					{/each}
+						{#each $user.techSkills as name}
+							<DevTag {name} />
+						{/each}
 
-					{#each $user.softSkills as name}
-						<DevTag {name} />
-					{/each}
+						{#each $user.softSkills as name}
+							<DevTag {name} />
+						{/each}
 
-					<!-- Get the collective amount of techSkills and softSkills missing -->
-					{#each { length: 10 - ($user.techSkills.length + $user.softSkills.length) } as _, i}
-						<DevTag name="" />
-					{/each}
-				</DevSection>
+						<!-- Get the collective amount of techSkills and softSkills missing -->
+						{#each { length: 10 - ($user.techSkills.length + $user.softSkills.length) } as _}
+							<DevTag name="" />
+						{/each}
+					</DevSection>
+				</div>
 
-				<DevSection
-					title="Links"
-					class="lg:row-start-1 lg:col-start-1 lg:mt-56"
-				>
-					<LinkIcon slot="icon" class="w-6 h-6" />
+				<div class="flex flex-col gap-8 mt-8 lg:flex-row">
+					<DevSection
+						title="Links"
+						class="overflow-hidden lg:-mt-56 lg:w-7/12"
+					>
+						<LinkIcon slot="icon" class="w-5 h-5" />
 
-					{#each { length: 6 } as _, i}
-						{#if links[i].link}
+						{#each links as link}
 							<div
 								class="flex justify-center items-center font-semibold bg-gray-800 rounded-lg gap-3 p-4"
 							>
 								<svelte:component
-									this={getIcon(links[i].key)}
+									this={getIcon(link.key)}
 									class="w-7 h-7 shrink-0"
 								/>
+
 								<h1
 									class="text-sm overflow-auto scrollbar-hidden"
 								>
-									{links[i].link}
+									{link.link}
 								</h1>
 							</div>
-						{:else}
+						{/each}
+
+						<!-- Get the collective amount of links missing -->
+						{#each { length: 6 - links.length } as _}
 							<DevTag name="" />
-						{/if}
-					{/each}
-				</DevSection>
+						{/each}
+					</DevSection>
 
-				<div
-					class="flex gap-4 ml-auto lg:col-start-2 lg:row-start-1 lg:self-end"
-				>
-					<DashLink
-						icon={true}
-						href="/developers/{data.url}"
-						target="_blank"
-						class="bg-gray-500/40 hover:bg-gray-500/20"
-					>
-						<ExternalLink class="w-5 h-5" />
-					</DashLink>
+					<div class="flex gap-4 ml-auto lg:w-6/12 lg:justify-end">
+						<DashLink
+							icon={true}
+							href="/developers/{data.url}"
+							target="_blank"
+							class="bg-gray-500/40 hover:bg-gray-500/20"
+						>
+							<ExternalLink class="w-4 h-4" />
+						</DashLink>
 
-					<DashButton
-						icon={true}
-						on:click={() => (visible = !visible)}
-						debounce={{
-							bind: visible,
-							func: toggleVisible,
-							delay: 300
-						}}
-						class="bg-gray-500/40 hover:bg-gray-500/20"
-					>
-						<ShowHide class="w-5 h-5" crossed={visible} />
-					</DashButton>
+						<DashButton
+							icon={true}
+							on:click={() => (visible = !visible)}
+							debounce={{
+								bind: visible,
+								func: toggleVisible,
+								delay: 300
+							}}
+							class="bg-gray-500/40 hover:bg-gray-500/20"
+						>
+							<ShowHide class="w-4 h-4" crossed={visible} />
+						</DashButton>
 
-					<DashLink
-						icon={true}
-						href="/dashboard/profile"
-						class="bg-blue-light hover:bg-blue-light/80"
-					>
-						<Pencil class="w-5 h-5" />
-					</DashLink>
+						<DashLink
+							icon={true}
+							href="/dashboard/profile"
+							class="bg-blue-light hover:bg-blue-light/80"
+						>
+							<Pencil class="w-4 h-4" />
+						</DashLink>
+					</div>
 				</div>
 			</div>
 		</DashSection>
@@ -461,7 +465,7 @@
 				>
 					<TenProjects slot="badge" />
 
-					Create 10+ projects that anyone can view
+					Create 10 projects that aren't hidden
 				</BadgeProgress>
 
 				<BadgeProgress
@@ -472,7 +476,7 @@
 				>
 					<TwentyProjects slot="badge" />
 
-					Create 20+ projects that anyone can view
+					Create 20 projects that aren't hidden
 				</BadgeProgress>
 
 				<BadgeProgress
@@ -494,7 +498,7 @@
 				>
 					<TenKudos slot="badge" />
 
-					Get 10+ kudos from other developers
+					Get 10 kudos from other developers
 				</BadgeProgress>
 
 				<BadgeProgress
@@ -505,7 +509,7 @@
 				>
 					<FiftyKudos slot="badge" />
 
-					Get 50+ kudos from other developers
+					Get 50 kudos from other developers
 				</BadgeProgress>
 
 				<BadgeProgress
@@ -516,7 +520,7 @@
 				>
 					<HundredKudos slot="badge" />
 
-					Get 100+ kudos from other developers
+					Get 100 kudos from other developers
 				</BadgeProgress>
 			</div>
 		</div>

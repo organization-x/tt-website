@@ -70,7 +70,7 @@
 					// If we just added an image, inset a paragraph below it
 					if (!wasActive)
 						editor.chain().focus().createParagraphNear().run();
-				} else editor.commands.deleteSelection();
+				} else active && editor.commands.deleteSelection();
 
 				open = false;
 
@@ -100,12 +100,13 @@
 	on:click={() => onAction(open ? Action.Confirm : Action.Open)}
 	{open}
 	{active}
+	class="w-56"
 >
 	<svelte:fragment slot="button">
 		{#if open}
-			<Check class="w-7 h-7 m-auto" />
+			<Check class="w-5 h-5" />
 		{:else}
-			<ImageIcon class="w-6 h-6 m-auto" />
+			<ImageIcon class="w-4 h-4" />
 		{/if}
 	</svelte:fragment>
 
@@ -119,7 +120,7 @@
 			</button>
 		{:else}
 			<label class="shrink-0 my-auto cursor-pointer">
-				<Upload class="w-6 h-6" />
+				<Upload class="w-5 h-5" />
 
 				<input
 					bind:this={upload}

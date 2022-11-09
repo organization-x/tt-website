@@ -10,10 +10,13 @@
 <a
 	{href}
 	{target}
-	class:p-4={!icon}
-	class:p-3={icon}
+	class:py-5={!icon}
+	class:lg:px-6={!icon}
+	class:py-4={icon}
+	class:lg:px-3.5={icon}
+	class:lg:py-3.5={icon}
 	rel="noreferrer noopener"
-	class="block text-center rounded-lg shrink-0 transition-[background-color,opacity] duration-200 {className}"
+	class="block text-center px-4 rounded-lg shrink-0 transition-[background-color,opacity] duration-200 {className}"
 >
 	<slot />
 </a>

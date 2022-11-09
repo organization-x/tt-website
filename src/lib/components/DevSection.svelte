@@ -6,7 +6,7 @@
 </script>
 
 <div class={className}>
-	<div class="flex font-semibold justify-center items-center gap-2">
+	<div class="flex font-semibold justify-center items-center gap-3">
 		<slot name="icon" />
 		<h1 class="text-lg">{title}</h1>
 	</div>

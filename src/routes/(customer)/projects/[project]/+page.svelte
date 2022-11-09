@@ -31,7 +31,7 @@
 	import { extensions } from "$lib/tiptapExtensions";
 	import Button from "$lib/components/Button.svelte";
 	import Author from "$lib/components/Author.svelte";
-	import Seperator from "$lib/components/Seperator.svelte";
+	import Separator from "$lib/components/Separator.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	import type { PageData } from "./$types";
@@ -85,6 +85,31 @@
 
 <svelte:head>
 	<title>{data.title} / Team Tomorrow</title>
+
+	<meta name="description" content={data.description} />
+
+	<!-- OpenGraph data with user info -->
+	<meta property="og:title" content="{data.title} / Team Tomorrow" />
+	<meta name="og:description" content={data.description} />
+	<meta
+		name="og:image"
+		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.id}/banner"
+	/>
+	<meta
+		name="og:image:secure_url"
+		content="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.id}/banner"
+	/>
+	<meta name="og:image:width" content="512" />
+	<meta name="og:image:height" content="512" />
+	<meta name="og:image:alt" content="Banner for '{data.title}'" />
+
+	<!-- Twitter card data with user info -->
+	<meta property="twitter:title" content="{data.title} / Team Tomorrow" />
+	<meta name="twitter:description" content={data.description} />
+	<meta
+		name="twitter:image"
+		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.id}/banner"
+	/>
 </svelte:head>
 
 <img
@@ -101,7 +126,10 @@
 		<p>{data.date.toLocaleDateString("en-US")}</p>
 		<div class="flex gap-2">
 			{#each data.skills as skill}
-				<svelte:component this={getIcon(skill)} class="w-8 h-8" />
+				<svelte:component
+					this={getIcon(skill)}
+					class="w-6 h-6 lg:w-7 lg:h-7"
+				/>
 			{/each}
 		</div>
 	</div>
@@ -116,7 +144,7 @@
 		{/each}
 	</Scrollable>
 
-	<Seperator class="mt-4 mb-10" />
+	<Separator class="mt-4 mb-10" />
 
 	<div class="mb-12 [&>p:empty]:h-6">
 		{@html html}

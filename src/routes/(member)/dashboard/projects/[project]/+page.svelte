@@ -4,7 +4,7 @@
 	import { user } from "$lib/stores";
 	import { techSkills } from "$lib/enums";
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import Seperator from "$lib/components/Seperator.svelte";
+	import Separator from "$lib/components/Separator.svelte";
 	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import Input from "$lib/components/dashboard/Input.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
@@ -326,7 +326,7 @@
 		<div
 			class="w-full h-full bg-black/40 flex justify-center items-center gap-2 row-start-1 col-start-1"
 		>
-			<Pencil class="w-6 h-6 lg:w-8 lg:h-8" />
+			<Pencil class="w-5 h-5" />
 			<h1 class="text-xl select-none font-semibold lg:text-2xl">Edit</h1>
 		</div>
 
@@ -391,8 +391,8 @@
 		</InputSection>
 	</div>
 
-	<div class="flex flex-col items-center">
-		<div class="flex gap-6 mx-auto mt-6">
+	<div class="flex flex-col items-center my-2">
+		<div class="flex gap-6 mx-auto">
 			<DashButton
 				on:click={cancel}
 				disabled={disableButtons}
@@ -400,6 +400,7 @@
 			>
 				Cancel
 			</DashButton>
+
 			<DashButton
 				on:click={save}
 				disabled={disableButtons}
@@ -408,6 +409,7 @@
 				Save
 			</DashButton>
 		</div>
+
 		{#if isOwner}
 			<div class="flex gap-6 mx-auto mt-6">
 				<DashButton
@@ -424,6 +426,7 @@
 				>
 					<Pin class="w-5 h-5" />
 				</DashButton>
+
 				<DashButton
 					icon={true}
 					on:click={() => (visible = !visible)}
@@ -440,7 +443,7 @@
 		{/if}
 	</div>
 
-	<Seperator class="max-w-screen-xl" />
+	<Separator class="max-w-screen-xl" />
 
 	<TipTap
 		bind:blobs

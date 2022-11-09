@@ -17,6 +17,9 @@
 
 	export let data: PageData;
 
+	// There are two variables in this context holding using data, one being userPage which holds the data
+	// of the user that someone has navigated to, and user, the user currently logged in if any
+
 	// Get top 3 projects
 	const previewedProjects = data.projects?.slice(0, 3);
 
@@ -27,31 +30,16 @@
 	// animations play correctly
 	let endorsingSkills = new Set<TechSkill | SoftSkill>();
 
-	if (data.user.pinnedProject)
-		previewedProjects.unshift(data.user.pinnedProject);
+	if (data.userPage.pinnedProject)
+		previewedProjects.unshift(data.userPage.pinnedProject);
 
-	const links = Object.entries(data.user.links)
+	// Make links into an array of objects with the link name and the link if it exists
+	const links = Object.entries(data.userPage.links)
 		.filter(([_, link]) => link)
 		.map(([key, link]) => ({
 			key: key as keyof App.UserLinks,
 			link: link!
 		}));
-
-	// Construct an endorsements object with each skill the user has selected as a property
-	let endorsements = Object.fromEntries(
-		[...data.user.techSkills, ...data.user.softSkills].map((skill) => [
-			skill,
-			[]
-		])
-	) as { [key: string]: { id: number; from: App.Endorser }[] };
-
-	// Add each endorsement to the correct skill
-	data.user.endorsementsReceived.forEach((endorsement) =>
-		endorsements[(endorsement.softSkill || endorsement.techSkill)!].push({
-			id: endorsement.id,
-			from: endorsement.from
-		})
-	);
 
 	// Construct links based off of their name
 	const createLink = (key: keyof App.UserLinks, link: string) => {
@@ -67,9 +55,26 @@
 			case "Facebook":
 				return `https://facebook.com/${link}`;
 			case "Website":
-				return link;
+				return link.startsWith("http://") || link.startsWith("https://")
+					? link
+					: `https://${link}`;
 		}
 	};
+
+	// Construct an endorsements object with each skill the user has selected as a property
+	let endorsements = Object.fromEntries(
+		[...data.userPage.techSkills, ...data.userPage.softSkills].map(
+			(skill) => [skill, []]
+		)
+	) as { [key: string]: { id: number; from: App.Endorser }[] };
+
+	// Add each endorsement to the correct skill
+	data.userPage.endorsementsReceived.forEach((endorsement) =>
+		endorsements[(endorsement.softSkill || endorsement.techSkill)!].push({
+			id: endorsement.id,
+			from: endorsement.from
+		})
+	);
 
 	// Add/remove endorsements from this user
 	const updateEndorsements = async (
@@ -77,7 +82,7 @@
 		endorsing: boolean,
 		type: "softSkill" | "techSkill"
 	) => {
-		if (!data.endorserId) return;
+		if (!data.user) return;
 
 		// Mark this skill as being endorsed
 		endorsingSkills.add(skill);
@@ -88,9 +93,9 @@
 		// If the endorsement is being added then supply the user ID of whom it is being added
 		// to, otherwise supply the ID of the endorsement being removed
 		const id = endorsing
-			? data.user.id
+			? data.userPage.id
 			: endorsements[skill].find(
-					(endorsement) => endorsement.from.id === data.endorserId
+					(endorsement) => endorsement.from.id === data.user!.id
 			  )!.id;
 
 		// Fetch the API and afterwards either add the new endorsement returned by it or remove the
@@ -123,16 +128,47 @@
 </script>
 
 <svelte:head>
-	<title>{data.user.name} / Team Tomorrow</title>
+	<title>{data.userPage.name} / Team Tomorrow</title>
+
+	<meta name="description" content={data.userPage.about} />
+
+	<!-- OpenGraph data with user info -->
+	<meta property="og:title" content="{data.userPage.name} / Team Tomorrow" />
+	<meta name="og:description" content={data.userPage.about} />
+	<meta
+		name="og:image"
+		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
+			.userPage.id}/avatar"
+	/>
+	<meta
+		name="og:image:secure_url"
+		content="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
+			.userPage.id}/avatar"
+	/>
+	<meta name="og:image:width" content="512" />
+	<meta name="og:image:height" content="512" />
+	<meta name="og:image:alt" content="{data.userPage.name}'s avatar" />
+
+	<!-- Twitter card data with user info -->
+	<meta
+		property="twitter:title"
+		content="{data.userPage.name} / Team Tomorrow"
+	/>
+	<meta name="twitter:description" content={data.userPage.about} />
+	<meta
+		name="twitter:image"
+		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
+			.userPage.id}/avatar"
+	/>
 </svelte:head>
 
 <div class="relative pt-18 px-5 lg:px-10">
 	<img
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.user
-			.id}/banner?{timestamp}"
+		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data
+			.userPage.id}/banner?{timestamp}"
 		width="1920"
 		height="1080"
-		alt="{data.user.name}'s banner"
+		alt="{data.userPage.name}'s banner"
 		class="-z-10 absolute bg-gray-400 top-0 inset-0 object-cover object-center w-full h-32 lg:h-44"
 	/>
 
@@ -146,28 +182,29 @@
 				width="512"
 				height="512"
 				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
-					.user.id}/avatar?{timestamp}"
-				alt="{data.user.name}'s avatar"
+					.userPage.id}/avatar?{timestamp}"
+				alt="{data.userPage.name}'s avatar"
 				class="border-4 mt-4 border-black bg-gray-400 box-content w-28 h-28 rounded-full lg:w-32 lg:mx-0 lg:h-32 lg:mb-2"
 			/>
 
 			<h1 class="font-semibold text-lg text-center lg:text-start">
-				{data.user.team || "No Team"}
+				{data.userPage.role !== "User" ? `${data.userPage.role} /` : ""}
+				{data.userPage.team || "No Team"}
 			</h1>
 
 			<GradientText
 				class="from-green-light to-green-dark text-center font-bold text-3xl break-words w-full lg:text-start"
 			>
-				{data.user.name}
+				{data.userPage.name}
 			</GradientText>
 
-			<p class="mx-auto lg:w-64 lg:mx-0">
-				{data.user.about}
+			<p class="mx-auto my-2 lg:w-64 lg:mx-0">
+				{data.userPage.about}
 			</p>
 
 			{#if links.length}
 				<div
-					class="p-3 w-full flex items-center justify-evenly md:px-0 md:gap-4 lg:justify-start"
+					class="p-3 w-full flex items-center justify-evenly sm:px-0 sm:gap-6 sm:justify-center lg:justify-start lg:gap-4"
 				>
 					{#each links as link}
 						<a
@@ -177,7 +214,7 @@
 						>
 							<svelte:component
 								this={getIcon(link.key)}
-								class="w-8 h-8 lg:w-7 lg:h-7"
+								class="w-6 h-6"
 							/>
 						</a>
 					{/each}
@@ -190,7 +227,7 @@
 		>
 			<div class="flex flex-col gap-8 mb-8 3xl:w-full">
 				<ProfileSection title="Positions">
-					{#each data.user.positions as name}
+					{#each data.userPage.positions as name}
 						<DevTag {name} />
 					{/each}
 				</ProfileSection>
@@ -204,7 +241,7 @@
 
 					{#if data.projects.length}
 						<Button
-							href="/developers/{data.user.url}/projects"
+							href="/developers/{data.userPage.url}/projects"
 							class="mb-2">View More</Button
 						>
 					{:else}
@@ -218,13 +255,13 @@
 			<div class="flex flex-col gap-8 w-full 3xl:w-full">
 				<ProfileSection title="Top Skills">
 					{@const endorser =
-						data.endorserId && data.endorserId !== data.user.id
-							? data.endorserId
+						data.user && data.user.id !== data.userPage.id
+							? data.user.id
 							: null}
 
 					<div class="flex flex-col gap-6">
 						<h1 class="font-semibold text-xl text-center">Soft</h1>
-						{#each data.user.softSkills as name}
+						{#each data.userPage.softSkills as name}
 							<Skill
 								{name}
 								{endorser}
@@ -244,7 +281,7 @@
 						<h1 class="font-semibold text-xl text-center">
 							Technical
 						</h1>
-						{#each data.user.techSkills as name}
+						{#each data.userPage.techSkills as name}
 							<Skill
 								{name}
 								{endorser}
@@ -267,7 +304,7 @@
 						data.projects.length >= 10,
 						data.projects.length >= 20,
 						new Set(
-							data.user.endorsementsReceived.map(
+							data.userPage.endorsementsReceived.map(
 								(endorsement) =>
 									endorsement.softSkill ||
 									endorsement.techSkill

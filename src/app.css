@@ -42,7 +42,11 @@
 	}
 
 	.scrollbar::-webkit-scrollbar-thumb {
-		@apply bg-gray-800 invisible border-y-8 border-solid border-transparent bg-clip-padding rounded-full;
+		@apply bg-gray-700 invisible border-y-8 border-solid border-transparent bg-clip-padding rounded-full;
+	}
+
+	.scrollbar::-webkit-scrollbar-thumb:hover {
+		@apply bg-gray-500;
 	}
 
 	.scrollbar:hover::-webkit-scrollbar-thumb {

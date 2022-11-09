@@ -1,14 +1,18 @@
-# fly.toml file generated for tt-db on 2022-11-03T12:35:21-07:00
+# fly.toml file generated for tt-postgres on 2022-11-05T22:48:35-07:00
 
-app = "tt-db"
+app = "tt-postgres"
 kill_signal = "SIGINT"
 kill_timeout = 30
 
-[env]
-  PGDATA="/var/lib/postgresql/data/pgdata"
-
 [deploy]
-  strategy="rolling"
+  strategy = "rolling"
+
+[env]
+  PGDATA = "/var/lib/postgresql/data/pgdata"
+
+[mounts]
+  destination = "/var/lib/postgresql/data"
+  source = "main"
 
 [[services]]
   internal_port = "5432"
@@ -22,7 +26,3 @@ kill_timeout = 30
     interval = "30s"
     restart_limit = 0
     timeout = "5s"
-
-[mounts]
-  source="main"
-  destination="/var/lib/postgresql/data"

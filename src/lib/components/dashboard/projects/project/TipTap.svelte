@@ -154,7 +154,6 @@
 		};
 	});
 
-	// TODO: Add image resizing capabilities
 	// TODO: Fix collaboration issues like the empty cursor being way too large
 </script>
 
@@ -199,14 +198,14 @@
 					on:click={() =>
 						editor.chain().focus().toggleBulletList().run()}
 				>
-					<UnList class="w-6 h-6 mx-auto" />
+					<UnList class="w-5 h-5 mx-auto" />
 				</EditorButton>
 				<EditorButton
 					active={isActive.orderedList}
 					on:click={() =>
 						editor.chain().focus().toggleOrderedList().run()}
 				>
-					<OrList class="w-6 h-6 mx-auto" />
+					<OrList class="w-5 h-5 mx-auto" />
 				</EditorButton>
 				<LinkButton active={isActive.link} {editor} />
 				<ImageButton active={isActive.image} {editor} />

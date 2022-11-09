@@ -14,13 +14,14 @@
 	// Along with an index to auto select values, since dropdowns normally are near other dropdowns with the same values.
 	export let i = 0;
 	export let radio = true;
+	export let icons = true;
+	export let open = false;
 	export let required: boolean;
 	export let options: string[];
 	export let selected: string[] = [];
 	export let selectedItems: (string | null)[];
 
 	let search = "";
-	let open = false;
 	let parent: HTMLDivElement;
 	let filteredOptions: string[] = [];
 
@@ -86,13 +87,13 @@
 	<button
 		on:click={() => (open = !open)}
 		class:rounded-b-lg={!open}
-		class="w-full flex items-center gap-4 p-4 bg-gray-800 rounded-t-lg"
+		class="w-full flex items-center gap-4 p-5 bg-gray-800 rounded-t-lg"
 	>
 		<!-- If the dropdown isn't a radio it should be using the slot -->
-		{#if !$$slots.default}
+		{#if !$$slots.default && icons}
 			<svelte:component
 				this={getIcon(selected[0] || "None")}
-				class="w-8 h-8 shrink-0"
+				class="w-6 h-6 shrink-0"
 			/>
 		{/if}
 
@@ -106,24 +107,25 @@
 						: `${selected.length} selected`)) ||
 					"None"}
 			</h1>
-			<DropArrow {open} class="w-6 h-6" />
+			<DropArrow {open} class="w-3 h-3" />
 		</div>
 	</button>
 
-	{#if open}
-		<div
-			class="absolute w-full flex flex-col inset-0 top-16 shadow-lg bg-gray-800 rounded-b-lg h-[15rem] overflow-auto z-50"
-		>
-			<div class="flex p-4 select-none w-full items-center">
-				<Search class="w-5 h-5" />
-				<input
-					bind:value={search}
-					type="text"
-					class="w-full h-full px-2 bg-transparent focus:outline-none"
-					placeholder="Search..."
-				/>
-			</div>
+	<div
+		class:hidden={!open}
+		class="absolute w-full inset-x-0 top-16 shadow-lg bg-gray-800 h-[17rem] rounded-b-lg z-50"
+	>
+		<div class="flex p-4 select-none w-full items-center h-12">
+			<Search class="w-4 h-4" />
+			<input
+				bind:value={search}
+				type="text"
+				class="w-full h-full px-2 bg-transparent focus:outline-none"
+				placeholder="Search..."
+			/>
+		</div>
 
+		<div class="flex flex-col overflow-auto h-56 scrollbar">
 			{#if !required && radio}
 				<DropdownItem
 					on:click={() => radioClick([])}
@@ -140,11 +142,14 @@
 							on:click={() => radioClick([option])}
 							selected={option === selected[0]}
 						>
-							<div class="flex items-center gap-2">
-								<svelte:component
-									this={getIcon(option)}
-									class="w-5 h-5"
-								/>
+							<div class="flex items-center gap-3">
+								{#if icons}
+									<svelte:component
+										this={getIcon(option)}
+										class="w-5 h-5"
+									/>
+								{/if}
+
 								{option.replaceAll("_", " ")}
 							</div>
 						</DropdownItem>
@@ -157,16 +162,19 @@
 						selected={selected.includes(option)}
 						radio={false}
 					>
-						<div class="flex items-center gap-2">
-							<svelte:component
-								this={getIcon(option)}
-								class="w-5 h-5"
-							/>
+						<div class="flex items-center gap-3">
+							{#if icons}
+								<svelte:component
+									this={getIcon(option)}
+									class="w-5 h-5"
+								/>
+							{/if}
+
 							{option.replaceAll("_", " ")}
 						</div>
 					</DropdownItem>
 				{/each}
 			{/if}
 		</div>
-	{/if}
+	</div>
 </div>

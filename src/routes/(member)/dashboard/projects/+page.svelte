@@ -24,33 +24,31 @@
 	$: search, (request = new Promise(() => {})), (deletingProjects = []);
 
 	const onSearch = () => {
-		request = new Promise((res, rej) =>
-			fetch(
-				`/api/project?where=${JSON.stringify({
-					title: {
-						contains: search.trim(),
-						mode: "insensitive"
-					},
+		request = fetch(
+			`/api/project?where=${JSON.stringify({
+				title: {
+					contains: search.trim(),
+					mode: "insensitive"
+				},
 
-					OR: [
-						{
-							ownerId: $user.id
-						},
-						{
-							authors: {
-								some: {
-									userId: $user.id
-								}
+				OR: [
+					{
+						ownerId: $user.id
+					},
+					{
+						authors: {
+							some: {
+								userId: $user.id
 							}
 						}
-					]
-				} as Prisma.ProjectWhereInput)}`
-			)
-				.then((res) => res.json())
-				.then((data: App.ProjectWithMetadata[]) =>
-					data.length ? res(data) : rej()
-				)
-		);
+					}
+				]
+			} as Prisma.ProjectWhereInput)}`
+		)
+			.then((res) => res.json())
+			.then((data: App.ProjectWithMetadata[]) =>
+				data.length ? data : Promise.reject()
+			);
 	};
 
 	const createProject = () => {
@@ -136,15 +134,16 @@
 			bind:search
 			on:input={() => (request = new Promise(() => {}))}
 			on:search={onSearch}
-			placeholder="Search projects you made..."
+			placeholder="Search your projects..."
 		/>
+
 		<button
 			disabled={creatingProject}
 			class:opacity-70={creatingProject}
 			on:click={createProject}
 			class="bg-gray-500/40 rounded-lg w-full p-4 flex items-center transition-opacity justify-center gap-2 lg:w-40 lg:shrink-0"
 		>
-			<Plus class="w-6 h-6{creatingProject ? ' animate-spin' : ''}" />
+			<Plus class="w-4 h-4{creatingProject ? ' animate-spin' : ''}" />
 			New Project
 		</button>
 	</div>

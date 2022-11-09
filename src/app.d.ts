@@ -29,22 +29,11 @@ declare global {
 		// Type for removing the relational userId property from the links model
 		type UserLinks = Omit<Links, "userId">;
 
-		// Type for combining a user with their associated links and pinned project. Used for the
-		// dashboard initial load
+		// Type for combining a user with their associated links and pinned project
 		type UserWithMetadata = User & {
 			links: UserLinks;
 			pinnedProject: Project?;
 			endorsementsReceived: Endorsement[];
-		};
-
-		// Type for response data from a user search
-		type UserSearchResponse = User & {
-			links: UserLinks;
-			pinnedProject: Project?;
-			_count: {
-				projects: number;
-				endorsements: number;
-			};
 		};
 
 		// Interface of a stripped down User object for endorsers on the profile page
@@ -109,7 +98,7 @@ declare global {
 		// Type for graph data that will be plotted
 		type GraphData = { label: string; value: number; color: string };
 
-		// Interface for analytics response data
+		// Interface for personal analytics response data
 		interface AnalyticsResponse {
 			returning: number;
 			new: number;
@@ -124,6 +113,14 @@ declare global {
 				views: GraphData[];
 				scrolled: GraphData[];
 				techSkills: TechSkill[];
+			};
+		}
+
+		// Interface for user manager analytics response data
+		interface UsersAnalyticsResponse {
+			[id: string]: {
+				new: number;
+				returning: number;
 			};
 		}
 
