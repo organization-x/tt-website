@@ -85,10 +85,11 @@
 			caption="partnerships where we have applied our skills"
 			class="before:bg-pink-dark"
 		>
-			Today, AI is helping us make drugs, get to work, and fill out
-			paperwork. Tomorrow, AI will be composing our music, delivering our
-			goods, and more. We believe it's critical to prepare for tomorrow,
-			learning about AI, and expanding our knowledge as a team.
+			Today, AI is helping us produce medications, navigate to work, and
+			discover things we'll want to buy. Tomorrow, AI will be composing
+			our music, delivering goods, and more. We believe it's critical to
+			prepare for tomorrow, learning about AI, and expanding our knowledge
+			as a team.
 			<a href="/" class="text-teal-light" rel="noopener noreferrer">
 				Landing Page
 			</a>

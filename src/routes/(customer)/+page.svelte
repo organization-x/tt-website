@@ -4,11 +4,9 @@
 	import Hero from "$lib/components/Hero.svelte";
 	import Button from "$lib/components/Button.svelte";
 	import Step from "$lib/components/index/Step.svelte";
-	import Gear from "$lib/components/index/Gear.svelte";
 	import Aiot from "$lib/components/index/Aiot.svelte";
 	import Logo from "$lib/components/icons/Logo.svelte";
 	import Hippo from "$lib/components/index/Hippo.svelte";
-	import Crane from "$lib/components/index/Crane.svelte";
 	import AicBot from "$lib/components/index/AICBot.svelte";
 	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Company from "$lib/components/index/Company.svelte";
@@ -57,7 +55,7 @@
 
 <Hero
 	class="from-teal-light to-teal-dark"
-	title="Grasp the top 1% of junior developers."
+	title="Discover the top 1% of junior developers."
 	src="/assets/index/index.webm"
 >
 	Develop something exciting with skills from low-level mastery to meticulous
@@ -96,12 +94,11 @@
 <p
 	class="my-4 px-4 max-w-lg mx-auto sm:px-10 lg:px-6 lg:mt-0 lg:text-center lg:max-w-2xl xl:px-10"
 >
-	Team Tomorrow is an <strong>ever expanding team of developers</strong>
-	looking to provide companies access to our skills and interests.
-	You have access to developers that are
 	<strong>eager to learn and collaborate</strong>, willing to communicate
 	about in-depth and technical products, and are confident in doing what it
 	takes to get a product done and polished fast.
+	about in-depth and technical products, and <em>confident</em> in doing what it takes
+	to get a product <strong>completed and polished quickly</strong>.
 </p>
 
 <Section filled={true}>
@@ -176,12 +173,13 @@
 		Many companies nowadays have trouble lifting off the ground since hiring
 		expert software engineers can be expensive, but not here. We strive to
 		empower our developers to create
-		<strong>your next big thing</strong>
 		Contact us <strong>now</strong> for more information on the next steps,
 		or continue to explore our website and uncover our
 		<strong>
 			stunning projects and the developers who have created them.
 		</strong>
+		and uncover <em>our stunning projects</em> and <em>the developers who have
+		created them</em>.
 	</Text>
 
 	<Button
@@ -228,7 +226,7 @@
 	<Project project={data.projects[3]}>
 		<Logo slot="svg" class="w-20 absolute -top-8 right-0 left-0 mx-auto" />
 	</Project>
-
+	-->
 	<Button
 		on:click={() => trackClick("uncover_projects")}
 		href="/projects"
@@ -243,8 +241,6 @@
 		<Crane />
 		<TextHeader>Multiple ways to build your personal workforce.</TextHeader>
 		<Gear />
-	</div>
-
 	<MajorHeader>
 		Discover
 		<GradientText class="from-blue-light to-blue-dark">Our</GradientText>
@@ -312,7 +308,7 @@
 
 	<!-- TODO: Put actual important project here -->
 	<div class="max-w-lg mx-auto lg:max-w-2xl">
-		<ProjectPreview project={data.projects[0]} />
+		<!--<ProjectPreview project={data.projects[0]} />-->
 	</div>
 </Section>
 
@@ -324,7 +320,7 @@
 </MajorHeader>
 
 <MajorCaption>
-	Connect with us and let us hand pick
+	Connect with us, and let us hand-pick
 	<strong>exclusive developers</strong>
 	to make your product soar.
 </MajorCaption>
@@ -341,6 +337,8 @@
 		such a task. Start by filtering through our team members to pinpoint
 		your ideal candidates. Or contact us immediately to get recommendations
 		and an instant quote.
+		ideal candidates. Or contact us immediately to get recommendations and
+		an instant quote.
 
 		<GitCommit slot="svg" class="lg:hidden" />
 	</Step>
@@ -354,6 +352,8 @@
 		members. Evaluate our developers' projects, skill sets, social media,
 		and more by clicking on their profile preview and exploring what they
 		have to offer.
+		Evaluate our developers' projects, skill sets, social media, and more by
+		clicking on their profile preview.
 
 		<GitMerge slot="svg" class="lg:hidden" />
 	</Step>
