@@ -74,7 +74,7 @@
 			<button
 				type="button"
 				aria-label="Menu"
-				class="z-50 relative hover:text-teal-light duration-500"
+				class="z-50 relative"
 				on:click={() => {
 					burgerOpen = !burgerOpen;
 					window.scrollTo(0, 0);
@@ -114,14 +114,12 @@
 							<NavLink
 								href="/"
 								active={$pageId === "home"}
-								class="hover:text-teal-light duration-300"
 							>
 								Home
 							</NavLink>
 							<NavLink
 								href="/about"
 								active={$pageId === "about"}
-								class="hover:text-teal-light duration-300"
 							>
 								About
 							</NavLink>
@@ -129,7 +127,6 @@
 							<NavLink
 								href="/developers"
 								active={$pageId === "developers"}
-								class="hover:text-teal-light duration-300"
 							>
 								Developers
 							</NavLink>
@@ -137,28 +134,24 @@
 							<NavLink
 								href="/projects"
 								active={$pageId === "projects"}
-								class="hover:text-teal-light duration-300"
 							>
 								Projects
 							</NavLink>
 							<NavLink
 								href="https://ai-camp.org"
 								target="_blank"
-								class="hover:text-teal-light duration-300"
 							>
 								AI Camp
 							</NavLink>
 							{#if data.user}
 								<NavLink
                   href="/dashboard"
-								  class="hover:text-teal-light duration-300"
                 >
                   Dashboard
                 </NavLink>
 
 								<NavLink
                   href="/logout"
-								  class="hover:text-teal-light duration-300"
                 >
                   Log Out
                 </NavLink>
@@ -181,7 +174,7 @@
 								title="AI Camp Instagram"
 							>
 								<Instagram
-									class="w-10 h-10 hover:text-teal-light duration-300"
+									class="w-10 h-10"
 								/>
 							</a>
 
@@ -192,7 +185,7 @@
 								title="AI Camp YouTube"
 							>
 								<YouTube
-									class="w-12 h-12 hover:text-teal-light duration-300"
+									class="w-12 h-12"
 								/>
 							</a>
 
@@ -203,7 +196,7 @@
 								title="AI Camp Email"
 							>
 								<Envelope
-									class="w-10 h-10 hover:text-teal-light duration-300"
+									class="w-10 h-10"
 								/>
 							</a>
 						</div>

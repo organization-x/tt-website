@@ -82,7 +82,10 @@
 			discover things we'll want to buy. Tomorrow, AI will be composing
 			our music, delivering goods, and more. We believe it's critical to
 			prepare for tomorrow, learning about AI, and expanding our knowledge
-			as a team.
+			as a team. Our developers are constantly exercising and practicing
+			their skills on several different projects with multiple different
+			companies. After only a few years, we've contracted 100+ of our
+			developers out and learned from the best.
 		</Stat>
 
 		<Stat

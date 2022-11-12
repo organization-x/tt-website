@@ -95,9 +95,7 @@
 	class="my-4 px-4 max-w-lg mx-auto sm:px-10 lg:px-6 lg:mt-0 lg:text-center lg:max-w-2xl xl:px-10"
 >
 	<strong>eager to learn and collaborate</strong>, willing to communicate
-	about in-depth and technical products, and are confident in doing what it
-	takes to get a product done and polished fast.
-	about in-depth and technical products, and <em>confident</em> in doing what it takes
+	about in-depth and technical products, and <strong>confident</strong> in doing what it takes
 	to get a product <strong>completed and polished quickly</strong>.
 </p>
 
@@ -174,12 +172,9 @@
 		expert software engineers can be expensive, but not here. We strive to
 		empower our developers to create
 		Contact us <strong>now</strong> for more information on the next steps,
-		or continue to explore our website and uncover our
-		<strong>
-			stunning projects and the developers who have created them.
-		</strong>
-		and uncover <em>our stunning projects</em> and <em>the developers who have
-		created them</em>.
+		or continue to explore our website and uncover
+		<strong>our stunning projects</strong> and <strong>the developers who
+		created them</strong>.
 	</Text>
 
 	<Button
@@ -202,6 +197,13 @@
 		Look through our projects and see our skills in action being used to
 		craft <strong>real experiences.</strong>
 	</MajorCaption>
+	<Button
+		on:click={() => trackClick("uncover_projects")}
+		href="/projects"
+		class="mb-12 mt-12"
+	>
+		Uncover our projects
+	</Button>
 
 	<!-- TODO: Remove these if statements once the database has these selected projects -->
 	{#if data.projects[0]}
@@ -241,14 +243,10 @@
 </Section>
 
 <Section filled={true}>
-	<div class="relative my-12 w-fit mx-auto">
-		<Crane />
-		<TextHeader>Multiple ways to build your personal workforce.</TextHeader>
-		<Gear />
 	<MajorHeader>
 		Discover
 		<GradientText class="from-blue-light to-blue-dark">Our</GradientText>
-		Skillset
+		Skillsets
 	</MajorHeader>
 
 	<MajorCaption>
@@ -300,7 +298,7 @@
 	</Carousel>
 
 	<Button
-		on:click={() => trackClick("developers_under_devcards")}
+		on:click={() => trackClick("discover_developers_cards")}
 		href="/developers"
 	>
 		Discover Developers
@@ -393,7 +391,7 @@
 </Carousel>
 
 <Button
-	on:click={() => trackClick("developers_bottom")}
+	on:click={() => trackClick("discover_developers_bottom")}
 	href="/developers"
 	class="mt-8">Discover Developers</Button
 >
