@@ -197,6 +197,7 @@
 		Look through our projects and see our skills in action being used to
 		craft <strong>real experiences.</strong>
 	</MajorCaption>
+
 	<Button
 		on:click={() => trackClick("uncover_projects")}
 		href="/projects"
@@ -232,7 +233,7 @@
 			/>
 		</Project>
 	{/if}
-  
+
 	<Button
 		on:click={() => trackClick("uncover_projects")}
 		href="/projects"
@@ -393,5 +394,7 @@
 <Button
 	on:click={() => trackClick("discover_developers_bottom")}
 	href="/developers"
-	class="mt-8">Discover Developers</Button
+	class="mt-8"
 >
+	Discover Developers
+</Button>
