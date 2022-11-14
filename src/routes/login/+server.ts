@@ -139,14 +139,13 @@ export const GET: RequestHandler = async (request) => {
 		}
 
 		// Create a new session for the user, if the session token somehow already exists, recursively generate a new one
-		const createSession = async (): Promise<string> => {
-			return await prisma.session
+		const createSession = (): Promise<string> =>
+			prisma.session
 				.create({
 					data: { userId: id }
 				})
 				.then((session) => session.token)
 				.catch(() => createSession());
-		};
 
 		const session = await createSession();
 

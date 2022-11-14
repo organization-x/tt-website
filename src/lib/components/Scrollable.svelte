@@ -45,15 +45,20 @@
 
 	// Verticle scroll without holding shift for desktop
 	const onWheel = (event: WheelEvent) => {
+		// Prevent the page from scrolling
+		event.stopPropagation();
+		event.preventDefault();
+
+		// TODO: Delay prevents stopping default
 		if (
 			Math.abs(event.deltaX) > 2 ||
 			Math.abs(event.deltaY) < 10 ||
-			disabledSide === Side.Both
+			disabledSide === Side.Both ||
+			true
 		)
 			return;
 
-		// Prevent the page from scrolling
-		event.preventDefault();
+		console.log(event.defaultPrevented);
 
 		// The default will be unable to be prevented if it's a top level scroll
 		if (!event.defaultPrevented) return;

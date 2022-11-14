@@ -62,7 +62,6 @@
 <div
 	on:outroend
 	out:slide={{ duration: deleting ? 500 : 0 }}
-	in:fly={{ duration: 300, y: 50 }}
 	disabled={deleting}
 	class:mb-10={!minified}
 	class:opacity-70={deleting}
@@ -101,7 +100,7 @@
 		</div>
 	</div>
 
-	<div class="flex flex-col py-4 px-3 min-h-112 lg:px-4">
+	<div class="flex flex-col py-4 px-3 min-h-116 lg:px-4">
 		<h1 class="font-semibold text-2xl break-words">
 			{project.title}
 		</h1>

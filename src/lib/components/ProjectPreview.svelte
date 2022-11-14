@@ -51,7 +51,7 @@
 		</div>
 	</div>
 
-	<div class="flex flex-col py-4 px-3 min-h-112">
+	<div class="flex flex-col py-4 px-3 min-h-116">
 		<h1 class="font-semibold text-2xl break-words">{project.title}</h1>
 		<p class="mt-2">{project.description}</p>
 		<div class="flex gap-2 mt-auto pt-4">

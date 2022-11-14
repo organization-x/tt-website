@@ -8,7 +8,7 @@
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
-	import ProjectEditPreview from "$lib/components/dashboard/projects/index/ProjectEditPreview.svelte";
+	import ProjectEditPreview from "$lib/components/dashboard/ProjectEditPreview.svelte";
 
 	import type { Prisma } from "@prisma/client";
 

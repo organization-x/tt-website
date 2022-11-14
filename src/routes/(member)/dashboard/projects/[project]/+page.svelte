@@ -4,7 +4,6 @@
 	import { user } from "$lib/stores";
 	import { techSkills } from "$lib/enums";
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import Separator from "$lib/components/Separator.svelte";
 	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import Input from "$lib/components/dashboard/Input.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";

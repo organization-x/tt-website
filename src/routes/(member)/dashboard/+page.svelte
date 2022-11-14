@@ -26,7 +26,7 @@
 	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
 	import TwentyProjects from "$lib/components/icons/badges/TwentyProjects.svelte";
 	import BadgeProgress from "$lib/components/dashboard/index/BadgeProgress.svelte";
-	import ProjectEditPreview from "$lib/components/dashboard/projects/index/ProjectEditPreview.svelte";
+	import ProjectEditPreview from "$lib/components/dashboard/ProjectEditPreview.svelte";
 
 	import type { PageData } from "./$types";
 	import { onMount } from "svelte";
@@ -265,7 +265,7 @@
 			title="Your Profile"
 			class="bg-gray-900 p-4 rounded-lg flex flex-col gap-8 lg:p-6 lg:gap-12"
 		>
-			<div class="lg:flex lg:gap-8 lg:items-center">
+			<div class="lg:flex lg:gap-8">
 				<div
 					class="flex flex-col gap-2 items-center mb-6 md:gap-8 md:mt-4 md:items-start lg:w-1/2"
 				>
