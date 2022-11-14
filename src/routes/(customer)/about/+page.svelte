@@ -1,10 +1,10 @@
 <script lang="ts">
 	import Hero from "$lib/components/Hero.svelte";
 	import Text from "$lib/components/Text.svelte";
+	import Header from "$lib/components/Header.svelte";
 	import Stat from "$lib/components/about/Stat.svelte";
 	import Member from "$lib/components/about/Member.svelte";
 	import Section from "$lib/components/index/Section.svelte";
-	import TextHeader from "$lib/components/TextHeader.svelte";
 </script>
 
 <svelte:head>
@@ -13,7 +13,7 @@
 
 <Hero
 	class="from-green-light to-green-dark"
-	title="A new era of collaboration and teamwork."
+	title="A new era of collaboration and teamwork"
 	src="/assets/about/about.webm"
 >
 	Explore what achievements we've
@@ -21,7 +21,7 @@
 </Hero>
 
 <Section>
-	<TextHeader>Where it all began.</TextHeader>
+	<Header>Where it all began</Header>
 
 	<Text>
 		Our main goal at AI Camp is to revolutionize AI education around the
@@ -38,7 +38,7 @@
 </Section>
 
 <Section filled={true}>
-	<TextHeader>A fully-fueled rocketship already blasting off.</TextHeader>
+	<Header>A fully-fueled rocketship already blasting off</Header>
 
 	<div class="flex flex-col gap-8 mt-8">
 		<Stat
@@ -61,7 +61,7 @@
 			title="Proof In Profit"
 			amount={70}
 			postFix="K"
-			caption="in revenue"
+			caption="single-project revenue"
 			class="before:bg-purple-dark"
 			side="right"
 		>
@@ -75,7 +75,7 @@
 			title="Multiple Partnerships"
 			amount={100}
 			postFix="+"
-			caption="partnerships where skills have been applied"
+			caption="partnerships with big tech"
 			class="before:bg-teal-dark"
 		>
 			Today, AI is helping us make drugs, get to work, and fill out
@@ -111,7 +111,7 @@
 </Section>
 
 <Section>
-	<TextHeader>The mission that brought us here.</TextHeader>
+	<Header>The mission that brought us here</Header>
 
 	<Text>
 		We have experienced first-hand that our traditional education did not
@@ -132,7 +132,7 @@
 </Section>
 
 <Section filled={true}>
-	<TextHeader>Meet the ones behind it all.</TextHeader>
+	<Header>Meet the ones behind it all</Header>
 
 	<div
 		class="grid grid-cols-2 gap-6 pt-10 max-w-xl mx-auto md:gap-14 lg:grid-cols-4"
@@ -161,7 +161,7 @@
 </Section>
 
 <Section>
-	<TextHeader>Innovation moves the world and we're all for it.</TextHeader>
+	<Header>Innovation moves the world and we're all for it</Header>
 
 	<Text>
 		Here at Team Tomorrow, we make the future and are here to help build

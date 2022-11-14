@@ -4,4 +4,4 @@
 	export { className as class };
 </script>
 
-<div class="w-full h-0.5 rounded-lg bg-gray-500 {className}" />
+<div class="w-full h-0.5 rounded-full bg-gray-700 {className}" />

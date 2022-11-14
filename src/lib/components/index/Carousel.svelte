@@ -57,7 +57,7 @@
 <div class="my-10 px-2">
 	<div
 		bind:this={scrollable}
-		class="flex gap-8 overflow-auto snap-mandatory snap-x scrollbar-hidden max-w-sm mx-auto lg:snap-none {className}"
+		class="flex gap-8 overflow-auto snap-mandatory snap-x scrollbar-hidden max-w-sm mx-auto md:max-w-md lg:snap-none {className}"
 	>
 		<slot />
 	</div>

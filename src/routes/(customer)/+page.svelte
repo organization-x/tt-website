@@ -3,28 +3,22 @@
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Button from "$lib/components/Button.svelte";
+	import Header from "$lib/components/Header.svelte";
 	import Step from "$lib/components/index/Step.svelte";
-	import Gear from "$lib/components/index/Gear.svelte";
 	import Aiot from "$lib/components/index/Aiot.svelte";
 	import Hippo from "$lib/components/index/Hippo.svelte";
-	import Crane from "$lib/components/index/Crane.svelte";
 	import AicBot from "$lib/components/index/AICBot.svelte";
+	import Caption from "$lib/components/index/Caption.svelte";
 	import Logo from "$lib/components/icons/logos/Logo.svelte";
-	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Company from "$lib/components/index/Company.svelte";
 	import DevCard from "$lib/components/index/DevCard.svelte";
 	import Project from "$lib/components/index/Project.svelte";
 	import Section from "$lib/components/index/Section.svelte";
-	import MajorHeader from "$lib/components/MajorHeader.svelte";
 	import Carousel from "$lib/components/index/Carousel.svelte";
 	import GitMerge from "$lib/components/index/GitMerge.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
-	import MajorCaption from "$lib/components/MajorCaption.svelte";
 	import GitDeploy from "$lib/components/index/GitDeploy.svelte";
 	import GitCommit from "$lib/components/index/GitCommit.svelte";
-	import DrawnArrow from "$lib/components/index/DrawnArrow.svelte";
-	import Annotation from "$lib/components/index/Annotation.svelte";
-	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
 
 	import type { PageData } from "./$types";
 	import type { AnalyticsInstance } from "analytics";
@@ -57,7 +51,7 @@
 
 <Hero
 	class="from-teal-light to-teal-dark"
-	title="Grasp the top 1% of junior developers."
+	title="Grasp the top 1% of junior developers"
 	src="/assets/index/index.webm"
 >
 	Develop something exciting with skills from low-level mastery to meticulous
@@ -74,42 +68,40 @@
 	</Button>
 </Hero>
 
-<div
-	class="mx-auto pb-8 max-w-xs relative lg:mt-32 lg:max-w-screen-xl overflow-hidden"
->
+<div class="px-2 sm:px-6 lg:mb-6 lg:pt-4">
 	<Button
 		on:click={() => trackClick("contact_top")}
 		href="/contact"
-		class="lg:hidden">Contact Us</Button
+		class="lg:hidden"
 	>
+		Contact Us
+	</Button>
 
-	<TextHeader>
+	<Header>
 		What is
 		<GradientText class="from-purple-light to-purple-dark">
 			Team Tomorrow?
 		</GradientText>
-	</TextHeader>
+	</Header>
 
-	<DrawnArrow />
+	<Text>
+		<strong>
+			Team Tomorrow is an ever expanding team of developers looking to
+			provide companies access to our skills and our interests.
+		</strong>
+		You have access to developers that are
+		<strong>eager to learn and collaborate</strong>, willing to communicate
+		about in-depth and technical products, and are confident in doing what
+		it takes to get a product done and polished fast.
+	</Text>
 </div>
 
-<p
-	class="mt-4 mb-8 px-4 max-w-lg mx-auto sm:px-10 lg:px-6 lg:mt-0 lg:mb-10 lg:text-center lg:max-w-2xl xl:px-10"
->
-	<strong>
-		Team Tomorrow is an ever expanding team of developers looking to provide
-		companies access to our skills and our interests.
-	</strong>
-	You have access to developers that are
-	<strong>eager to learn and collaborate</strong>, willing to communicate
-	about in-depth and technical products, and are confident in doing what it
-	takes to get a product done and polished fast.
-</p>
-
 <Section filled={true}>
-	<TextHeader>Top companies depend on us.</TextHeader>
+	<Header>Top companies depend on us</Header>
 
-	<div class="mt-8 flex flex-col gap-6 lg:grid lg:grid-cols-2">
+	<div
+		class="mt-8 flex flex-col max-w-screen-xl mx-auto gap-6 lg:grid lg:grid-cols-2"
+	>
 		<Company
 			skills={["Google_Cloud", "Python", "TensorFlow", "Pytorch"]}
 			image={{
@@ -153,6 +145,7 @@
 			and leveraging APIs to help people make good decisions when trading
 			cryptocurrency assets like NFTs.
 		</Company>
+
 		<Company
 			skills={["Python", "AWS"]}
 			image={{
@@ -169,10 +162,7 @@
 		</Company>
 	</div>
 
-	<div class="relative mt-8 w-fit mx-auto lg:mt-16">
-		<TextHeader>You're the next big thing.</TextHeader>
-		<Annotation />
-	</div>
+	<Header>Let's create the next big thing</Header>
 
 	<Text>
 		Many companies nowadays have trouble lifting off the ground since hiring
@@ -189,127 +179,90 @@
 	<Button
 		on:click={() => trackClick("contact_after_companies")}
 		href="/contact"
+		class="mt-2"
 	>
 		Contact Us
 	</Button>
 </Section>
 
 <Section>
-	<MajorHeader>
-		Uncover
+	<Header>
+		Uncover Real-World
 		<GradientText class="from-pink-light to-pink-dark">
 			Projects
 		</GradientText>
-	</MajorHeader>
+	</Header>
 
-	<MajorCaption>
+	<Caption>
 		Look through our projects and see our skills in action being used to
 		craft <strong>real experiences.</strong>
-	</MajorCaption>
+	</Caption>
+
+	<div class="my-6 max-w-screen-xl mx-auto lg:-mt-10">
+		<!-- TODO: Remove these if statements once the database has these selected projects -->
+		{#if data.projects[0]}
+			<Project {trackClick} project={data.projects[0]}>
+				<Hippo slot="svg" />
+			</Project>
+		{/if}
+
+		{#if data.projects[1]}
+			<Project {trackClick} project={data.projects[1]}>
+				<Aiot slot="svg" />
+			</Project>
+		{/if}
+
+		{#if data.projects[2]}
+			<Project {trackClick} project={data.projects[2]}>
+				<AicBot slot="svg" />
+			</Project>
+		{/if}
+
+		{#if data.projects[3]}
+			<Project {trackClick} project={data.projects[3]}>
+				<Logo
+					slot="svg"
+					class="w-20 absolute -top-8 right-0 left-0 mx-auto"
+				/>
+			</Project>
+		{/if}
+	</div>
 
 	<Button
 		on:click={() => trackClick("uncover_projects")}
 		href="/projects"
-		class="my-8"
-	>
-		Uncover all our projects
-	</Button>
-
-	<!-- TODO: Remove these if statements once the database has these selected projects -->
-	{#if data.projects[0]}
-		<Project project={data.projects[0]}>
-			<Hippo slot="svg" />
-		</Project>
-	{/if}
-
-	{#if data.projects[1]}
-		<Project project={data.projects[1]}>
-			<Aiot slot="svg" />
-		</Project>
-	{/if}
-
-	{#if data.projects[2]}
-		<Project project={data.projects[2]}>
-			<AicBot slot="svg" />
-		</Project>
-	{/if}
-
-	{#if data.projects[3]}
-		<Project project={data.projects[3]}>
-			<Logo
-				slot="svg"
-				class="w-20 absolute -top-8 right-0 left-0 mx-auto"
-			/>
-		</Project>
-	{/if}
-
-	<Button
-		on:click={() => trackClick("uncover_projects")}
-		href="/projects"
-		class="mb-12 mt-12"
+		class="mb-12 mt-10"
 	>
 		Uncover all our projects
 	</Button>
 </Section>
 
 <Section filled={true}>
-	<div class="relative my-12 w-fit mx-auto">
-		<Crane />
-		<TextHeader>Multiple ways to build your personal workforce.</TextHeader>
-		<Gear />
-	</div>
+	<Header>
+		Discover Advanced
+		<GradientText class="from-blue-light to-blue-dark">
+			Skillsets
+		</GradientText>
+	</Header>
 
-	<MajorHeader>
-		Discover
-		<GradientText class="from-blue-light to-blue-dark">Our</GradientText>
-		Skillset
-	</MajorHeader>
-
-	<MajorCaption>
+	<Caption>
 		Seamlessly browse our team members to find who <strong>you</strong> can recruit
 		to best suite your needs
-	</MajorCaption>
+	</Caption>
 
 	<!-- TODO: Remove these if statements once the database has these selected developers -->
 
-	<Carousel class="lg:px-20 lg:flex lg:flex-col lg:gap-12 lg:max-w-screen-xl">
+	<Carousel class="lg:flex lg:flex-col lg:gap-12 lg:max-w-xl">
 		{#if data.developers[0]}
-			<DevCard
-				developer={data.developers[0]}
-				position="Software Engineer"
-				accomplishments={[
-					"Worked on 80000 projects.",
-					"Worked on 80000 projects.",
-					"Worked on 80000 projects.",
-					"Worked on 80000 projects."
-				]}
-			/>
+			<DevCard developer={data.developers[0]} />
 		{/if}
 
 		{#if data.developers[1]}
-			<DevCard
-				developer={data.developers[1]}
-				position="Software Engineer"
-				accomplishments={[
-					"Worked on 80000 projects.",
-					"Worked on 80000 projects.",
-					"Worked on 80000 projects.",
-					"Worked on 80000 projects."
-				]}
-			/>
+			<DevCard developer={data.developers[1]} />
 		{/if}
 
 		{#if data.developers[2]}
-			<DevCard
-				developer={data.developers[2]}
-				position="Software Engineer"
-				accomplishments={[
-					"Worked on 80000 projects.",
-					"Worked on 80000 projects.",
-					"Worked on 80000 projects.",
-					"Worked on 80000 projects."
-				]}
-			/>
+			<DevCard developer={data.developers[2]} />
 		{/if}
 	</Carousel>
 
@@ -320,39 +273,38 @@
 		Discover
 	</Button>
 
-	<TextHeader>Experience rapid takeoff with experience that fits.</TextHeader>
+	<Header>Or, let us pick the best</Header>
 
 	<Text>
-		A team only works with experience that matters.
-		<strong>From DevOps to Deployment</strong>
-		we've got you covered with the most popular tools and technologies used in
-		workforces globally. Read a succesfull story of how we built a comprehensive
-		product for one of our clients, and how we did it behind the scenes.
+		If you're not sure about choosing your own developers through our
+		discovery system, <strong>we can choose for you</strong> and get the
+		precise team to do the job. Although, we highly reccomend looking
+		through our <strong>numerous projects and achievements</strong> first to
+		get a better idea of what we can do.
 	</Text>
 
-	<!-- TODO: Put actual important project here -->
-	{#if data.projects[4]}
-		<div class="max-w-lg mx-auto lg:max-w-2xl">
-			<ProjectPreview project={data.projects[4]} />
-		</div>
-	{/if}
+	<Button
+		on:click={() => trackClick("contact_after_developers")}
+		href="/contact"
+		class="mt-2"
+	>
+		Contact Us
+	</Button>
 </Section>
 
-<MajorHeader>
-	Let's
-	<GradientText class="from-green-light to-green-dark">
-		Get Started
-	</GradientText>
-</MajorHeader>
+<Header>
+	Time To
+	<GradientText class="from-green-light to-green-dark">Take Off</GradientText>
+</Header>
 
-<MajorCaption>
-	Connect with us and let us hand pick
-	<strong>exclusive developers</strong>
-	to make your product soar.
-</MajorCaption>
+<Caption>
+	Once you haven chosen the best pathway, it's time to
+	<strong>take off</strong>
+	and get started. Let's make your project soar.
+</Caption>
 
 <Carousel
-	class="lg:max-w-2xl lg:mx-auto lg:flex lg:flex-col lg:gap-6 lg:mt-10 lg:bg-gray-500/40 lg:py-6 lg:pl-28 lg:pr-6 lg:-z-20 lg:rounded-xl lg:relative xl:max-w-screen-lg"
+	class="px-2 lg:mx-auto lg:flex lg:flex-col lg:gap-6 lg:mt-10 lg:bg-gray-900 lg:py-6 lg:pl-28 lg:pr-6 lg:-z-20 lg:rounded-lg lg:relative lg:max-w-xl xl:max-w-4xl xl:grid xl:grid-cols-3 xl:px-8 xl:gap-y-10"
 >
 	<Step
 		num={1}
@@ -394,11 +346,11 @@
 	</Step>
 
 	<div
-		class="hidden lg:flex lg:absolute lg:rotate-90 lg:my-auto lg:-left-56 lg:top-0 lg:bottom-0 lg:h-14"
+		class="hidden lg:flex lg:absolute lg:rotate-90 lg:my-auto lg:-left-56 lg:top-0 lg:bottom-0 lg:h-14 xl:rotate-0 xl:static xl:col-span-3 xl:justify-center"
 	>
-		<GitCommit />
-		<GitMerge />
-		<GitDeploy />
+		<GitCommit class="xl:h-16 xl:mt-0" />
+		<GitMerge class="xl:h-16 xl:mt-0" />
+		<GitDeploy class="xl:h-16 xl:mt-0" />
 	</div>
 </Carousel>
 

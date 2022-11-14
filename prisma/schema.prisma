@@ -198,7 +198,7 @@ model Project {
     content     Json // TipTap JSON content
     images      String[]
     visible     Boolean         @default(true)
-    pinnedBy    User?
+    pinnedBy    User[]
 
     @@index([title, skills])
 }

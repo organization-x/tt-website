@@ -55,7 +55,7 @@
 
 <header class="bg-black">
 	<div
-		class="p-4 mx-auto max-w-screen-2xl flex justify-between lg:items-center lg:px-6 xl:px-10"
+		class="p-4 mx-auto max-w-screen-2xl flex justify-between items-center lg:gap-4 lg:px-6 xl:px-10"
 	>
 		<a
 			href="/dashboard"
@@ -65,6 +65,7 @@
 		>
 			<Logo class="w-10 h-10" />
 		</a>
+
 		<div class="lg:hidden flex gap-3 items-center">
 			{#if !burgerOpen}
 				<div
@@ -77,7 +78,7 @@
 						height="512"
 						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{new Date().getTime()}"
 						alt="{$user.name}'s avatar"
-						class=" w-9 h-9 rounded-full bg-gray-400"
+						class="w-9 h-9 rounded-full object-cover object-center bg-gray-400"
 					/>
 					<h1
 						class="font-semibold text-sm overflow-auto scrollbar-hidden max-w-[7rem]"
@@ -98,6 +99,7 @@
 			>
 				<Burger {burgerOpen} />
 			</button>
+
 			{#if burgerOpen}
 				<nav
 					transition:slide
@@ -114,10 +116,12 @@
 								height="512"
 								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{new Date().getTime()}"
 								alt="{$user.name}'s avatar"
-								class=" w-14 h-14 rounded-full bg-gray-400"
+								class="w-14 h-14 rounded-full object-cover object-center bg-gray-400"
 							/>
 
-							<h1 class="font-semibold text-xl">
+							<h1
+								class="font-semibold text-xl overflow-auto scrollbar-hidden max-w-44"
+							>
 								{firstName}
 							</h1>
 						</div>
@@ -182,8 +186,8 @@
 			{/if}
 		</div>
 
-		<div class="hidden lg:block">
-			<ul class="flex gap-2 items-center">
+		<div class="hidden lg:block lg:text-sm xl:text-base">
+			<ul class="flex gap-3 items-center">
 				<NavLink href="/dashboard" active={$pageId === "home"}>
 					Dashboard
 				</NavLink>
@@ -222,14 +226,14 @@
 					</NavLink>
 				{/if}
 
-				<div bind:this={element} class="relative ml-4 w-44">
+				<div bind:this={element} class="relative ml-2">
 					<button
+						class:bg-gray-900={userOpen}
 						class:rounded-lg={!userOpen}
 						class:rounded-t-lg={userOpen}
 						class:duration-200={!disableTransition}
 						class:transition-colors={!disableTransition}
-						class="flex gap-3 items-center justify-center py-3 w-full
-                    {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
+						class="flex gap-3 items-center p-3 justify-center w-full hover:bg-gray-900"
 						on:transitionend={() => (disableTransition = false)}
 						on:click={() => (userOpen = !userOpen)}
 					>
@@ -238,10 +242,12 @@
 							height="512"
 							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{new Date().getTime()}"
 							alt="{$user.name}'s avatar"
-							class="w-8 h-8 rounded-full bg-gray-400"
+							class="w-8 h-8 rounded-full object-cover object-center bg-gray-400"
 						/>
 
 						<span
+							class:max-w-40={$user.role !== "Admin"}
+							class:max-w-[7rem]={$user.role === "Admin"}
 							class="font-semibold overflow-auto scrollbar-hidden"
 						>
 							{firstName}
@@ -258,12 +264,16 @@
 								<NavLink
 									target="_blank"
 									href="/developers/{$user.url}"
+									class="hover:bg-gray-700"
 								>
 									<ExternalLink class="w-4 h-4" />
 									View Profile
 								</NavLink>
 
-								<NavLink href="/logout">
+								<NavLink
+									href="/logout"
+									class="hover:bg-gray-700"
+								>
 									<LogOut class="w-5 h-5" />
 									Log Out
 								</NavLink>

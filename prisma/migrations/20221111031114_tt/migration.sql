@@ -75,6 +75,7 @@ CREATE TABLE "User" (
     "pinnedProjectId" TEXT,
     "visible" BOOLEAN NOT NULL DEFAULT true,
     "lastUpdated" TIMESTAMP(3) NOT NULL,
+    "homepage" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );

@@ -65,11 +65,12 @@
 
 <header class="bg-black">
 	<div
-		class="p-4 mx-auto max-w-screen-2xl flex justify-between lg:items-center lg:px-6 xl:px-10"
+		class="p-4 mx-auto max-w-screen-2xl flex justify-between lg:items-center lg:gap-4 lg:px-6 xl:px-10"
 	>
 		<a href="/" class="z-50" aria-label="Home" rel="noopener noreferrer">
 			<Logo class="w-10 h-10" />
 		</a>
+
 		<div class="lg:hidden flex items-center">
 			<button
 				type="button"
@@ -82,12 +83,13 @@
 			>
 				<Burger {burgerOpen} />
 			</button>
+
 			{#if burgerOpen}
 				<nav
 					transition:slide
 					class="z-40 absolute inset-0 top-18 overflow-y-auto bg-black h-full"
 				>
-					<div class="p-16 pt-24 max-w-screen-lg mx-auto">
+					<div class="p-14 pt-24 max-w-screen-lg mx-auto">
 						{#if data.user}
 							<div
 								class="flex gap-3 items-center w-fit z-50 mx-auto"
@@ -98,10 +100,12 @@
 									src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
 										.user.id}/avatar?{new Date().getTime()}"
 									alt="{data.user.name}'s avatar"
-									class=" w-14 h-14 rounded-full bg-gray-400"
+									class="w-14 h-14 object-cover object-center rounded-full bg-gray-400"
 								/>
 
-								<h1 class="font-semibold text-xl">
+								<h1
+									class="font-semibold text-xl overflow-auto scrollbar-hidden max-w-44"
+								>
 									{firstName}
 								</h1>
 							</div>
@@ -184,8 +188,9 @@
 				</nav>
 			{/if}
 		</div>
-		<div class="hidden lg:block">
-			<ul class="flex gap-2 items-center">
+
+		<div class="hidden lg:block lg:text-sm xl:text-base">
+			<ul class="flex gap-3 items-center">
 				<NavLink href="/" active={$pageId === "home"}>Home</NavLink>
 
 				<NavLink href="/about" active={$pageId === "about"}>
@@ -205,14 +210,14 @@
 				</NavLink>
 
 				{#if data.user}
-					<div bind:this={element} class="relative ml-4 w-44">
+					<div bind:this={element} class="relative ml-2">
 						<button
+							class:bg-gray-900={userOpen}
 							class:rounded-lg={!userOpen}
 							class:rounded-t-lg={userOpen}
 							class:duration-200={!disableTransition}
 							class:transition-colors={!disableTransition}
-							class="flex gap-3 items-center justify-center py-3 w-full
-                    {userOpen ? 'bg-gray-900' : 'hover:bg-gray-500/40'}"
+							class="flex gap-3 items-center justify-center p-3 w-full hover:bg-gray-900"
 							on:transitionend={() => (disableTransition = false)}
 							on:click={() => (userOpen = !userOpen)}
 						>
@@ -222,11 +227,11 @@
 								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
 									.user.id}/avatar?{new Date().getTime()}"
 								alt="{data.user.name}'s avatar"
-								class="w-8 h-8 rounded-full bg-gray-400"
+								class="w-8 h-8 object-cover object-center rounded-full bg-gray-400"
 							/>
 
 							<span
-								class="font-semibold overflow-auto scrollbar-hidden"
+								class="font-semibold overflow-auto scrollbar-hidden max-w-40"
 							>
 								{firstName}
 							</span>
@@ -241,13 +246,20 @@
 							<div
 								class="absolute bg-gray-900 w-full p-1 rounded-b-lg z-50"
 							>
-								<ul class="flex flex-col gap-2 p-1">
-									<NavLink target="_blank" href="/dashboard">
+								<ul class="flex flex-col gap-1 p-1">
+									<NavLink
+										target="_blank"
+										href="/dashboard"
+										class="hover:bg-gray-700"
+									>
 										<ExternalLink class="w-4 h-4" />
 										Dashboard
 									</NavLink>
 
-									<NavLink href="/logout">
+									<NavLink
+										href="/logout"
+										class="hover:bg-gray-700"
+									>
 										<LogOut class="w-5 h-5" />
 										Log Out
 									</NavLink>
@@ -258,7 +270,7 @@
 				{:else}
 					<a
 						href="/contact"
-						class="px-4 py-1 bg-white text-black rounded-3xl transition-border hover:rounded-md"
+						class="px-4 py-2 bg-white text-black rounded-lg ml-2 transition-border hover:rounded-4xl"
 						rel="noopener noreferrer"
 					>
 						Contact us

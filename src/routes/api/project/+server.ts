@@ -10,7 +10,7 @@ import type { RequestHandler } from "./$types";
 
 // Update project information
 // * INPUT: ProjectUpdateRequest
-// * OUTPUT: ProjectUpdateResponse
+// * OUTPUT: None
 export const PATCH: RequestHandler = async ({ locals, request }) => {
 	const user = await userAuth(locals);
 
@@ -111,14 +111,14 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				.replaceAll(/\s+/g, "-")
 				.toLowerCase();
 
-			// Check if project has the same url (so title) as another project
+			// Check if project has the same url as another project and send a unique response code if it does
 			if (
 				await prisma.project.count({
 					where: { url, id: { not: project.id } }
 				})
 			)
-				return new Response(JSON.stringify({ error: "SAME_TITLE" }), {
-					status: 200
+				return new Response(undefined, {
+					status: 205
 				});
 		} else url = project.url;
 
@@ -151,7 +151,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			}
 		});
 
-		return new Response(JSON.stringify({ url }), { status: 200 });
+		return new Response(undefined, { status: 200 });
 	} catch {
 		throw error(400, "Bad Request");
 	}
@@ -279,6 +279,12 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 		});
 
 		if (!project) throw error(400, "Bad Request");
+
+		// Before he project gets deleted, make sure it isn't pinned
+		await prisma.user.update({
+			where: { id: user.id },
+			data: { pinnedProjectId: null }
+		});
 
 		// Delete the projects authors
 		await prisma.projectAuthor.deleteMany({

@@ -17,80 +17,92 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	// If the session token is invalid, throw unauthorized
 	if (!user) throw error(401, "Unauthorized");
 
-	try {
-		const data = await request.formData();
-
-		let id = user.id;
-		let type = data.get("type") as string;
-
-		// If the data includes an invalid type or the image size is greater than 1MB throw a bad request
-		if (
-			(type !== "user-avatar" &&
-				type !== "user-banner" &&
-				type !== "project-banner") ||
-			(data.get("file") as File).size >= 1048576
-		)
+	const data = await request
+		.formData()
+		.then((data) => data)
+		.catch(() => {
 			throw error(400, "Bad Request");
+		});
 
-		// Remove the type since we don't want it in the Cloudflare request
-		data.delete("type");
+	const id = data.get("id") as string;
+	let type = data.get("type") as string;
 
-		// If it's a user avatar or banner remove the user prefix and set the id
-		if (type === "user-avatar" || type === "user-banner")
-			(type = type.split("-")[1]) && data.set("id", `${type}-${user.id}`);
-		else {
-			// Otherwise check if the user owns the project they're updating and set the type to
-			// banner since it is the only type for projects. Also update the ID to be the project id
+	// If the data includes an invalid type, if there's no ID provided, or if the image size is greater than
+	// 1MB then throw a bad request
+	if (
+		!id ||
+		(type !== "user-avatar" &&
+			type !== "user-banner" &&
+			type !== "project-banner") ||
+		(data.get("file") as File).size >= 1048576
+	)
+		throw error(400, "Bad Request");
 
-			// TODO: Finish project color theming
-			// Sharp(Buffer.from(await (data.get("file") as Blob).arrayBuffer()))
-			// 	.toColorspace("srgb")
-			// 	.toFormat("raw")
-			// 	.toBuffer((err, buffer, info) => {
-			// 		if (err) throw error(400, "Bad Request");
+	// Remove the type since we don't want it in the Cloudflare request
+	data.delete("type");
 
-			// 		// Used for tracking iterators in the first loop then the biggest value in the second
-			// 		let int = 0;
+	// If it's a user avatar or banner remove the user prefix and set the id
+	if (type === "user-avatar" || type === "user-banner") {
+		// Check if user being edited matches or the editor is an admin
+		if (
+			(type === "user-avatar" || type === "user-banner") &&
+			id !== user.id &&
+			user.role !== "Admin"
+		)
+			throw error(401, "Unauthorized");
 
-			// 		// Based off of the image size, create a pixel color interval. So every interval pixels
-			// 		// will be checked for a color
-			// 		const interval = Math.log10(info.width * info.height) * 10;
+		type = type.split("-")[1];
+	} else {
+		// Check if the project exists
+		const project = await prisma.project.findUnique({
+			where: { id }
+		});
 
-			// 		// Store rgb values categorized by their closest color
-			// 		const rgbs: number[][] = [];
+		if (!project) throw error(400, "Bad Request");
 
-			// 		// Read the data and get the array of seen colors
-			// 		buffer.forEach((byte, i, bytes) => {
-			// 			if (int === 3) {
-			// 				int = 0;
+		// Check if the user owns the project or is an admin
+		if (project.ownerId !== user.id && user.role !== "Admin")
+			throw error(401, "Unauthorized");
 
-			// 				// Since this is sRgb, every 3 bytes is a pixel
-			// 				const pixel = i / 3;
+		// TODO: Finish project color theming
+		// Sharp(Buffer.from(await (data.get("file") as Blob).arrayBuffer()))
+		// 	.toColorspace("srgb")
+		// 	.toFormat("raw")
+		// 	.toBuffer((err, buffer, info) => {
+		// 		if (err) throw error(400, "Bad Request");
 
-			// 				if (Math.floor(pixel % interval) !== 0) return;
+		// 		// Used for tracking iterators in the first loop then the biggest value in the second
+		// 		let int = 0;
 
-			// 				rgbs.push([bytes[i - 3], byte, bytes[i - 2]]);
-			// 			} else int++;
-			// 		});
-			// 	});
+		// 		// Based off of the image size, create a pixel color interval. So every interval pixels
+		// 		// will be checked for a color
+		// 		const interval = Math.log10(info.width * info.height) * 10;
 
-			id = data.get("id") as string;
+		// 		// Store rgb values categorized by their closest color
+		// 		const rgbs: number[][] = [];
 
-			// Check if the project exists
-			const project = await prisma.project.findUnique({
-				where: { id }
-			});
+		// 		// Read the data and get the array of seen colors
+		// 		buffer.forEach((byte, i, bytes) => {
+		// 			if (int === 3) {
+		// 				int = 0;
 
-			if (!project) throw error(400, "Bad Request");
+		// 				// Since this is sRgb, every 3 bytes is a pixel
+		// 				const pixel = i / 3;
 
-			// Check if the user owns the project
-			if (project.ownerId !== user.id) throw error(401, "Unauthorized");
+		// 				if (Math.floor(pixel % interval) !== 0) return;
 
-			type = "banner";
+		// 				rgbs.push([bytes[i - 3], byte, bytes[i - 2]]);
+		// 			} else int++;
+		// 		});
+		// 	});
 
-			data.set("id", `${type}-${id}`);
-		}
+		type = "banner";
+	}
 
+	// Append the ID of the user or project along with the appropriate type
+	data.set("id", `${type}-${id}`);
+
+	try {
 		// First delete the image from Cloudflare
 		await fetch(
 			`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1/${type}-${id}`,
@@ -113,11 +125,11 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				body: data
 			}
 		);
-
-		return new Response(undefined, { status: 200 });
 	} catch {
 		throw error(400, "Bad Request");
 	}
+
+	return new Response(undefined, { status: 200 });
 };
 
 // Upload an image for a project's content

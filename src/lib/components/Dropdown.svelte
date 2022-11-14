@@ -16,6 +16,7 @@
 	export let radio = true;
 	export let icons = true;
 	export let open = false;
+	export let lightBg = true;
 	export let required: boolean;
 	export let options: string[];
 	export let selected: string[] = [];
@@ -87,7 +88,9 @@
 	<button
 		on:click={() => (open = !open)}
 		class:rounded-b-lg={!open}
-		class="w-full flex items-center gap-4 p-5 bg-gray-800 rounded-t-lg"
+		class:bg-gray-700={lightBg}
+		class:bg-gray-800={!lightBg}
+		class="w-full flex items-center gap-4 p-5 rounded-t-lg"
 	>
 		<!-- If the dropdown isn't a radio it should be using the slot -->
 		{#if !$$slots.default && icons}
@@ -113,9 +116,11 @@
 
 	<div
 		class:hidden={!open}
-		class="absolute w-full inset-x-0 top-16 shadow-lg bg-gray-800 h-[17rem] rounded-b-lg z-50"
+		class:bg-gray-700={lightBg}
+		class:bg-gray-800={!lightBg}
+		class="absolute w-full inset-x-0 top-16 shadow-lg h-[18.5rem] rounded-b-lg z-50"
 	>
-		<div class="flex p-4 select-none w-full items-center h-12">
+		<div class="flex p-4 select-none w-full items-center h-14">
 			<Search class="w-4 h-4" />
 			<input
 				bind:value={search}
@@ -125,7 +130,7 @@
 			/>
 		</div>
 
-		<div class="flex flex-col overflow-auto h-56 scrollbar">
+		<div class="flex flex-col overflow-auto h-60 scrollbar">
 			{#if !required && radio}
 				<DropdownItem
 					on:click={() => radioClick([])}
@@ -154,6 +159,8 @@
 							</div>
 						</DropdownItem>
 					{/if}
+				{:else}
+					<h1 class="text-center mt-4">No Results</h1>
 				{/each}
 			{:else}
 				{#each filteredOptions as option (option)}
@@ -173,6 +180,8 @@
 							{option.replaceAll("_", " ")}
 						</div>
 					</DropdownItem>
+				{:else}
+					<h1 class="text-center mt-4">No Results</h1>
 				{/each}
 			{/if}
 		</div>

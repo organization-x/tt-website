@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { getContext } from "svelte";
-	import { slide } from "svelte/transition";
+	import { fly, slide } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
+	import { user as login } from "$lib/stores";
 	import Home from "$lib/components/icons/general/Home.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import Pencil from "$lib/components/icons/general/Pencil.svelte";
@@ -11,64 +11,114 @@
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
 
+	import type { User } from "@prisma/client";
+
 	export let user: App.UserWithMetadata & {
 		analytics: App.UsersAnalyticsResponse[keyof App.UsersAnalyticsResponse];
 	};
 
+	// Use the array of users on the homepage to disable and/or change the color of the
+	//  homepage button accordingly
+	export let homeUsers: User[];
+
 	let open = false;
 
-	const timestamp = getContext("timestamp");
+	// Store the visible and homepage state in a seperate variable so svelte doesn't fire the user object
+	// and mess up debounces
+	let visible = user.visible;
+	$: homepage = homeUsers.some((u) => u.id === user.id);
 
 	// Calculate the total number of views this user has
 	const views = user.analytics.new + user.analytics.returning;
+
+	const toggleVisible = () => {
+		fetch("/api/user", {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				id: user.id,
+				visible
+			} as App.UserUpdateRequest)
+		});
+	};
+
+	// Toggle whether the user is on the home page or not
+	const toggleHomepage = () => {
+		fetch("/api/user", {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				id: user.id,
+				homepage
+			} as App.UserUpdateRequest)
+		});
+	};
 </script>
 
-<div class="relative">
-	<div
-		class="rounded-lg bg-gray-900 p-4 relative flex font-semibold flex-col gap-6 shadow-black/30 shadow-lg z-20"
-	>
-		<div class="flex gap-4 items-center">
-			<div class="relative shrink-0">
-				<img
-					height="512"
-					width="512"
-					src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{timestamp}"
-					alt="{user.name}'s avatar"
-					loading="lazy"
-					class="rounded-full bg-gray-400 w-12 h-12"
-				/>
+<div
+	in:fly={{ duration: 300, y: 50 }}
+	class:pb-0={!open}
+	class="rounded-lg bg-gray-900 p-6 font-semibold"
+>
+	<div class="flex flex-col gap-6">
+		<div class="lg:flex lg:justify-between lg:gap-8">
+			<div
+				class="flex flex-col gap-6 items-center md:flex-row lg:w-1/2 lg:shrink-0"
+			>
+				<div class="relative shrink-0">
+					<img
+						height="512"
+						width="512"
+						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{Date.now()}"
+						alt="{user.name}'s avatar"
+						loading="lazy"
+						class="rounded-full bg-gray-400 w-20 h-20 object-cover object-center"
+					/>
+
+					<div
+						class="absolute bg-gray-500 -bottom-2.5 -right-2.5 rounded-full p-2.5"
+					>
+						<svelte:component
+							this={getIcon(user.team || "")}
+							class="w-4 h-4"
+						/>
+					</div>
+				</div>
 
 				<div
-					class="absolute bg-gray-500 -bottom-3 -right-2 rounded-full p-2"
+					class="flex flex-col gap-1 text-center overflow-hidden w-full md:flex-col-reverse md:text-start md:gap-0"
 				>
-					<svelte:component
-						this={getIcon(user.team || "")}
-						class="w-3 h-3 lg:w-5 lg:h-5"
-					/>
+					<h1>
+						{user.team || "No Team"}
+					</h1>
+
+					<GradientText
+						class="from-green-light to-green-dark text-3xl break-words md:text-2xl lg:text-3xl"
+					>
+						{user.name}
+					</GradientText>
 				</div>
 			</div>
 
-			<div>
-				<GradientText class="from-green-light to-green-dark">
-					{user.name}
-				</GradientText>
-
-				<h1 class="text-sm -mt-0.5">
-					{user.team || "No Team"}
-				</h1>
-			</div>
+			<p
+				class="text-center font-normal mx-auto mt-6 max-w-sm md:text-start md:max-w-none md:mx-0"
+			>
+				{user.about}
+			</p>
 		</div>
 
-		<p class="text-sm font-normal">{user.about}</p>
-
-		<div>
+		<div class="flex flex-col gap-3 max-w-md w-full md:max-w-none">
 			<div class="flex justify-between">
 				<h1>{views} Views</h1>
 				<h1>Last 30 days</h1>
 			</div>
 
 			<div
-				class="relative bg-blue-dark h-4 rounded-sm w-full overflow-hidden mt-3"
+				class="relative bg-blue-dark h-4 rounded-sm w-full overflow-hidden"
 			>
 				<div
 					class="absolute bg-blue-light inset-0"
@@ -78,14 +128,14 @@
 				/>
 			</div>
 
-			<div class="flex gap-2 items-center mt-3">
+			<div class="flex gap-2 items-center">
 				<div class="w-4 h-4 rounded-full bg-blue-light" />
 				<h1>{user.analytics.new}</h1>
 
 				<h1 class="ml-auto">New</h1>
 			</div>
 
-			<div class="flex gap-2 items-center">
+			<div class="flex gap-2 items-center -mt-3">
 				<div class="w-4 h-4 rounded-full bg-blue-dark" />
 				<h1>{user.analytics.returning}</h1>
 
@@ -93,35 +143,115 @@
 			</div>
 		</div>
 
-		<div class="flex gap-3 mt-2 items-center">
+		<div class="flex justify-between gap-6 items-center">
 			<h1>
 				Last updated {new Date(user.lastUpdated).toLocaleDateString(
 					"en-US"
 				)}
 			</h1>
 
-			<button on:click={() => (open = !open)} class="ml-auto">
+			<button on:click={() => (open = !open)} class="ml-auto md:hidden">
 				<DropArrow {open} class="w-4 h-4" />
 			</button>
+
+			<div class="hidden md:flex md:gap-3 md:items-center">
+				<DashButton
+					icon={true}
+					on:click={() => (visible = !visible)}
+					debounce={{
+						bind: visible,
+						func: toggleVisible,
+						delay: 300
+					}}
+					class="bg-gray-700 hover:bg-gray-700/60"
+				>
+					<ShowHide class="w-4 h-4" crossed={!visible} />
+				</DashButton>
+
+				<DashButton
+					icon={true}
+					on:click={() =>
+						homeUsers.length !== 3 &&
+						homeUsers.some(({ id }) => id === user.id)
+							? (homeUsers = homeUsers.filter(
+									({ id }) => id !== user.id
+							  ))
+							: (homeUsers = [...homeUsers, user])}
+					debounce={{
+						bind: homepage,
+						func: toggleHomepage,
+						delay: 300
+					}}
+					disabled={homeUsers.length === 3 && !homepage}
+					class={homepage
+						? "bg-blue-light hover:bg-blue-light/80"
+						: "bg-gray-700 hover:bg-gray-700/60"}
+				>
+					<Home class="w-4 h-4" />
+				</DashButton>
+
+				<DashLink
+					icon={true}
+					href="/dashboard/users/{user.url}"
+					class="bg-blue-light hover:bg-blue-light/80"
+				>
+					<Pencil class="w-4 h-4" />
+				</DashLink>
+			</div>
 		</div>
 	</div>
+
+	<div
+		class:scale-x-0={!open}
+		class:scale-x-100={open}
+		class="w-full mx-auto rounded-full mt-4 bg-gray-700 h-0.5 transition-[margin,transform]"
+	/>
 
 	{#if open}
 		<div
 			transition:slide={{ duration: 200 }}
-			class="bg-gray-900 rounded-b-lg relative -top-2 flex gap-6 justify-center px-3 pb-4 pt-8 z-10"
+			class="bg-gray-900 flex gap-5 justify-center px-3 pt-6 -mb-2 md:hidden"
 		>
-			<DashButton icon={true} class="bg-gray-500/40 hover:bg-gray-500/20">
-				<ShowHide class="w-4 h-4" crossed={false} />
+			<DashButton
+				icon={true}
+				on:click={() => (visible = !visible)}
+				debounce={{
+					bind: visible,
+					func: toggleVisible,
+					delay: 300
+				}}
+				class="bg-gray-700 hover:bg-gray-700/60"
+			>
+				<ShowHide class="w-4 h-4" crossed={!visible} />
 			</DashButton>
 
-			<DashButton icon={true} class="bg-gray-500/40 hover:bg-gray-500/20">
+			<DashButton
+				icon={true}
+				on:click={() =>
+					homeUsers.length !== 3 &&
+					homeUsers.some(({ id }) => id === user.id)
+						? (homeUsers = homeUsers.filter(
+								({ id }) => id !== user.id
+						  ))
+						: (homeUsers = [...homeUsers, user])}
+				debounce={{
+					bind: homepage,
+					func: toggleHomepage,
+					delay: 300
+				}}
+				disabled={homeUsers.length === 3 && !homepage}
+				class={homepage
+					? "bg-blue-light hover:bg-blue-light/60"
+					: "bg-gray-700 hover:bg-gray-700/60"}
+			>
 				<Home class="w-4 h-4" />
 			</DashButton>
 
 			<DashLink
 				icon={true}
-				href="/dashboard/users/{user.id}"
+				href={user.id === $login.id
+					? "/dashboard/profile"
+					: `/dashboard/users/${user.url}`}
 				class="bg-blue-light hover:bg-blue-light/80"
 			>
 				<Pencil class="w-4 h-4" />

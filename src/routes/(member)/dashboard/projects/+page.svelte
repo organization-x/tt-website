@@ -83,9 +83,7 @@
 		// If the project is pinned, unpin it
 		if (pinnedProject === id) pinnedProject = null;
 
-		deletingProjects.push(id);
-
-		deletingProjects = deletingProjects;
+		deletingProjects = [...deletingProjects, id];
 	};
 
 	// Debounce for pinned projects, it's like this so the UI will stay reactive and
@@ -94,7 +92,7 @@
 	const togglePinned = () => {
 		clearTimeout(pinDebounce);
 
-		pinDebounce = setTimeout(() => {
+		pinDebounce = setTimeout(async () => {
 			fetch("/api/user", {
 				method: "PATCH",
 				headers: {
@@ -135,28 +133,29 @@
 			on:input={() => (request = new Promise(() => {}))}
 			on:search={onSearch}
 			placeholder="Search your projects..."
+			lightBg={false}
 		/>
 
 		<button
 			disabled={creatingProject}
 			class:opacity-70={creatingProject}
 			on:click={createProject}
-			class="bg-gray-500/40 rounded-lg w-full p-4 flex items-center transition-opacity justify-center gap-2 lg:w-40 lg:shrink-0"
+			class="bg-gray-900 rounded-lg w-full p-4 flex items-center transition-[opacity,background-color] justify-center gap-2 hover:bg-gray-900/60 lg:w-40 lg:shrink-0"
 		>
 			<Plus class="w-4 h-4{creatingProject ? ' animate-spin' : ''}" />
 			New Project
 		</button>
 	</div>
 
-	<div class="min-h-[55rem]">
+	<div class="min-h-[75.5rem]">
 		{#await request}
 			<ProjectLoading />
 		{:then projects}
 			{#each projects as project}
 				{#if !deletingProjects.includes(project.id)}
 					<ProjectEditPreview
-						bind:project
 						bind:pinnedProject
+						{project}
 						on:delete={() => deleteProject(project.id)}
 						on:pinned={togglePinned}
 						on:outroend={async () => {
@@ -171,6 +170,7 @@
 							)
 								onSearch();
 						}}
+						lightBg={false}
 					/>
 				{/if}
 			{/each}

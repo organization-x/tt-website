@@ -8,23 +8,17 @@ import type { RequestHandler } from "./$types";
 
 // Request handler for managing form submission from the contact form and inserting them into Gmail
 
-// Authorize the Gmail client but put it in a try catch block just incase the refresh token for
-// some reason becomes invalid. This way it won't crash the server if it fails
-try {
-	const auth = new OAuth2Client({
-		clientId: env.GOOGLE_ID,
-		clientSecret: env.GOOGLE_SECRET,
-		redirectUri: "localhost:3000"
-	});
+const auth = new OAuth2Client({
+	clientId: env.GOOGLE_ID,
+	clientSecret: env.GOOGLE_SECRET,
+	redirectUri: "localhost:3000"
+});
 
-	auth.setCredentials({
-		refresh_token: env.GOOGLE_REFRESH
-	});
+auth.setCredentials({
+	refresh_token: env.GOOGLE_REFRESH
+});
 
-	const mail = gmail({ version: "v1", auth: auth });
-} catch (error) {
-	console.error("Google Refresh Token Error", error);
-}
+const mail = gmail({ version: "v1", auth: auth });
 
 // Insert an email into the hello@ai-camp.org account for contact form submissions
 // * INPUT: MailRequest

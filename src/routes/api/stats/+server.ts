@@ -52,22 +52,24 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 					// Get the cached data from redis, the hash is different from the normal analytics since we keep them
 					// seperate. The reason for this is because this request only gets view data while the others get much
 					// more for per-user analytics and we can't keep partial data under the same hash
-					const cached = JSON.parse(
-						(await redis.get(
-							createHash("shake128", { outputLength: 10 })
-								.update("30daysAgo" + "today" + id)
-								.digest("hex")
-						)) || "{}"
-					) as App.AnalyticsResponse | {};
+					const cached = await redis.get(
+						createHash("shake128", { outputLength: 10 })
+							.update("30daysAgo" + "today" + id)
+							.digest("hex")
+					);
 
 					// If cache was found then remove them from the IDs and add their data, otherwise
 					// add a request in for them
-					if ("new" in cached)
-						(data[id] = {
-							new: cached.new,
-							returning: cached.returning
-						}) && (ids = ids!.filter((i) => i !== id));
-					else
+					if (cached) {
+						const analytics = JSON.parse(cached);
+
+						data[id] = {
+							new: analytics.new,
+							returning: analytics.returning
+						};
+
+						ids = ids!.filter((i) => i !== id);
+					} else
 						requests.push({
 							dateRanges: [
 								{ startDate: "30daysAgo", endDate: "today" }
@@ -161,14 +163,6 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 			return new Response(JSON.stringify(data), { status: 200 });
 		}
 
-		// Grab all projects this person is an author on to pull up relevant analytics
-		const projects = await prisma.project.findMany({
-			where: { ownerId: user.id },
-			select: { id: true, title: true }
-		});
-
-		const projectIds = projects.map((project) => project.id);
-
 		const data = {
 			startDate: url.get("startDate")!,
 			endDate: url.get("endDate")!
@@ -183,6 +177,14 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 		const cached = await redis.get(hash);
 
 		if (cached) return new Response(cached, { status: 200 });
+
+		// Grab all projects this person is an author on to pull up relevant analytics
+		const projects = await prisma.project.findMany({
+			where: { ownerId: user.id },
+			select: { id: true, title: true }
+		});
+
+		const projectIds = projects.map((project) => project.id);
 
 		// Provide comparisons to the previous data within the same selected time period. For example if month
 		// is selected provide a comparison to the previous month, if week is then compare to the previous week

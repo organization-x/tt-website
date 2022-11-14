@@ -3,7 +3,7 @@
 </script>
 
 <div
-	class="bg-gray-500/40 rounded-lg overflow-hidden flex gap-4 items-center px-4 py-6 justify-center lg:justify-start"
+	class="bg-gray-700 rounded-lg overflow-hidden flex gap-4 items-center px-4 py-6 justify-center lg:justify-start"
 >
 	<slot name="badge" />
 

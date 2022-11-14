@@ -1,5 +1,6 @@
 <script lang="ts">
 	export let title = "";
+	export let lightBg = true;
 	export let placeholder = "";
 	export let value: string | null = "";
 	export let max: number | null = null;
@@ -8,7 +9,11 @@
 {#if title.length}
 	<div>
 		<h1 class="font-semibold text-xl">{title}</h1>
-		<div class="bg-gray-500/40 flex rounded-lg select-none mt-2">
+		<div
+			class:bg-gray-700={lightBg}
+			class:bg-gray-900={!lightBg}
+			class="flex rounded-lg select-none mt-2"
+		>
 			<input
 				bind:value
 				type="text"
@@ -19,8 +24,16 @@
 		</div>
 	</div>
 {:else}
-	<div class="bg-gray-500/40 flex rounded-lg select-none">
-		<div class="bg-gray-500/40 rounded-l-lg w-14 p-4">
+	<div
+		class:bg-gray-700={lightBg}
+		class:bg-gray-900={!lightBg}
+		class="flex rounded-lg select-none"
+	>
+		<div
+			class:bg-gray-500={lightBg}
+			class:bg-gray-700={!lightBg}
+			class="rounded-l-lg w-14 p-4"
+		>
 			<slot />
 		</div>
 		<input

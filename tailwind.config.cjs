@@ -77,13 +77,19 @@ module.exports = {
 				104: "26rem"
 			},
 			minHeight: {
-				72: "18rem"
+				112: "28rem",
+				120: "30rem"
 			},
 			maxWidth: {
+				40: "10rem",
+				44: "11rem",
 				60: "15rem"
 			},
 			padding: {
 				18: "4.5rem"
+			},
+			borderRadius: {
+				"4xl": "2rem"
 			},
 			animation: {
 				grays: "grays 2s cubic-bezier(0.4, 0, 0.6, 1) infinite"

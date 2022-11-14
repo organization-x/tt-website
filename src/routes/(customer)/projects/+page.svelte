@@ -5,13 +5,12 @@
 	import { techSkills } from "$lib/enums";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
+	import Header from "$lib/components/Header.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
 	import Separator from "$lib/components/Separator.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import Section from "$lib/components/index/Section.svelte";
-	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
-	import MajorHeader from "$lib/components/MajorHeader.svelte";
 	import FilterTitle from "$lib/components/FilterTitle.svelte";
 	import Wrench from "$lib/components/icons/general/Wrench.svelte";
 	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
@@ -101,7 +100,7 @@
 
 <Hero
 	class="from-pink-light to-pink-dark"
-	title="Projects from personal to professional."
+	title="Projects from personal to professional"
 	src="/assets/projects/projects.webm"
 >
 	Find skills in action by <strong>uncovering</strong> our projects and the team
@@ -109,7 +108,7 @@
 </Hero>
 
 <Section>
-	<TextHeader>Everything in one place.</TextHeader>
+	<Header>Everything in one place</Header>
 
 	<Text>
 		Team Tomorrow has used a wide variety of technologies and used a broad
@@ -121,7 +120,7 @@
 </Section>
 
 <Section filled={true}>
-	<MajorHeader>Our Projects</MajorHeader>
+	<Header>Our Projects</Header>
 
 	<div class="flex flex-col gap-4 max-w-screen-lg mx-auto w-full">
 		<FilterTitle />
@@ -149,6 +148,7 @@
 			required={false}
 			options={techSkills}
 			selectedItems={[]}
+			lightBg={false}
 			on:change={onSearch}
 		>
 			<Wrench class="h-6 w-6" />
@@ -156,7 +156,7 @@
 
 		<Separator />
 
-		<div class="h-[70rem]">
+		<div class="min-h-[87rem]">
 			<Scrollable
 				class="before:from-gray-900 after:to-gray-900"
 				arrows={true}

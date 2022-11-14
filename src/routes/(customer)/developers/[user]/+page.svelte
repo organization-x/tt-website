@@ -173,10 +173,10 @@
 	/>
 
 	<div
-		class="mx-auto max-w-xl lg:flex lg:gap-10 lg:justify-between lg:max-w-screen-lg lg:mx-auto 3xl:max-w-screen-3xl "
+		class="mx-auto max-w-xl lg:flex lg:gap-10 lg:justify-between lg:max-w-screen-lg lg:mx-auto 3xl:max-w-screen-3xl"
 	>
 		<div
-			class="mb-8 max-w-sm mx-auto flex flex-col gap-2 items-center lg:mt-10 lg:mb-0 lg:flex-col lg:items-start lg:w-1/2 lg:sticky lg:top-6 lg:mx-0 lg:h-fit"
+			class="mb-8 max-w-sm mx-auto flex flex-col gap-2 items-center lg:mt-10 lg:mb-0 lg:flex-col lg:items-start lg:sticky lg:top-6 lg:mx-0 lg:h-fit"
 		>
 			<img
 				width="512"
@@ -184,7 +184,7 @@
 				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
 					.userPage.id}/avatar?{timestamp}"
 				alt="{data.userPage.name}'s avatar"
-				class="border-4 mt-4 border-black bg-gray-400 box-content w-28 h-28 rounded-full lg:w-32 lg:mx-0 lg:h-32 lg:mb-2"
+				class="border-4 mt-4 border-black bg-gray-400 box-content object-cover object-center w-28 h-28 rounded-full lg:w-32 lg:mx-0 lg:h-32 lg:mb-2"
 			/>
 
 			<h1 class="font-semibold text-lg text-center lg:text-start">
@@ -193,7 +193,7 @@
 			</h1>
 
 			<GradientText
-				class="from-green-light to-green-dark text-center font-bold text-3xl break-words w-full lg:text-start"
+				class="from-green-light to-green-dark text-center font-bold text-3xl break-words w-full lg:text-start lg:max-w-[15rem]"
 			>
 				{data.userPage.name}
 			</GradientText>
@@ -223,9 +223,9 @@
 		</div>
 
 		<div
-			class="max-w-xl lg:min-w-[28rem] lg:mt-40 lg:w-1/2 3xl:flex 3xl:gap-10 3xl:min-w-[58rem]"
+			class="max-w-xl lg:min-w-[28rem] lg:mt-40 3xl:flex 3xl:gap-10 3xl:min-w-[58rem]"
 		>
-			<div class="flex flex-col gap-8 mb-8 3xl:w-full">
+			<div class="flex flex-col gap-8 mb-8 3xl:w-1/2">
 				<ProfileSection title="Positions">
 					{#each data.userPage.positions as name}
 						<DevTag {name} />
@@ -235,15 +235,20 @@
 				<ProfileSection title="Projects" minHeight={true}>
 					{#each { length: 2 } as _, i}
 						{#if data.projects[i]}
-							<ProjectPreview project={data.projects[i]} />
+							<ProjectPreview
+								project={data.projects[i]}
+								profile={true}
+							/>
 						{/if}
 					{/each}
 
 					{#if data.projects.length}
 						<Button
 							href="/developers/{data.userPage.url}/projects"
-							class="mb-2">View More</Button
+							class="mb-1"
 						>
+							View More
+						</Button>
 					{:else}
 						<h1 class="font-semibold text-xl m-auto">
 							No Projects
@@ -252,7 +257,7 @@
 				</ProfileSection>
 			</div>
 
-			<div class="flex flex-col gap-8 w-full 3xl:w-full">
+			<div class="flex flex-col gap-8 w-full 3xl:w-1/2">
 				<ProfileSection title="Top Skills">
 					{@const endorser =
 						data.user && data.user.id !== data.userPage.id

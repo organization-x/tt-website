@@ -7,7 +7,7 @@
 </script>
 
 <div
-	class="bg-gray-500/40 flex flex-col justify-between p-4 pt-2 -z-20 shrink-0 w-fit snap-center rounded-xl max-w-lg mx-auto lg:bg-transparent lg:mx-0 lg:max-w-none lg:p-0"
+	class="bg-gray-900 flex flex-col justify-between p-4 pt-2 -z-20 shrink-0 w-fit snap-center rounded-xl max-w-lg mx-auto lg:bg-transparent lg:mx-0 lg:max-w-none lg:p-0"
 >
 	<div
 		class="flex gap-6 justify-center items-center font-semibold py-4 mx-auto lg:mx-0 lg:w-fit"

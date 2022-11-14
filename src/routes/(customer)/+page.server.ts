@@ -10,21 +10,27 @@ export const load: PageServerLoad<{
 }> = async () => {
 	const projects = await getProjects({
 		url: {
-			in: ["hippo2", "ai-camp-bot", "this-website", "ai-on-thumbs"]
+			in: [
+				"hippo2",
+				"ai-camp-bot",
+				"team-tomorrow-website",
+				"ai-on-thumbs"
+			]
 		}
 	});
 
 	// TODO: Add top 3 developer's Discord ids to the database and use them here
 	const developers = await prisma.user.findMany({
 		where: {
-			id: {
-				in: ["340324858405847042"]
-			}
+			homepage: true
 		},
 		select: {
 			name: true,
+			team: true,
 			id: true,
-			about: true
+			about: true,
+			softSkills: true,
+			techSkills: true
 		}
 	});
 

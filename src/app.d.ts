@@ -9,7 +9,8 @@ import type {
 	TechSkill,
 	Team,
 	SoftSkill,
-	Endorsement
+	Endorsement,
+	Role
 } from "@prisma/client";
 
 declare global {
@@ -22,8 +23,11 @@ declare global {
 		// Interface for the landing page developer cards
 		interface Developer {
 			id: string;
+			team: Team | null;
 			name: string;
 			about: string;
+			softSkills: SoftSkill[];
+			techSkills: TechSkill[];
 		}
 
 		// Type for removing the relational userId property from the links model
@@ -46,6 +50,7 @@ declare global {
 		// Interface for user update requests
 		interface UserUpdateRequest {
 			id: string;
+			role?: Role;
 			name?: string;
 			about?: string;
 			team?: Team;
@@ -55,6 +60,7 @@ declare global {
 			links?: UserLinks;
 			pinnedProjectId?: string;
 			visible?: boolean;
+			homepage?: boolean;
 		}
 
 		// Type for authors on projects
@@ -77,12 +83,6 @@ declare global {
 			images: string[];
 			visible?: boolean;
 			authors?: Author[];
-		}
-
-		// Interface for response data after updating a project
-		interface ProjectUpdateResponse {
-			error?: string;
-			url: string;
 		}
 
 		// Interface for project creation response data

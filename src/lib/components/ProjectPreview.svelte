@@ -3,9 +3,11 @@
 
 	import { getIcon } from "$lib/getIcon";
 
-	const timestamp = Date.now();
-
+	// Keep track of whether these are on the profile page or not, so visual changes can be made
+	export let profile = false;
 	export let project: App.ProjectWithMetadata;
+
+	const timestamp = Date.now();
 </script>
 
 <a
@@ -13,7 +15,9 @@
 	in:fly={{ duration: 300, y: 50 }}
 	href="/projects/{project.url}"
 	rel="noreferrer noopener"
-	class="rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full block"
+	class:bg-gray-700={profile}
+	class:bg-gray-800={!profile}
+	class="rounded-lg border-t-4 overflow-hidden w-full block"
 	style="border-color: #{project.theme}"
 >
 	<div class="relative">
@@ -27,17 +31,18 @@
 		/>
 
 		<div
-			class="absolute top-2 right-2 left-0 justify-end pr-6 flex sm:pr-8 md:top-3 md:right-3"
+			class="absolute flex w-full justify-end items-center top-2 right-1 pr-6 sm:pr-8"
 		>
-			{#each project.authors as author, i}
-				{#if i <= 4}
+			{#each project.authors.slice(0, 5) as author, i}
+				<!-- When there's only one author, so the user aht created it, hide their icon when on their profile -->
+				{#if !(profile && project.authors.length === 1 && author.user.id === project.ownerId)}
 					<img
 						width="512"
 						height="512"
 						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
 							.user.id}/avatar?{timestamp}"
 						alt="{author.user.name}'s avatar"
-						class="w-10 h-10 bg-gray-400 -mr-6 sm:-mr-8 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4"
+						class="w-10 h-10 bg-gray-400 object-cover object-center shrink-0 -mr-5 rounded-full border-2 sm:-mr-7 sm:w-12 sm:h-12 sm:border-4 md:w-14 md:h-14"
 						style="border-color: #{project.theme}; z-index: {project
 							.authors.length - i}"
 					/>
@@ -46,15 +51,12 @@
 		</div>
 	</div>
 
-	<div class="flex flex-col py-4 px-3 min-h-72">
-		<h1 class="font-semibold text-2xl">{project.title}</h1>
+	<div class="flex flex-col py-4 px-3 min-h-112">
+		<h1 class="font-semibold text-2xl break-words">{project.title}</h1>
 		<p class="mt-2">{project.description}</p>
 		<div class="flex gap-2 mt-auto pt-4">
 			{#each project.skills as icon}
-				<svelte:component
-					this={getIcon(icon)}
-					class="w-7 h-7 md:w-8 md:h-8"
-				/>
+				<svelte:component this={getIcon(icon)} class="w-9 h-9" />
 			{/each}
 		</div>
 	</div>

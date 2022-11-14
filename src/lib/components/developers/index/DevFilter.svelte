@@ -12,8 +12,10 @@
 <button
 	on:click
 	class:grayscale={!current}
-	class:cursor-pointer={!current}
-	class="font-semibold flex jsutify-center gap-4 justify-center items-center h-14 bg-gray-500/40 rounded-lg px-4 snap-center shrink-0 select-none w-56"
+	class:cursor-auto={current}
+	class:bg-gray-700={current}
+	class:bg-gray-800={!current}
+	class="font-semibold flex jsutify-center gap-4 justify-center items-center h-14 transition-colors rounded-lg px-4 snap-center shrink-0 select-none w-56"
 >
 	<img
 		height="512"
@@ -21,7 +23,7 @@
 		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{timestamp}"
 		loading="lazy"
 		alt="{user.name}'s avatar"
-		class="rounded-full w-10 bg-gray-400"
+		class="rounded-full w-10 h-10 object-cover object-center bg-gray-400"
 	/>
 
 	<h1 class="overflow-auto scrollbar-hidden">{user.name.split(" ")[0]}</h1>

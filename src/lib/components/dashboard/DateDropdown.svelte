@@ -75,7 +75,7 @@
 	<button
 		on:click={() => (open = !open)}
 		class:rounded-b-lg={!open}
-		class="flex items-center justify-between p-5 w-full bg-gray-800 rounded-t-lg h-16"
+		class="flex items-center justify-between p-5 w-full bg-gray-900 rounded-t-lg h-16"
 	>
 		<h1>
 			{selected === DateOption.Custom
@@ -87,13 +87,13 @@
 
 	{#if open}
 		<div
-			class="absolute w-full h-fit inset-0 top-14 shadow-lg bg-gray-800 rounded-b-lg z-40 p-4 sm:p-6"
+			class="absolute w-full h-fit inset-0 top-14 shadow-lg bg-gray-900 rounded-b-lg z-40 p-4 sm:p-6"
 		>
 			<div bind:this={childParent} class="relative">
 				<button
 					on:click={() => (childOpen = !childOpen)}
 					class:rounded-b-lg={!childOpen}
-					class="flex items-center justify-between p-5 w-full bg-gray-900 rounded-t-lg"
+					class="flex items-center justify-between p-5 w-full bg-gray-700 rounded-t-lg"
 				>
 					<h1>{selected}</h1>
 					<DropArrow open={childOpen} class="w-3 h-3" />
@@ -101,7 +101,7 @@
 
 				{#if childOpen}
 					<div
-						class="absolute w-full h-fit flex flex-col inset-0 top-14 shadow-lg bg-gray-900 rounded-b-lg max-h-[15rem] overflow-auto z-50"
+						class="absolute w-full h-fit flex flex-col inset-0 top-14 shadow-lg bg-gray-700 rounded-b-lg max-h-[15rem] overflow-auto z-50"
 					>
 						{#each options as option}
 							<DropdownItem

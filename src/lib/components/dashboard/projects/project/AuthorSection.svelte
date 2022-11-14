@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+	import { tweened } from "svelte/motion";
 	import { slide, fly } from "svelte/transition";
 
 	import { user } from "$lib/stores";
@@ -11,7 +13,19 @@
 	export let ownerId: string;
 	export let authors: App.Author[];
 
+	// Keep track of which side is disabled
+	const enum Side {
+		Top,
+		Bottom,
+		Both,
+		None
+	}
+
 	let search = "";
+	let innerHeight: number;
+	let clientHeight: number;
+	let disabledSide = Side.Both;
+	let scrollable: HTMLDivElement;
 	let request: Promise<User[]> = new Promise(() => {});
 
 	// Update search value on input
@@ -44,47 +58,108 @@
 					results.length ? res(results) : rej();
 				});
 		}));
+
+	// Update which gradient on either side is shown based on where the element is scrolled to
+	const checkGradient = () => {
+		if (innerHeight >= 1024) return;
+
+		if (clientHeight === scrollable.scrollHeight) disabledSide = Side.Both;
+		else if (scrollable.scrollTop === 0) disabledSide = Side.Top;
+		else if (
+			scrollable.scrollTop - (scrollable.scrollHeight - clientHeight) >=
+			-0.5
+		)
+			disabledSide = Side.Bottom;
+		else disabledSide = Side.None;
+	};
+
+	$: clientHeight, scrollable && checkGradient();
+
+	// Opacity fades for the gradients
+	const top = tweened(1, { duration: 150 });
+	const bottom = tweened(1, { duration: 150 });
+
+	// Set the gradient transitions to the proper disabled/enabled state based on the disabled side
+	$: switch (disabledSide) {
+		case Side.Top:
+			top.set(1);
+			bottom.set(0);
+
+			break;
+		case Side.Bottom:
+			top.set(0);
+			bottom.set(1);
+
+			break;
+		case Side.Both:
+			top.set(1);
+			bottom.set(1);
+
+			break;
+		case Side.None:
+			top.set(0);
+			bottom.set(0);
+	}
+
+	// Update the gradients based off of content in them on mount
+	onMount(() => {
+		// Create an observer to update the gradient on scrollHeight change
+		const observer = new MutationObserver(checkGradient);
+
+		observer.observe(scrollable, {
+			subtree: true,
+			attributes: true
+		});
+
+		checkGradient();
+
+		return () => observer.disconnect();
+	});
 </script>
 
+<svelte:window bind:innerHeight />
+
 <div class="lg:flex lg:justify-between lg:gap-14">
-	<div class="lg:w-full">
+	<div class="relative lg:w-full">
 		<h1 class="font-semibold text-xl">Authors</h1>
-		<div
-			class="bg-gray-500/40 p-4 mt-3 rounded-lg lg:grid lg:grid-cols-2 lg:gap-x-4 lg:transition-[height]"
-		>
-			{#each authors as author (author.user.id)}
-				{@const cantRemove =
-					author.user.id === $user.id || author.user.id === ownerId}
+		<div class="bg-gray-900 p-4 mt-3 rounded-lg after:inset-x-0">
+			<div
+				bind:clientHeight
+				bind:this={scrollable}
+				on:scroll={checkGradient}
+				class="scrollbar-hidden overflow-auto max-lg:max-h-[27.5rem] max-lg:scroll-mask lg:grid lg:grid-cols-2 lg:gap-x-4 lg:overflow-visible"
+				style="--top-opacity: {$top}; --bottom-opacity: {$bottom};"
+			>
+				{#each authors as author (author.user.id)}
+					{@const cantRemove =
+						author.user.id === $user.id ||
+						author.user.id === ownerId}
 
-				<AuthorEditor
-					bind:author
-					{cantRemove}
-					on:click={() => {
-						if (cantRemove) return;
+					<AuthorEditor
+						bind:author
+						{cantRemove}
+						on:click={() => {
+							if (cantRemove) return;
 
-						authors.splice(
-							authors.findIndex(
-								(user) => user.user.id === author.user.id
-							),
-							1
-						);
+							authors = authors.filter(
+								(user) => author.user.id !== user.user.id
+							);
 
-						authors = authors;
+							// Requery the search
+							onSearch();
+						}}
+					/>
+				{/each}
+			</div>
 
-						// Requery the search
-						onSearch();
-					}}
-				/>
-			{/each}
-
-			<div class="bg-gray-500/40 rounded-lg lg:col-span-2">
+			<div class="bg-gray-700 rounded-lg lg:col-span-2">
 				<div class="flex select-none lg:col-span-2">
 					<div
 						class:w-0={search.length}
 						class:px-0={search.length}
 						class:px-4={!search.length}
 						class:w-14={!search.length}
-						class="bg-gray-500/40 py-4 rounded-l-lg overflow-hidden transition-widpad"
+						class="bg-gray-500 py-4 rounded-l-lg overflow-hidden transition-widpad"
 					>
 						<Search class="w-5 h-5 mx-auto" />
 					</div>
@@ -139,9 +214,9 @@
 										)
 											return;
 
-										// Default position is backend since it's at the top
+										// Default position is frontend since it's at the top
 										authors.push({
-											position: "Backend",
+											position: "Frontend",
 											user
 										});
 
@@ -158,7 +233,7 @@
 										height="512"
 										src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{timestamp}"
 										alt="{user.name}'s avatar"
-										class="w-10 h-10 bg-gray-400 rounded-full"
+										class="w-10 h-10 bg-gray-400 rounded-full object-cover object-center"
 									/>
 									<h1 class="text-lg">{user.name}</h1>
 								</button>

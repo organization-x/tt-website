@@ -19,7 +19,7 @@
 	}
 
 	body {
-		@apply h-screen flex flex-col;
+		@apply h-full flex flex-col;
 	}
 
 	img {
@@ -42,15 +42,7 @@
 	}
 
 	.scrollbar::-webkit-scrollbar-thumb {
-		@apply bg-gray-700 invisible border-y-8 border-solid border-transparent bg-clip-padding rounded-full;
-	}
-
-	.scrollbar::-webkit-scrollbar-thumb:hover {
-		@apply bg-gray-500;
-	}
-
-	.scrollbar:hover::-webkit-scrollbar-thumb {
-		@apply visible;
+		@apply bg-gray-500 border-y-8 border-solid border-transparent bg-clip-padding rounded-full min-h-[2rem];
 	}
 
 	.scrollbar-hidden {
@@ -62,6 +54,30 @@
 	}
 
 	.section-clip {
-		clip-path: polygon(0 1%, 100% 0, 100% 99%, 0 100%);
+		clip-path: polygon(0 1rem, 100% 0, 100% calc(100% - 1rem), 0 100%);
+	}
+
+	@screen lg {
+		.section-clip {
+			clip-path: polygon(0 2rem, 100% 0, 100% calc(100% - 2rem), 0 100%);
+		}
+	}
+
+	.project-cols:nth-child(odd) {
+		grid-template-columns: minmax(0, 1fr) minmax(0, 0.7fr);
+	}
+
+	.project-cols:nth-child(even) {
+		grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+	}
+
+	.scroll-mask {
+		mask-image: linear-gradient(
+			to bottom,
+			rgba(0, 0, 0, var(--top-opacity)) 0%,
+			rgba(0, 0, 0, 1) 10%,
+			rgba(0, 0, 0, 1) 90%,
+			rgba(0, 0, 0, var(--bottom-opacity)) 100%
+		);
 	}
 }

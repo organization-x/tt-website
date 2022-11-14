@@ -90,7 +90,7 @@
 				class="flex flex-col gap-8 lg:flex-row"
 			>
 				<div
-					class="bg-gray-500/40 p-6 rounded-lg md:flex md:gap-4 md:items-center lg:flex-col lg:w-full lg:gap-0"
+					class="bg-gray-900 p-6 rounded-lg md:flex md:gap-4 md:items-center lg:flex-col lg:w-full lg:gap-0"
 				>
 					{#await request}
 						<div
@@ -172,7 +172,7 @@
 							style="background: conic-gradient(var(--tw-gradient-from) calc({$percent}%), var(--tw-gradient-to) 0)"
 						>
 							<div
-								class="absolute inset-3 rounded-full bg-gray-800 flex items-center justify-center shadow-[0_0_5px_3px_rgba(0,0,0,0.4)]"
+								class="absolute inset-3 rounded-full bg-gray-700 flex items-center justify-center shadow-[0_0_7px_6px_rgba(0,0,0,0.15)]"
 							>
 								<h1 class="font-semibold max-w-[10rem]">
 									{#if views}
@@ -202,7 +202,7 @@
 									value={analytics.new}
 									className={views
 										? "text-blue-light"
-										: "text-gray-500/40"}
+										: "text-gray-700"}
 									label="New"
 								/>
 
@@ -210,7 +210,7 @@
 									value={analytics.returning}
 									className={views
 										? "text-blue-dark"
-										: "text-gray-500/40"}
+										: "text-gray-700"}
 									label="Returning"
 								/>
 							</div>
@@ -225,7 +225,7 @@
 				</div>
 
 				<div
-					class="flex flex-col gap-4 bg-gray-500/40 rounded-lg p-6 lg:w-full"
+					class="flex flex-col gap-4 bg-gray-900 rounded-lg p-6 lg:w-full"
 				>
 					<h1 class="font-semibold text-lg">Top Soft Skills</h1>
 
@@ -277,7 +277,7 @@
 
 			<DashSection
 				title="Projects"
-				class="bg-gray-500/40 rounded-lg flex flex-col gap-4 p-6 lg:grid lg:grid-cols-2"
+				class="bg-gray-900 rounded-lg flex flex-col gap-4 p-6 lg:grid lg:grid-cols-2"
 			>
 				<h1 class="font-semibold text-lg">Top Tech Skills</h1>
 
@@ -315,7 +315,7 @@
 			</DashSection>
 		</div>
 
-		<div class="bg-gray-500/40 px-4 py-6 rounded-lg">
+		<div class="bg-gray-900 px-4 py-6 rounded-lg">
 			{#await request}
 				<GraphLoading />
 			{:then analytics}
@@ -323,7 +323,7 @@
 			{/await}
 		</div>
 
-		<div class="bg-gray-500/40 px-4 py-6 rounded-lg">
+		<div class="bg-gray-900 px-4 py-6 rounded-lg">
 			{#await request}
 				<GraphLoading />
 			{:then analytics}

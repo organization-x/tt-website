@@ -46,19 +46,21 @@
 	<svelte:fragment slot="expanded">
 		<button
 			on:click={() => onClick(1)}
-			class="p-2 h-full {selected === 1 ? ' bg-gray-500/40' : ''}"
+			class="p-2 h-full {selected === 1 ? ' bg-gray-500' : ''}"
 		>
 			<HeadOneIcon class="w-5 h-5" />
 		</button>
+
 		<button
 			on:click={() => onClick(2)}
-			class="p-2 h-full {selected === 2 ? ' bg-gray-500/40' : ''}"
+			class="p-2 h-full {selected === 2 ? ' bg-gray-500' : ''}"
 		>
 			<HeadTwoIcon class="w-6 h-6" />
 		</button>
+
 		<button
 			on:click={() => onClick(3)}
-			class="p-2 h-full {selected === 3 ? ' bg-gray-500/40' : ''}"
+			class="p-2 h-full {selected === 3 ? ' bg-gray-500' : ''}"
 		>
 			<HeadThreeIcon class="w-6 h-6" />
 		</button>

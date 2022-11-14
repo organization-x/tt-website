@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { setContext } from "svelte";
-	import { quintIn } from "svelte/easing";
+	import { flip } from "svelte/animate";
+	import { fly, scale } from "svelte/transition";
 
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import User from "$lib/components/dashboard/users/User.svelte";
@@ -8,10 +8,9 @@
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 
-	import type { PageData } from "./$types";
-	import { crossfade, scale, type TransitionConfig } from "svelte/transition";
+	import type { PageServerData } from "./$types";
 
-	export let data: PageData;
+	export let data: PageServerData;
 
 	let search = "";
 	let request: Promise<
@@ -19,9 +18,6 @@
 			analytics: App.UsersAnalyticsResponse[keyof App.UsersAnalyticsResponse];
 		})[]
 	> = new Promise(() => {});
-
-	// Create a timestamp so the Cloudflare images dont cache
-	$: request, setContext("timestamp", Date.now());
 
 	const onSearch = () =>
 		(request = fetch(
@@ -31,7 +27,7 @@
 		)
 			.then((res) => res.json())
 			.then(async (data: App.UserWithMetadata[]) => {
-				if (!data.length) Promise.reject();
+				if (!data.length) return Promise.reject();
 
 				const analytics = await fetch(
 					`/api/stats?ids=${data.map((user) => user.id).join(",")}`
@@ -44,23 +40,6 @@
 					] as App.UsersAnalyticsResponse[keyof App.UsersAnalyticsResponse]
 				}));
 			}));
-
-	// Transition for when a homepage user is removed
-	const transition = (node: Element): TransitionConfig => {
-		const height = node.clientHeight;
-
-		return {
-			duration: 350,
-			easing: quintIn,
-			css: (_, u) => {
-				return `transform: translateY(${u * height * 4}px)`;
-			}
-		};
-	};
-
-	const [send, receive] = crossfade({
-		duration: 400
-	});
 </script>
 
 <svelte:head>
@@ -68,73 +47,237 @@
 </svelte:head>
 
 <DashWrap>
-	<DashHero title="All Users" />
+	<DashHero title="Manage Users" />
 
-	<div
-		class="p-4 rounded-lg bg-gray-500/40 flex flex-col gap-4 overflow-hidden"
-	>
-		<h1 class="font-semibold text-lg text-center">Hompeage Users</h1>
+	<div class="flex flex-col gap-5">
+		<h1 class="font-semibold text-2xl text-center">Homepage Users</h1>
 
-		{#each { length: 3 } as _, i}
-			{@const user = data.homepage[i]}
+		<div
+			class="p-4 relative rounded-lg bg-gray-900 lg:flex lg:gap-6 lg:items-center"
+		>
+			<p class="lg:max-w-xs lg:mx-auto">
+				Users here will be featured on the front page of the Team
+				Tomorrow website. Their skills, projects, and about me will all
+				be the first user information visible to employers. Every month,
+				these users should be rotated based on who is most engaged or is
+				seeing high volumes of traffic.
+			</p>
 
-			<div class="relative h-[4.5rem]" style="z-index: {30 - i * 10};">
-				{#if user}
-					<div
-						in:receive={{ key: user.id }}
-						out:send={{ key: user.id }}
-						class="p-4 bg-gray-800 absolute inset-0 rounded-lg flex gap-3 items-center h-full transition-transform"
-					>
-						<img
-							height="512"
-							width="512"
-							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{Date.now()}"
-							alt="{user.name}'s avatar"
-							loading="lazy"
-							class="rounded-full bg-gray-400 w-10 h-10"
-						/>
+			<div class="mt-6 flex flex-col gap-4 relative lg:w-1/2 lg:mt-0">
+				<div class="flex flex-col gap-4 absolute inset-0 z-10">
+					{#each data.homeUsers as user (user.id)}
+						<div animate:flip={{ duration: 400 }}>
+							<div
+								out:scale|local={{ duration: 200 }}
+								in:scale|local={{ duration: 200 }}
+								class="p-4 bg-gray-700 flex gap-3 items-center h-16 rounded-lg"
+							>
+								<img
+									height="512"
+									width="512"
+									src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{Date.now()}"
+									alt="{user.name}'s avatar"
+									loading="lazy"
+									class="rounded-full object-cover object-center bg-gray-400 w-10 h-10"
+								/>
 
-						<h1
-							class="text-lg font-semibold overflow-auto scrollbar-hidden"
-						>
-							{user.name.split(" ")[0]}
-						</h1>
+								<h1
+									class="text-lg font-semibold overflow-auto scrollbar-hidden lg:text-base"
+								>
+									{user.name.split(" ")[0]}
+								</h1>
 
-						<button
-							class="ml-auto"
-							on:click={() =>
-								(data.homepage = data.homepage.filter(
-									({ id }) => id !== user.id
-								))}
-						>
-							<Trash class="w-4 h-4" />
-						</button>
-					</div>
-				{:else}
-					<div
-						class="border-gray-500/40 rounded-lg border-dashed border-4 h-full"
-					/>
-				{/if}
+								<button
+									class="ml-auto"
+									on:click={() =>
+										(data.homeUsers = data.homeUsers.filter(
+											({ id }) => id !== user.id
+										))}
+								>
+									<Trash class="w-4 h-4" />
+								</button>
+							</div>
+						</div>
+					{/each}
+				</div>
+
+				<div
+					class="border-gray-700 border-dashed border-4 h-16 rounded-lg"
+				/>
+
+				<div
+					class="border-gray-700 border-dashed border-4 h-16 rounded-lg"
+				/>
+
+				<div
+					class="border-gray-700 border-dashed border-4 h-16 rounded-lg"
+				/>
 			</div>
-		{/each}
-	</div>
+		</div>
 
-	<SearchBar
-		bind:search
-		on:input={() => (request = new Promise(() => {}))}
-		on:search={onSearch}
-		placeholder="Search all users..."
-	/>
+		<h1 class="font-semibold text-2xl text-center mt-4">All Users</h1>
 
-	<div class="flex flex-col gap-10  mt-5">
-		{#await request}
-			<h1>Loading</h1>
-		{:then users}
-			{#each users as user}
-				<User {user} />
-			{/each}
-		{:catch error}
-			<h1>Error</h1>
-		{/await}
+		<SearchBar
+			bind:search
+			on:input={() => (request = new Promise(() => {}))}
+			on:search={onSearch}
+			placeholder="Search all users..."
+			lightBg={false}
+		/>
+
+		<div class="flex flex-col gap-10 min-h-[72.5rem] -mt-1">
+			{#await request}
+				<div
+					class="rounded-lg bg-gray-500 p-4 flex flex-col gap-6 animate-pulse min-h-[35rem]"
+				>
+					<div class="flex flex-col gap-7 items-center md:flex-row">
+						<div class="w-20 h-20 bg-gray-400 rounded-full" />
+						<div
+							class="flex flex-col gap-3 items-center text-center md:flex-col-reverse md:text-start md:items-start"
+						>
+							<div
+								class="rounded-full h-4 w-24 bg-gray-400 md:mt-0.5"
+							/>
+
+							<div class="rounded-full h-7 w-60 bg-gray-400" />
+						</div>
+					</div>
+
+					<div
+						class="flex flex-col items-center px-3 gap-4 my-3 md:items-start md:px-0"
+					>
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-32 bg-gray-400" />
+					</div>
+
+					<div class="flex flex-col gap-3">
+						<div class="flex justify-between">
+							<div class="rounded-full h-5 w-20 bg-gray-400" />
+
+							<div class="rounded-full h-5 w-24 bg-gray-400" />
+						</div>
+
+						<div class="rounded-sm w-full h-4 bg-gray-400" />
+
+						<div
+							class="flex w-full justify-between items-center mt-0.5"
+						>
+							<div
+								class="w-4 h-4 shrink-0 bg-gray-400 rounded-full"
+							/>
+
+							<div
+								class="w-8 h-5 ml-2 rounded-full bg-gray-400 lg:h-4 lg:ml-2"
+							/>
+
+							<div
+								class="w-10 h-5 ml-auto rounded-full bg-gray-400 lg:h-4"
+							/>
+						</div>
+
+						<div
+							class="flex w-full justify-between items-center -mt-2"
+						>
+							<div
+								class="w-4 h-4 shrink-0 bg-gray-400 rounded-full"
+							/>
+
+							<div
+								class="w-8 h-5 ml-2 rounded-full bg-gray-400 lg:h-4 lg:ml-2"
+							/>
+
+							<div
+								class="w-20 h-5 ml-auto rounded-full bg-gray-400 lg:h-4"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<div
+					class="rounded-lg bg-gray-500 p-4 flex flex-col gap-6 animate-pulse min-h-[35rem]"
+				>
+					<div class="flex flex-col gap-7 items-center md:flex-row">
+						<div class="w-20 h-20 bg-gray-400 rounded-full" />
+						<div
+							class="flex flex-col gap-3 items-center text-center md:flex-col-reverse md:text-start md:items-start"
+						>
+							<div
+								class="rounded-full h-4 w-24 bg-gray-400 md:mt-0.5"
+							/>
+
+							<div class="rounded-full h-7 w-60 bg-gray-400" />
+						</div>
+					</div>
+
+					<div
+						class="flex flex-col items-center px-3 gap-4 my-3 md:items-start md:px-0"
+					>
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-full bg-gray-400" />
+						<div class="rounded-sm h-2 w-32 bg-gray-400" />
+					</div>
+
+					<div class="flex flex-col gap-3">
+						<div class="flex justify-between">
+							<div class="rounded-full h-5 w-20 bg-gray-400" />
+
+							<div class="rounded-full h-5 w-24 bg-gray-400" />
+						</div>
+
+						<div class="rounded-sm w-full h-4 bg-gray-400" />
+
+						<div
+							class="flex w-full justify-between items-center mt-0.5"
+						>
+							<div
+								class="w-4 h-4 shrink-0 bg-gray-400 rounded-full"
+							/>
+
+							<div
+								class="w-8 h-5 ml-2 rounded-full bg-gray-400 lg:h-4 lg:ml-2"
+							/>
+
+							<div
+								class="w-10 h-5 ml-auto rounded-full bg-gray-400 lg:h-4"
+							/>
+						</div>
+
+						<div
+							class="flex w-full justify-between items-center -mt-2"
+						>
+							<div
+								class="w-4 h-4 shrink-0 bg-gray-400 rounded-full"
+							/>
+
+							<div
+								class="w-8 h-5 ml-2 rounded-full bg-gray-400 lg:h-4 lg:ml-2"
+							/>
+
+							<div
+								class="w-20 h-5 ml-auto rounded-full bg-gray-400 lg:h-4"
+							/>
+						</div>
+					</div>
+				</div>
+			{:then users}
+				{#each users as user}
+					<User bind:homeUsers={data.homeUsers} {user} />
+				{/each}
+			{:catch}
+				<h1
+					in:fly={{ duration: 300, y: 30 }}
+					class="text-center font-semibold text-2xl pt-5"
+				>
+					No users
+				</h1>
+			{/await}
+		</div>
 	</div>
 </DashWrap>

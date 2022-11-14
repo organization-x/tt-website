@@ -10,9 +10,9 @@
 
 <div
 	bind:this={element}
-	class:border-white={active}
+	class:border-gray-500={active}
 	class:border-transparent={!active}
-	class="flex items-center rounded-lg bg-gray-500/40 border-2 shrink-0"
+	class="flex items-center rounded-lg bg-gray-900 border-2 shrink-0"
 >
 	<button
 		on:click

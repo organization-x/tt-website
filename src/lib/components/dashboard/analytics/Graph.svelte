@@ -104,7 +104,7 @@
 
 <div
 	bind:this={parent}
-	class="flex flex-col min-h-[28rem] max-w-sm mx-auto lg:max-w-none"
+	class="flex flex-col min-h-112 max-w-sm mx-auto lg:max-w-none"
 >
 	<h1 class="text-lg font-semibold mb-6">
 		{title}
@@ -140,7 +140,7 @@
 
 		<div
 			bind:this={scrollable}
-			class="flex gap-4 snap-mandatory snap-x overflow-auto scrollbar-hidden mb-4 lg:bg-gray-500/40 lg:py-6 lg:rounded-lg lg:mb-0 lg:overflow-hidden lg:min-h-[30rem]"
+			class="flex gap-4 snap-mandatory snap-x overflow-auto scrollbar-hidden mb-4 lg:bg-gray-700 lg:py-6 lg:rounded-lg lg:mb-0 lg:overflow-hidden lg:min-h-120"
 		>
 			{#each pages as data, i}
 				<div
@@ -179,8 +179,8 @@
 						on:click={() => (page = i)}
 						class:cursor-auto={page === i}
 						class="rounded-b-lg w-20 p-2 {page === i
-							? 'bg-gray-500/40'
-							: 'bg-gray-500/20'}"
+							? 'bg-gray-700'
+							: 'bg-gray-700/60'}"
 					>
 						{i + 1}
 					</button>

@@ -7,17 +7,17 @@
 </script>
 
 <div
-	class="px-4 mx-auto mb-10 max-w-screen-2xl lg:flex lg:mt-20 lg:justify-between lg:px-6 xl:px-10 lg:gap-8"
+	class="px-4 text-center mx-auto mt-10 sm:mt-0 max-w-sm md:max-w-md lg:flex lg:text-left lg:mb-14 lg:mt-16 lg:justify-between lg:items-center lg:px-6 lg:gap-8 lg:max-w-4xl xl:max-w-6xl xl:px-8 xl:gap-12"
 >
-	<div class="flex flex-col justify-center shrink-0">
+	<div class="flex flex-col justify-center shrink-0 mt-8">
 		<h1
-			class="font-extrabold text-2xl sm:text-3xl text-center bg-clip-text text-transparent bg-gradient-radial max-w-sm mx-auto mt-6 lg:mt-0 lg:text-left lg:mx-0 lg:max-w-xs lg:text-4xl xl:text-5xl xl:max-w-md xl:leading-14 {className}"
+			class="font-extrabold text-3xl bg-clip-text text-transparent bg-gradient-radial mx-auto md:text-4xl lg:mt-0 lg:text-left lg:mx-0 lg:max-w-xs xl:text-5xl xl:leading-14 xl:max-w-md {className}"
 		>
 			{title}
 		</h1>
 
 		<p
-			class="text-center text-sm sm:text-base max-w-sm mt-4 mx-auto px-8 lg:text-left lg:mx-0 lg:px-0 lg:max-w-xs"
+			class="text-lg mt-8 mx-auto px-2 sm:text-base lg:text-left lg:mx-0 lg:px-0 lg:max-w-xs lg:mt-4 xl:text-lg"
 		>
 			<slot />
 		</p>
@@ -25,7 +25,9 @@
 		<slot name="button" />
 	</div>
 
-	<div class="w-full m-auto mt-12 max-w-lg lg:m-auto">
+	<div
+		class="w-full my-14 sm:my-10 lg:max-w-md lg:aspect-square lg:flex lg:items-center lg:my-0 xl:max-w-lg"
+	>
 		<video autoplay muted playsinline>
 			<source {src} type="video/webm" />
 		</video>

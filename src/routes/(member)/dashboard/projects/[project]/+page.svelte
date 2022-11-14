@@ -11,7 +11,6 @@
 	import Pencil from "$lib/components/icons/general/Pencil.svelte";
 	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
-	import InputSection from "$lib/components/dashboard/InputSection.svelte";
 	import TipTap from "$lib/components/dashboard/projects/project/TipTap.svelte";
 	import AuthorSection from "$lib/components/dashboard/projects/project/AuthorSection.svelte";
 
@@ -92,13 +91,12 @@
 		checkConstraints();
 	};
 
-	$: if (project.title !== original.title && !disableForm)
+	$: if (project.title !== original.title)
 		(titleError = false), checkConstraints();
 
-	$: if (project.description !== original.description && !disableForm)
-		checkConstraints();
+	$: if (project.description !== original.description) checkConstraints();
 
-	$: if (project.authors.length !== original.authors.length && !disableForm)
+	$: if (project.authors.length !== original.authors.length)
 		checkConstraints();
 
 	$: if (project.content !== original.content && !disableForm)
@@ -198,31 +196,48 @@
 							images
 					  } as App.ProjectUpdateRequest)
 			)
-		})
-			.then((res) => res.json())
-			.then(async (response: App.ProjectUpdateResponse) => {
-				// If an error occurs and it's the title, tell the user
-				if (response.error === "SAME_TITLE") titleError = true;
-				// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading and update the local copy of the project
-				else if (response.url !== original.url) {
-					project.url = response.url;
+		}).then(async (res) => {
+			// If the status is 205, it is most likely a title that already exists
+			if (res.status === 205)
+				return (
+					(disableButtons = true) &&
+					(titleError = true) &&
+					(disableForm = false)
+				);
 
-					history.replaceState(
-						{},
-						"",
-						new URL(
-							`/dashboard/projects/${response.url}`,
-							document.location.href
-						)
-					);
-				}
+			// Generate a url based off of the current title
+			const url = project.title
+				.replaceAll(/[^a-zA-Z0-9\s]/g, "")
+				.replaceAll(/\s+/g, "-")
+				.toLowerCase();
 
-				disableForm = false;
-				disableButtons = true;
+			// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading and update the local copy of the project
+			if (url !== original.url) {
+				project.url = url;
 
-				// If successful, update the original data
-				original = JSON.parse(JSON.stringify(project));
-			});
+				history.replaceState(
+					{},
+					"",
+					new URL(
+						`/dashboard/projects/${url}`,
+						document.location.href
+					)
+				);
+			}
+
+			// TODO: Update loading placeholders
+			// TODO: User projects page
+			// TODO: Global analytics
+			// TODO: Admin project editor
+			// TODO: Kudos implementation
+
+			// If successful, update the original data
+			original = JSON.parse(JSON.stringify({ ...project, content }));
+
+			disableForm = false;
+
+			checkConstraints();
+		});
 
 		disableButtons = true;
 	};
@@ -354,14 +369,16 @@
 				bind:value={project.title}
 				title="Title"
 				placeholder="Name your project..."
+				lightBg={false}
 				max={50}
 			/>
+
 			{#if titleError}
 				<p
 					transition:slide
-					class="text-red-light font-semibold text-sm mt-2"
+					class="text-red-light font-semibold text-center text-sm mt-2"
 				>
-					Title already in use, please user another!
+					Title already in use!
 				</p>
 			{/if}
 		</div>
@@ -371,6 +388,7 @@
 			bind:value={project.description}
 			placeholder="Write a short description of your project..."
 			max={300}
+			lightBg={false}
 		/>
 
 		<AuthorSection
@@ -378,17 +396,22 @@
 			ownerId={project.ownerId}
 		/>
 
-		<InputSection title="Skills">
-			{#each { length: 4 } as _, i}
-				<Dropdown
-					{i}
-					required={i < 2}
-					options={techSkills}
-					selectedItems={project.skills}
-					on:change={updateSkills}
-				/>
-			{/each}
-		</InputSection>
+		<div>
+			<h1 class="font-semibold text-xl">Skills</h1>
+			<div
+				class="bg-gray-900 p-4 mt-3 rounded-lg flex flex-col gap-4 lg:grid lg:grid-cols-2"
+			>
+				{#each { length: 4 } as _, i}
+					<Dropdown
+						{i}
+						required={i < 2}
+						options={techSkills}
+						selectedItems={project.skills}
+						on:change={updateSkills}
+					/>
+				{/each}
+			</div>
+		</div>
 	</div>
 
 	<div class="flex flex-col items-center my-2">
@@ -396,7 +419,7 @@
 			<DashButton
 				on:click={cancel}
 				disabled={disableButtons}
-				class="bg-gray-500 hover:bg-gray-500/80"
+				class="bg-gray-900 hover:bg-gray-900/60"
 			>
 				Cancel
 			</DashButton>
@@ -422,7 +445,7 @@
 					}}
 					class={pinned
 						? "bg-blue-light hover:bg-blue-light/80"
-						: "bg-gray-500/40 hover:bg-gray-500/20"}
+						: "bg-gray-900 hover:bg-gray-900/60"}
 				>
 					<Pin class="w-5 h-5" />
 				</DashButton>
@@ -435,15 +458,13 @@
 						func: toggleVisible,
 						delay: 300
 					}}
-					class="bg-gray-500/40 hover:bg-gray-500/20"
+					class="bg-gray-900 hover:bg-gray-900/60"
 				>
 					<ShowHide crossed={visible} class="w-5 h-5" />
 				</DashButton>
 			</div>
 		{/if}
 	</div>
-
-	<Separator class="max-w-screen-xl" />
 
 	<TipTap
 		bind:blobs

@@ -150,6 +150,7 @@
 		// Destroy the editor on unmount
 		return () => {
 			editor.destroy();
+			ws.disconnect();
 			ws.destroy();
 		};
 	});
@@ -161,7 +162,7 @@
 	{#if editor}
 		<div class="absolute inset-0 pointer-events-none">
 			<Scrollable
-				class="sticky bg-black pointer-events-auto top-0 z-20 border-b-2 border-gray-500/40 before:from-black after:to-black"
+				class="sticky bg-black pointer-events-auto top-0 z-20 border-b-2 border-gray-700 before:from-black after:to-black"
 			>
 				<HeadButton active={isActive.heading} {editor} />
 				<EditorButton
@@ -171,6 +172,7 @@
 				>
 					B
 				</EditorButton>
+
 				<EditorButton
 					class="italic"
 					active={isActive.italic}
@@ -178,6 +180,7 @@
 				>
 					I
 				</EditorButton>
+
 				<EditorButton
 					class="underline"
 					active={isActive.underline}
@@ -186,6 +189,7 @@
 				>
 					U
 				</EditorButton>
+
 				<EditorButton
 					class="line-through"
 					active={isActive.strike}
@@ -193,6 +197,7 @@
 				>
 					S
 				</EditorButton>
+
 				<EditorButton
 					active={isActive.bulletList}
 					on:click={() =>
@@ -200,6 +205,7 @@
 				>
 					<UnList class="w-5 h-5 mx-auto" />
 				</EditorButton>
+
 				<EditorButton
 					active={isActive.orderedList}
 					on:click={() =>
@@ -207,7 +213,9 @@
 				>
 					<OrList class="w-5 h-5 mx-auto" />
 				</EditorButton>
+
 				<LinkButton active={isActive.link} {editor} />
+
 				<ImageButton active={isActive.image} {editor} />
 			</Scrollable>
 		</div>

@@ -1,9 +1,9 @@
 import { error } from "@sveltejs/kit";
 
-import { prisma, checkSession, userAuth } from "$lib/prisma";
+import { prisma, userAuth } from "$lib/prisma";
 
 import type { RequestHandler } from "./$types";
-import type { Endorsement, Prisma } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 // Request handlers for managing user data in prisma, it uses the users session token to verify the API call
 
@@ -11,21 +11,23 @@ import type { Endorsement, Prisma } from "@prisma/client";
 // * INPUT: UserUpdateRequest
 // * OUTPUT: None
 export const PATCH: RequestHandler = async ({ locals, request }) => {
-	const session = await checkSession(locals);
+	const user = await userAuth(locals);
 
 	// If the session token is invalid, throw unauthorized
-	if (!session) throw error(401, "Unauthorized");
+	if (!user) throw error(401, "Unauthorized");
 
 	const data: App.UserUpdateRequest = await request.json().catch(() => {
 		throw error(400, "Bad Request");
 	});
 
-	// If the token isn't the same as for the user they are updating, throw unauthorized
-	if (data.id !== session.userId) throw error(401, "Unauthorized");
+	// If the token isn't the same as for the user they are updating and they aren't an admin, throw unauthorized
+	if (data.id !== user.id && user.role !== "Admin")
+		throw error(401, "Unauthorized");
 
 	try {
 		// Input validation
 		if (
+			(data.role && user.role !== "Admin") ||
 			(data.name &&
 				(data.name.length > 25 ||
 					data.name.length < 1 ||
@@ -35,11 +37,23 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			(data.softSkills &&
 				(data.softSkills.length < 2 || data.softSkills.length > 5)) ||
 			(data.techSkills &&
-				(data.techSkills.length < 2 || data.techSkills.length > 5))
+				(data.techSkills.length < 2 || data.techSkills.length > 5)) ||
+			(data.homepage &&
+				(await prisma.user.count({ where: { homepage: true } })) === 3)
 		)
 			throw error(400, "Bad Request");
 
 		const name = data.name?.trim();
+		const url = name?.toLowerCase().replaceAll(/\s+/g, "-");
+
+		// Check if the user has the same URL as another, and throw an error if so
+		if (
+			url &&
+			(await prisma.user.count({ where: { url, id: { not: data.id } } }))
+		)
+			return new Response(undefined, {
+				status: 205
+			});
 
 		// Update the user
 		await prisma.user.update({
@@ -47,6 +61,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			data: {
 				name,
 				url: name?.toLowerCase().replaceAll(/\s+/g, "-"),
+				role: data.role,
 				about: data.about?.trim(),
 				team: data.team,
 				positions: data.positions,
@@ -54,6 +69,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				techSkills: data.techSkills,
 				pinnedProjectId: data.pinnedProjectId,
 				visible: data.visible,
+				homepage: data.homepage,
 				links: {
 					update: {
 						GitHub: data.links?.GitHub,

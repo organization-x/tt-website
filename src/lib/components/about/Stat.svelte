@@ -30,7 +30,7 @@
 
 				observer.disconnect();
 			},
-			{ threshold: 0.3 }
+			{ threshold: 0.15 }
 		);
 
 		observer.observe(parent);
@@ -40,10 +40,11 @@
 </script>
 
 <div bind:this={parent} class="max-w-lg mx-auto">
-	<h2 class:text-right={side !== "left"} class="font-semibold mx-2">
+	<h2 class:text-right={side !== "left"} class="font-extrabold mx-2">
 		{title.toUpperCase()}
 	</h2>
-	<div class="bg-gray-500/40 p-4 rounded-xl mt-2">
+
+	<div class="bg-gray-800 p-4 rounded-xl mt-2">
 		<div
 			class:before:-left-4={isLeft}
 			class:ml-4={isLeft}
@@ -56,8 +57,10 @@
 			<h1 class="font-semibold text-4xl">
 				{count}{postFix}
 			</h1>
-			<h4 class="text-2xl">{caption}</h4>
+
+			<h4 class="text-xl">{caption}</h4>
 		</div>
+
 		<p class:text-right={!isLeft} class="mt-4">
 			<slot />
 		</p>

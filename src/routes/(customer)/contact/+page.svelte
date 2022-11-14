@@ -1,19 +1,18 @@
 <script lang="ts">
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
+	import Header from "$lib/components/Header.svelte";
 	import Field from "$lib/components/contact/Field.svelte";
 	import Section from "$lib/components/index/Section.svelte";
-	import TextHeader from "$lib/components/TextHeader.svelte";
 	import Select from "$lib/components/contact/Select.svelte";
-	import MajorHeader from "$lib/components/MajorHeader.svelte";
 	import { FieldType, techSkills, softSkills } from "$lib/enums";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
 
 	// Titles for each page of the contact form
 	const titles = [
-		"First, the basics.",
-		"Just some details.",
-		"Time to deploy.",
+		"First, the basics",
+		"Just some details",
+		"Time to deploy",
 		"That's it!"
 	];
 
@@ -140,7 +139,7 @@
 
 <Hero
 	class="from-purple-light to-purple-dark"
-	title="Let us get the party started for you."
+	title="Let us get the party started for you"
 	src="/assets/contact/contact.webm"
 >
 	Give us detailed information on what and who you want to start
@@ -148,7 +147,7 @@
 </Hero>
 
 <Section>
-	<TextHeader>Before you contact us.</TextHeader>
+	<Header>Before you contact us</Header>
 
 	<Text>
 		When contacting us, please make sure to fill out every part with
@@ -161,7 +160,7 @@
 </Section>
 
 <Section filled={true}>
-	<MajorHeader>{titles[pageNum]}</MajorHeader>
+	<Header>{titles[pageNum]}</Header>
 
 	<div bind:this={element} class="flex flex-col gap-10 mt-8 h-[40rem]">
 		{#if pageNum === 0}

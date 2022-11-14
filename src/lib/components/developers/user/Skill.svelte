@@ -45,7 +45,7 @@
 <svelte:window on:resize={() => (innerWidth = window.innerWidth)} />
 
 <div
-	class:bg-gray-800={!endorsements.length}
+	class:bg-gray-700={!endorsements.length}
 	class:bg-blue-light={endorsements.length > 0 && endorsements.length <= 3}
 	class:bg-teal-dark={3 < endorsements.length && endorsements.length <= 10}
 	class:bg-green-light={endorsements.length > 10}
@@ -68,7 +68,7 @@
 			class:border-teal-dark={3 < endorsements.length &&
 				endorsements.length <= 10}
 			class:border-green-light={endorsements.length > 10}
-			class="flex w-full select-text items-center transition-[border,padding] font-semibold bg-gray-800 rounded-lg duration-200 border-4 p-4 overflow-hidden md:justify-center md:cursor-auto"
+			class="flex w-full select-text items-center transition-[border,padding] font-semibold bg-gray-700 rounded-lg duration-200 border-4 p-4 overflow-hidden md:justify-center md:cursor-auto"
 		>
 			<div
 				class:md:ml-12={!isEndorsed && endorser}
@@ -104,7 +104,7 @@
 				class:border-teal-dark={3 < endorsements.length &&
 					endorsements.length <= 10}
 				class:border-green-light={endorsements.length > 10}
-				class="rounded-lg bg-gray-800 shrink-0 py-4 px-5 border-4 transition-border duration-200"
+				class="rounded-lg bg-gray-700 shrink-0 py-4 px-5 border-4 transition-border duration-200"
 			>
 				<Plus
 					class="w-4 h-4 transition-[opacity,transform] {endorsing
@@ -160,7 +160,7 @@
 							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{endorsement
 								.from.id}/avatar?{timestamp}"
 							alt="{endorsement.from.name}'s avatar"
-							class="w-10 h-10 rounded-full"
+							class="w-10 h-10 object-cover object-center rounded-full"
 						/>
 					</a>
 				{/each}

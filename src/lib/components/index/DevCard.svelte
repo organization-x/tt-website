@@ -1,85 +1,73 @@
 <script lang="ts">
 	import { getContext } from "svelte";
-	import { fade } from "svelte/transition";
 
-	import Plus from "$lib/components/icons/general/Plus.svelte";
+	import { getIcon } from "$lib/getIcon";
 	import GradientText from "$lib/components/GradientText.svelte";
 
-	export let position: string;
 	export let developer: App.Developer;
-	export let accomplishments: string[];
 
 	const timestamp = getContext("timestamp") as string;
-
-	let open = false;
 </script>
 
 <div
-	class="snap-center shrink-0 w-fit lg:w-full lg:flex lg:even:flex-row-reverse lg:items-center lg:gap-14"
+	class="bg-gray-800 p-4 py-8 snap-center shrink-0 mx-auto w-full rounded-lg text-center md:text-start md:p-6 lg:p-8"
 >
 	<div
-		class="bg-gray-500/40 p-10 rounded-xl relative text-center max-w-lg mx-auto lg:mx-0 lg:p-8"
+		class="flex flex-col gap-6 items-center md:flex-row md:gap-4 lg:max-w-md lg:mx-auto"
 	>
-		<div class="lg:flex lg:justify-center lg:gap-8">
+		<div class="relative w-fit mx-auto md:shrink-0 lg:mx-0">
 			<img
 				height="512"
 				width="512"
 				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{developer.id}/avatar?{timestamp}"
 				alt="{developer.name}'s avatar"
 				loading="lazy"
-				class="rounded-full bg-gray-400 mx-auto w-20 h-20 lg:mx-0"
+				class="rounded-full bg-gray-400 w-20 h-20 object-cover object-center"
 			/>
-			<div>
-				<h1 class="font-extrabold mt-3 mb-1 text-sm">
-					{position.replaceAll("_", " ").toUpperCase()}
-				</h1>
 
-				<GradientText
-					class="text-center from-green-light to-green-dark text-xl"
-				>
-					{developer.name}
-				</GradientText>
+			<div
+				class="absolute bg-gray-500 -bottom-2.5 -right-2.5 rounded-full p-2.5"
+			>
+				<svelte:component
+					this={getIcon(developer.team || "")}
+					class="w-4 h-4"
+				/>
 			</div>
 		</div>
 
-		<p class="mt-2 mb-6 max-w-xs lg:mt-6 lg:mb-0">
-			{developer.about}
-		</p>
-
 		<div
-			class:h-full={open}
-			class:rounded-t-lg={open}
-			class:h-11={!open}
-			class="absolute flex bg-gray-700 mx-auto transition-[border-radius,height] left-0 right-0 bottom-0 rounded-b-lg w-full lg:hidden"
+			class="flex flex-col gap-1 w-full overflow-hidden md:flex-col-reverse"
 		>
-			<button
-				class="flex gap-3 items-center m-auto mb-2 cursor-pointer w-full justify-center"
-				on:click={() => (open = !open)}
-			>
-				<Plus
-					class="w-4 h-4 transition-transform {open
-						? 'rotate-45'
-						: ''}"
-				/>
-				<p class="text-center my-auto">Show more</p>
-			</button>
-		</div>
+			<h1 class="font-semibold">
+				{developer.team || "No Team"}
+			</h1>
 
-		{#if open}
-			<ul
-				transition:fade={{ duration: 100 }}
-				class="absolute pb-10 inset-0 left-4 m-auto h-fit w-fit list-disc lg:hidden"
+			<GradientText
+				class="from-green-light to-green-dark text-2xl break-words"
 			>
-				{#each accomplishments as accomplishment}
-					<li>{accomplishment}</li>
-				{/each}
-			</ul>
-		{/if}
+				{developer.name}
+			</GradientText>
+		</div>
 	</div>
 
-	<ul class="hidden lg:block lg:mx-auto lg:shrink-0 lg:list-disc">
-		{#each accomplishments as accomplishment}
-			<li>{accomplishment}</li>
+	<p class="mt-6 mb-10 mx-auto max-w-xs md:max-w-none lg:my-8 lg:max-w-md">
+		{developer.about}
+	</p>
+
+	<div
+		class="grid grid-cols-2 gap-x-8 gap-y-6 px-4 md:px-14 lg:flex lg:justify-center lg:items-center lg:gap-6"
+	>
+		{#each [...developer.techSkills.slice(0, 2), ...developer.softSkills.slice(0, 2)] as skill}
+			<div class="flex justify-center items-center font-semibold gap-3">
+				<svelte:component
+					this={getIcon(skill)}
+					class="w-6 h-6 shrink-0"
+				/>
+
+				<h1 class="text-sm">
+					{skill.replaceAll("_", " ")}
+				</h1>
+			</div>
 		{/each}
-	</ul>
+	</div>
 </div>

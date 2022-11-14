@@ -12,7 +12,7 @@
 			.then(
 				async ({ analytics }) =>
 					await await analytics.track("user_view", {
-						id: data.user.id
+						id: data.userPage.id
 					})
 			)
 			.catch(() => {});

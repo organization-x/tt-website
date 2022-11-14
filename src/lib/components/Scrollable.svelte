@@ -18,7 +18,7 @@
 	let disabledSide = Side.Left;
 	let scrollable: HTMLDivElement;
 
-	// Update which gradient on either side is shown based on where the element is scrolled to
+	// Update which gradient and arrows on either side is shown based on where the element is scrolled to
 	const checkArrows = () => {
 		if (clientWidth === scrollable.scrollWidth) disabledSide = Side.Both;
 		else if (scrollable.scrollLeft === 0) disabledSide = Side.Left;
@@ -125,7 +125,7 @@
 			bind:this={scrollable}
 			on:scroll={checkArrows}
 			on:wheel={onWheel}
-			class="flex gap-5 overflow-auto py-2 scrollbar-hidden"
+			class="flex gap-5 overflow-auto py-2 scrollbar-hidden snap-x snap-proximity"
 		>
 			<slot />
 		</div>

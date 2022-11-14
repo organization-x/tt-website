@@ -7,6 +7,7 @@
 	const dispatch = createEventDispatcher<{ search: undefined }>();
 
 	export let search = "";
+	export let lightBg = true;
 	export let placeholder: string;
 
 	// Dispatch an initial search on page load so content is loaded
@@ -14,7 +15,9 @@
 </script>
 
 <div
-	class="bg-gray-500/40 flex gap-1 p-4 rounded-lg select-none w-full items-center"
+	class:bg-gray-800={lightBg}
+	class:bg-gray-900={!lightBg}
+	class="flex gap-1 p-4 rounded-lg select-none w-full items-center"
 >
 	<Search class="w-4 h-4" />
 

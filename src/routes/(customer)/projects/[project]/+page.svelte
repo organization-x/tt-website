@@ -134,7 +134,10 @@
 		</div>
 	</div>
 
-	<h1 class="font-bold text-3xl my-6" style="color: #{data.theme}">
+	<h1
+		class="font-bold text-3xl my-6 break-words"
+		style="color: #{data.theme}"
+	>
 		{data.title}
 	</h1>
 

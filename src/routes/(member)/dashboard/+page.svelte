@@ -169,7 +169,7 @@
 	<div class="flex flex-col gap-12">
 		<DashSection
 			title="Get Started"
-			class="bg-gray-500/40 p-4 rounded-lg lg:flex lg:gap-8 lg:items-center"
+			class="bg-gray-900 p-4 rounded-lg lg:flex lg:gap-8 lg:items-center"
 		>
 			<p class="mb-8 lg:mb-0 lg:max-w-sm lg:mx-auto">
 				{#if $user.role === "User"}
@@ -200,7 +200,7 @@
 				{#if $user.role === "User"}
 					<DashLink
 						href="/dashboard/projects"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
+						class="bg-gray-700 flex gap-3 items-center justify-center hover:bg-gray-700/60"
 					>
 						<Plus class="w-4 h-4" />
 						Create a New Project
@@ -208,7 +208,7 @@
 				{:else if $user.role === "Lead"}
 					<DashLink
 						href="/developers"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
+						class="bg-gray-700 flex gap-3 items-center justify-center hover:bg-gray-700/60"
 					>
 						<Plus class="w-4 h-4" />
 						Endorse a skill
@@ -216,7 +216,7 @@
 				{:else}
 					<DashLink
 						href="/developers"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
+						class="bg-gray-700 flex gap-3 items-center justify-center hover:bg-gray-700/60"
 					>
 						<Plus class="w-4 h-4" />
 						Manage All Projects
@@ -226,7 +226,7 @@
 				{#if $user.role !== "Admin"}
 					<DashLink
 						href="/dashboard/profile"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
+						class="bg-gray-700 flex gap-3 items-center justify-center hover:bg-gray-700/60"
 					>
 						<Id class="w-5 h-5" />
 						Update Your Profile
@@ -234,7 +234,7 @@
 				{:else}
 					<DashLink
 						href="/dashboard/users"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
+						class="bg-gray-700 flex gap-3 items-center justify-center hover:bg-gray-700/60"
 					>
 						<Id class="w-5 h-5" />
 						Manage All Users
@@ -244,7 +244,7 @@
 				{#if $user.role !== "Admin"}
 					<DashLink
 						href="/dashboard/analytics"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
+						class="bg-gray-700 flex gap-3 items-center justify-center hover:bg-gray-700/60"
 					>
 						<TrendUp class="w-5 h-5" />
 						Check Your Analytics
@@ -252,7 +252,7 @@
 				{:else}
 					<DashLink
 						href="/dashboard/analytics"
-						class="bg-gray-500/40 hover:bg-gray-500/20 flex gap-3 items-center justify-center"
+						class="bg-gray-700 flex gap-3 items-center justify-center hover:bg-gray-700/60"
 					>
 						<TrendUp class="w-5 h-5" />
 						Check Sitewide Analytics
@@ -263,44 +263,44 @@
 
 		<DashSection
 			title="Your Profile"
-			class="bg-gray-500/40 p-4 rounded-lg flex flex-col gap-8 lg:p-6 lg:gap-12"
+			class="bg-gray-900 p-4 rounded-lg flex flex-col gap-8 lg:p-6 lg:gap-12"
 		>
-			<div class="lg:flex lg:gap-8">
+			<div class="lg:flex lg:gap-8 lg:items-center">
 				<div
 					class="flex flex-col gap-2 items-center mb-6 md:gap-8 md:mt-4 md:items-start lg:w-1/2"
 				>
-					<div class="shrink-0 md:flex md:gap-6">
-						<div
-							class="relative w-fit h-fit mx-auto md:mx-0 lg:shrink-0"
-						>
+					<div
+						class="flex flex-col gap-6 w-full items-center md:flex-row"
+					>
+						<div class="relative mx-auto md:mx-0 md:shrink-0">
 							<img
 								height="512"
 								width="512"
 								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{timestamp}"
 								alt="{$user.name}'s avatar"
 								loading="lazy"
-								class="rounded-full w-20 h-20 bg-gray-400 lg:w-24 lg:h-24"
+								class="rounded-full w-20 h-20 object-cover object-center bg-gray-400 lg:w-24 lg:h-24"
 							/>
 
 							<div
-								class="absolute bg-gray-500 -bottom-3 -right-2 rounded-full p-2"
+								class="absolute bg-gray-500 -bottom-2.5 -right-2.5 rounded-full p-2.5"
 							>
 								<svelte:component
 									this={getIcon($user.team || "")}
-									class="w-4 h-4 lg:w-5 lg:h-5"
+									class="w-4 h-4"
 								/>
 							</div>
 						</div>
 
 						<div
-							class="flex flex-col justify-center items-center pt-4 w-fit md:flex-col-reverse md:items-start md:pt-0"
+							class="flex flex-col overflow-hidden w-full gap-1 justify-center items-center md:flex-col-reverse md:items-start"
 						>
 							<h1 class="font-semibold lg:-mt-1">
 								{$user.team || "No Team"}
 							</h1>
 
 							<GradientText
-								class="from-green-light to-green-dark scrollbar-hidden text-3xl text-center md:text-start"
+								class="from-green-light to-green-dark text-3xl text-center md:text-start"
 							>
 								{$user.name}
 							</GradientText>
@@ -308,13 +308,15 @@
 					</div>
 
 					<p
-						class="mb-12 text-center md:text-lg md:text-start lg:my-0"
+						class="my-6 text-center md:text-lg md:text-start lg:my-0"
 					>
 						{$user.about}
 					</p>
 				</div>
 
-				<div class="mt-4 w-full min-h-[18rem] lg:w-1/2">
+				<div
+					class="mt-4 w-full flex flex-col min-h-[15rem] lg:w-1/2 lg:min-h-[23.5rem] lg:overflow-hidden"
+				>
 					<div
 						class="flex font-semibold justify-center items-center gap-3"
 					>
@@ -327,7 +329,7 @@
 							target="_blank"
 							href="/projects/{pinnedProject.url}"
 							rel="noopener noreferrer"
-							class="block rounded-lg border-t-4 overflow-hidden bg-gray-500/40 w-full mx-auto mt-4"
+							class="block rounded-lg border-t-4 overflow-hidden bg-gray-700 w-full mx-auto mt-4"
 							style="border-color: #{pinnedProject.theme}"
 						>
 							<img
@@ -340,9 +342,12 @@
 							/>
 
 							<div class="flex flex-col py-4 px-3">
-								<h1 class="font-semibold text-2xl md:text-xl">
+								<h1
+									class="font-semibold break-words text-2xl md:text-xl"
+								>
 									{pinnedProject.title}
 								</h1>
+
 								<p class="mt-2 md:text-sm">
 									{pinnedProject.description}
 								</p>
@@ -350,7 +355,7 @@
 						</a>
 					{:else}
 						<div
-							class="rounded-lg border-gray-800 border-4 border-dashed h-56 mt-4"
+							class="rounded-lg border-gray-700 border-4 border-dashed flex-1 mt-4"
 						/>
 					{/if}
 				</div>
@@ -384,20 +389,20 @@
 					</DevSection>
 				</div>
 
-				<div class="flex flex-col gap-8 mt-8 lg:flex-row">
+				<div class="flex flex-col gap-8 mt-4 lg:flex-row">
 					<DevSection
 						title="Links"
-						class="overflow-hidden lg:-mt-56 lg:w-7/12"
+						class="overflow-hidden lg:-mt-[12.5rem] lg:w-7/12"
 					>
 						<LinkIcon slot="icon" class="w-5 h-5" />
 
 						{#each links as link}
 							<div
-								class="flex justify-center items-center font-semibold bg-gray-800 rounded-lg gap-3 p-4"
+								class="flex justify-center items-center font-semibold bg-gray-700 rounded-lg gap-3 p-4"
 							>
 								<svelte:component
 									this={getIcon(link.key)}
-									class="w-7 h-7 shrink-0"
+									class="w-6 h-6 shrink-0"
 								/>
 
 								<h1
@@ -419,7 +424,7 @@
 							icon={true}
 							href="/developers/{data.url}"
 							target="_blank"
-							class="bg-gray-500/40 hover:bg-gray-500/20"
+							class="bg-gray-700 hover:bg-gray-700/60"
 						>
 							<ExternalLink class="w-4 h-4" />
 						</DashLink>
@@ -432,15 +437,15 @@
 								func: toggleVisible,
 								delay: 300
 							}}
-							class="bg-gray-500/40 hover:bg-gray-500/20"
+							class="bg-gray-700 hover:bg-gray-700/60"
 						>
-							<ShowHide class="w-4 h-4" crossed={visible} />
+							<ShowHide class="w-4 h-4" crossed={!visible} />
 						</DashButton>
 
 						<DashLink
 							icon={true}
 							href="/dashboard/profile"
-							class="bg-blue-light hover:bg-blue-light/80"
+							class="bg-blue-light hover:bg-blue-light/60"
 						>
 							<Pencil class="w-4 h-4" />
 						</DashLink>
@@ -453,7 +458,7 @@
 			<h1 class="font-semibold text-2xl text-center">Your Badges</h1>
 			<div
 				bind:this={badges}
-				class="h-full bg-gray-500/40 p-4 rounded-lg flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-flow-row-dense"
+				class="h-full bg-gray-900 p-4 rounded-lg flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-flow-row-dense"
 			>
 				<!-- TODO: Kudos Data-->
 
@@ -525,43 +530,31 @@
 			</div>
 		</div>
 
-		<DashSection
-			title="Your Projects"
-			class="bg-gray-500/40 rounded-lg p-4"
-		>
+		<DashSection title="Your Projects" class="bg-gray-900 rounded-lg p-4">
 			<div
 				class="min-h-[55rem] flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:min-h-0 lg:mb-8"
 			>
-				{#if data.projects && data.projects.length}
-					{#each { length: 2 } as _, i}
-						{@const project = data.projects[i]}
+				{#each { length: 2 } as _, i}
+					{@const project = data.projects[i]}
 
-						{#if project}
-							<ProjectEditPreview
-								bind:pinnedProject={pinnedProjectId}
-								{project}
-								minified={true}
-								on:pinned={togglePinned}
-							/>
-						{:else}
-							<div
-								class="rounded-lg border-gray-800 border-4 border-dashed flex-1 h-full"
-							/>
-						{/if}
-					{/each}
-				{:else}
-					<div
-						class="rounded-lg border-gray-800 border-4 border-dashed flex-1 h-104"
-					/>
-					<div
-						class="rounded-lg border-gray-800 border-4 border-dashed flex-1 h-104"
-					/>
-				{/if}
+					{#if project}
+						<ProjectEditPreview
+							bind:pinnedProject={pinnedProjectId}
+							{project}
+							minified={true}
+							on:pinned={togglePinned}
+						/>
+					{:else}
+						<div
+							class="rounded-lg border-gray-700 border-4 min-h-112 border-dashed flex-1 h-full"
+						/>
+					{/if}
+				{/each}
 			</div>
 
 			<DashLink
 				href="/dashboard/projects"
-				class="bg-gray-500/40 hover:bg-gray-500/20 w-full mx-auto mt-4 lg:mt-0 lg:w-fit lg:mr-0"
+				class="bg-gray-700 hover:bg-gray-700/60 w-full mx-auto mt-4 lg:mt-0 lg:w-fit lg:mr-0"
 			>
 				Manage All Projects
 			</DashLink>

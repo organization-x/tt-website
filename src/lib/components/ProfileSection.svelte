@@ -9,9 +9,9 @@
 
 	<div
 		class:lg:grid={largeGrid}
-		class:min-h-[30rem]={minHeight}
+		class:min-h-120={minHeight}
 		class:lg:grid-cols-2={largeGrid}
-		class="bg-gray-500/40 p-4 rounded-lg flex flex-col gap-6 mt-4"
+		class="bg-gray-900 p-4 rounded-lg flex flex-col gap-6 mt-4"
 	>
 		<slot />
 	</div>

@@ -89,6 +89,8 @@ import Express from "$lib/components/icons/logos/Express.svelte";
 import Haskell from "$lib/components/icons/logos/Haskell.svelte";
 import Surreal from "$lib/components/icons/logos/Surreal.svelte";
 import Clojure from "$lib/components/icons/logos/Clojure.svelte";
+import People from "$lib/components/icons/general/People.svelte";
+import Shield from "$lib/components/icons/general/Shield.svelte";
 import Tailscale from "./components/icons/logos/Tailscale.svelte";
 import PieChart from "./components/icons/general/PieChart.svelte";
 import Firebase from "$lib/components/icons/logos/Firebase.svelte";
@@ -109,6 +111,7 @@ import Electron from "$lib/components/icons/logos/Electron.svelte";
 import SupaBase from "$lib/components/icons/logos/SupaBase.svelte";
 import Markdown from "$lib/components/icons/logos/Markdown.svelte";
 import Devices from "$lib/components/icons/general/Devices.svelte";
+import UserIcon from "$lib/components/icons/general/UserIcon.svelte";
 import Question from "$lib/components/icons/general/Question.svelte";
 import LinkIcon from "$lib/components/icons/general/LinkIcon.svelte";
 import BarChart from "$lib/components/icons/general/BarChart.svelte";
@@ -272,7 +275,10 @@ const icons: { [key: string]: ComponentType } = {
 	Devto: Devto,
 	Twitter: Twitter,
 	Facebook: Facebook,
-	Website: LinkIcon
+	Website: LinkIcon,
+	Admin: Shield,
+	Lead: People,
+	User: UserIcon
 };
 
 // Grab corresponding icon component in relation to an enum

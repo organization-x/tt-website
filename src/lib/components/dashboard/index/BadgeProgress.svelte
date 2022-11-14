@@ -19,7 +19,7 @@
 	export { className as class };
 </script>
 
-<div class="bg-gray-500/40 rounded-lg overflow-hidden">
+<div class="bg-gray-700 rounded-lg overflow-hidden">
 	<div class="flex gap-6 items-center px-5 py-6">
 		<div class:grayscale={progress !== 100} class="w-12 h-12 shrink-0">
 			<slot name="badge" />
