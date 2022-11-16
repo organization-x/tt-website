@@ -5,7 +5,7 @@
 	import HeadOneIcon from "$lib/components/icons/general/HeadOneIcon.svelte";
 	import HeadTwoIcon from "$lib/components/icons/general/HeadTwoIcon.svelte";
 	import HeadThreeIcon from "$lib/components/icons/general/HeadThreeIcon.svelte";
-	import ExpandButton from "$lib/components/dashboard/projects/project/ExpandButton.svelte";
+	import ExpandButton from "$lib/components/dashboard/projects/ExpandButton.svelte";
 
 	export let editor: Editor;
 	export let active: boolean;

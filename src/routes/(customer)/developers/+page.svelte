@@ -268,6 +268,9 @@
 								<div
 									class="rounded-full h-7 w-60 bg-gray-400"
 								/>
+								<div
+									class="rounded-full h-7 w-40 bg-gray-400 md:hidden"
+								/>
 							</div>
 						</div>
 

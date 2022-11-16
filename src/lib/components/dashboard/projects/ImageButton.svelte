@@ -6,7 +6,7 @@
 	import Trash from "$lib/components/icons/general/Trash.svelte";
 	import Upload from "$lib/components/icons/general/Upload.svelte";
 	import ImageIcon from "$lib/components/icons/general/ImageIcon.svelte";
-	import ExpandButton from "$lib/components/dashboard/projects/project/ExpandButton.svelte";
+	import ExpandButton from "$lib/components/dashboard/projects/ExpandButton.svelte";
 
 	import type { Editor } from "@tiptap/core";
 

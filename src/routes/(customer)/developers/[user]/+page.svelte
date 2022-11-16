@@ -127,41 +127,6 @@
 	};
 </script>
 
-<svelte:head>
-	<title>{data.userPage.name} / Team Tomorrow</title>
-
-	<meta name="description" content={data.userPage.about} />
-
-	<!-- OpenGraph data with user info -->
-	<meta property="og:title" content="{data.userPage.name} / Team Tomorrow" />
-	<meta name="og:description" content={data.userPage.about} />
-	<meta
-		name="og:image"
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
-			.userPage.id}/avatar"
-	/>
-	<meta
-		name="og:image:secure_url"
-		content="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
-			.userPage.id}/avatar"
-	/>
-	<meta name="og:image:width" content="512" />
-	<meta name="og:image:height" content="512" />
-	<meta name="og:image:alt" content="{data.userPage.name}'s avatar" />
-
-	<!-- Twitter card data with user info -->
-	<meta
-		property="twitter:title"
-		content="{data.userPage.name} / Team Tomorrow"
-	/>
-	<meta name="twitter:description" content={data.userPage.about} />
-	<meta
-		name="twitter:image"
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
-			.userPage.id}/avatar"
-	/>
-</svelte:head>
-
 <div class="relative pt-18 px-5 lg:px-10">
 	<img
 		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data

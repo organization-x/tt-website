@@ -1,7 +1,7 @@
 import { Doc } from "yjs";
 import { parse } from "cookie";
-import { WebSocketServer } from "ws";
 import { encoding } from "lib0";
+import { WebSocketServer } from "ws";
 import { writeUpdate, writeSyncStep1 } from "y-protocols/sync";
 import {
 	Awareness,

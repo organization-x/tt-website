@@ -2,8 +2,8 @@
 	import { getIcon } from "$lib/getIcon";
 	import { createEventDispatcher } from "svelte";
 
-	import Search from "./icons/general/Search.svelte";
 	import DropdownItem from "$lib/components/DropdownItem.svelte";
+	import Search from "$lib/components/icons/general/Search.svelte";
 	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
 
 	const dispatch = createEventDispatcher<{

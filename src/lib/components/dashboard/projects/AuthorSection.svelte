@@ -1,12 +1,11 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { tweened } from "svelte/motion";
 	import { slide, fly } from "svelte/transition";
 
 	import { user } from "$lib/stores";
 	import { debounce } from "$lib/debounce";
 	import Search from "$lib/components/icons/general/Search.svelte";
-	import AuthorEditor from "$lib/components/dashboard/projects/project/AuthorEditor.svelte";
+	import AuthorEditor from "$lib/components/dashboard/projects/AuthorEditor.svelte";
 
 	import type { User } from "@prisma/client";
 
@@ -75,32 +74,6 @@
 
 	$: clientHeight, scrollable && checkGradient();
 
-	// Opacity fades for the gradients
-	const top = tweened(1, { duration: 150 });
-	const bottom = tweened(1, { duration: 150 });
-
-	// Set the gradient transitions to the proper disabled/enabled state based on the disabled side
-	$: switch (disabledSide) {
-		case Side.Top:
-			top.set(1);
-			bottom.set(0);
-
-			break;
-		case Side.Bottom:
-			top.set(0);
-			bottom.set(1);
-
-			break;
-		case Side.Both:
-			top.set(1);
-			bottom.set(1);
-
-			break;
-		case Side.None:
-			top.set(0);
-			bottom.set(0);
-	}
-
 	// Update the gradients based off of content in them on mount
 	onMount(() => {
 		// Create an observer to update the gradient on scrollHeight change
@@ -124,35 +97,153 @@
 		<h1 class="font-semibold text-xl">Authors</h1>
 		<div class="bg-gray-900 p-4 mt-3 rounded-lg after:inset-x-0">
 			<div
-				bind:clientHeight
-				bind:this={scrollable}
-				on:scroll={checkGradient}
-				class="scrollbar-hidden overflow-auto max-lg:max-h-[27.5rem] max-lg:scroll-mask lg:grid lg:grid-cols-2 lg:gap-x-4 lg:overflow-visible"
-				style="--top-opacity: {$top}; --bottom-opacity: {$bottom};"
+				class:before:opacity-0={disabledSide === Side.Top ||
+					disabledSide === Side.Both}
+				class:after:opacity-0={disabledSide === Side.Bottom ||
+					disabledSide === Side.Both}
+				class="relative
+
+                before:transition-opacity before:duration-300 before:z-10 before:absolute before:top-0 before:w-full before:h-8 before:bg-gradient-to-b before:from-gray-900 before:to-transparent before:pointer-events-none
+
+                after:transition-opacity after:duration-300 after:z-10 after:absolute after:bottom-0 after:w-full after:h-8 after:bg-gradient-to-t after:from-gray-900 after:to-transparent after:pointer-events-none
+
+                lg:before:hidden lg:after:hidden"
 			>
-				{#each authors as author (author.user.id)}
-					{@const cantRemove =
-						author.user.id === $user.id ||
-						author.user.id === ownerId}
+				<div
+					bind:clientHeight
+					bind:this={scrollable}
+					on:scroll={checkGradient}
+					class="scrollbar-hidden overflow-auto max-lg:max-h-[27.5rem] lg:grid lg:grid-cols-2 lg:gap-x-4 lg:overflow-visible"
+				>
+					{#each authors as author (author.user.id)}
+						{@const cantRemove =
+							author.user.id === $user.id ||
+							author.user.id === ownerId}
 
-					<AuthorEditor
-						bind:author
-						{cantRemove}
-						on:click={() => {
-							if (cantRemove) return;
+						<AuthorEditor
+							bind:author
+							{cantRemove}
+							on:click={() => {
+								if (cantRemove) return;
 
-							authors = authors.filter(
-								(user) => author.user.id !== user.user.id
-							);
+								authors = authors.filter(
+									(user) => author.user.id !== user.user.id
+								);
 
-							// Requery the search
-							onSearch();
-						}}
-					/>
-				{/each}
+								// Requery the search
+								onSearch();
+							}}
+						/>
+					{/each}
+
+					{#each authors as author (author.user.id)}
+						{@const cantRemove =
+							author.user.id === $user.id ||
+							author.user.id === ownerId}
+
+						<AuthorEditor
+							bind:author
+							{cantRemove}
+							on:click={() => {
+								if (cantRemove) return;
+
+								authors = authors.filter(
+									(user) => author.user.id !== user.user.id
+								);
+
+								// Requery the search
+								onSearch();
+							}}
+						/>
+					{/each}
+
+					{#each authors as author (author.user.id)}
+						{@const cantRemove =
+							author.user.id === $user.id ||
+							author.user.id === ownerId}
+
+						<AuthorEditor
+							bind:author
+							{cantRemove}
+							on:click={() => {
+								if (cantRemove) return;
+
+								authors = authors.filter(
+									(user) => author.user.id !== user.user.id
+								);
+
+								// Requery the search
+								onSearch();
+							}}
+						/>
+					{/each}
+
+					{#each authors as author (author.user.id)}
+						{@const cantRemove =
+							author.user.id === $user.id ||
+							author.user.id === ownerId}
+
+						<AuthorEditor
+							bind:author
+							{cantRemove}
+							on:click={() => {
+								if (cantRemove) return;
+
+								authors = authors.filter(
+									(user) => author.user.id !== user.user.id
+								);
+
+								// Requery the search
+								onSearch();
+							}}
+						/>
+					{/each}
+
+					{#each authors as author (author.user.id)}
+						{@const cantRemove =
+							author.user.id === $user.id ||
+							author.user.id === ownerId}
+
+						<AuthorEditor
+							bind:author
+							{cantRemove}
+							on:click={() => {
+								if (cantRemove) return;
+
+								authors = authors.filter(
+									(user) => author.user.id !== user.user.id
+								);
+
+								// Requery the search
+								onSearch();
+							}}
+						/>
+					{/each}
+
+					{#each authors as author (author.user.id)}
+						{@const cantRemove =
+							author.user.id === $user.id ||
+							author.user.id === ownerId}
+
+						<AuthorEditor
+							bind:author
+							{cantRemove}
+							on:click={() => {
+								if (cantRemove) return;
+
+								authors = authors.filter(
+									(user) => author.user.id !== user.user.id
+								);
+
+								// Requery the search
+								onSearch();
+							}}
+						/>
+					{/each}
+				</div>
 			</div>
 
-			<div class="bg-gray-700 rounded-lg lg:col-span-2">
+			<div class="bg-gray-700 rounded-lg mt-4 lg:col-span-2 lg:mt-0">
 				<div class="flex select-none lg:col-span-2">
 					<div
 						class:w-0={search.length}

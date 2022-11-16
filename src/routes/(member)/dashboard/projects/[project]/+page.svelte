@@ -10,8 +10,8 @@
 	import Pencil from "$lib/components/icons/general/Pencil.svelte";
 	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
-	import TipTap from "$lib/components/dashboard/projects/project/TipTap.svelte";
-	import AuthorSection from "$lib/components/dashboard/projects/project/AuthorSection.svelte";
+	import TipTap from "$lib/components/dashboard/projects/TipTap.svelte";
+	import AuthorSection from "$lib/components/dashboard/projects/AuthorSection.svelte";
 
 	import type { PageData } from "./$types";
 	import type { TechSkill } from "@prisma/client";
@@ -224,7 +224,6 @@
 				);
 			}
 
-			// TODO: Update loading placeholders
 			// TODO: User projects page
 			// TODO: Global analytics
 			// TODO: Admin project editor

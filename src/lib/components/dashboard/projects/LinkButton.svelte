@@ -5,7 +5,7 @@
 	import Check from "$lib/components/icons/general/Check.svelte";
 	import Trash from "$lib/components/icons/general/Trash.svelte";
 	import LinkIcon from "$lib/components/icons/general/LinkIcon.svelte";
-	import ExpandButton from "$lib/components/dashboard/projects/project/ExpandButton.svelte";
+	import ExpandButton from "$lib/components/dashboard/projects/ExpandButton.svelte";
 
 	export let editor: Editor;
 	export let active: boolean;

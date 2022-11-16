@@ -359,7 +359,7 @@
 			>
 				<div class="flex flex-col gap-12 justify-between 3xl:w-1/2">
 					<ProfileSection title="About Me">
-						{#if $login.role === "Admin"}
+						{#if $login.role === "Admin" && $login.id !== $original.id}
 							<Dropdown
 								options={roles}
 								required={true}

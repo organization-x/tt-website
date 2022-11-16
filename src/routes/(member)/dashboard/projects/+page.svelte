@@ -151,29 +151,32 @@
 		{#await request}
 			<ProjectLoading />
 		{:then projects}
-			{#each projects as project}
-				{#if !deletingProjects.includes(project.id)}
-					<ProjectEditPreview
-						bind:pinnedProject
-						{project}
-						on:delete={() => deleteProject(project.id)}
-						on:pinned={togglePinned}
-						on:outroend={async () => {
-							// If this project isn't being deleted, ignore
-							if (!deletingProjects.includes(project.id)) return;
+			<div in:fly={{ duration: 300, y: 50 }}>
+				{#each projects as project}
+					{#if !deletingProjects.includes(project.id)}
+						<ProjectEditPreview
+							bind:pinnedProject
+							{project}
+							on:delete={() => deleteProject(project.id)}
+							on:pinned={togglePinned}
+							on:outroend={async () => {
+								// If this project isn't being deleted, ignore
+								if (!deletingProjects.includes(project.id))
+									return;
 
-							// If it's the latest project being deleted then make it responsible for updating the search
-							if (
-								deletingProjects[
-									deletingProjects.length - 1
-								] === project.id
-							)
-								onSearch();
-						}}
-						lightBg={false}
-					/>
-				{/if}
-			{/each}
+								// If it's the latest project being deleted then make it responsible for updating the search
+								if (
+									deletingProjects[
+										deletingProjects.length - 1
+									] === project.id
+								)
+									onSearch();
+							}}
+							lightBg={false}
+						/>
+					{/if}
+				{/each}
+			</div>
 		{:catch}
 			<h1
 				in:fly={{ duration: 300, y: 30 }}

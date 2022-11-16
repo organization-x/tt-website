@@ -59,15 +59,13 @@
 	};
 </script>
 
-<div
-	in:fly={{ duration: 300, y: 50 }}
-	class:pb-0={!open}
-	class="rounded-lg bg-gray-900 p-6 font-semibold"
->
+<div class:pb-0={!open} class="rounded-lg bg-gray-900 p-6 font-semibold">
 	<div class="flex flex-col gap-6">
-		<div class="lg:flex lg:justify-between lg:gap-8">
+		<div
+			class="min-h-112 md:min-h-52 lg:min-h-44 lg:flex lg:justify-between lg:gap-8 lg:items-center"
+		>
 			<div
-				class="flex flex-col gap-6 items-center md:flex-row lg:w-1/2 lg:shrink-0"
+				class="flex flex-col gap-6 items-center md:flex-row lg:w-1/2 lg:shrink-0 lg:h-min"
 			>
 				<div class="relative shrink-0">
 					<img
@@ -92,7 +90,7 @@
 				<div
 					class="flex flex-col gap-1 text-center overflow-hidden w-full md:flex-col-reverse md:text-start md:gap-0"
 				>
-					<h1>
+					<h1 class="xl:-mt-1.5">
 						{user.team || "No Team"}
 					</h1>
 
@@ -105,7 +103,7 @@
 			</div>
 
 			<p
-				class="text-center font-normal mx-auto mt-6 max-w-sm md:text-start md:max-w-none md:mx-0"
+				class="text-center font-normal mx-auto mt-6 max-w-sm md:text-start md:max-w-none md:mx-0 lg:mt-0"
 			>
 				{user.about}
 			</p>

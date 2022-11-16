@@ -14,11 +14,11 @@
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import OrList from "$lib/components/icons/general/OrList.svelte";
 	import UnList from "$lib/components/icons/general/UnList.svelte";
-	import Cursor from "$lib/components/dashboard/projects/project/Cursor.svelte";
-	import LinkButton from "$lib/components/dashboard/projects/project/LinkButton.svelte";
-	import HeadButton from "$lib/components/dashboard/projects/project/HeadButton.svelte";
-	import ImageButton from "$lib/components/dashboard/projects/project/ImageButton.svelte";
-	import EditorButton from "$lib/components/dashboard/projects/project/EditorButton.svelte";
+	import Cursor from "$lib/components/dashboard/projects/Cursor.svelte";
+	import LinkButton from "$lib/components/dashboard/projects/LinkButton.svelte";
+	import HeadButton from "$lib/components/dashboard/projects/HeadButton.svelte";
+	import ImageButton from "$lib/components/dashboard/projects/ImageButton.svelte";
+	import EditorButton from "$lib/components/dashboard/projects/EditorButton.svelte";
 
 	import type { JSONContent } from "@tiptap/core";
 

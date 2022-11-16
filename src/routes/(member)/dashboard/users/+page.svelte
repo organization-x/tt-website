@@ -125,151 +125,170 @@
 			lightBg={false}
 		/>
 
-		<div class="flex flex-col gap-10 min-h-[72.5rem] -mt-1">
+		<div class="min-h-[72.5rem] -mt-1">
 			{#await request}
 				<div
-					class="rounded-lg bg-gray-500 p-4 flex flex-col gap-6 animate-pulse min-h-[35rem]"
+					class="rounded-lg bg-gray-500 p-6 flex flex-col gap-6 min-h-[42rem] md:min-h-[29.4rem] lg:min-h-[27.1rem]"
 				>
-					<div class="flex flex-col gap-7 items-center md:flex-row">
-						<div class="w-20 h-20 bg-gray-400 rounded-full" />
+					<div
+						class="min-h-112 md:min-h-52 lg:min-h-44 lg:flex lg:justify-between lg:gap-8 lg:items-center"
+					>
 						<div
-							class="flex flex-col gap-3 items-center text-center md:flex-col-reverse md:text-start md:items-start"
+							class="flex flex-col gap-7 items-center md:flex-row"
 						>
+							<div class="w-20 h-20 bg-gray-400 rounded-full" />
 							<div
-								class="rounded-full h-4 w-24 bg-gray-400 md:mt-0.5"
-							/>
+								class="flex flex-col gap-3 items-center text-center md:gap-2 md:flex-col-reverse md:text-start md:items-start"
+							>
+								<div
+									class="rounded-full h-4 w-24 bg-gray-400 md:mt-0.5"
+								/>
 
-							<div class="rounded-full h-7 w-60 bg-gray-400" />
+								<div
+									class="rounded-full h-7 w-60 bg-gray-400"
+								/>
+								<div
+									class="rounded-full h-7 w-40 bg-gray-400 md:hidden"
+								/>
+							</div>
+						</div>
+
+						<div
+							class="flex flex-col items-center gap-4 mt-6 md:items-start lg:mt-0 lg:w-5/12"
+						>
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div
+								class="rounded-sm h-2 w-full bg-gray-400 md:hidden"
+							/>
+							<div
+								class="rounded-sm h-2 w-full bg-gray-400 md:hidden"
+							/>
+							<div class="rounded-sm h-2 w-32 bg-gray-400" />
 						</div>
 					</div>
 
 					<div
-						class="flex flex-col items-center px-3 gap-4 my-3 md:items-start md:px-0"
+						class="flex flex-col gap-3.5 mt-0.5 sm:gap-[1.15rem] md:gap-4 md:mt-1"
 					>
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-32 bg-gray-400" />
-					</div>
-
-					<div class="flex flex-col gap-3">
 						<div class="flex justify-between">
-							<div class="rounded-full h-5 w-20 bg-gray-400" />
-
-							<div class="rounded-full h-5 w-24 bg-gray-400" />
-						</div>
-
-						<div class="rounded-sm w-full h-4 bg-gray-400" />
-
-						<div
-							class="flex w-full justify-between items-center mt-0.5"
-						>
 							<div
-								class="w-4 h-4 shrink-0 bg-gray-400 rounded-full"
+								class="rounded-full h-5 w-[4.1rem] bg-gray-400"
 							/>
 
 							<div
-								class="w-8 h-5 ml-2 rounded-full bg-gray-400 lg:h-4 lg:ml-2"
-							/>
-
-							<div
-								class="w-10 h-5 ml-auto rounded-full bg-gray-400 lg:h-4"
+								class="rounded-full h-5 w-[5.6rem] bg-gray-400"
 							/>
 						</div>
 
-						<div
-							class="flex w-full justify-between items-center -mt-2"
-						>
-							<div
-								class="w-4 h-4 shrink-0 bg-gray-400 rounded-full"
-							/>
+						<div class="w-full rounded-sm bg-gray-400 h-4" />
+
+						<div class="flex gap-2 items-center">
+							<div class="rounded-full h-4 w-4 bg-gray-400" />
+							<div class="rounded-full h-5 w-8 bg-gray-400" />
 
 							<div
-								class="w-8 h-5 ml-2 rounded-full bg-gray-400 lg:h-4 lg:ml-2"
+								class="rounded-full ml-auto h-5 w-9 bg-gray-400"
 							/>
+						</div>
+
+						<div class="flex gap-2 items-center -mt-2.5 md:-mt-1.5">
+							<div class="rounded-full h-4 w-4 bg-gray-400" />
+							<div class="rounded-full h-5 w-8 bg-gray-400" />
 
 							<div
-								class="w-20 h-5 ml-auto rounded-full bg-gray-400 lg:h-4"
+								class="rounded-full ml-auto h-5 w-[4.5rem] bg-gray-400"
 							/>
 						</div>
 					</div>
 				</div>
 
 				<div
-					class="rounded-lg bg-gray-500 p-4 flex flex-col gap-6 animate-pulse min-h-[35rem]"
+					class="rounded-lg bg-gray-500 p-6 flex flex-col gap-6 mt-10 min-h-[42rem] md:min-h-[29.4rem] lg:min-h-[27.1rem]"
 				>
-					<div class="flex flex-col gap-7 items-center md:flex-row">
-						<div class="w-20 h-20 bg-gray-400 rounded-full" />
+					<div
+						class="min-h-112 md:min-h-52 lg:min-h-44 lg:flex lg:justify-between lg:gap-8 lg:items-center"
+					>
 						<div
-							class="flex flex-col gap-3 items-center text-center md:flex-col-reverse md:text-start md:items-start"
+							class="flex flex-col gap-7 items-center md:flex-row"
 						>
+							<div class="w-20 h-20 bg-gray-400 rounded-full" />
 							<div
-								class="rounded-full h-4 w-24 bg-gray-400 md:mt-0.5"
-							/>
+								class="flex flex-col gap-3 items-center text-center md:gap-2 md:flex-col-reverse md:text-start md:items-start"
+							>
+								<div
+									class="rounded-full h-4 w-24 bg-gray-400 md:mt-0.5"
+								/>
 
-							<div class="rounded-full h-7 w-60 bg-gray-400" />
+								<div
+									class="rounded-full h-7 w-60 bg-gray-400"
+								/>
+								<div
+									class="rounded-full h-7 w-40 bg-gray-400 md:hidden"
+								/>
+							</div>
+						</div>
+
+						<div
+							class="flex flex-col items-center gap-4 mt-6 md:items-start lg:mt-0 lg:w-5/12"
+						>
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div class="rounded-sm h-2 w-full bg-gray-400" />
+							<div
+								class="rounded-sm h-2 w-full bg-gray-400 md:hidden"
+							/>
+							<div
+								class="rounded-sm h-2 w-full bg-gray-400 md:hidden"
+							/>
+							<div class="rounded-sm h-2 w-32 bg-gray-400" />
 						</div>
 					</div>
 
 					<div
-						class="flex flex-col items-center px-3 gap-4 my-3 md:items-start md:px-0"
+						class="flex flex-col gap-3.5 mt-0.5 sm:gap-[1.15rem] md:gap-4 md:mt-1"
 					>
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-full bg-gray-400" />
-						<div class="rounded-sm h-2 w-32 bg-gray-400" />
-					</div>
-
-					<div class="flex flex-col gap-3">
 						<div class="flex justify-between">
-							<div class="rounded-full h-5 w-20 bg-gray-400" />
-
-							<div class="rounded-full h-5 w-24 bg-gray-400" />
-						</div>
-
-						<div class="rounded-sm w-full h-4 bg-gray-400" />
-
-						<div
-							class="flex w-full justify-between items-center mt-0.5"
-						>
 							<div
-								class="w-4 h-4 shrink-0 bg-gray-400 rounded-full"
+								class="rounded-full h-5 w-[4.1rem] bg-gray-400"
 							/>
 
 							<div
-								class="w-8 h-5 ml-2 rounded-full bg-gray-400 lg:h-4 lg:ml-2"
-							/>
-
-							<div
-								class="w-10 h-5 ml-auto rounded-full bg-gray-400 lg:h-4"
+								class="rounded-full h-5 w-[5.6rem] bg-gray-400"
 							/>
 						</div>
 
-						<div
-							class="flex w-full justify-between items-center -mt-2"
-						>
-							<div
-								class="w-4 h-4 shrink-0 bg-gray-400 rounded-full"
-							/>
+						<div class="w-full rounded-sm bg-gray-400 h-4" />
+
+						<div class="flex gap-2 items-center">
+							<div class="rounded-full h-4 w-4 bg-gray-400" />
+							<div class="rounded-full h-5 w-8 bg-gray-400" />
 
 							<div
-								class="w-8 h-5 ml-2 rounded-full bg-gray-400 lg:h-4 lg:ml-2"
+								class="rounded-full ml-auto h-5 w-9 bg-gray-400"
 							/>
+						</div>
+
+						<div class="flex gap-2 items-center -mt-2.5 md:-mt-1.5">
+							<div class="rounded-full h-4 w-4 bg-gray-400" />
+							<div class="rounded-full h-5 w-8 bg-gray-400" />
 
 							<div
-								class="w-20 h-5 ml-auto rounded-full bg-gray-400 lg:h-4"
+								class="rounded-full ml-auto h-5 w-[4.5rem] bg-gray-400"
 							/>
 						</div>
 					</div>
 				</div>
 			{:then users}
-				{#each users as user}
-					<User bind:homeUsers={data.homeUsers} {user} />
-				{/each}
+				<div
+					in:fly={{ duration: 300, y: 50 }}
+					class="flex flex-col gap-10"
+				>
+					{#each users as user}
+						<User bind:homeUsers={data.homeUsers} {user} />
+					{/each}
+				</div>
 			{:catch}
 				<h1
 					in:fly={{ duration: 300, y: 30 }}
