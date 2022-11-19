@@ -3,8 +3,7 @@
 
 	import { getIcon } from "$lib/getIcon";
 
-	// Keep track of whether these are on the profile page or not, so visual changes can be made
-	export let profile = false;
+	export let lightBg = true;
 	export let project: App.ProjectWithMetadata;
 
 	const timestamp = Date.now();
@@ -15,8 +14,8 @@
 	in:fly={{ duration: 300, y: 50 }}
 	href="/projects/{project.url}"
 	rel="noreferrer noopener"
-	class:bg-gray-700={profile}
-	class:bg-gray-800={!profile}
+	class:bg-gray-700={lightBg}
+	class:bg-gray-900={!lightBg}
 	class="rounded-lg border-t-4 overflow-hidden w-full block"
 	style="border-color: #{project.theme}"
 >
@@ -34,19 +33,16 @@
 			class="absolute flex w-full justify-end items-center top-2 right-1 pr-6 sm:pr-8"
 		>
 			{#each project.authors.slice(0, 5) as author, i}
-				<!-- When there's only one author, so the user aht created it, hide their icon when on their profile -->
-				{#if !(profile && project.authors.length === 1 && author.user.id === project.ownerId)}
-					<img
-						width="512"
-						height="512"
-						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
-							.user.id}/avatar?{timestamp}"
-						alt="{author.user.name}'s avatar"
-						class="w-10 h-10 bg-gray-400 object-cover object-center shrink-0 -mr-5 rounded-full border-2 sm:-mr-7 sm:w-12 sm:h-12 sm:border-4 md:w-14 md:h-14"
-						style="border-color: #{project.theme}; z-index: {project
-							.authors.length - i}"
-					/>
-				{/if}
+				<img
+					width="512"
+					height="512"
+					src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
+						.user.id}/avatar?{timestamp}"
+					alt="{author.user.name}'s avatar"
+					class="w-10 h-10 bg-gray-400 object-cover object-center shrink-0 -mr-5 rounded-full border-2 sm:-mr-7 sm:w-12 sm:h-12 sm:border-4 md:w-14 md:h-14"
+					style="border-color: #{project.theme}; z-index: {project
+						.authors.length - i}"
+				/>
 			{/each}
 		</div>
 	</div>

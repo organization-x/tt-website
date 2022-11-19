@@ -70,14 +70,4 @@
 	.project-cols:nth-child(even) {
 		grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
 	}
-
-	.scroll-mask {
-		mask-image: linear-gradient(
-			to bottom,
-			rgba(0, 0, 0, var(--top-opacity)) 0%,
-			rgba(0, 0, 0, 1) 10%,
-			rgba(0, 0, 0, 1) 90%,
-			rgba(0, 0, 0, var(--bottom-opacity)) 100%
-		);
-	}
 }

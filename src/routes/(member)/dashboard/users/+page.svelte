@@ -128,7 +128,7 @@
 		<div class="min-h-[72.5rem] -mt-1">
 			{#await request}
 				<div
-					class="rounded-lg bg-gray-500 p-6 flex flex-col gap-6 min-h-[42rem] md:min-h-[29.4rem] lg:min-h-[27.1rem]"
+					class="rounded-lg bg-gray-500 animate-pulse p-6 flex flex-col gap-6 min-h-[42rem] md:min-h-[29.4rem] lg:min-h-[27.1rem]"
 				>
 					<div
 						class="min-h-112 md:min-h-52 lg:min-h-44 lg:flex lg:justify-between lg:gap-8 lg:items-center"
@@ -205,7 +205,7 @@
 				</div>
 
 				<div
-					class="rounded-lg bg-gray-500 p-6 flex flex-col gap-6 mt-10 min-h-[42rem] md:min-h-[29.4rem] lg:min-h-[27.1rem]"
+					class="rounded-lg bg-gray-500 animate-pulse p-6 flex flex-col gap-6 mt-14 min-h-[42rem] md:min-h-[29.4rem] lg:min-h-[27.1rem]"
 				>
 					<div
 						class="min-h-112 md:min-h-52 lg:min-h-44 lg:flex lg:justify-between lg:gap-8 lg:items-center"
@@ -283,7 +283,7 @@
 			{:then users}
 				<div
 					in:fly={{ duration: 300, y: 50 }}
-					class="flex flex-col gap-10"
+					class="flex flex-col gap-14"
 				>
 					{#each users as user}
 						<User bind:homeUsers={data.homeUsers} {user} />

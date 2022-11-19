@@ -224,11 +224,6 @@
 				);
 			}
 
-			// TODO: User projects page
-			// TODO: Global analytics
-			// TODO: Admin project editor
-			// TODO: Kudos implementation
-
 			// If successful, update the original data
 			original = JSON.parse(JSON.stringify({ ...project, content }));
 

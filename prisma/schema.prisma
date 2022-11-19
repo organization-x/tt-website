@@ -230,7 +230,7 @@ model User {
     visible              Boolean         @default(true)
     endorsementsReceived Endorsement[]   @relation("to")
     endorsementsSent     Endorsement[]   @relation("from")
-    lastUpdated          DateTime        @updatedAt
+    lastUpdated          DateTime        @default(now()) @updatedAt
     homepage             Boolean         @default(false) // A boolean representing whether the user has been selected to be on the homepage
 
     @@index([name, softSkills, techSkills, positions, url])

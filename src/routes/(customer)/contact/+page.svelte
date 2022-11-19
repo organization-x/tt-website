@@ -162,7 +162,10 @@
 <Section filled={true}>
 	<Header>{titles[pageNum]}</Header>
 
-	<div bind:this={element} class="flex flex-col gap-10 mt-8 h-[40rem]">
+	<div
+		bind:this={element}
+		class="flex flex-col gap-10 mt-8 max-w-xl mx-auto w-full lg:max-w-4xl h-[40rem]"
+	>
 		{#if pageNum === 0}
 			<Field
 				bind:value={fields.firstName.value}
@@ -274,7 +277,7 @@
 		{/if}
 	</div>
 
-	<div class="flex justify-between">
+	<div class="flex justify-between max-w-xl mx-auto w-full lg:max-w-4xl">
 		<FormButton
 			disabled={pageNum === 0}
 			hidden={pageNum === 0 || pageNum === 3}

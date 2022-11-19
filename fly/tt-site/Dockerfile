@@ -1,12 +1,12 @@
+# syntax=docker/dockerfile:1
+
 FROM node:alpine
 
 WORKDIR /app
 
-COPY --link package.json .
-COPY --link yarn.lock .
+COPY --link ["package.json", "yarn.lock", "./"]
 
-RUN --mount=type=cache,target=/usr/local/share/.cache/yarn/v6 \
-	yarn --frozen-lockfile
+RUN yarn --frozen-lockfile
 
 COPY --link prisma .
 RUN yarn prisma generate
@@ -15,5 +15,7 @@ COPY --link . .
 
 RUN yarn build
 
+RUN yarn --frozen-lockfile --production
+
 EXPOSE 3000
-CMD ["node", "./build/index.js"]
+CMD ["node", "./build"]

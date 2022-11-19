@@ -149,7 +149,9 @@
 
 	<div class="min-h-[75.5rem]">
 		{#await request}
-			<ProjectLoading />
+			<div class="flex flex-col gap-14">
+				<ProjectLoading />
+			</div>
 		{:then projects}
 			<div in:fly={{ duration: 300, y: 50 }}>
 				{#each projects as project}

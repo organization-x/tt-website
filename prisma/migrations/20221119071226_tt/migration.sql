@@ -74,7 +74,7 @@ CREATE TABLE "User" (
     "techSkills" "TechSkill"[],
     "pinnedProjectId" TEXT,
     "visible" BOOLEAN NOT NULL DEFAULT true,
-    "lastUpdated" TIMESTAMP(3) NOT NULL,
+    "lastUpdated" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "homepage" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")

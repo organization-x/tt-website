@@ -63,7 +63,7 @@
 	on:outroend
 	out:slide={{ duration: deleting ? 500 : 0 }}
 	disabled={deleting}
-	class:mb-10={!minified}
+	class:mb-14={!minified}
 	class:opacity-70={deleting}
 	class:bg-gray-700={lightBg}
 	class:bg-gray-900={!lightBg}

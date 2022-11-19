@@ -127,7 +127,7 @@
 	};
 </script>
 
-<div class="relative pt-18 px-5 lg:px-10">
+<div class="relative pt-18 px-4 lg:px-10">
 	<img
 		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data
 			.userPage.id}/banner?{timestamp}"
@@ -188,22 +188,19 @@
 		</div>
 
 		<div
-			class="max-w-xl lg:min-w-[28rem] lg:mt-40 3xl:flex 3xl:gap-10 3xl:min-w-[58rem]"
+			class="max-w-md mx-auto lg:min-w-[28rem] lg:mt-40 3xl:flex 3xl:gap-10 3xl:min-w-[58rem]"
 		>
 			<div class="flex flex-col gap-8 mb-8 3xl:w-1/2">
 				<ProfileSection title="Positions">
 					{#each data.userPage.positions as name}
-						<DevTag {name} />
+						<DevTag {name} lightBg={false} />
 					{/each}
 				</ProfileSection>
 
 				<ProfileSection title="Projects" minHeight={true}>
 					{#each { length: 2 } as _, i}
 						{#if data.projects[i]}
-							<ProjectPreview
-								project={data.projects[i]}
-								profile={true}
-							/>
+							<ProjectPreview project={data.projects[i]} />
 						{/if}
 					{/each}
 

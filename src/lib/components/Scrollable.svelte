@@ -45,8 +45,11 @@
 
 	// Verticle scroll without holding shift for desktop
 	const onWheel = (event: WheelEvent) => {
-		// Prevent trackpads from trigeering this since verticle scrolling is built-in
-		if (event.deltaX > 2 || event.deltaX < -2 || disabledSide === Side.Both)
+		// Prevent trackpads from trigeering this since horizontal scrolling is built-in
+		if (
+			((event.deltaX >= 2 || event.deltaX <= -2) && event.deltaY === 0) ||
+			disabledSide === Side.Both
+		)
 			return;
 
 		// Prevent the page from scrolling
@@ -56,10 +59,7 @@
 		// The default will be unable to be prevented if it's a top level scroll
 		if (!event.defaultPrevented) return;
 
-		scrollable.scrollBy({
-			left: -event.deltaY,
-			behavior: "smooth"
-		});
+		scrollable.scrollBy({ left: -event.deltaY });
 	};
 </script>
 

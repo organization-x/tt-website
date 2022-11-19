@@ -89,7 +89,7 @@
 		on:click={() => (open = !open)}
 		class:rounded-b-lg={!open}
 		class:bg-gray-700={lightBg}
-		class:bg-gray-800={!lightBg}
+		class:bg-gray-900={!lightBg}
 		class="w-full flex items-center gap-4 p-5 rounded-t-lg"
 	>
 		<!-- If the dropdown isn't a radio it should be using the slot -->
@@ -117,7 +117,7 @@
 	<div
 		class:hidden={!open}
 		class:bg-gray-700={lightBg}
-		class:bg-gray-800={!lightBg}
+		class:bg-gray-900={!lightBg}
 		class="absolute w-full inset-x-0 top-16 shadow-lg h-[18.5rem] rounded-b-lg z-50"
 	>
 		<div class="flex p-4 select-none w-full items-center h-14">

@@ -3,6 +3,7 @@
 	"description": "Team Tomorrow website",
 	"version": "0.0.1",
 	"type": "module",
+	"main": "index.js",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",

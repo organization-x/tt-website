@@ -186,7 +186,6 @@
 				required={false}
 				options={softSkills}
 				selectedItems={[]}
-				lightBg={false}
 				on:change={onSearch}
 			>
 				<Star class="h-6 w-6" />
@@ -198,7 +197,6 @@
 				required={false}
 				options={techSkills}
 				selectedItems={[]}
-				lightBg={false}
 				on:change={onSearch}
 			>
 				<Wrench class="h-6 w-6" />

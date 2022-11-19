@@ -121,7 +121,7 @@
 	style="border-color: #{data.theme}"
 />
 
-<div class="p-4 max-w-2xl mx-auto lg:max-w-3xl">
+<div class="flex flex-col gap-6 p-4 max-w-2xl mx-auto lg:max-w-3xl">
 	<div class="flex justify-between items-center">
 		<p>{data.date.toLocaleDateString("en-US")}</p>
 		<div class="flex gap-2">
@@ -134,12 +134,13 @@
 		</div>
 	</div>
 
-	<h1
-		class="font-bold text-3xl my-6 break-words"
-		style="color: #{data.theme}"
-	>
+	<h1 class="font-bold text-3xl break-words" style="color: #{data.theme}">
 		{data.title}
 	</h1>
+
+	<p>
+		{data.description}
+	</p>
 
 	<Scrollable class="before:from-black after:to-black">
 		{#each data.authors as author}
@@ -147,7 +148,7 @@
 		{/each}
 	</Scrollable>
 
-	<Separator class="mt-4 mb-10" />
+	<Separator class="-mt-4 mb-4" />
 
 	<div class="mb-12 [&>p:empty]:h-6">
 		{@html html}

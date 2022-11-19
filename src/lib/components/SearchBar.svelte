@@ -15,7 +15,7 @@
 </script>
 
 <div
-	class:bg-gray-800={lightBg}
+	class:bg-gray-700={lightBg}
 	class:bg-gray-900={!lightBg}
 	class="flex gap-1 p-4 rounded-lg select-none w-full items-center"
 >

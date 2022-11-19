@@ -367,7 +367,7 @@
 						<Bulb slot="icon" class="w-5 h-5" />
 
 						{#each { length: 4 } as _, i}
-							<DevTag name={$user.positions[i]} />
+							<DevTag name={$user.positions[i]} lightBg={false} />
 						{/each}
 					</DevSection>
 
@@ -375,16 +375,16 @@
 						<Wrench slot="icon" class="w-5 h-5" />
 
 						{#each $user.techSkills as name}
-							<DevTag {name} />
+							<DevTag {name} lightBg={false} />
 						{/each}
 
 						{#each $user.softSkills as name}
-							<DevTag {name} />
+							<DevTag {name} lightBg={false} />
 						{/each}
 
 						<!-- Get the collective amount of techSkills and softSkills missing -->
 						{#each { length: 10 - ($user.techSkills.length + $user.softSkills.length) } as _}
-							<DevTag name="" />
+							<DevTag name="" lightBg={false} />
 						{/each}
 					</DevSection>
 				</div>

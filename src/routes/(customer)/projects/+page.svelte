@@ -148,7 +148,6 @@
 			required={false}
 			options={techSkills}
 			selectedItems={[]}
-			lightBg={false}
 			on:change={onSearch}
 		>
 			<Wrench class="h-6 w-6" />

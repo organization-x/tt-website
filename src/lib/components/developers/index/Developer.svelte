@@ -21,7 +21,7 @@
 	in:fly={{ duration: 300, y: 50 }}
 	href="/developers/{user.url}"
 	rel="noreferrer noopener"
-	class="bg-gray-800 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full"
+	class="bg-gray-700 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full"
 >
 	<div class="flex flex-col gap-6 items-center md:flex-row">
 		<div class="relative shrink-0">
@@ -72,7 +72,7 @@
 				<a
 					href="/projects/{user.pinnedProject.url}"
 					rel="noreferrer noopener"
-					class="block rounded-lg border-t-4 bg-gray-700 w-full mx-auto mt-4 lg:flex lg:p-4"
+					class="block rounded-lg border-t-4 bg-gray-500 w-full mx-auto mt-4 lg:flex lg:p-4"
 					style="border-color: #{user.pinnedProject.theme}"
 				>
 					<img
