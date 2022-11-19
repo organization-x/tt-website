@@ -19,7 +19,6 @@ export const load: PageServerLoad<{
 		}
 	});
 
-	// TODO: Add top 3 developer's Discord ids to the database and use them here
 	const developers = await prisma.user.findMany({
 		where: {
 			homepage: true

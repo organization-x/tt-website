@@ -240,7 +240,7 @@ export const POST: RequestHandler = async ({ locals }) => {
 		// TODO: Replace URL for production
 		// The users and proejects share the same ID structure since they will never clash
 		body.set("id", "banner-" + project.id);
-		body.set("url", "https://tt-alpha.fly.dev/assets/default/banner.webp");
+		body.set("url", "https://tt-site.fly.dev/assets/default/banner.webp");
 
 		// Add default banner
 		await fetch(

@@ -5,6 +5,14 @@ import { env } from "$env/dynamic/private";
 
 import type { RequestHandler } from "./$types";
 
+// TODO: Change to actual production URL
+const redirectUri =
+	env.NODE_ENV === "production"
+		? "https://tt-site.fly.dev/login"
+		: "http://localhost:5173/login";
+
+const redirectUriEncoded = encodeURIComponent(redirectUri);
+
 export const GET: RequestHandler = async (request) => {
 	// Date used for determining session expiry
 	const date = new Date();
@@ -30,7 +38,6 @@ export const GET: RequestHandler = async (request) => {
 		request.cookies.get("state") === url.searchParams.get("state")
 	) {
 		// Get API token from OAuth code
-		// TODO: Switch to actual redirect URI for production
 
 		const token = (
 			await fetch("https://discord.com/api/v10/oauth2/token", {
@@ -38,7 +45,7 @@ export const GET: RequestHandler = async (request) => {
 				headers: {
 					"Content-Type": "application/x-www-form-urlencoded"
 				},
-				body: `client_id=${env.DISCORD_ID}&client_secret=${env.DISCORD_SECRET}&grant_type=authorization_code&code=${code}&redirect_uri=http://localhost:5173/login`
+				body: `client_id=${env.DISCORD_ID}&client_secret=${env.DISCORD_SECRET}&grant_type=authorization_code&code=${code}&redirect_uri=${redirectUri}`
 			})
 				.then((res) => res.json())
 				.catch(() => {
@@ -90,13 +97,16 @@ export const GET: RequestHandler = async (request) => {
 			// Give them the default profile picture and banner on Cloudflare Images
 			const body = new FormData();
 
+			// TODO: Remove after avatar glitch has been fixed
+			console.log(avatar);
+
 			// TODO: Replace URL for production
 			// Append the appropriate data, try to use the discord avatar if possible
 			body.append("id", "avatar-" + id);
 			body.append(
 				"url",
 				avatar
-					? "https://tt-alpha.fly.dev/assets/default/avatar.webp"
+					? "https://tt-site.fly.dev/assets/default/avatar.webp"
 					: `https://cdn.discordapp.com/avatars/${id}/${avatar}.webp`
 			);
 
@@ -116,7 +126,7 @@ export const GET: RequestHandler = async (request) => {
 			body.set("id", "banner-" + id);
 			body.set(
 				"url",
-				"https://tt-alpha.fly.dev/assets/default/banner.webp"
+				"https://tt-site.fly.dev/assets/default/banner.webp"
 			);
 
 			// Add banner
@@ -166,10 +176,9 @@ export const GET: RequestHandler = async (request) => {
 		});
 
 		// Redirect to oauth screen with state
-		// TODO: Switch to actual redirect URI for production
 		throw redirect(
 			302,
-			`https://discord.com/api/oauth2/authorize?redirect_uri=http%3A%2F%2Flocalhost%3A5173%2Flogin&response_type=code&scope=identify&client_id=${env.DISCORD_ID}&state=${state}`
+			`https://discord.com/api/oauth2/authorize?redirect_uri=${redirectUriEncoded}&response_type=code&scope=identify&client_id=${env.DISCORD_ID}&state=${state}`
 		);
 	}
 };

@@ -13,6 +13,8 @@ RUN yarn prisma generate
 
 COPY --link . .
 
+ENV NODE_ENV=production
+
 RUN yarn build
 
 RUN yarn --frozen-lockfile --production

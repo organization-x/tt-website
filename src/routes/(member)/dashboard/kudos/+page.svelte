@@ -14,8 +14,6 @@
 		// ).then((res) => console.log(res));
 		// console.log(await request);
 	};
-
-	// TODO: CORS Issue
 </script>
 
 <svelte:head>
