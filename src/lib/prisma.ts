@@ -46,7 +46,85 @@ export const getProjects = (where: Prisma.ProjectWhereInput) =>
 		.findMany({
 			where,
 			include: {
-				authors: { select: { user: true, position: true } }
+				authors: {
+					select: {
+						user: {
+							select: {
+								id: true,
+								name: true,
+								url: true
+							}
+						},
+						position: true
+					}
+				}
 			}
 		})
 		.then((projects) => projects);
+
+// Grab kudos data, the reason this is in here is since it falls under the same
+// category of backend getters
+export const getKudos = async (id: string) => {
+	// Grab the kudos data from the Discord bot API
+	const data: App.KudosResponse = await fetch(
+		`https://ai-camp-data-layer.fly.dev/ck/${id}?pageSize=9999`
+	).then((res) => res.json());
+
+	// If there's not kudos for this user return an empty array
+	if (!data.ck.length) return [];
+
+	// Get the name and id data for the kudos unless the sender is the
+	// current user
+	const users = await prisma.user.findMany({
+		where: {
+			id: {
+				in: [
+					...new Set(
+						data.ck.reduce((result: string[], kudo) => {
+							if (kudo.senderId !== id)
+								result.push(kudo.senderId);
+
+							if (kudo.receiverId !== id)
+								result.push(kudo.receiverId);
+
+							return result;
+						}, [])
+					)
+				] as string[]
+			}
+		},
+		select: {
+			id: true,
+			name: true
+		}
+	});
+
+	// If all users don't have accounts return an empty array
+	if (!users.length) return [];
+
+	// Refine the kudos data to be more usable
+	return data.ck.reduce((result: App.Kudo[], kudo) => {
+		const isSender = kudo.senderId === id;
+
+		// Grab the user from the collected data
+		const userData = isSender
+			? users.find((user) => user.id === kudo.receiverId)
+			: users.find((user) => user.id === kudo.senderId);
+
+		// If they don't exist don't show the kudo
+		if (!userData) return result;
+
+		// Provide either the receiving user if this user sent it or the
+		// sending user if this user received it
+		return [
+			...result,
+			{
+				id: isSender ? kudo.receiverId : kudo.senderId,
+				name: userData.name,
+				reason: kudo.reason,
+				type: (isSender ? "sent" : "received") as "sent" | "received",
+				timestamp: kudo.timestamp
+			}
+		];
+	}, []);
+};

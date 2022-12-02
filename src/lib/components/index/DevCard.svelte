@@ -42,9 +42,7 @@
 				{developer.team || "No Team"}
 			</h1>
 
-			<GradientText
-				class="from-green-light to-green-dark text-2xl break-words"
-			>
+			<GradientText class="from-green-light to-green-dark text-2xl">
 				{developer.name}
 			</GradientText>
 		</div>

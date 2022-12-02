@@ -14,7 +14,15 @@ export const load: PageServerLoad<{
 	// Should only be one project since the slug is unique
 	const project = await getProjects({
 		url: params.project,
-		OR: [{ ownerId: user.id }, { authors: { some: { userId: user.id } } }]
+
+		...(user.role === "Admin"
+			? {}
+			: {
+					OR: [
+						{ ownerId: user.id },
+						{ authors: { some: { userId: user.id } } }
+					]
+			  })
 	});
 
 	if (!project || !project.length) throw redirect(302, "/dashboard/projects");

@@ -209,7 +209,7 @@
 						in:fly={{ duration: 300, y: 30 }}
 						class="text-center font-semibold text-2xl"
 					>
-						No results
+						No Results
 					</h1>
 				{/await}
 			</div>

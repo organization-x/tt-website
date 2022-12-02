@@ -1,8 +1,8 @@
 import Sharp from "sharp";
 import { error } from "@sveltejs/kit";
 
-import { prisma, userAuth } from "$lib/prisma";
 import { env } from "$env/dynamic/private";
+import { prisma, userAuth } from "$lib/prisma";
 
 import type { RequestHandler } from "./$types";
 
@@ -10,7 +10,7 @@ import type { RequestHandler } from "./$types";
 
 // Update a user's avatar/banner or a project's banner
 // * INPUT: FormData: file, type, id
-// * OUTPUT: None
+// * OUTPUT: ImageUploadResponse
 export const PATCH: RequestHandler = async ({ locals, request }) => {
 	const user = await userAuth(locals);
 
@@ -25,6 +25,8 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		});
 
 	const id = data.get("id") as string;
+
+	let theme: string;
 	let type = data.get("type") as string;
 
 	// If the data includes an invalid type, if there's no ID provided, or if the image size is greater than
@@ -64,37 +66,90 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		if (project.ownerId !== user.id && user.role !== "Admin")
 			throw error(401, "Unauthorized");
 
-		// TODO: Finish project color theming
-		// Sharp(Buffer.from(await (data.get("file") as Blob).arrayBuffer()))
-		// 	.toColorspace("srgb")
-		// 	.toFormat("raw")
-		// 	.toBuffer((err, buffer, info) => {
-		// 		if (err) throw error(400, "Bad Request");
+		const buffer = await Sharp(
+			Buffer.from(await (data.get("file") as Blob).arrayBuffer())
+		)
+			.resize(300, 300)
+			.toFormat("raw")
+			.removeAlpha()
+			.toBuffer();
 
-		// 		// Used for tracking iterators in the first loop then the biggest value in the second
-		// 		let int = 0;
+		// Store the pixels relative to a range set by another pixel. For example, a 255 255 255 pixel
+		// would set a range for each channel like this: r: 250-255, g: 250-255, b: 250-255, any pixel
+		// then inside that range preceding it will be grouped along with it
+		let colors = [];
 
-		// 		// Based off of the image size, create a pixel color interval. So every interval pixels
-		// 		// will be checked for a color
-		// 		const interval = Math.log10(info.width * info.height) * 10;
+		// Store the mean of every channel for every pixel
+		const mean = { r: 0, g: 0, b: 0 };
 
-		// 		// Store rgb values categorized by their closest color
-		// 		const rgbs: number[][] = [];
+		// Iterate through the bytes and figure out if the pixel needs to create a new range
+		// or join an already existing one
+		for (let i = 0; i < buffer.length; i += 3) {
+			// Get R G B values from buffer
+			const { r, g, b } = {
+				r: buffer[i],
+				g: buffer[i + 1],
+				b: buffer[i + 2]
+			};
 
-		// 		// Read the data and get the array of seen colors
-		// 		buffer.forEach((byte, i, bytes) => {
-		// 			if (int === 3) {
-		// 				int = 0;
+			// Figure out if this pixel belongs in an existing range, if so, get the index of it
+			const index = colors.findIndex(
+				({ r: [rMin, rMax], g: [gMin, gMax], b: [bMin, bMax] }) =>
+					r >= rMin &&
+					r <= rMax &&
+					g >= gMin &&
+					g <= gMax &&
+					b >= bMin &&
+					b <= bMax
+			);
 
-		// 				// Since this is sRgb, every 3 bytes is a pixel
-		// 				const pixel = i / 3;
+			// Either add this pixel to the range's values or create a new range
+			index !== -1
+				? colors[index].values.push({ r, g, b })
+				: colors.push({
+						r: [r - 5, r + 5],
+						g: [g - 5, g + 5],
+						b: [b - 5, b + 5],
+						values: [{ r, g, b }]
+				  });
 
-		// 				if (Math.floor(pixel % interval) !== 0) return;
+			// Add to the total for mean
+			mean.r += r;
+			mean.g += g;
+			mean.b += b;
+		}
 
-		// 				rgbs.push([bytes[i - 3], byte, bytes[i - 2]]);
-		// 			} else int++;
-		// 		});
-		// 	});
+		// Get the mean of each channel
+		mean.r = Math.round(mean.r / (buffer.length / 3));
+		mean.g = Math.round(mean.g / (buffer.length / 3));
+		mean.b = Math.round(mean.b / (buffer.length / 3));
+
+		// Get the range with the most values and set colors to those values
+		{
+			let longest = 0;
+			for (const color of colors) {
+				if (color.values.length > longest)
+					(longest = color.values.length) && (colors = color.values);
+			}
+		}
+
+		// Grab the color closest to the mean of all colors
+		let result = colors[0] as { r: number; g: number; b: number };
+		for (const color of colors as { r: number; g: number; b: number }[]) {
+			if (
+				color.r - mean.r < result.r - mean.r &&
+				color.g - mean.g < result.g - mean.g &&
+				color.b - mean.b < result.b - mean.b
+			)
+				result = color;
+		}
+
+		theme =
+			result.r.toString(16).padStart(2, "0") +
+			result.g.toString(16).padStart(2, "0") +
+			result.b.toString(16).padStart(2, "0");
+
+		await prisma.project.update({ where: { id }, data: { theme } });
 
 		type = "banner";
 	}
@@ -129,7 +184,10 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		throw error(400, "Bad Request");
 	}
 
-	return new Response(undefined, { status: 200 });
+	return new Response(
+		type === "banner" ? JSON.stringify({ theme: theme! }) : undefined,
+		{ status: 200 }
+	);
 };
 
 // Upload an image for a project's content

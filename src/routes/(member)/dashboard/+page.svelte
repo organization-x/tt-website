@@ -1,6 +1,9 @@
 <script lang="ts">
+	import { getContext, onMount } from "svelte";
+
 	import { user } from "$lib/stores";
 	import { getIcon } from "$lib/getIcon";
+	import Kudo from "$lib/components/Kudo.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
 	import Id from "$lib/components/icons/general/Id.svelte";
 	import Pin from "$lib/components/icons/general/Pin.svelte";
@@ -29,9 +32,11 @@
 	import ProjectEditPreview from "$lib/components/dashboard/ProjectEditPreview.svelte";
 
 	import type { PageData } from "./$types";
-	import { onMount } from "svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	export let data: PageData;
+
+	const timestamp = getContext("timestamp");
 
 	const greet = (hour: number) => {
 		if (hour < 12) return "Good morning";
@@ -60,9 +65,6 @@
 	const projectCount = data.projects.filter(
 		(project) => project.visible
 	).length;
-
-	// Create a timestamp so the images from Cloudflare don't cache
-	const timestamp = Date.now();
 
 	// Transform links into an array so it's easily iterable
 	const links: { key: string; link: string }[] = [];
@@ -308,7 +310,7 @@
 					</div>
 
 					<p
-						class="my-6 text-center md:text-lg md:text-start lg:my-0"
+						class="my-6 text-center break-words w-full md:text-lg md:text-start lg:my-0"
 					>
 						{$user.about}
 					</p>
@@ -415,7 +417,7 @@
 
 						<!-- Get the collective amount of links missing -->
 						{#each { length: 6 - links.length } as _}
-							<DevTag name="" />
+							<DevTag name="" lightBg={false} />
 						{/each}
 					</DevSection>
 
@@ -460,8 +462,6 @@
 				bind:this={badges}
 				class="h-full bg-gray-900 p-4 rounded-lg flex flex-col gap-6 lg:grid lg:grid-cols-2 lg:grid-flow-row-dense"
 			>
-				<!-- TODO: Kudos Data-->
-
 				<BadgeProgress
 					name="Project Starter"
 					playing={playing.has(0)}
@@ -498,7 +498,7 @@
 				<BadgeProgress
 					name="Kudo Starter"
 					playing={playing.has(3)}
-					progress={0}
+					progress={data.kudos.length / 10}
 					class="bg-red-light"
 				>
 					<TenKudos slot="badge" />
@@ -509,7 +509,7 @@
 				<BadgeProgress
 					name="Kudo Master"
 					playing={playing.has(4)}
-					progress={0}
+					progress={data.kudos.length / 50}
 					class="bg-teal-light"
 				>
 					<FiftyKudos slot="badge" />
@@ -520,7 +520,7 @@
 				<BadgeProgress
 					name="Kudo Legend"
 					playing={playing.has(5)}
-					progress={0}
+					progress={data.kudos.length / 100}
 					class="bg-green-light"
 				>
 					<HundredKudos slot="badge" />
@@ -532,7 +532,7 @@
 
 		<DashSection title="Your Projects" class="bg-gray-900 rounded-lg p-4">
 			<div
-				class="min-h-[55rem] flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:min-h-0 lg:mb-8"
+				class="min-h-[55rem] flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:min-h-0"
 			>
 				{#each { length: 2 } as _, i}
 					{@const project = data.projects[i]}
@@ -554,12 +554,33 @@
 
 			<DashLink
 				href="/dashboard/projects"
-				class="bg-gray-700 hover:bg-gray-700/60 w-full mx-auto mt-4 lg:mt-0 lg:w-fit lg:mr-0"
+				class="bg-gray-700 hover:bg-gray-700/60 w-full mx-auto mt-4 lg:mt-8 lg:w-fit lg:mr-0"
 			>
 				Manage All Projects
 			</DashLink>
 		</DashSection>
 
-		<!-- TODO: Kudos section -->
+		<DashSection title="Your Kudos" class="bg-gray-900 rounded-lg p-4">
+			<Scrollable
+				verticle={true}
+				class="before:from-gray-900 after:to-gray-900 h-120 md:h-[29rem]"
+				innerClass="gap-10 {data.kudos.length ? 'pt-4' : 'lg:pt-8'}"
+			>
+				{#each data.kudos.slice(0, 10) as kudo}
+					<Kudo {kudo} />
+				{:else}
+					<h1 class="text-center font-semibold text-xl pt-1 m-auto">
+						No Kudos
+					</h1>
+				{/each}
+			</Scrollable>
+
+			<DashLink
+				href="/dashboard/projects"
+				class="bg-gray-700 hover:bg-gray-700/60 w-full mx-auto mt-4 lg:mt-6 lg:w-fit lg:mr-0"
+			>
+				All Kudos
+			</DashLink>
+		</DashSection>
 	</div>
 </DashWrap>

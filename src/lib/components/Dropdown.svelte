@@ -5,6 +5,7 @@
 	import DropdownItem from "$lib/components/DropdownItem.svelte";
 	import Search from "$lib/components/icons/general/Search.svelte";
 	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
+	import Scrollable from "./Scrollable.svelte";
 
 	const dispatch = createEventDispatcher<{
 		change: { selected: string | undefined; previous: string | undefined };
@@ -130,7 +131,13 @@
 			/>
 		</div>
 
-		<div class="flex flex-col overflow-auto h-60 scrollbar">
+		<Scrollable
+			verticle={true}
+			class={lightBg
+				? "before:from-gray-700 after:to-gray-700"
+				: "before:from-gray-900 after:to-gray-900"}
+			innerClass="h-60 scrollbar gap-0"
+		>
 			{#if !required && radio}
 				<DropdownItem
 					on:click={() => radioClick([])}
@@ -184,6 +191,6 @@
 					<h1 class="text-center mt-4">No Results</h1>
 				{/each}
 			{/if}
-		</div>
+		</Scrollable>
 	</div>
 </div>

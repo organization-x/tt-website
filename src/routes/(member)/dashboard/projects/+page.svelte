@@ -23,33 +23,36 @@
 	// also reset the deleting projects array so we don't have old ID's
 	$: search, (request = new Promise(() => {})), (deletingProjects = []);
 
-	const onSearch = () => {
-		request = fetch(
+	const onSearch = () =>
+		(request = fetch(
 			`/api/project?where=${JSON.stringify({
 				title: {
 					contains: search.trim(),
 					mode: "insensitive"
 				},
 
-				OR: [
-					{
-						ownerId: $user.id
-					},
-					{
-						authors: {
-							some: {
-								userId: $user.id
-							}
-						}
-					}
-				]
+				...($user.role === "Admin"
+					? {}
+					: {
+							OR: [
+								{
+									ownerId: $user.id
+								},
+								{
+									authors: {
+										some: {
+											userId: $user.id
+										}
+									}
+								}
+							]
+					  })
 			} as Prisma.ProjectWhereInput)}`
 		)
 			.then((res) => res.json())
 			.then((data: App.ProjectWithMetadata[]) =>
 				data.length ? data : Promise.reject()
-			);
-	};
+			));
 
 	const createProject = () => {
 		creatingProject = true;
@@ -124,7 +127,9 @@
 	<title>Project Manager</title>
 </svelte:head>
 
-<DashHero title="Your Projects" />
+<DashHero
+	title={$user.role === "Admin" ? "Manage Projects" : "Your Projects"}
+/>
 
 <DashWrap>
 	<div class="flex flex-col gap-5 mb-5 mx-auto lg:flex-row lg:mb-20">
@@ -153,7 +158,7 @@
 				<ProjectLoading />
 			</div>
 		{:then projects}
-			<div in:fly={{ duration: 300, y: 50 }}>
+			<div in:fly={{ duration: 300, y: 30 }}>
 				{#each projects as project}
 					{#if !deletingProjects.includes(project.id)}
 						<ProjectEditPreview
@@ -184,7 +189,7 @@
 				in:fly={{ duration: 300, y: 30 }}
 				class="text-center font-semibold text-2xl pt-5"
 			>
-				No projects
+				No Projects
 			</h1>
 		{/await}
 	</div>

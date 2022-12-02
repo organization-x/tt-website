@@ -1,5 +1,7 @@
 import { error } from "@sveltejs/kit";
+import { parse } from "node-html-parser";
 
+import { saveProject } from "../../../wss";
 import { env } from "$env/dynamic/private";
 import { prisma, userAuth, getProjects } from "$lib/prisma";
 
@@ -31,7 +33,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		// If the user id doesn't match with the owner or a collaborator, throw unauthorized.
 		// The owner and collaborators do not share the same editing permissions, the collaborators
 		// only should be able to update the projects content, not its metadata
-		if (project.ownerId === user.id) {
+		if (project.ownerId === user.id || user.role === "Admin") {
 			// Input validation
 			if (
 				(data.title &&
@@ -42,9 +44,10 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				(data.skills && data.skills.length < 2) ||
 				(data.authors &&
 					(data.authors.length < 1 ||
-						!data.authors.some(
-							(author) => author.user.id === project.ownerId
-						)))
+						(user.role !== "Admin" &&
+							!data.authors.some(
+								(author) => author.user.id === project.ownerId
+							))))
 			)
 				throw error(400, "Bad Request");
 		} else if (
@@ -68,6 +71,9 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			throw error(400, "Bad Request");
 		}
 
+		// Let all collaboration-connected clients know that the project is being saved
+		saveProject(project.id);
+
 		// Update the image IDs inside of the project content
 		if (data.images) {
 			// Check if the newly submitted images exist on Cloudflare
@@ -84,7 +90,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			);
 
 			// Delete all images that are no longer included in the project. This
-			// doesn't need to be awaited since it does interact with the postgres database
+			// doesn't need to be awaited since it doesn't interact with the postgres database
 			project.images.map(
 				(image) =>
 					!data.images.includes(image) &&
@@ -221,7 +227,6 @@ export const POST: RequestHandler = async ({ locals }) => {
 				url: `untitled-${name}-${postfix}`,
 				title: `Untitled-${name}-${postfix}`,
 				description: "A super cool untitled project!",
-				theme: "3B84D6",
 				date: new Date(),
 				skills: ["Python", "Pytorch"],
 				ownerId: user.id,
@@ -237,10 +242,9 @@ export const POST: RequestHandler = async ({ locals }) => {
 
 		const body = new FormData();
 
-		// TODO: Replace URL for production
 		// The users and proejects share the same ID structure since they will never clash
 		body.set("id", "banner-" + project.id);
-		body.set("url", "https://tt-site.fly.dev/assets/default/banner.webp");
+		body.set("url", "https://teamtomorrow.com/assets/default/banner.webp");
 
 		// Add default banner
 		await fetch(
@@ -321,6 +325,101 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 		});
 
 		return new Response(undefined, { status: 200 });
+	} catch {
+		throw error(400, "Bad Request");
+	}
+};
+
+// Grab URL information when adding a link mark for the editor, for example if you linked
+// Google it would grab the title and description of google.com and display it when active, this is
+// done via an API to bypass CORS errors
+// * INPUT: url=string
+// * OUTPUT: UrlMetadataResponse
+export const PUT: RequestHandler = async ({ request, locals }) => {
+	if (!locals.session) throw error(401, "Unauthorized");
+
+	const session = await prisma.session.count({
+		where: { token: locals.session }
+	});
+
+	if (!session) throw error(401, "Unauthorized");
+
+	try {
+		// Fetch the URL given
+		const response = await fetch(
+			new URL(request.url).searchParams.get("url")!
+		).catch(() => null);
+
+		// If the URL is invalid, give placeholder info
+		if (!response)
+			return new Response(
+				JSON.stringify({
+					title: "Unknown"
+				} as App.UrlMetadataResponse),
+				{ status: 200 }
+			);
+
+		// Parse the HTML for information extraction
+		const page = parse(await response.text());
+
+		// Find all icon meta tags and then sort them by their resolution, the highest resolution
+		// icon is what we want
+		let icon =
+			page
+				.getElementsByTagName("link")
+				.filter((meta) => meta.getAttribute("rel")?.includes("icon"))
+				.sort((a, b) => {
+					const sizesA = a.getAttribute("sizes");
+					const sizesB = b.getAttribute("sizes");
+
+					if (!sizesA) return 1;
+					if (!sizesB) return -1;
+
+					return (
+						parseInt(sizesB.split("x")[0]) -
+						parseInt(sizesA.split("x")[0])
+					);
+				})[0]
+				?.getAttribute("href") ||
+			page
+				.getElementsByTagName("meta")
+				.find((meta) => meta.getAttribute("itemprop") === "image")
+				?.getAttribute("content");
+
+		// Split up the URL so if the icon is using a relative URL we can construct it
+		const urlSplit = response.url.split("/");
+
+		// Construct the icon URL using the same protcol
+		icon =
+			!icon || icon.startsWith("http")
+				? icon
+				: `${urlSplit[0]}//${urlSplit[2]}${
+						icon.startsWith("/") ? icon : "/" + icon
+				  }`;
+
+		// If there's an icon, fetch the icon URL and convert it to a base64 string
+		// to avoid CORS errors
+		if (icon)
+			icon = await fetch(icon)
+				.then((res) => res.arrayBuffer())
+				.then(
+					(data) =>
+						`data:image/${icon!
+							.split(".")
+							.slice(-1)};base64,${Buffer.from(data).toString(
+							"base64"
+						)}`
+				);
+
+		return new Response(
+			JSON.stringify({
+				title:
+					page.getElementsByTagName("title")[0]?.innerHTML ||
+					"Unknown",
+				icon
+			} as App.UrlMetadataResponse),
+			{ status: 200 }
+		);
 	} catch {
 		throw error(400, "Bad Request");
 	}

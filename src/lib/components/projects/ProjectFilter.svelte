@@ -26,7 +26,7 @@
 				.id}/avatar?{timestamp}"
 			alt="Random shapes and colors in the formation of a hallway"
 			loading="lazy"
-			class="object-cove object-center bg-gray-400 w-full h-full"
+			class="object-cover object-center bg-gray-400 w-full h-full"
 		/>
 	</div>
 

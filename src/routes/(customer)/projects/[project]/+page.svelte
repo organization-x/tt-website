@@ -28,6 +28,7 @@
 	import javascript from "highlight.js/lib/languages/javascript";
 
 	import { getIcon } from "$lib/getIcon";
+	import { breadcrumb, article } from "$lib/seo";
 	import { extensions } from "$lib/tiptapExtensions";
 	import Button from "$lib/components/Button.svelte";
 	import Author from "$lib/components/Author.svelte";
@@ -35,7 +36,7 @@
 	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	import type { PageData } from "./$types";
-	import type { JSONContent } from "@tiptap/core";
+	import { generateText, type JSONContent } from "@tiptap/core";
 
 	export let data: PageData;
 
@@ -110,6 +111,21 @@
 		name="twitter:image"
 		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.id}/banner"
 	/>
+
+	{@html breadcrumb(data.title, data.url)}
+	{@html article(
+		data.title,
+		data.description,
+		data.url,
+		data.id,
+		// Typing isn't supported in Svelte HTML
+		// @ts-ignore
+		data.authors.find(({ user }) => user.id === data.ownerId).user.name,
+		data.date.toISOString(),
+		data.skills.join(", "),
+		// @ts-ignore
+		generateText(data.content, extensions)
+	)}
 </svelte:head>
 
 <img
@@ -142,7 +158,7 @@
 		{data.description}
 	</p>
 
-	<Scrollable class="before:from-black after:to-black">
+	<Scrollable class="before:from-black after:to-black" innerClass="gap-7">
 		{#each data.authors as author}
 			<Author theme={data.theme} {author} />
 		{/each}

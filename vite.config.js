@@ -1,7 +1,8 @@
-import { wss } from "./src/wss";
+import { defineConfig } from "vite";
 import { sveltekit } from "@sveltejs/kit/vite";
 
-/** @type {import("vite").UserConfig} */
-export default {
-	plugins: [sveltekit(), wss]
-};
+import { wss } from "./src/wss";
+
+export default defineConfig(({ mode }) => ({
+	plugins: [sveltekit(), wss(mode)]
+}));

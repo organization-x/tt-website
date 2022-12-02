@@ -1,11 +1,12 @@
 <script lang="ts">
 	import "../../app.css";
 
-	import { setContext } from "svelte";
 	import { derived } from "svelte/store";
 	import { slide } from "svelte/transition";
+	import { onMount, setContext } from "svelte";
 
 	import { page } from "$app/stores";
+	import { developers } from "$lib/stores";
 	import { afterNavigate } from "$app/navigation";
 	import NavLink from "$lib/components/NavLink.svelte";
 	import FootLink from "$lib/components/FootLink.svelte";
@@ -13,13 +14,13 @@
 	import Logo from "$lib/components/icons/logos/Logo.svelte";
 	import Burger from "$lib/components/icons/general/Burger.svelte";
 	import YouTube from "$lib/components/icons/logos/YouTube.svelte";
+	import LogOut from "$lib/components/icons/general/LogOut.svelte";
 	import Envelope from "$lib/components/icons/general/Envelope.svelte";
+	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
 	import Instagram from "$lib/components/icons/general/Instagram.svelte";
+	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
 
 	import type { LayoutServerData } from "./$types";
-	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
-	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
-	import LogOut from "$lib/components/icons/general/LogOut.svelte";
 
 	export let data: LayoutServerData;
 
@@ -31,7 +32,7 @@
 	let element: HTMLElement;
 	let pageId = derived(
 		page,
-		($page) => $page.routeId?.split("/")[2] || "home"
+		($page) => $page.route.id?.split("/")[2] || "home"
 	);
 
 	// When the user menu is closed by a click outside of it, disabled the color transition
@@ -59,9 +60,50 @@
 			.then(async ({ analytics }) => await analytics.page())
 			.catch(() => {}); // Ignore errors
 	});
+
+	onMount(() => {
+		// Load the developers from localstorage if they exist
+		developers.set(JSON.parse(localStorage.getItem("developers") || "[]"));
+
+		// Persist the saved developers to localstorage
+		developers.subscribe((developers) =>
+			localStorage.setItem("developers", JSON.stringify(developers))
+		);
+	});
 </script>
 
 <svelte:window on:click={windowClick} />
+
+<svelte:head>
+	<!-- When on a user or project page don't override the custom user head data -->
+	{#if !$page.route.id?.includes("[")}
+		<meta
+			name="description"
+			content="Team Tomorrow works towards bringing developers to companies in need of a workforce. Experience rapid deployment, indsutry leading skills, and robust teams to help you bring your product forward."
+		/>
+
+		<!-- OpenGraph data with Team Tomorrow info -->
+		<meta property="og:title" content="Team Tomorrow" />
+		<meta
+			property="og:description"
+			content="Team Tomorrow works towards bringing developers to companies in need of a workforce. Experience rapid deployment, indsutry leading skills, and robust teams to help you bring your product forward."
+		/>
+		<meta name="og:image" content="/assets/favicon.png" />
+		<meta name="og:image:secure_url" content="/assets/favicon.png" />
+		<meta name="og:image:width" content="200" />
+		<meta name="og:image:height" content="200" />
+		<meta name="og:image:alt" content="Team Tomorrow logo" />
+
+		<!-- Twitter card data with Team Tomorrow info -->
+		<meta property="twitter:title" content="Team Tomorrow" />
+		<meta
+			property="twitter:description"
+			content="Team Tomorrow works towards bringing developers to companies in need of a workforce. Experience rapid deployment, indsutry leading skills, and robust teams to help you bring your product forward."
+		/>
+		<meta name="twitter:card" content="summary" />
+		<meta name="twitter:image" content="/assets/favicon.png" />
+	{/if}
+</svelte:head>
 
 <header class="bg-black">
 	<div

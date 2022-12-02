@@ -1,10 +1,9 @@
+import { Link } from "$lib/link";
 import { lowlight } from "lowlight";
-import { Extension } from "@tiptap/core";
 import c from "highlight.js/lib/languages/c";
 import { Text } from "@tiptap/extension-text";
 import { Bold } from "@tiptap/extension-bold";
 import { Code } from "@tiptap/extension-code";
-import { Link } from "@tiptap/extension-link";
 import { Placeholder } from "$lib/placeholder";
 import go from "highlight.js/lib/languages/go";
 import { Image } from "@tiptap/extension-image";
@@ -24,6 +23,7 @@ import ruby from "highlight.js/lib/languages/ruby";
 import yaml from "highlight.js/lib/languages/yaml";
 import { Heading } from "@tiptap/extension-heading";
 import swift from "highlight.js/lib/languages/swift";
+import { Plugin, PluginKey } from "prosemirror-state";
 import { Document } from "@tiptap/extension-document";
 import { ListItem } from "@tiptap/extension-list-item";
 import python from "highlight.js/lib/languages/python";
@@ -39,6 +39,12 @@ import markdown from "highlight.js/lib/languages/markdown";
 import { OrderedList } from "@tiptap/extension-ordered-list";
 import typescript from "highlight.js/lib/languages/typescript";
 import javascript from "highlight.js/lib/languages/javascript";
+import {
+	combineTransactionSteps,
+	Extension,
+	getChangedRanges,
+	getNodeType
+} from "@tiptap/core";
 
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 
@@ -96,97 +102,19 @@ export const extensions = [
 	Text,
 	Bold,
 	Code,
+	Link,
 	Strike,
 	Italic,
 	Document,
 	ListItem,
 	Underline,
-	Paragraph,
 	Dropcursor,
 	Typography,
 	tabShortcut,
-	Link.configure({
-		HTMLAttributes: {
-			target: "_blank",
-			// This is so a link icon can be after a link element to indicate it's a link
-			class: "underline cursor-pointer relative mr-7 after:content-[url(/assets/dashboard/projects/project/link.svg)] after:w-5 after:h-5 after:top-0.5 after:absolute after:left-full after:ml-1 after:pointer-events-none"
-		}
+	Paragraph.configure({
+		HTMLAttributes: { class: "break-words" }
 	}),
-	OrderedList.extend({
-		addKeyboardShortcuts() {
-			return {
-				Backspace: () => {
-					// On backspace, lift the list item if in the right scenario before anything else. And if backspace is pressed on an empty paragraph
-					// below a list item, don't create another listen item
-
-					// Check if the editor is active on a list item and is able to lift it, if so lift the list item
-					if (
-						this.editor.isActive("listItem") &&
-						this.editor.state.selection.$from.parentOffset === 0 &&
-						this.editor.state.selection.empty &&
-						this.editor.can().liftListItem("listItem")
-					) {
-						this.editor.commands.liftListItem("listItem");
-
-						return true;
-					}
-
-					// TODO: Fix weird bullet point behavoir, currently can't unselect node
-					// if (
-					// 	this.editor.state.selection.empty &&
-					// 	this.editor.state.selection.$from.parentOffset === 0 &&
-					// 	this.editor.state.doc.content.childCount > 1
-					// ) {
-					// 	// If the editor is on an empty newline with no offset to the parent
-					// 	// Grab the current node at the cursor.
-
-					// 	this.editor.commands.selectNodeBackward();
-
-					// 	// If the the previous node is non existant or the type isn't a bulletList ignore
-					// 	const isList =
-					// 		this.editor.state.selection.content().content
-					// 			.firstChild?.type.name !== "bulletList";
-
-					// 	if (isList) return false;
-
-					// 	this.editor.commands.deleteSelection();
-
-					// If there is content, shift it up to the next line
-					// if (node.textContent.length) {
-					// 	// Insert the stored content
-					// 	this.editor.commands.insertContent(
-					// 		node.textContent
-					// 	);
-
-					// 	// Move the cursor to the start of the inserted content
-					// 	this.editor.commands.setTextSelection(
-					// 		this.editor.state.selection.anchor -
-					// 			node.textContent.length
-					// 	);
-					// }
-
-					// If there is content, shift it up to the next line
-					// if (node.textContent.length) {
-					// 	// Insert the stored content
-					// 	this.editor.commands.insertContent(
-					// 		node.textContent
-					// 	);
-
-					// 	// Move the cursor to the start of the inserted content
-					// 	this.editor.commands.setTextSelection(
-					// 		this.editor.state.selection.anchor -
-					// 			node.textContent.length
-					// 	);
-					// }
-
-					// 	return true;
-					// }
-
-					return false;
-				}
-			};
-		}
-	}).configure({
+	OrderedList.configure({
 		HTMLAttributes: {
 			class: "list-decimal pl-8"
 		}
@@ -203,7 +131,7 @@ export const extensions = [
 	}),
 	CodeBlockLowlight.configure({
 		HTMLAttributes: {
-			class: "rounded-lg p-4 bg-gray-800"
+			class: "rounded-lg p-4 bg-gray-900"
 		},
 		lowlight
 	}),
@@ -216,14 +144,30 @@ export const extensions = [
 		renderHTML({ node }) {
 			switch (node.attrs.level) {
 				case 1:
-					return ["h1", { class: "font-bold text-2xl" }, 0];
+					return [
+						"h1",
+						{ class: "font-bold text-2xl break-words" },
+						0
+					];
 				case 2:
-					return ["h2", { class: "font-bold text-xl" }, 0];
+					return [
+						"h2",
+						{ class: "font-bold text-xl break-words" },
+						0
+					];
 				case 3:
-					return ["h3", { class: "font-bold text-lg" }, 0];
+					return [
+						"h3",
+						{ class: "font-bold text-lg break-words" },
+						0
+					];
 				// Should never reach
 				default:
-					return ["h1", { class: "font-bold text-2xl" }, 0];
+					return [
+						"h1",
+						{ class: "font-bold text-2xl break-words" },
+						0
+					];
 			}
 		}
 	})

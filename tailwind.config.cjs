@@ -5,6 +5,7 @@ module.exports = {
 	content: [
 		"./src/**/*.{html,svelte}",
 		"./src/lib/tiptapExtensions.ts",
+		"./src/lib/link.ts",
 		"./src/lib/enums.ts"
 	],
 	theme: {
@@ -74,7 +75,8 @@ module.exports = {
 			},
 			height: {
 				100: "25rem",
-				104: "26rem"
+				104: "26rem",
+				120: "30rem"
 			},
 			minHeight: {
 				44: "11rem",

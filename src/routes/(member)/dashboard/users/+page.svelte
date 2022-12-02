@@ -8,6 +8,7 @@
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 
+	import type { Prisma } from "@prisma/client";
 	import type { PageServerData } from "./$types";
 
 	export let data: PageServerData;
@@ -23,7 +24,7 @@
 		(request = fetch(
 			`/api/user?where=${JSON.stringify({
 				name: { contains: search.trim(), mode: "insensitive" }
-			})}`
+			} as Prisma.UserWhereInput)}`
 		)
 			.then((res) => res.json())
 			.then(async (data: App.UserWithMetadata[]) => {
@@ -282,7 +283,7 @@
 				</div>
 			{:then users}
 				<div
-					in:fly={{ duration: 300, y: 50 }}
+					in:fly={{ duration: 300, y: 30 }}
 					class="flex flex-col gap-14"
 				>
 					{#each users as user}
@@ -294,7 +295,7 @@
 					in:fly={{ duration: 300, y: 30 }}
 					class="text-center font-semibold text-2xl pt-5"
 				>
-					No users
+					No Users
 				</h1>
 			{/await}
 		</div>

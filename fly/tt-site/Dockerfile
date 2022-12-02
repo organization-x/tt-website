@@ -13,7 +13,7 @@ RUN yarn prisma generate
 
 COPY --link . .
 
-ENV NODE_ENV=production
+ENV PUBLIC_NODE_ENV=production
 
 RUN yarn build
 

@@ -42,7 +42,7 @@
 			class:border-transparent={!isFilled}
 			class:border-red-light={isFilled && !isValid}
 			class:border-green-light={isFilled && isValid}
-			class="w-full h-96 bg-gray-800 resize-none flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
+			class="w-full h-72 bg-gray-700 resize-none flex p-4 pr-1 mt-2 scrollbar overflow-y-scroll rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
 			{placeholder}
 		/>
 	{:else}
@@ -51,7 +51,7 @@
 			class:border-transparent={!isFilled}
 			class:border-red-light={isFilled && !isValid}
 			class:border-green-light={isFilled && isValid}
-			class="w-full px-2 bg-gray-800 flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
+			class="w-full px-2 bg-gray-700 flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
 			{placeholder}
 		/>
 	{/if}

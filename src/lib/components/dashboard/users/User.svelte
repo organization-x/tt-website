@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { fly, slide } from "svelte/transition";
+	import { getContext } from "svelte";
+	import { slide } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
 	import { user as login } from "$lib/stores";
@@ -71,7 +72,9 @@
 					<img
 						height="512"
 						width="512"
-						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{Date.now()}"
+						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{getContext(
+							'timestamp'
+						)}"
 						alt="{user.name}'s avatar"
 						loading="lazy"
 						class="rounded-full bg-gray-400 w-20 h-20 object-cover object-center"
@@ -95,7 +98,7 @@
 					</h1>
 
 					<GradientText
-						class="from-green-light to-green-dark text-3xl break-words md:text-2xl lg:text-3xl"
+						class="from-green-light to-green-dark text-3xl md:text-2xl lg:text-3xl"
 					>
 						{user.name}
 					</GradientText>
@@ -103,7 +106,7 @@
 			</div>
 
 			<p
-				class="text-center font-normal mx-auto mt-6 max-w-sm md:text-start md:max-w-none md:mx-0 lg:mt-0"
+				class="text-center font-normal mx-auto mt-6 break-words max-w-sm md:text-start md:max-w-none md:mx-0 lg:mt-0 lg:overflow-hidden"
 			>
 				{user.about}
 			</p>

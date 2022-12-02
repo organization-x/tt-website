@@ -2,8 +2,8 @@ import { error } from "@sveltejs/kit";
 
 import { prisma, userAuth } from "$lib/prisma";
 
-import type { RequestHandler } from "./$types";
 import type { Prisma } from "@prisma/client";
+import type { RequestHandler } from "./$types";
 
 // Request handlers for managing user data in prisma, it uses the users session token to verify the API call
 
@@ -27,7 +27,8 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	try {
 		// Input validation
 		if (
-			(data.role && user.role !== "Admin") ||
+			(data.role !== user.role &&
+				(user.role !== "Admin" || data.role === "Admin")) ||
 			(data.name &&
 				(data.name.length > 25 ||
 					data.name.length < 1 ||
@@ -113,6 +114,9 @@ export const GET: RequestHandler = async ({ request }) => {
 							}
 						},
 						pinnedProject: true
+					},
+					orderBy: {
+						lastUpdated: "desc"
 					}
 				})
 			),

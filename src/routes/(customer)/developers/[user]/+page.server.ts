@@ -1,14 +1,14 @@
-import { prisma } from "$lib/prisma";
 import { redirect } from "@sveltejs/kit";
 import { getProjects } from "$lib/prisma";
+import { getKudos, prisma } from "$lib/prisma";
 
+import type { PageServerLoad } from "./$types";
 import type { User, Endorsement } from "@prisma/client";
-import type { LayoutServerLoad } from "./$types";
 
 // Grab project data using slug, if the project doesn't exist, redirect to the projects page.
 // The reason the typing on this is so weird is because we are selecting only specific properties of each
 // object and there isn't an easy way to type it
-export const load: LayoutServerLoad<{
+export const load: PageServerLoad<{
 	userPage: User & {
 		links: App.UserLinks;
 		pinnedProject?: App.ProjectWithMetadata;
@@ -17,6 +17,7 @@ export const load: LayoutServerLoad<{
 		})[];
 	};
 	projects: App.ProjectWithMetadata[];
+	kudos: App.Kudo[];
 }> = async ({ params }) => {
 	const userPage = (await prisma.user.findUnique({
 		where: { url: params.user },
@@ -64,10 +65,25 @@ export const load: LayoutServerLoad<{
 
 	if (!userPage) throw redirect(302, "/developers");
 
-	const projects = await getProjects({ ownerId: userPage.id, visible: true });
+	const projects = await getProjects({
+		OR: [
+			{
+				ownerId: userPage.id
+			},
+			{
+				authors: {
+					some: {
+						userId: userPage.id
+					}
+				}
+			}
+		],
+		visible: true
+	});
 
 	return {
 		userPage,
-		projects
+		projects,
+		kudos: await getKudos(userPage.id)
 	};
 };

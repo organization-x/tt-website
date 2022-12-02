@@ -24,7 +24,7 @@ const analytics = new BetaAnalyticsDataClient({
 });
 
 // Get analytics data for the specific user
-// * INPUT: startDate=string, endDate=string, ids?=string[]
+// * INPUT: startDate=string, endDate=string, mode=string, ids?=string[]
 // * OUTPUT: AnalyticsResponse | UsersAnalyticsResponse
 export const GET: RequestHandler = async ({ locals, request }) => {
 	const user = await userAuth(locals);
@@ -32,11 +32,17 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 	if (!user) throw error(401, "Unauthorized");
 
 	try {
-		const url = new URL(request.url).searchParams;
+		const query = new URL(request.url).searchParams;
+
+		const isPersonal = query.get("mode") === "Personal";
+
+		// If the query includes a mode other than personal and the user isn't an admin, throw bad request
+		if (!isPersonal && user.role !== "Admin")
+			throw error(400, "Bad Request");
 
 		// If the user is an admin, check if id's are provided to grab other users data. Otherwise
 		// proceed as normal
-		let ids = url.get("ids")?.split(",");
+		let ids = query.get("ids")?.split(",");
 
 		if (user.role === "Admin" && ids) {
 			const data: App.UsersAnalyticsResponse = {};
@@ -45,16 +51,12 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 			// Check if any of the ids have already been cached and grab their cached data instead
 			await Promise.all(
 				ids.map(async (id) => {
-					const now = new Date();
-
-					now.setDate(now.getDate() - 30);
-
 					// Get the cached data from redis, the hash is different from the normal analytics since we keep them
 					// seperate. The reason for this is because this request only gets view data while the others get much
 					// more for per-user analytics and we can't keep partial data under the same hash
 					const cached = await redis.get(
 						createHash("shake128", { outputLength: 10 })
-							.update("30daysAgo" + "today" + id)
+							.update("users" + id)
 							.digest("hex")
 					);
 
@@ -115,27 +117,44 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 
 			// Grab all the remaining waiting to be fetched data
 			if (requests.length) {
-				const reports = (
-					await analytics
-						.batchRunReports({
-							property: "properties/336430086",
-							requests
-						})
-						.catch(() => {
-							throw error(400, "Bad Request");
-						})
-				)[0].reports!;
+				let reports = [];
+
+				for (let i = 0; i < requests.length; i += 5) {
+					reports.push(
+						(
+							await analytics
+								.batchRunReports({
+									property: "properties/336430086",
+									requests: requests.slice(i, i + 5)
+								})
+								.catch(() => {
+									throw error(400, "Bad Request");
+								})
+						)[0].reports!
+					);
+				}
+
+				// Flatten all reports into one array
+				reports = reports.flat();
 
 				await Promise.all(
 					reports.map(async (report) => {
+						// If there's no data don't fill any out for this user
+						if (!report.rows?.length) return;
+
 						const analytics = {
-							new: parseInt(
-								report.rows![1].metricValues![0].value!
-							),
-							returning: parseInt(
-								report.rows![0].metricValues![0].value!
-							)
+							new: 0,
+							returning: 0
 						};
+
+						report.rows!.forEach((row) => {
+							const views = parseInt(row.metricValues![0].value!);
+
+							// If this row is for returning users, add the views, otherwise add it to new users
+							row.dimensionValues![0].value! === "returning"
+								? (analytics.returning += views)
+								: (analytics.new += views);
+						});
 
 						// Add it to the return data
 						data[report.rows![0].dimensionValues![1].value!] =
@@ -145,8 +164,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 							outputLength: 10
 						})
 							.update(
-								"30daysAgo" +
-									"today" +
+								"users" +
 									report.rows![0].dimensionValues![1].value!
 							)
 							.digest("hex");
@@ -160,17 +178,44 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 				);
 			}
 
+			// Add zeros for all the remaining users that returned no data
+			await Promise.all(
+				ids.map(async (id) => {
+					if (data[id]) return;
+
+					data[id] = { new: 0, returning: 0 };
+
+					const hash = createHash("shake128", {
+						outputLength: 10
+					})
+						.update("users" + id)
+						.digest("hex");
+
+					// Cache the data
+					await redis.set(
+						hash,
+						JSON.stringify({ new: 0, returning: 0 })
+					);
+
+					// Create a 6 hour caching period
+					await redis.expire(hash, 60 * 60 * 6);
+				})
+			);
+
 			return new Response(JSON.stringify(data), { status: 200 });
 		}
 
 		const data = {
-			startDate: url.get("startDate")!,
-			endDate: url.get("endDate")!
+			startDate: query.get("startDate")!,
+			endDate: query.get("endDate")!
 		};
 
-		// Create a unique hash of this request
+		// Create a unique hash of this request, if it's an admin add a boolean to the has to differentiate
+		// global data to their personal data
 		const hash = createHash("shake128", { outputLength: 10 })
-			.update(data.startDate + data.endDate + user.id)
+			.update(
+				data.startDate + data.endDate + user.id + String(isPersonal)
+			)
 			.digest("hex");
 
 		// Check if this request has been cached
@@ -178,9 +223,10 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 
 		if (cached) return new Response(cached, { status: 200 });
 
-		// Grab all projects this person is an author on to pull up relevant analytics
+		// Grab all projects this person is an author on to pull up relevant analytics, or if
+		// the user is an admin grab all projects
 		const projects = await prisma.project.findMany({
-			where: { ownerId: user.id },
+			...(isPersonal ? { where: { ownerId: user.id } } : {}),
 			select: { id: true, title: true }
 		});
 
@@ -222,14 +268,18 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 									}
 								}
 							},
-							{
-								filter: {
-									fieldName: "customEvent:id",
-									stringFilter: {
-										value: user.id
-									}
-								}
-							}
+							...(isPersonal
+								? [
+										{
+											filter: {
+												fieldName: "customEvent:id",
+												stringFilter: {
+													value: user.id
+												}
+											}
+										}
+								  ]
+								: [])
 						]
 					}
 				}
@@ -261,14 +311,18 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 									}
 								}
 							},
-							{
-								filter: {
-									fieldName: "customEvent:id",
-									stringFilter: {
-										value: user.id
-									}
-								}
-							}
+							...(isPersonal
+								? [
+										{
+											filter: {
+												fieldName: "customEvent:id",
+												stringFilter: {
+													value: user.id
+												}
+											}
+										}
+								  ]
+								: [])
 						]
 					}
 				},

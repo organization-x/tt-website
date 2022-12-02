@@ -64,7 +64,10 @@ declare global {
 		}
 
 		// Type for authors on projects
-		type Author = { user: User; position: Position };
+		type Author = {
+			user: Pick<User, "id" | "name" | "url">;
+			position: Position;
+		};
 
 		// Projects combined with their authors for easy access
 		type ProjectWithMetadata = Project & {
@@ -126,17 +129,23 @@ declare global {
 
 		// Interface for contact form email requests
 		interface MailRequest {
+			[key: string]: MailRequest[keyof MailRequest];
 			firstName: string;
 			lastName: string;
 			email: string;
 			phone?: string;
 			company: string;
 			talent: string[];
-			website?: string;
+			website: string;
 			doing: string;
 			refer?: string;
 			subject: string;
 			message: string;
+			developers: {
+				id: string;
+				name: string;
+				url: string;
+			}[];
 		}
 
 		// Interface for contact form response data
@@ -154,7 +163,45 @@ declare global {
 
 		// Interface for image upload response data
 		interface ImageUploadResponse {
+			id?: string;
+			theme?: string;
+		}
+
+		// Interface for a singular kudo with stripped data
+		interface Kudo {
 			id: string;
+			name: string;
+			reason: string;
+			type: "sent" | "received";
+			timestamp: string;
+		}
+
+		// Interface for Discord bot kudos response
+		interface KudosResponse {
+			ck: {
+				id: number;
+				reason: string;
+				receiver: {
+					id: string;
+					hippoId?: string;
+				};
+				receiverId: string;
+				sender: {
+					id: string;
+					hippoId?: string;
+				};
+				senderId: string;
+				timestamp: string;
+			}[];
+			page: number;
+			pageSize: number;
+			totalPages: number;
+		}
+
+		// Interface for URL metadata responses
+		interface UrlMetadataResponse {
+			title: string;
+			icon: string | null;
 		}
 
 		// interface Platform {}

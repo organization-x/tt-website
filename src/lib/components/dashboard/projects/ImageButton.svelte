@@ -24,7 +24,9 @@
 	$: open,
 		active,
 		(value = editor.getAttributes("image").src || ""),
-		(isUploaded = value.startsWith("blob:"));
+		value.startsWith("blob:") &&
+			(isUploaded = true) &&
+			(value = "Uploaded Image");
 
 	// Delete, change src, or add image
 	const onAction = (action: Action) => {
@@ -85,7 +87,7 @@
 	// Upload an image to Cloudflare images
 	const uploader = () =>
 		upload.files?.length &&
-		upload.files[0].size <= 1048576 &&
+		upload.files[0].size <= 2000000 &&
 		editor
 			.chain()
 			.focus()

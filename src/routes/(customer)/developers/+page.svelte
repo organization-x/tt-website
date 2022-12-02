@@ -21,7 +21,7 @@
 
 	import type { PageData } from "./$types";
 	import type { AnalyticsInstance } from "analytics";
-	import type { SoftSkill, TechSkill } from "@prisma/client";
+	import type { Prisma, SoftSkill, TechSkill } from "@prisma/client";
 
 	export let data: PageData;
 
@@ -52,7 +52,7 @@
 						? { hasEvery: techSkillFilter }
 						: undefined,
 					visible: true
-				})}`
+				} as Prisma.UserWhereInput)}`
 			)
 				.then((res) => res.json())
 				.then(async (users: App.UserWithMetadata[]) => {
@@ -373,7 +373,7 @@
 						in:fly={{ duration: 300, y: 30 }}
 						class="text-center font-semibold text-2xl"
 					>
-						No results
+						No Results
 					</h1>
 				{/await}
 			</div>

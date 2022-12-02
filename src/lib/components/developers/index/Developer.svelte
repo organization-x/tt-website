@@ -18,7 +18,7 @@
 
 <a
 	on:click
-	in:fly={{ duration: 300, y: 50 }}
+	in:fly={{ duration: 300, y: 30 }}
 	href="/developers/{user.url}"
 	rel="noreferrer noopener"
 	class="bg-gray-700 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full"
@@ -55,7 +55,7 @@
 		</div>
 	</div>
 
-	<p class="text-center md:text-lg md:text-start">
+	<p class="text-center break-words md:text-lg md:text-start">
 		{user.about}
 	</p>
 

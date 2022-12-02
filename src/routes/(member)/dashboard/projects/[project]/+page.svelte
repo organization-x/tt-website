@@ -1,5 +1,8 @@
 <script lang="ts">
+	import { Doc } from "yjs";
+	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
+	import { WebsocketProvider } from "y-websocket";
 
 	import { user } from "$lib/stores";
 	import { techSkills } from "$lib/enums";
@@ -19,11 +22,84 @@
 
 	export let data: PageData;
 
+	// Register document for syncing across clients with yjs
+	let doc = new Doc();
+
+	// Create a shared map with the only item being the project data for
+	// syncing across clients
+	const yMap = doc.getMap<
+		Omit<App.ProjectWithMetadata, "date"> & {
+			date: string;
+		}
+	>("project");
+
 	// Isolate the project data from the rest of the parent data
 	let project = data.project;
 
-	// Keep track whether this the user is an owner or a collaborator
-	const isOwner = $user.id === project.ownerId;
+	// Store whether we should ignore when the project array is changed, this is
+	// to prevent this clients changes looping back
+	let ignoreChange = true;
+
+	let ws: WebsocketProvider;
+
+	onMount(() => {
+		ws = new WebsocketProvider(
+			import.meta.env.PROD
+				? "wss://teamtomorrow.com"
+				: "ws://localhost:8080",
+			project.id,
+			doc
+		);
+
+		// When the websocket connects, check if there's any project data in the shared
+		// array, if not, push the project
+		ws.once("status", ({ status }: { status: string }) => {
+			if (status !== "connected") return;
+
+			// If the map is empty, this is the first client, so the project needs to be
+			// added
+			if (!yMap.size)
+				return yMap.set("project", {
+					...project,
+					date: project.date.toISOString()
+				});
+
+			const yProject = yMap.get("project")!;
+
+			project = {
+				...yProject,
+				date: new Date(yProject.date)
+			};
+
+			// After we've synced with the other clients, observe changes
+			yMap.observe(() => {
+				// If there's no length ignore since it most likely is the deletion step
+				// of updating the document
+				if (!yMap.size) return;
+
+				if (ignoreChange) return (ignoreChange = false);
+
+				// Get the project and parse all dates
+				const yProject = yMap.get("project")!;
+
+				// If the data matches what we currently have, ignore it
+				if (JSON.stringify(project) === JSON.stringify(yProject))
+					return;
+
+				project = {
+					...yProject,
+					date: new Date(yProject.date)
+				};
+			});
+		});
+
+		ws.on("sync", () => {
+			console.log("synced");
+		});
+	});
+
+	// Keep track whether this the user is the owner, a collaborator, or an admin
+	const isOwner = $user.id === project.ownerId || $user.role === "Admin";
 
 	// Store an original copy of the data
 	let original = JSON.parse(
@@ -45,7 +121,17 @@
 	let pinned = $user.pinnedProjectId === original.id;
 
 	const checkConstraints = () => {
+		if (disableForm) return;
+
+		ignoreChange = true;
 		disableButtons = true;
+
+		// Keep the project updated with peers if the websocket is connected
+		if (ws && ws.wsconnected)
+			yMap.set("project", {
+				...project,
+				date: project.date.toISOString()
+			});
 
 		const title = project.title.trim();
 		const description = project.description.trim();
@@ -61,7 +147,7 @@
 			return;
 
 		// Check that the content has changed, if yes, enable the buttons
-		if (JSON.stringify(original) !== JSON.stringify(project))
+		if (JSON.stringify(project) !== JSON.stringify(original))
 			disableButtons = false;
 	};
 
@@ -138,7 +224,7 @@
 
 				const url = blobs[node.attrs!.src as string];
 
-				// If the image already existed, switch back to it's already existing URL
+				// If the image already existed, switch back to it's already existing blob URL
 				if (url)
 					return (
 						(node.attrs!.src = url) &&
@@ -170,7 +256,7 @@
 					.then((res) => res.json())
 					.then(
 						({ id }: App.ImageUploadResponse) =>
-							images.push(id) &&
+							images.push(id!) &&
 							(node.attrs!.src = `https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/${id}/banner`)
 					);
 			})
@@ -256,7 +342,13 @@
 		await fetch("/api/images", {
 			method: "PATCH",
 			body
-		}).catch(() => {}); // Ignore errors, the avatar will just stay the same
+		})
+			.then((res) => res.json())
+			.then(
+				({ theme }: App.ImageUploadResponse) =>
+					(original.theme = theme!) && (project.theme = theme!)
+			)
+			.catch(() => {}); // Ignore errors, the avatar will just stay the same
 
 		// Reset the selected input value and enabled it
 		banner.value = "";
@@ -355,7 +447,7 @@
 		disabled={disableForm || !isOwner}
 		class:pointer-events-none={disableForm || !isOwner}
 		class:opacity-60={disableForm || !isOwner}
-		class="flex flex-col gap-5 w-full transition-opacity"
+		class="flex flex-col gap-5 w-full transition-opacity duration-200"
 	>
 		<div>
 			<Input
@@ -412,7 +504,7 @@
 			<DashButton
 				on:click={cancel}
 				disabled={disableButtons}
-				class="bg-gray-900 hover:bg-gray-900/60"
+				class="bg-gray-900 hover:bg-gray-900/60 disabled:hover:bg-gray-900"
 			>
 				Cancel
 			</DashButton>
@@ -420,7 +512,7 @@
 			<DashButton
 				on:click={save}
 				disabled={disableButtons}
-				class="bg-blue-light hover:bg-blue-light/80"
+				class="bg-blue-light hover:bg-blue-light/80 disabled:hover:bg-blue-light"
 			>
 				Save
 			</DashButton>
@@ -460,6 +552,8 @@
 	</div>
 
 	<TipTap
+		bind:ws
+		bind:doc
 		bind:blobs
 		bind:project
 		on:editor={({ detail }) => {

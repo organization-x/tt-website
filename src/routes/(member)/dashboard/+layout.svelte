@@ -1,6 +1,7 @@
 <script lang="ts">
 	import "../../../app.css";
 
+	import { setContext } from "svelte";
 	import { derived } from "svelte/store";
 	import { slide, crossfade } from "svelte/transition";
 
@@ -29,7 +30,7 @@
 	let element: HTMLElement;
 	let pageId = derived(
 		page,
-		($page) => $page.routeId?.split("/")[3] || "home"
+		($page) => $page.route.id?.split("/")[3] || "home"
 	);
 
 	// When the user menu is closed by a click outside of it, disabled the color transition
@@ -43,6 +44,11 @@
 		(disableTransition = true) &&
 		(userOpen = false);
 
+	// Create a timestamp so the images from Cloudflare don't cache and generate
+	// a new one every time the user navigates. This is used everywhere but the
+	// profile page since the information needs to update immediately
+	$: $page, setContext("timestamp", Date.now());
+
 	// Close the burger/user menu on navigation
 	afterNavigate(() => (burgerOpen = userOpen = false));
 
@@ -52,6 +58,10 @@
 </script>
 
 <svelte:window on:click={windowClick} />
+
+<svelte:head>
+	<meta name="robots" content="noindex" />
+</svelte:head>
 
 <header class="bg-black">
 	<div

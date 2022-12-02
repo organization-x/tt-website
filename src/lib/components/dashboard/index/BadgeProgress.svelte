@@ -9,7 +9,7 @@
 
 	progress = Math.floor(progress * 100);
 
-	const percent = tweened(progress === 100 ? 100 : 0, {
+	const percent = tweened(progress >= 100 ? 100 : 0, {
 		duration: 500,
 		easing: quadOut
 	});
@@ -21,7 +21,7 @@
 
 <div class="bg-gray-700 rounded-lg overflow-hidden">
 	<div class="flex gap-6 items-center px-5 py-6">
-		<div class:grayscale={progress !== 100} class="w-12 h-12 shrink-0">
+		<div class:grayscale={progress < 100} class="w-12 h-12 shrink-0">
 			<slot name="badge" />
 		</div>
 
@@ -34,7 +34,7 @@
 		</div>
 	</div>
 
-	{#if progress === 100}
+	{#if progress >= 100}
 		<div class="w-full h-2 {className}" />
 	{:else}
 		<div class="w-full h-2 bg-gray-500">

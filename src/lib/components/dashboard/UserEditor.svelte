@@ -277,7 +277,7 @@
 
 	<div class="z-10 lg:flex lg:gap-8 lg:justify-center">
 		<div
-			class="flex flex-col z-30 gap-4 lg:shrink-0 lg:sticky lg:h-min lg:mt-10 lg:top-0 lg:w-60"
+			class="flex flex-col z-30 gap-4 lg:shrink-0 lg:sticky lg:h-min lg:mt-10 lg:top-2 lg:w-60"
 		>
 			<label
 				class="rounded-full z-30 cursor-pointer w-fit border-4 mt-4 border-black mx-auto grid lg:mx-0"
@@ -317,7 +317,7 @@
 			</label>
 
 			<GradientText
-				class="from-green-light to-green-dark font-bold text-3xl break-words text-center w-full lg:text-start"
+				class="from-green-light to-green-dark font-bold text-3xl text-center lg:text-start"
 			>
 				{$original.name}
 			</GradientText>
@@ -359,7 +359,7 @@
 			>
 				<div class="flex flex-col gap-12 justify-between 3xl:w-1/2">
 					<ProfileSection title="About Me">
-						{#if $login.role === "Admin" && $login.id !== $original.id}
+						{#if $login.role === "Admin" && $login.id !== $original.id && $original.role !== "Admin"}
 							<Dropdown
 								options={roles}
 								required={true}
@@ -403,7 +403,7 @@
 						</Dropdown>
 					</ProfileSection>
 
-					<ProfileSection largeGrid={true} title="Links">
+					<ProfileSection title="Links" largeGrid={true}>
 						<Input
 							bind:value={user.links.GitHub}
 							placeholder="GitHub username"
@@ -449,7 +449,7 @@
 				</div>
 
 				<div class="flex flex-col gap-12 justify-between 3xl:w-[56%]">
-					<ProfileSection largeGrid={true} title="Positions">
+					<ProfileSection title="Positions" largeGrid={true}>
 						{#each { length: 4 } as _, i}
 							<Dropdown
 								{i}
@@ -468,7 +468,7 @@
 						{/each}
 					</ProfileSection>
 
-					<ProfileSection largeGrid={true} title="Top Skills">
+					<ProfileSection title="Top Skills" largeGrid={true}>
 						<div class="flex flex-col gap-6">
 							<h1 class="font-semibold text-xl text-center">
 								Soft
@@ -520,14 +520,15 @@
 				<DashButton
 					on:click={cancel}
 					disabled={disableButtons}
-					class="bg-gray-900 hover:bg-gray-900/60"
+					class="bg-gray-900 hover:bg-gray-900/60 disabled:hover:bg-gray-900"
 				>
 					Cancel
 				</DashButton>
+
 				<DashButton
 					on:click={save}
 					disabled={disableButtons}
-					class="bg-blue-light hover:bg-blue-light/60"
+					class="bg-blue-light hover:bg-blue-light/60 disabled:hover:bg-gray-900"
 				>
 					Save
 				</DashButton>

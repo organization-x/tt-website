@@ -1,21 +1,33 @@
 <script lang="ts">
+	import { user } from "$lib/stores";
 	import { tweened } from "svelte/motion";
 	import { DateOption } from "$lib/enums";
 	import { quintInOut } from "svelte/easing";
 	import DevTag from "$lib/components/DevTag.svelte";
+	import DateDropdown from "$lib/components/DateDropdown.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 	import DevTagLoading from "$lib/components/DevTagLoading.svelte";
 	import Graph from "$lib/components/dashboard/analytics/Graph.svelte";
+	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 	import DashSection from "$lib/components/dashboard/DashSection.svelte";
 	import DataKey from "$lib/components/dashboard/analytics/DataKey.svelte";
-	import DateDropdown from "$lib/components/dashboard/DateDropdown.svelte";
 	import Comparison from "$lib/components/dashboard/analytics/Comparison.svelte";
 	import GraphLoading from "$lib/components/dashboard/analytics/GraphLoading.svelte";
 
+	import type { Tweened } from "svelte/motion";
+
 	let custom: Date;
 	let selected = DateOption.Week;
+	let modeDebounce: NodeJS.Timeout;
 	let request: Promise<App.AnalyticsResponse> = new Promise(() => {});
+
+	// Custom animation for circular view ratio gradient
+	let percent: Tweened<number>;
+
+	// Store the mode that the analytics are in, admins can switch between personal and global analytics
+	let mode: "Global" | "Personal" =
+		$user.role === "Admin" ? "Personal" : "Personal";
 
 	// Encode dates based on the selected option
 	const encodeDate = (option: DateOption) => {
@@ -45,27 +57,39 @@
 		)}&endDate=${new Date().toLocaleDateString("en-CA")}`;
 	};
 
-	const search = () => {
-		request = fetch(`/api/stats?${encodeDate(selected)}`)
+	const onSearch = () => {
+		request = fetch(`/api/stats?${encodeDate(selected)}&mode=${mode}`)
 			.then((res) => res.json())
 			.then((analytics: App.AnalyticsResponse) => {
 				percent.set(
-					Math.trunc(
-						(analytics.new /
-							(analytics.new + analytics.returning)) *
-							100
-					)
+					analytics.new + analytics.returning
+						? Math.trunc(
+								(analytics.new /
+									(analytics.new + analytics.returning)) *
+									100
+						  )
+						: 0
 				);
 
 				return analytics;
 			});
 	};
 
-	// Custom animation for circular view ratio gradient
-	const percent = tweened(0, {
-		duration: 1500,
-		easing: quintInOut
-	});
+	// Show loading animation on mode switch while waiting for debounce also
+	// set animation percentage to zero
+	$: mode,
+		(request = new Promise(() => {})),
+		(percent = tweened(0, {
+			duration: 1500,
+			easing: quintInOut
+		}));
+
+	// Debounce for mode switching
+	const changeMode = () => {
+		clearTimeout(modeDebounce);
+
+		modeDebounce = setTimeout(onSearch, 300);
+	};
 </script>
 
 <svelte:head>
@@ -73,15 +97,43 @@
 </svelte:head>
 
 <DashWrap>
-	<DashHero title="Your Analytics" />
+	<DashHero title={$user.role === "Admin" ? "Analytics" : "Your Analytics"} />
 
 	<DateDropdown
 		on:change={() => (request = new Promise(() => {}))}
 		on:search={({ detail }) =>
 			(selected = detail.selected) &&
 			(custom = detail.custom) &&
-			search()}
+			onSearch()}
 	/>
+
+	{#if $user.role === "Admin"}
+		<div
+			class="flex gap-4 justify-center max-w-sm mx-auto mb-8 lg:mb-12 lg:-mt-4"
+		>
+			<DashButton
+				on:click={() => (mode = "Global") && changeMode()}
+				disabled={mode === "Global"}
+				class="flex-1 bg-gray-900 hover:bg-gray-900/60 disabled:hover:bg-gray-900 disabled:opacity-100{mode ===
+				'Global'
+					? ''
+					: ' opacity-60'}"
+			>
+				Global
+			</DashButton>
+
+			<DashButton
+				on:click={() => (mode = "Personal") && changeMode()}
+				disabled={mode === "Personal"}
+				class="flex-1 bg-gray-900 hover:bg-gray-900/60 disabled:hover:bg-gray-900 disabled:opacity-100{mode ===
+				'Personal'
+					? ''
+					: ' opacity-60'}"
+			>
+				Personal
+			</DashButton>
+		</div>
+	{/if}
 
 	<div class="text-center font-semibold flex flex-col gap-8">
 		<div class="flex flex-col gap-8">
@@ -168,7 +220,9 @@
 						{@const views = analytics.returning + analytics.new}
 
 						<div
-							class="rounded-full p-4 aspect-square w-52 mx-auto mb-6 from-blue-light to-blue-dark relative md:w-48 md:m-0 lg:shrink-0"
+							class:to-blue-dark={views}
+							class:from-blue-light={views}
+							class="rounded-full p-4 aspect-square w-52 mx-auto mb-6 relative md:w-48 md:m-0 lg:shrink-0"
 							style="background: conic-gradient(var(--tw-gradient-from) calc({$percent}%), var(--tw-gradient-to) 0)"
 						>
 							<div

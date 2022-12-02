@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { getContext } from "svelte";
+
+	import { developers } from "$lib/stores";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Header from "$lib/components/Header.svelte";
@@ -7,6 +10,9 @@
 	import Select from "$lib/components/contact/Select.svelte";
 	import { FieldType, techSkills, softSkills } from "$lib/enums";
 	import FormButton from "$lib/components/contact/FormButton.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
+	import Plus from "$lib/components/icons/general/Plus.svelte";
+	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
 
 	// Titles for each page of the contact form
 	const titles = [
@@ -15,6 +21,8 @@
 		"Time to deploy",
 		"That's it!"
 	];
+
+	const timestamp = getContext("timestamp");
 
 	let pageNum = 0;
 	let element: HTMLDivElement;
@@ -75,6 +83,11 @@
 		message: {
 			value: "",
 			valid: false,
+			page: 2
+		},
+		developers: {
+			selected: [],
+			valid: true,
 			page: 2
 		}
 	};
@@ -164,7 +177,7 @@
 
 	<div
 		bind:this={element}
-		class="flex flex-col gap-10 mt-8 max-w-xl mx-auto w-full lg:max-w-4xl h-[40rem]"
+		class="flex flex-col gap-10 mt-8 max-w-xl mx-auto w-full h-[40rem] sm:h-[43rem] lg:max-w-4xl lg:h-[46rem]"
 	>
 		{#if pageNum === 0}
 			<Field
@@ -256,6 +269,82 @@
 				title="Message"
 				placeholder="Elaborate and give us plenty of details"
 			/>
+
+			{#if $developers && $developers.length}
+				<div>
+					<h1 class="font-semibold">Saved Developers</h1>
+
+					<Scrollable
+						verticle={true}
+						class="mt-2 rounded-lg h-32 before:from-gray-900 after:to-gray-900 sm:h-36 lg:h-48"
+						innerClass="lg:grid lg:grid-cols-2 lg:gap-x-6"
+					>
+						{#each $developers as developer}
+							{@const index =
+								fields.developers.selected.findIndex(
+									({ id }) => id === developer.id
+								)}
+
+							<div
+								class:bg-white={index !== -1}
+								class:text-black={index !== -1}
+								class:bg-gray-700={index === -1}
+								class="flex gap-5 p-4 items-center rounded-lg transition-colors lg:h-min"
+							>
+								<img
+									class="rounded-full bg-gray-400 w-12 h-12 object-cover object-center"
+									height="512"
+									width="512"
+									src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{developer.id}/avatar?{timestamp}"
+									alt="{developer.name}'s avatar"
+									loading="lazy"
+								/>
+
+								<h1
+									class="font-semibold overflow-auto -ml-2 scrollbar-hidden"
+								>
+									{developer.name.split(" ")[0]}
+								</h1>
+
+								<a
+									href="/developers/{developer.url}"
+									target="_blank"
+									rel="noreferrer noopener"
+									class="ml-auto"
+								>
+									<ExternalLink class="w-4 h-4" />
+								</a>
+
+								<button
+									on:click={() =>
+										index > -1
+											? fields.developers.selected.splice(
+													index,
+													1
+											  ) &&
+											  (fields.developers.selected =
+													fields.developers.selected)
+											: (fields.developers.selected = [
+													// Typing isn't supported in Svelte HTML
+													// @ts-ignore
+													...fields.developers
+														.selected,
+													// @ts-ignore
+													developer
+											  ])}
+								>
+									<Plus
+										class="w-4 h-4 transition-transform{index >
+										-1
+											? ' rotate-45'
+											: ''}"
+									/>
+								</button>
+							</div>
+						{/each}
+					</Scrollable>
+				</div>
+			{/if}
 		{:else if pageNum === 3}
 			<div class="text-center my-auto">
 				<h1 class="text-2xl font-semibold text-center">

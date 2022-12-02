@@ -1,11 +1,9 @@
 <script lang="ts">
 	import "highlight.js/styles/atom-one-dark.css";
 
-	import { Doc } from "yjs";
 	import { onMount } from "svelte";
 	import { Editor } from "@tiptap/core";
 	import { createEventDispatcher } from "svelte";
-	import { WebsocketProvider } from "y-websocket";
 	import { extensions } from "$lib/tiptapExtensions";
 	import { Collaboration } from "@tiptap/extension-collaboration";
 	import { CollaborationCursor } from "@tiptap/extension-collaboration-cursor";
@@ -20,13 +18,16 @@
 	import ImageButton from "$lib/components/dashboard/projects/ImageButton.svelte";
 	import EditorButton from "$lib/components/dashboard/projects/EditorButton.svelte";
 
+	import type { Doc } from "yjs";
 	import type { JSONContent } from "@tiptap/core";
+	import type { WebsocketProvider } from "y-websocket";
 
 	const dispatch = createEventDispatcher<{
 		editor: Editor;
-		save: undefined;
 	}>();
 
+	export let doc: Doc;
+	export let ws: WebsocketProvider;
 	export let blobs: { [key: string]: string };
 
 	// Get the project data from the parent, this is also bound to for comparison
@@ -69,15 +70,6 @@
 				node.attrs!.src = blob;
 				blobs[blob] = node.attrs!.src as string;
 			})
-		);
-
-		// Register document with yjs for collaborative editing
-		const doc = new Doc();
-
-		const ws = new WebsocketProvider(
-			"ws://localhost:8080/dashboard/projects",
-			project.id,
-			doc
 		);
 
 		// Generate a random light color for the user
@@ -132,10 +124,12 @@
 				}),
 				CollaborationCursor.configure({
 					provider: ws,
+
 					user: {
 						name: $user.name,
 						color
 					},
+
 					render(props: { name: string; color: string }) {
 						const parent = document.createElement("span");
 						new Cursor({ target: parent, props });
@@ -149,9 +143,8 @@
 
 		// Destroy the editor on unmount
 		return () => {
-			editor.destroy();
-			ws.disconnect();
 			ws.destroy();
+			editor.destroy();
 		};
 	});
 

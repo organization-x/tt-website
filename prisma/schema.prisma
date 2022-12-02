@@ -190,7 +190,7 @@ model Project {
     url         String          @unique
     title       String
     description String
-    theme       String // A hex code extracted from the projects banner for theming
+    theme       String          @default("05274a") // A hex code extracted from the projects banner for theming
     date        DateTime
     skills      TechSkill[]
     authors     ProjectAuthor[]

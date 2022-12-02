@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { onMount } from "svelte";
+
+	import { carousel } from "$lib/seo";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Button from "$lib/components/Button.svelte";
@@ -45,6 +47,8 @@
 
 <svelte:head>
 	<title>Home</title>
+
+	{@html carousel(data.items)}
 </svelte:head>
 
 <!-- TODO: Put Adarsh's proper rendered video here-->
@@ -198,8 +202,7 @@
 		craft <strong>real experiences.</strong>
 	</Caption>
 
-	<div class="my-6 max-w-screen-xl mx-auto lg:-mt-10">
-		<!-- TODO: Remove these if statements once the database has these selected projects -->
+	<div class="my-6 max-w-screen-xl w-full mx-auto lg:-mt-10">
 		{#if data.projects[0]}
 			<Project {trackClick} project={data.projects[0]}>
 				<Hippo slot="svg" />
@@ -249,8 +252,6 @@
 		Seamlessly browse our team members to find who <strong>you</strong> can recruit
 		to best suite your needs
 	</Caption>
-
-	<!-- TODO: Remove these if statements once the database has these selected developers -->
 
 	<Carousel class="lg:flex lg:flex-col lg:gap-12 lg:max-w-xl">
 		{#if data.developers[0]}

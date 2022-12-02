@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { slide } from "svelte/transition";
-	import { createEventDispatcher } from "svelte";
+	import { createEventDispatcher, getContext } from "svelte";
 
 	import { user } from "$lib/stores";
 	import { getIcon } from "$lib/getIcon";
@@ -26,7 +26,7 @@
 	// Disable a few buttons that should only be used on the project management page
 	export let minified = false;
 
-	const timestamp = Date.now();
+	const timestamp = getContext("timestamp");
 
 	// Keep track whether this the user is an owner or a collaborator
 	const isOwner = $user.id === project.ownerId;
@@ -187,12 +187,29 @@
 					<DashButton
 						icon={true}
 						on:click={() => {
+							// Double check to make sure the user wants to delete the project, expire it after 3 seconds
+							if (!confirm)
+								return (
+									(confirm = true) &&
+									setTimeout(() => (confirm = false), 3000)
+								);
+
 							deleting = true;
 							dispatch("delete");
 						}}
-						class="bg-red-light hover:bg-red-light/60"
+						class="bg-red-light hover:bg-red-light/60 w-11"
 					>
-						<Trash class="w-4 h-4" />
+						<Check
+							class="w-4 h-4 absolute m-auto inset-0 duration-150 transition-opacity {confirm
+								? 'delay-150'
+								: 'opacity-0'}"
+						/>
+
+						<Trash
+							class="w-4 h-4 absolute m-auto inset-0 duration-150 transition-opacity {confirm
+								? 'opacity-0'
+								: 'delay-150'}"
+						/>
 					</DashButton>
 				{/if}
 			</div>

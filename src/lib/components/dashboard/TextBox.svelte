@@ -17,7 +17,7 @@
 		type="text"
 		class:bg-gray-700={lightBg}
 		class:bg-gray-900={!lightBg}
-		class="w-full h-72 resize-none p-4 rounded-lg select-none focus:outline-none"
+		class="w-full h-72 resize-none p-4 pr-1 rounded-lg select-none scrollbar overflow-y-scroll focus:outline-none"
 		maxlength={max}
 		{placeholder}
 	/>

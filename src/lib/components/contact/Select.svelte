@@ -55,7 +55,7 @@
 			class:border-transparent={!changed || !required || radio}
 			class:border-red-light={changed && !isValid && required && !radio}
 			class:border-green-light={changed && isValid && required && !radio}
-			class="absolute z-10 pointer-events-none inset-0 top-8 border-2 transition-[border-color] rounded-lg h-[21.25rem] sm:top-9"
+			class="absolute z-10 pointer-events-none inset-0 top-8 border-2 transition-[border-color] rounded-[0.65rem] h-[22.75rem] sm:top-9"
 		/>
 	{/if}
 </div>

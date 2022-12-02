@@ -5,11 +5,9 @@ import { env } from "$env/dynamic/private";
 
 import type { RequestHandler } from "./$types";
 
-// TODO: Change to actual production URL
-const redirectUri =
-	env.NODE_ENV === "production"
-		? "https://tt-site.fly.dev/login"
-		: "http://localhost:5173/login";
+const redirectUri = import.meta.env.PROD
+	? "https://teamtomorrow.com/login"
+	: "http://localhost:5173/login";
 
 const redirectUriEncoded = encodeURIComponent(redirectUri);
 
@@ -97,17 +95,13 @@ export const GET: RequestHandler = async (request) => {
 			// Give them the default profile picture and banner on Cloudflare Images
 			const body = new FormData();
 
-			// TODO: Remove after avatar glitch has been fixed
-			console.log(avatar);
-
-			// TODO: Replace URL for production
 			// Append the appropriate data, try to use the discord avatar if possible
 			body.append("id", "avatar-" + id);
 			body.append(
 				"url",
 				avatar
-					? "https://tt-site.fly.dev/assets/default/avatar.webp"
-					: `https://cdn.discordapp.com/avatars/${id}/${avatar}.webp`
+					? `https://cdn.discordapp.com/avatars/${id}/${avatar}.webp`
+					: "https://teamtomorrow.com/assets/default/avatar.webp"
 			);
 
 			// Add avatar
@@ -122,11 +116,10 @@ export const GET: RequestHandler = async (request) => {
 				}
 			);
 
-			// TODO: Replace URL for production
 			body.set("id", "banner-" + id);
 			body.set(
 				"url",
-				"https://tt-site.fly.dev/assets/default/banner.webp"
+				"https://teamtomorrow.com/assets/default/banner.webp"
 			);
 
 			// Add banner
@@ -160,8 +153,8 @@ export const GET: RequestHandler = async (request) => {
 		const session = await createSession();
 
 		// Set session cookie and remove state cookie
-		request.cookies.set("session", session, { maxAge: 604800 });
-		request.cookies.set("state", "", { maxAge: 0 });
+		request.cookies.set("session", session, { maxAge: 604800, path: "/" });
+		request.cookies.delete("state", { path: "/login" });
 
 		// Redirect to the main dashboard page
 		throw redirect(302, "/dashboard");

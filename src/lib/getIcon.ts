@@ -1,6 +1,5 @@
 import C from "$lib/components/icons/logos/C.svelte";
 import R from "$lib/components/icons/logos/R.svelte";
-import Expo from "$lib/components/icons/logos/Expo.svelte";
 import Aws from "$lib/components/icons/logos/Aws.svelte";
 import Zig from "$lib/components/icons/logos/Zig.svelte";
 import Yew from "$lib/components/icons/logos/Yew.svelte";
@@ -12,6 +11,7 @@ import Tux from "$lib/components/icons/logos/Tux.svelte";
 import Bun from "$lib/components/icons/logos/Bun.svelte";
 import Lua from "$lib/components/icons/logos/Lua.svelte";
 import Fly from "$lib/components/icons/logos/Fly.svelte";
+import Expo from "$lib/components/icons/logos/Expo.svelte";
 import Nuxt from "$lib/components/icons/logos/Nuxt.svelte";
 import Perl from "$lib/components/icons/logos/Perl.svelte";
 import Cog from "$lib/components/icons/general/Cog.svelte";

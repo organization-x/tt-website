@@ -7,25 +7,21 @@
 	let hover = true;
 
 	// Show label temporarily after the cursor updates
-	let timeout = setTimeout(() => {
-		hover = false;
-	}, 3000);
+	let timeout = setTimeout(() => (hover = false), 3000);
 
 	const onHover = (hovering: boolean) => {
 		clearTimeout(timeout);
 
-		if (hovering) hover = true;
-		else
-			timeout = setTimeout(() => {
-				hover = false;
-			}, 3000);
+		hovering
+			? (hover = true)
+			: (timeout = setTimeout(() => (hover = false), 3000));
 	};
 
 	// Custom slide transition for revealing the cursor name
 	const slide = (_: Element): TransitionConfig => {
 		return {
-			duration: 50,
-			css: (t, u) => `clip-path: inset(0 0 % ${u * 100}%)`
+			duration: name.length * 4,
+			css: (_, u) => `clip-path: inset(0 0 0 ${u * 100}%)`
 		};
 	};
 </script>
@@ -39,7 +35,7 @@
 	{#if hover}
 		<div
 			transition:slide
-			class="rounded-sm rounded-br-none text-xs -right-[1.5px] px-1 py-0.5 absolute -top-5 whitespace-nowrap select-none pointer-events-none "
+			class="rounded-sm rounded-br-none text-xs -right-[1.5px] px-1 py-0.5 absolute -top-5 whitespace-nowrap select-none pointer-events-none"
 			style="background-color: {color};"
 			contenteditable="false"
 		>

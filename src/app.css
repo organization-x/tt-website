@@ -19,7 +19,7 @@
 	}
 
 	body {
-		@apply h-full flex flex-col;
+		@apply h-full;
 	}
 
 	img {
@@ -69,5 +69,9 @@
 
 	.project-cols:nth-child(even) {
 		grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+	}
+
+	.skill-hover:hover > div {
+		@apply opacity-100 -top-9 sm:-top-10;
 	}
 }

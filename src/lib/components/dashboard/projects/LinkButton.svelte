@@ -12,10 +12,10 @@
 
 	let open = false;
 	let input: HTMLInputElement;
-	let value = editor.getAttributes("link").src || "";
+	let value = editor.getAttributes("link").href || "";
 
 	// Reactivity to update the input value based on the current link
-	$: open, active, (value = editor.getAttributes("link").src || "");
+	$: open, active, (value = editor.getAttributes("link").href || "");
 
 	// Open up either the link editing menu, or, if it isn't currently active as a link, the new link menu
 	const onAction = (action: Action) => {

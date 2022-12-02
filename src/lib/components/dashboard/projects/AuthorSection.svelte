@@ -1,31 +1,21 @@
 <script lang="ts">
-	import { onMount } from "svelte";
 	import { slide, fly } from "svelte/transition";
 
 	import { user } from "$lib/stores";
 	import { debounce } from "$lib/debounce";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 	import Search from "$lib/components/icons/general/Search.svelte";
 	import AuthorEditor from "$lib/components/dashboard/projects/AuthorEditor.svelte";
 
-	import type { User } from "@prisma/client";
+	import type { Prisma, User } from "@prisma/client";
 
 	export let ownerId: string;
 	export let authors: App.Author[];
 
-	// Keep track of which side is disabled
-	const enum Side {
-		Top,
-		Bottom,
-		Both,
-		None
-	}
-
 	let search = "";
-	let innerHeight: number;
-	let clientHeight: number;
-	let disabledSide = Side.Both;
-	let scrollable: HTMLDivElement;
-	let request: Promise<User[]> = new Promise(() => {});
+	let request: Promise<Pick<User, "id" | "name" | "url">[]> = new Promise(
+		() => {}
+	);
 
 	// Update search value on input
 	const onSearch = () =>
@@ -41,104 +31,66 @@
 					name: {
 						contains: search.trim(),
 						mode: "insensitive"
+					},
+
+					id: {
+						not: {
+							in: [
+								...authors.map((author) => author.user.id),
+								$user.id
+							]
+						}
 					}
-				})}`
+				} as Prisma.UserWhereInput)}`
 			)
 				.then((res) => res.json())
-				.then((data: User[]) => {
-					// Filter users out who are already collaborators
-					let results = data.filter(
-						(result) =>
-							!authors.some(
-								(author) => author.user.id === result.id
-							)
-					);
-
-					results.length ? res(results) : rej();
-				});
+				.then((data: User[]) =>
+					data.length
+						? res(
+								// Transform users into Authors, stripping out unnecessary data
+								data.map((user) => ({
+									id: user.id,
+									url: user.url,
+									name: user.name
+								}))
+						  )
+						: rej()
+				);
 		}));
-
-	// Update which gradient on either side is shown based on where the element is scrolled to
-	const checkGradient = () => {
-		if (innerHeight >= 1024) return;
-
-		if (clientHeight === scrollable.scrollHeight) disabledSide = Side.Both;
-		else if (scrollable.scrollTop === 0) disabledSide = Side.Top;
-		else if (
-			scrollable.scrollTop - (scrollable.scrollHeight - clientHeight) >=
-			-0.5
-		)
-			disabledSide = Side.Bottom;
-		else disabledSide = Side.None;
-	};
-
-	$: clientHeight, scrollable && checkGradient();
-
-	// Update the gradients based off of content in them on mount
-	onMount(() => {
-		// Create an observer to update the gradient on scrollHeight change
-		const observer = new MutationObserver(checkGradient);
-
-		observer.observe(scrollable, {
-			subtree: true,
-			attributes: true
-		});
-
-		checkGradient();
-
-		return () => observer.disconnect();
-	});
 </script>
-
-<svelte:window bind:innerHeight />
 
 <div class="lg:flex lg:justify-between lg:gap-14">
 	<div class="relative lg:w-full">
 		<h1 class="font-semibold text-xl">Authors</h1>
 		<div class="bg-gray-900 p-4 mt-3 rounded-lg after:inset-x-0">
-			<div
-				class:before:opacity-0={disabledSide === Side.Top ||
-					disabledSide === Side.Both}
-				class:after:opacity-0={disabledSide === Side.Bottom ||
-					disabledSide === Side.Both}
-				class="relative
-
-                before:transition-opacity before:duration-300 before:z-10 before:absolute before:top-0 before:w-full before:h-8 before:bg-gradient-to-b before:from-gray-900 before:to-transparent before:pointer-events-none
-
-                after:transition-opacity after:duration-300 after:z-10 after:absolute after:bottom-0 after:w-full after:h-8 after:bg-gradient-to-t after:from-gray-900 after:to-transparent after:pointer-events-none
-
-                lg:before:hidden lg:after:hidden"
+			<Scrollable
+				verticle={true}
+				class="before:from-gray-900 after:to-gray-900"
+				innerClass="gap-0 max-lg:max-h-[27.5rem] lg:grid lg:grid-cols-2 lg:gap-x-4 lg:overflow-visible"
 			>
-				<div
-					bind:clientHeight
-					bind:this={scrollable}
-					on:scroll={checkGradient}
-					class="scrollbar-hidden overflow-auto max-lg:max-h-[27.5rem] lg:grid lg:grid-cols-2 lg:gap-x-4 lg:overflow-visible"
-				>
-					{#each authors as author (author.user.id)}
-						{@const cantRemove =
-							author.user.id === $user.id ||
-							author.user.id === ownerId}
+				{#each authors as author (author.user.id)}
+					{@const cantRemove =
+						author.user.id === $user.id ||
+						author.user.id === ownerId}
 
-						<AuthorEditor
-							bind:author
-							{cantRemove}
-							on:click={() => {
-								if (cantRemove) return;
+					<AuthorEditor
+						bind:author
+						{cantRemove}
+						on:click={() => {
+							if (cantRemove) return;
 
-								authors = authors.filter(
-									(user) => author.user.id !== user.user.id
-								);
+							authors = authors.filter(
+								(user) => author.user.id !== user.user.id
+							);
 
-								// Requery the search
-								onSearch();
-							}}
-						/>
-					{/each}
-				</div>
-			</div>
+							// Requery the search
+							onSearch();
+						}}
+					/>
+				{/each}
+			</Scrollable>
 
-			<div class="bg-gray-700 rounded-lg mt-4 lg:col-span-2 lg:mt-0">
+			<div class="bg-gray-700 rounded-lg lg:col-span-2 lg:mt-0">
 				<div class="flex select-none lg:col-span-2">
 					<div
 						class:w-0={search.length}
@@ -229,7 +181,7 @@
 								in:fly={{ y: 20, duration: 200 }}
 								class="text-center"
 							>
-								No results
+								No Results
 							</h1>
 						{/await}
 					</div>

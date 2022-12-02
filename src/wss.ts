@@ -25,6 +25,9 @@ const enum Message {
 
 const docs = new Map<string, SharedDoc>();
 
+// Store the websocket server in a variable so it can be used by all functions
+let ws: WebSocketServer;
+
 const close = (doc: SharedDoc, socket: WebSocket) => {
 	// If the doc contains the socket then remove it and disengage the awareness associated with it
 	const ids = doc.sockets.get(socket);
@@ -34,6 +37,9 @@ const close = (doc: SharedDoc, socket: WebSocket) => {
 	}
 
 	socket.close();
+
+	// If this is the last socket, delete the doc
+	if (!doc.sockets.size) docs.delete(doc.id);
 };
 
 const send = (doc: SharedDoc, socket: WebSocket, message: Uint8Array) => {
@@ -48,14 +54,14 @@ const send = (doc: SharedDoc, socket: WebSocket, message: Uint8Array) => {
 };
 
 class SharedDoc extends Doc {
-	name: string;
+	id: string;
 	sockets: Map<WebSocket, Set<number>>;
 	awareness: Awareness;
 
-	constructor(name: string) {
+	constructor(id: string) {
 		super();
 
-		this.name = name;
+		this.id = id;
 
 		this.sockets = new Map();
 
@@ -101,7 +107,7 @@ class SharedDoc extends Doc {
 			}
 		);
 
-		this.on("update", (update: Uint8Array, origin, doc: SharedDoc) => {
+		this.on("update", (update: Uint8Array, _, doc: SharedDoc) => {
 			const encoder = encoding.createEncoder();
 
 			encoding.writeVarUint(encoder, Message.Sync);
@@ -115,38 +121,41 @@ class SharedDoc extends Doc {
 	}
 }
 
+// TODO: After-save states
+// TODO: On project save functionality
+// TODO: Cross-network testing
+// TODO: Author permissions
+
 // WebSocket server for TipTap collaboration.
-// Currently it's using port 8080 since HMR interferes with it
-export const wss: Plugin = {
-	name: "wsServer",
+// Uses port 8080 in a dev enviornment to not interfere with HMR, in production it uses port 3000 and the provided server
+export const wss = (mode: string): Plugin => ({
+	name: "wss",
 
 	configureServer(server) {
-		const wss = new WebSocketServer({
-			port: 8080,
+		ws = new WebSocketServer({
+			...(mode === "production"
+				? { server: server.httpServer! }
+				: { port: 8080 }),
 			verifyClient: async (info, res) => {
 				// Check to see if the session is valid and if the user associated with it
 				// is an author of the project
 
 				// Grab the project id from the url
-				const projectId = info.req.url?.split("/")[3];
+				const projectId = info.req.url?.split("/")[1];
 
-				// If the url is not a collaboration url, ignore
-				if (
-					!info.req.url?.startsWith("/dashboard/projects/") ||
-					!projectId
-				)
-					return res(false, 404, "Not Found");
+				// If the url doesn't include a project ID, ignore
+				if (!projectId) return res(false, 404, "Not Found");
 
 				// Grab the session cookie and verify the session
 				const session = parse(info.req.headers.cookie || "").session;
 
 				if (!session) return res(false, 401, "Unauthorized");
 
-				const sesh = await prisma.session.findUnique({
-					where: { token: session }
+				const user = await prisma.user.findMany({
+					where: { sessions: { some: { token: session } } }
 				});
 
-				if (!sesh) return res(false, 401, "Unauthorized");
+				if (!user.length) return res(false, 401, "Unauthorized");
 
 				const project = await prisma.project.findUnique({
 					where: { id: projectId },
@@ -156,22 +165,26 @@ export const wss: Plugin = {
 				if (!project) return res(false, 404, "Not Found");
 
 				// Check to see if the user is an author of the project
-				project.authors.some((author) => author.userId === sesh.userId)
+				project.authors.some(
+					(author) => author.userId === user[0].id
+				) || user[0].role === "Admin"
 					? res(true)
 					: res(false, 401, "Unauthorized");
 			}
 		});
 
-		wss.on("connection", (socket, req) => {
+		ws.on("connection", (socket, req) => {
 			socket.binaryType = "arraybuffer";
 
-			const projectId = req.url!.split("/")[3];
+			const projectId = req.url!.split("/")[1];
 
 			// If the shared doc hasn't been initialized, create it
 			if (!docs.has(projectId))
 				docs.set(projectId, new SharedDoc(projectId));
 
 			const doc = docs.get(projectId)!;
+
+			console.log(doc, projectId);
 
 			// Add the socket to the doc's socket map with a corresponding set to keep track of client ID's
 			doc.sockets.set(socket, new Set());
@@ -231,6 +244,23 @@ export const wss: Plugin = {
 			}
 		});
 	}
-};
+});
+
+// When a project is saved, send an awareness update to all the clients connected that
+// the project is currently saving, and also notify them once it's finished along with
+// the data that was saved
+// export const saveProject = () => (id: string) => {
+// 	const doc = docs.get(id);
+
+// 	console.log(docs.size);
+
+// 	if (!doc) return;
+
+// 	doc.sockets.forEach((_, socket) => {
+// 		socket.send("test", (err) => console.log(err));
+// 	});
+// };
+
+// setInterval(() => console.log(docs.size), 2000);
 
 // TODO: Do testing with other actual clients and make sure everything works

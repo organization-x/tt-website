@@ -1,3 +1,5 @@
-# Temporary for demonstration purposes so the site doesnt get leaked
-User-agent: *
-Disallow: *
+# Stop promotional images from appearing in Google images
+User-agent: Googlebot-Image
+Disallow: /static/
+
+Sitemap: https://teamtomorrow.com/sitemap.xml
