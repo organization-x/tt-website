@@ -3,7 +3,7 @@ import R from "$lib/components/icons/logos/R.svelte";
 import Aws from "$lib/components/icons/logos/Aws.svelte";
 import Zig from "$lib/components/icons/logos/Zig.svelte";
 import Yew from "$lib/components/icons/logos/Yew.svelte";
-import PHP from "$lib/components/icons/logos/PHP.svelte";
+import Php from "$lib/components/icons/logos/Php.svelte";
 import Vue from "$lib/components/icons/logos/Vue.svelte";
 import Cpp from "$lib/components/icons/logos/Cpp.svelte";
 import Git from "$lib/components/icons/logos/Git.svelte";
@@ -185,7 +185,7 @@ const icons: { [key: string]: ComponentType } = {
 	Java: Java,
 	Golang: Golang,
 	Docker: Docker,
-	PHP: PHP,
+	PHP: Php,
 	Tailwind: Tailwind,
 	SQL: Data,
 	Angular: Angular,

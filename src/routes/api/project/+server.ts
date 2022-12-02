@@ -1,7 +1,6 @@
 import { error } from "@sveltejs/kit";
 import { parse } from "node-html-parser";
 
-import { saveProject } from "../../../wss";
 import { env } from "$env/dynamic/private";
 import { prisma, userAuth, getProjects } from "$lib/prisma";
 
@@ -72,7 +71,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		}
 
 		// Let all collaboration-connected clients know that the project is being saved
-		saveProject(project.id);
+		// saveProject(project.id);
 
 		// Update the image IDs inside of the project content
 		if (data.images) {
