@@ -74,6 +74,11 @@ declare global {
 			authors: Author[];
 		};
 
+		// Project with dates encoded as strings for yjs collaboration state
+		type SharedProject = Omit<App.ProjectWithMetadata, "date"> & {
+			date: string;
+		};
+
 		// Interface for project update requests
 		interface ProjectUpdateRequest {
 			id: string;

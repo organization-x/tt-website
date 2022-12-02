@@ -247,7 +247,7 @@
 			.userPage.id}/avatar"
 	/>
 
-	{@html breadcrumb(data.userPage.name, data.userPage.url)}
+	{@html breadcrumb(data.userPage.name, data.userPage.url, "developers")}
 </svelte:head>
 
 <div class="relative pt-18 px-4 lg:px-10">

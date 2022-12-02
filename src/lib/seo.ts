@@ -2,7 +2,11 @@
 // schema.org types
 
 // Generate breadcrumb structured data
-export const breadcrumb = (title: string, url: string) =>
+export const breadcrumb = (
+	title: string,
+	url: string,
+	type: "projects" | "developers"
+) =>
 	`<script type="application/ld+json">${JSON.stringify({
 		"@context": "https://schema.org",
 		"@type": "BreadcrumbList",
@@ -17,7 +21,7 @@ export const breadcrumb = (title: string, url: string) =>
 				"@type": "ListItem",
 				position: 2,
 				name: title,
-				item: `https://teamtomorrow.com/projects/${url}`
+				item: `https://teamtomorrow.com/${type}/${url}`
 			}
 		]
 	})}</script>`;

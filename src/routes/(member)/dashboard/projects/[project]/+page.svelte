@@ -27,11 +27,7 @@
 
 	// Create a shared map with the only item being the project data for
 	// syncing across clients
-	const yMap = doc.getMap<
-		Omit<App.ProjectWithMetadata, "date"> & {
-			date: string;
-		}
-	>("project");
+	const yMap = doc.getMap<App.SharedProject | boolean>("project");
 
 	// Isolate the project data from the rest of the parent data
 	let project = data.project;
@@ -64,7 +60,7 @@
 					date: project.date.toISOString()
 				});
 
-			const yProject = yMap.get("project")!;
+			const yProject = yMap.get("project")! as App.SharedProject;
 
 			project = {
 				...yProject,
@@ -77,10 +73,18 @@
 				// of updating the document
 				if (!yMap.size) return;
 
-				if (ignoreChange) return (ignoreChange = false);
+				// If the project is marked as saving, set the form and buttons to disabled
+				if (yMap.get("saving"))
+					return (disableForm = true) && (disableButtons = true);
+				else if (disableForm) {
+					disableForm = false;
+					checkConstraints();
+				}
+
+				if (ignoreChange || disableForm) return (ignoreChange = false);
 
 				// Get the project and parse all dates
-				const yProject = yMap.get("project")!;
+				const yProject = yMap.get("project")! as App.SharedProject;
 
 				// If the data matches what we currently have, ignore it
 				if (JSON.stringify(project) === JSON.stringify(yProject))
@@ -91,10 +95,6 @@
 					date: new Date(yProject.date)
 				};
 			});
-		});
-
-		ws.on("sync", () => {
-			console.log("synced");
 		});
 	});
 
@@ -127,7 +127,7 @@
 		disableButtons = true;
 
 		// Keep the project updated with peers if the websocket is connected
-		if (ws && ws.wsconnected)
+		if (ws && ws.wsconnected && !disableForm)
 			yMap.set("project", {
 				...project,
 				date: project.date.toISOString()
@@ -145,6 +145,8 @@
 			project.skills.length < 2
 		)
 			return;
+
+		console.log(disableButtons);
 
 		// Check that the content has changed, if yes, enable the buttons
 		if (JSON.stringify(project) !== JSON.stringify(original))
@@ -208,6 +210,10 @@
 		disableButtons = true;
 
 		const content = editor.getJSON();
+
+		// Set the saving state to true to let other clients know that saving is
+		// being done
+		yMap.set("saving", true);
 
 		// Create a new array to keep track of image ID's as to remove images that do not
 		// appear in the document anymore
@@ -314,6 +320,8 @@
 			original = JSON.parse(JSON.stringify({ ...project, content }));
 
 			disableForm = false;
+
+			yMap.set("saving", false);
 
 			checkConstraints();
 		});

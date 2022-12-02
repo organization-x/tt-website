@@ -184,8 +184,6 @@ export const wss = (mode: string): Plugin => ({
 
 			const doc = docs.get(projectId)!;
 
-			console.log(doc, projectId);
-
 			// Add the socket to the doc's socket map with a corresponding set to keep track of client ID's
 			doc.sockets.set(socket, new Set());
 
@@ -245,22 +243,5 @@ export const wss = (mode: string): Plugin => ({
 		});
 	}
 });
-
-// When a project is saved, send an awareness update to all the clients connected that
-// the project is currently saving, and also notify them once it's finished along with
-// the data that was saved
-// export const saveProject = () => (id: string) => {
-// 	const doc = docs.get(id);
-
-// 	console.log(docs.size);
-
-// 	if (!doc) return;
-
-// 	doc.sockets.forEach((_, socket) => {
-// 		socket.send("test", (err) => console.log(err));
-// 	});
-// };
-
-// setInterval(() => console.log(docs.size), 2000);
 
 // TODO: Do testing with other actual clients and make sure everything works

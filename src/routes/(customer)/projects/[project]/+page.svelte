@@ -112,7 +112,7 @@
 		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.id}/banner"
 	/>
 
-	{@html breadcrumb(data.title, data.url)}
+	{@html breadcrumb(data.title, data.url, "projects")}
 	{@html article(
 		data.title,
 		data.description,

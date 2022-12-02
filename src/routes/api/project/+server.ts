@@ -70,9 +70,6 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			throw error(400, "Bad Request");
 		}
 
-		// Let all collaboration-connected clients know that the project is being saved
-		// saveProject(project.id);
-
 		// Update the image IDs inside of the project content
 		if (data.images) {
 			// Check if the newly submitted images exist on Cloudflare

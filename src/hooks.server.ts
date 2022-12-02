@@ -1,3 +1,4 @@
+import {} from "./wss";
 import type { Handle } from "@sveltejs/kit";
 
 // Intercept connections
