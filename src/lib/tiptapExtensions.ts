@@ -1,5 +1,6 @@
 import { Link } from "$lib/link";
 import { lowlight } from "lowlight";
+import { Extension } from "@tiptap/core";
 import c from "highlight.js/lib/languages/c";
 import { Text } from "@tiptap/extension-text";
 import { Bold } from "@tiptap/extension-bold";
@@ -15,8 +16,8 @@ import php from "highlight.js/lib/languages/php";
 import { Italic } from "@tiptap/extension-italic";
 import { Strike } from "@tiptap/extension-strike";
 import java from "highlight.js/lib/languages/java";
-import json from "highlight.js/lib/languages/json";
 import bash from "highlight.js/lib/languages/bash";
+import json from "highlight.js/lib/languages/json";
 import rust from "highlight.js/lib/languages/rust";
 import perl from "highlight.js/lib/languages/perl";
 import ruby from "highlight.js/lib/languages/ruby";
@@ -39,13 +40,6 @@ import markdown from "highlight.js/lib/languages/markdown";
 import { OrderedList } from "@tiptap/extension-ordered-list";
 import typescript from "highlight.js/lib/languages/typescript";
 import javascript from "highlight.js/lib/languages/javascript";
-import {
-	combineTransactionSteps,
-	Extension,
-	getChangedRanges,
-	getNodeType
-} from "@tiptap/core";
-
 import { CodeBlockLowlight } from "@tiptap/extension-code-block-lowlight";
 
 // Generating HTML using Tiptap requires me to re-define all the HTML attributes for every extension.

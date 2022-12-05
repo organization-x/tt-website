@@ -33,6 +33,7 @@
 </script>
 
 <div
+	spellcheck="false"
 	contenteditable="false"
 	class:opacity-0={!$active}
 	class:translate-y-1.5={!$active}

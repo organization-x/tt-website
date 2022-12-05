@@ -27,10 +27,12 @@
 </script>
 
 <span
+	spellcheck="false"
+	contenteditable="false"
+	style="border-color: {color}"
+	class="select-none relative border-x-[1.5px] -mx-[1.5px] cursor-text"
 	on:mouseenter={() => onHover(true)}
 	on:mouseleave={() => onHover(false)}
-	class="select-none relative border-x-[1.5px] -m-[1.5px] break-normal cursor-text"
-	style="border-color: {color}"
 >
 	{#if hover}
 		<div

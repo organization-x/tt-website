@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Editor } from "@tiptap/core";
-
 	import HeadingIcon from "$lib/components/icons/general/HeadingIcon.svelte";
 	import HeadOneIcon from "$lib/components/icons/general/HeadOneIcon.svelte";
 	import HeadTwoIcon from "$lib/components/icons/general/HeadTwoIcon.svelte";
 	import HeadThreeIcon from "$lib/components/icons/general/HeadThreeIcon.svelte";
 	import ExpandButton from "$lib/components/dashboard/projects/ExpandButton.svelte";
+
+	import type { Editor } from "@tiptap/core";
 
 	export let editor: Editor;
 	export let active: boolean;

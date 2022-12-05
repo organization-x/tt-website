@@ -52,11 +52,10 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		} else if (
 			project.authors.some((author) => author.userId === user.id)
 		) {
-			// Input validation, check if the collaborator is submitting any data besides the content, images, or ID
+			// Check if this user is an author and is submitting any author or visibility data
 			if (
 				Object.keys(data).some(
-					(key) =>
-						key !== "content" && key !== "images" && key !== "id"
+					(key) => key === "authors" || key === "visible"
 				)
 			)
 				throw error(400, "Bad Request");
@@ -360,42 +359,41 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 
 		// Find all icon meta tags and then sort them by their resolution, the highest resolution
 		// icon is what we want
-		let icon =
-			page
-				.getElementsByTagName("link")
-				.filter((meta) => meta.getAttribute("rel")?.includes("icon"))
-				.sort((a, b) => {
-					const sizesA = a.getAttribute("sizes");
-					const sizesB = b.getAttribute("sizes");
+		let icon = page
+			.getElementsByTagName("link")
+			.filter((link) => link.getAttribute("rel")?.includes("icon"))
+			.sort((a, b) => {
+				const sizesA = a.getAttribute("sizes");
+				const sizesB = b.getAttribute("sizes");
 
-					if (!sizesA) return 1;
-					if (!sizesB) return -1;
+				console.log(a, b);
 
-					return (
-						parseInt(sizesB.split("x")[0]) -
-						parseInt(sizesA.split("x")[0])
-					);
-				})[0]
-				?.getAttribute("href") ||
-			page
-				.getElementsByTagName("meta")
-				.find((meta) => meta.getAttribute("itemprop") === "image")
-				?.getAttribute("content");
+				if (!sizesA) return 1;
+				if (!sizesB) return -1;
 
-		// Split up the URL so if the icon is using a relative URL we can construct it
+				return (
+					parseInt(sizesB.split("x")[0]) -
+					parseInt(sizesA.split("x")[0])
+				);
+			})[0]
+			?.getAttribute("href");
+
 		const urlSplit = response.url.split("/");
 
-		// Construct the icon URL using the same protcol
-		icon =
-			!icon || icon.startsWith("http")
-				? icon
-				: `${urlSplit[0]}//${urlSplit[2]}${
-						icon.startsWith("/") ? icon : "/" + icon
-				  }`;
+		// If there's no icon, attempt to grab it using the website URL
+		if (!icon) icon = `https://${urlSplit[2]}/favicon.ico`;
+
+		// If the icon is using a relative URL we can construct it while using the same
+		// protcol as the website
+		icon = icon.startsWith("http")
+			? icon
+			: `${urlSplit[0]}//${urlSplit[2]}${
+					icon.startsWith("/") ? icon : "/" + icon
+			  }`;
 
 		// If there's an icon, fetch the icon URL and convert it to a base64 string
-		// to avoid CORS errors
-		if (icon)
+		// to avoid CORS errors. Otherwise set it to undefined
+		try {
 			icon = await fetch(icon)
 				.then((res) => res.arrayBuffer())
 				.then(
@@ -406,6 +404,9 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 							"base64"
 						)}`
 				);
+		} catch {
+			icon = undefined;
+		}
 
 		return new Response(
 			JSON.stringify({

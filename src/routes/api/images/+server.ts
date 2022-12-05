@@ -30,13 +30,13 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	let type = data.get("type") as string;
 
 	// If the data includes an invalid type, if there's no ID provided, or if the image size is greater than
-	// 1MB then throw a bad request
+	// 2MB then throw a bad request
 	if (
 		!id ||
 		(type !== "user-avatar" &&
 			type !== "user-banner" &&
 			type !== "project-banner") ||
-		(data.get("file") as File).size >= 1048576
+		(data.get("file") as File).size >= 2000000
 	)
 		throw error(400, "Bad Request");
 
@@ -212,8 +212,8 @@ export const PUT: RequestHandler = async ({ locals, request }) => {
 
 		if (!project) throw error(400, "Bad Request");
 
-		// If the image size is greater than 1MB throw a bad request
-		if ((data.get("file") as File).size >= 1048576)
+		// If the image size is greater than 2MB throw a bad request
+		if ((data.get("file") as File).size >= 2000000)
 			throw error(400, "Bad Request");
 
 		// Set the ID to include the project ID
@@ -231,7 +231,7 @@ export const PUT: RequestHandler = async ({ locals, request }) => {
 					body: data
 				}
 			).then((res) => res.json())
-		).result.id as string;
+		).result.id;
 
 		// We don't add it to the project here, instead it is stored locally until the content has
 		// been saved by the user. If the user doesn't save with the newly uploaded images, they will be

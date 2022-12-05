@@ -265,8 +265,8 @@
 			bind:this={banner}
 			on:change={() =>
 				banner.files?.length &&
-				// Limit file size to 1MB
-				banner.files[0].size <= 1048576 &&
+				// Limit file size to 2MB
+				banner.files[0].size <= 2000000 &&
 				(banner.disabled = true) &&
 				updateImage("banner")}
 			type="file"
@@ -306,8 +306,8 @@
 					bind:this={avatar}
 					on:change={() =>
 						avatar.files?.length &&
-						// Limit file size to 1MB
-						avatar.files[0].size <= 1048576 &&
+						// Limit file size to 2MB
+						avatar.files[0].size <= 2000000 &&
 						(avatar.disabled = true) &&
 						updateImage("avatar")}
 					type="file"

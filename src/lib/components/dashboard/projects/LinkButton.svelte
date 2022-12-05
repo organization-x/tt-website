@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Editor } from "@tiptap/core";
-
 	import { Action } from "$lib/enums";
 	import Check from "$lib/components/icons/general/Check.svelte";
 	import Trash from "$lib/components/icons/general/Trash.svelte";
 	import LinkIcon from "$lib/components/icons/general/LinkIcon.svelte";
 	import ExpandButton from "$lib/components/dashboard/projects/ExpandButton.svelte";
+
+	import type { Editor } from "@tiptap/core";
 
 	export let editor: Editor;
 	export let active: boolean;

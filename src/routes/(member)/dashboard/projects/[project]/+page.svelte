@@ -1,42 +1,107 @@
 <script lang="ts">
+	import "highlight.js/styles/atom-one-dark.css";
+
 	import { Doc } from "yjs";
 	import { onMount } from "svelte";
-	import { slide } from "svelte/transition";
+	import { Editor } from "@tiptap/core";
+	import { fly } from "svelte/transition";
 	import { WebsocketProvider } from "y-websocket";
+	import { Collaboration } from "@tiptap/extension-collaboration";
+	import { CollaborationCursor } from "@tiptap/extension-collaboration-cursor";
 
 	import { user } from "$lib/stores";
 	import { techSkills } from "$lib/enums";
+	import { hashBlob } from "$lib/hashBlob";
+	import { extensions } from "$lib/tiptapExtensions";
 	import Dropdown from "$lib/components/Dropdown.svelte";
 	import Pin from "$lib/components/icons/general/Pin.svelte";
-	import Input from "$lib/components/dashboard/Input.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
 	import Pencil from "$lib/components/icons/general/Pencil.svelte";
+	import UnList from "$lib/components/icons/general/UnList.svelte";
+	import OrList from "$lib/components/icons/general/OrList.svelte";
 	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
-	import TipTap from "$lib/components/dashboard/projects/TipTap.svelte";
+	import Cursor from "$lib/components/dashboard/projects/Cursor.svelte";
+	import LinkButton from "$lib/components/dashboard/projects/LinkButton.svelte";
+	import HeadButton from "$lib/components/dashboard/projects/HeadButton.svelte";
+	import ImageButton from "$lib/components/dashboard/projects/ImageButton.svelte";
+	import EditorButton from "$lib/components/dashboard/projects/EditorButton.svelte";
 	import AuthorSection from "$lib/components/dashboard/projects/AuthorSection.svelte";
 
+	import type { Map as YMap } from "yjs";
 	import type { PageData } from "./$types";
 	import type { TechSkill } from "@prisma/client";
-	import type { Content, Editor } from "@tiptap/core";
+	import type { Content, JSONContent } from "@tiptap/core";
 
 	export let data: PageData;
+
+	// State used for collaboration data syncing
+	const enum State {
+		Editing,
+		Saving,
+		Saved,
+		Error
+	}
 
 	// Register document for syncing across clients with yjs
 	let doc = new Doc();
 
+	// Store a reference to the editor for generation of the content
+	let editor: Editor;
+
 	// Create a shared map with the only item being the project data for
 	// syncing across clients
-	const yMap = doc.getMap<App.SharedProject | boolean>("project");
+	const yMap = doc.getMap<App.SharedProject | State>("project");
 
-	// Isolate the project data from the rest of the parent data
+	// Create a shared map for storing the Cloudflare images ID and Blob of images in the document so we can
+	// determine which images are to be uploaded, kept or deleted and also so that collaborators
+	// can see the images without having to upload them. For efficiency, some entries are blob URLs that
+	// give keys to the actual image object, this allows for collaborators who are just joining to quickly
+	// get image data and create blob links for their browser. The image object also holds all URLS pointing
+	// to it so that the same image isn't uploaded twice
+	let images: YMap<App.Image | string> = doc.getMap("images");
+
+	// Isolate the project data from the rest of the parent data and parse the date
+	// into an actual javascript date
 	let project = data.project;
+
+	// Store an original copy of the data
+	let original = JSON.parse(
+		JSON.stringify(project)
+	) as App.ProjectWithMetadata;
+
+	// Parse original date into actual date
+	original.date = new Date(original.date);
+
+	// Keep track whether this the user is the owner, a collaborator, or an admin
+	const isOwner = $user.id === project.ownerId || $user.role === "Admin";
+
+	// Reassigning the editor variable doesnt update svelte, so this is a workaround
+	const isActive: { [key: string]: boolean } = {
+		bold: false,
+		italic: false,
+		underline: false,
+		strike: false,
+		bulletList: false,
+		orderedList: false,
+		link: false,
+		image: false,
+		heading: false
+	};
 
 	// Store whether we should ignore when the project array is changed, this is
 	// to prevent this clients changes looping back
 	let ignoreChange = true;
 
+	let titleError = false;
+	let disableForm = false;
 	let ws: WebsocketProvider;
+	let disableButtons = true;
+	let banner: HTMLInputElement;
+	let visible = original.visible;
+	let editorElement: HTMLDivElement;
+	let pinned = $user.pinnedProjectId === original.id;
 
 	onMount(() => {
 		ws = new WebsocketProvider(
@@ -47,38 +112,129 @@
 			doc
 		);
 
+		// Generate a random light color for the user
+		let color = "#";
+
+		for (let i = 0; i < 3; i++) {
+			color += `0${Math.floor(
+				((1 + Math.random()) * Math.pow(16, 2)) / 2
+			).toString(16)}`.slice(-2);
+		}
+
 		// When the websocket connects, check if there's any project data in the shared
 		// array, if not, push the project
-		ws.once("status", ({ status }: { status: string }) => {
-			if (status !== "connected") return;
-
+		ws.once("synced", async () => {
 			// If the map is empty, this is the first client, so the project needs to be
 			// added
-			if (!yMap.size)
-				return yMap.set("project", {
+			if (!yMap.size) {
+				// Transform all images into blobs
+				await Promise.all(
+					(project.content as JSONContent).content!.map(
+						async (node) => {
+							if (
+								node.type !== "image" ||
+								!(node.attrs!.src as string).startsWith(
+									"https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/"
+								)
+							)
+								return;
+
+							const blob = await fetch(node.attrs!.src).then(
+								(res) => res.blob()
+							);
+							const url = URL.createObjectURL(blob);
+
+							// Turn the file into a SHA-1 hash so the same image doesn't create seperate
+							// entries
+							const hash = await hashBlob(blob);
+
+							images.set(hash, {
+								id: node.attrs!.src.split("/")[4],
+								blob,
+								urls: [url]
+							});
+
+							// Create a pointer for efficiency
+							images.set(url, hash);
+
+							node.attrs!.src = url;
+						}
+					)
+				);
+
+				yMap.set("project", {
 					...project,
 					date: project.date.toISOString()
+				}) && yMap.set("state", State.Editing);
+			} else {
+				const yProject = yMap.get("project")! as App.SharedProject;
+
+				// Transform all blob images into blobs that will work in this browser
+				(project.content as JSONContent).content!.forEach((node) => {
+					if (
+						node.type !== "image" ||
+						!(node.attrs!.src as string).startsWith("blob:")
+					)
+						return;
+
+					const hash = images.get(node.attrs!.src) as string;
+
+					const url = URL.createObjectURL(
+						(images.get(hash) as App.Image).blob
+					);
+
+					node.attrs!.src = url;
+
+					images.set(url, hash);
 				});
 
-			const yProject = yMap.get("project")! as App.SharedProject;
+				project = {
+					...yProject,
+					date: new Date(yProject.date)
+				};
+			}
 
-			project = {
-				...yProject,
-				date: new Date(yProject.date)
-			};
+			// After we've synced with the other clients, observe changes and create the editor
 
-			// After we've synced with the other clients, observe changes
-			yMap.observe(() => {
-				// If there's no length ignore since it most likely is the deletion step
-				// of updating the document
-				if (!yMap.size) return;
+			yMap.observe(async () => {
+				// If we are ignoring changes and the form is disabled, a save is most
+				// likely occuring, so ignore
+				if (ignoreChange && disableForm) return;
 
-				// If the project is marked as saving, set the form and buttons to disabled
-				if (yMap.get("saving"))
-					return (disableForm = true) && (disableButtons = true);
-				else if (disableForm) {
-					disableForm = false;
-					checkConstraints();
+				const state = yMap.get("state");
+
+				// Based on the state, either disable the form and buttons, show the title error, or revert back to editing mode
+				switch (state) {
+					case State.Saving:
+						disableForm = true;
+						disableButtons = true;
+
+						break;
+					case State.Saved:
+						original = JSON.parse(
+							JSON.stringify(yMap.get("project"))
+						);
+
+						// Switch the users URL to it without reloading
+						history.replaceState(
+							{},
+							"",
+							new URL(
+								`/dashboard/projects/${original.url}`,
+								document.location.href
+							)
+						);
+
+						break;
+					case State.Error:
+						titleError = true;
+
+						break;
+					case State.Editing:
+						if (disableForm) {
+							disableForm = false;
+							checkConstraints();
+						}
 				}
 
 				if (ignoreChange || disableForm) return (ignoreChange = false);
@@ -95,30 +251,115 @@
 					date: new Date(yProject.date)
 				};
 			});
+
+			// TODO: Doc is null, no observe fire
+			// TODO: Live collaborators listing
+
+			images.observe(() =>
+				(project.content as JSONContent).content!.forEach(
+					async (node) => {
+						if (
+							node.type !== "image" ||
+							!(node.attrs!.src as string).startsWith("blob:")
+						)
+							return;
+
+						try {
+							return await fetch(node.attrs!.src);
+						} catch {
+							const hash = images.get(node.attrs!.src) as string;
+							const { urls, blob } = images.get(
+								hash
+							) as App.Image;
+
+							const url = URL.createObjectURL(blob);
+
+							node.attrs!.src = url;
+							urls.push(url);
+
+							images.doc = null;
+
+							images.set(url, hash);
+
+							images.doc = doc;
+						}
+					}
+				)
+			);
+
+			editor = new Editor({
+				element: editorElement,
+				content: project.content as JSONContent,
+				editorProps: {
+					attributes: {
+						class: "focus-visible:outline-none"
+					}
+				},
+				onTransaction: ({ editor, transaction }) => {
+					// Add bottom padding to the editor by measuring the height off all child nodes and adding to it.
+					// The reason it's done this way instead of padding is it allows the editor to be clicked on in this
+					// virtual padding.
+
+					// Hacky fix since clientHeight and clientHeight don't seem to get the correct height immediately
+					setTimeout(() => {
+						let height = 0;
+
+						for (const child of editor.view.dom.children) {
+							height += child.clientHeight;
+						}
+
+						editor.view.dom.style.height = `calc(20rem + ${height}px)`;
+					});
+
+					// Update active items
+					Object.keys(isActive).forEach(
+						(key) => (isActive[key] = editor.isActive(key))
+					);
+
+					// Check if the doc content changed, if not, don't update the variable
+					if (!transaction.docChanged) return;
+
+					// Get the content for comparison
+					project.content = editor.getJSON();
+				},
+				onCreate: () => {
+					const content = editor.getJSON();
+
+					original.content = content;
+					project.content = content;
+
+					checkConstraints();
+				},
+				extensions: [
+					Collaboration.configure({
+						document: doc
+					}),
+					CollaborationCursor.configure({
+						provider: ws,
+
+						user: {
+							name: $user.name,
+							color
+						},
+
+						render(props: { name: string; color: string }) {
+							const parent = document.createElement("span");
+							new Cursor({ target: parent, props });
+
+							return parent.firstElementChild as HTMLElement;
+						}
+					}),
+					...extensions
+				]
+			});
 		});
+
+		// Destroy the editor and websocket on unmount
+		return () => {
+			ws.destroy();
+			editor.destroy();
+		};
 	});
-
-	// Keep track whether this the user is the owner, a collaborator, or an admin
-	const isOwner = $user.id === project.ownerId || $user.role === "Admin";
-
-	// Store an original copy of the data
-	let original = JSON.parse(
-		JSON.stringify(project)
-	) as App.ProjectWithMetadata;
-
-	// Store a reference to the editor for generation of the content
-	let editor: Editor;
-
-	// Store the blob URL's of images corresponded to their Cloudflare ID, this is used to
-	// prevent double uploading and keep track of which blobs belong to which URL
-	let blobs: { [key: string]: string } = {};
-
-	let titleError = false;
-	let disableForm = false;
-	let disableButtons = true;
-	let banner: HTMLInputElement;
-	let visible = original.visible;
-	let pinned = $user.pinnedProjectId === original.id;
 
 	const checkConstraints = () => {
 		if (disableForm) return;
@@ -146,12 +387,21 @@
 		)
 			return;
 
-		console.log(disableButtons);
-
 		// Check that the content has changed, if yes, enable the buttons
 		if (JSON.stringify(project) !== JSON.stringify(original))
 			disableButtons = false;
 	};
+
+	$: if (project.title !== original.title)
+		(titleError = false), checkConstraints();
+
+	$: if (project.description !== original.description) checkConstraints();
+
+	$: if (project.authors.length !== original.authors.length)
+		checkConstraints();
+
+	$: if (project.content !== original.content && !disableForm)
+		checkConstraints();
 
 	const updateSkills = ({
 		detail
@@ -178,23 +428,12 @@
 		checkConstraints();
 	};
 
-	$: if (project.title !== original.title)
-		(titleError = false), checkConstraints();
-
-	$: if (project.description !== original.description) checkConstraints();
-
-	$: if (project.authors.length !== original.authors.length)
-		checkConstraints();
-
-	$: if (project.content !== original.content && !disableForm)
-		checkConstraints();
-
 	// On cancel, revert the values to their originals and disable the save/cancel buttons
 	const cancel = () => {
 		disableButtons = true;
 		editor.commands.setContent(original.content as Content);
 		project = JSON.parse(JSON.stringify(original));
-		project.authors = JSON.parse(JSON.stringify(original.authors));
+		project.date = new Date(project.date);
 	};
 
 	const save = async () => {
@@ -207,35 +446,42 @@
 		project.description = project.description.trim();
 
 		disableForm = true;
+		ignoreChange = true;
 		disableButtons = true;
 
 		const content = editor.getJSON();
 
 		// Set the saving state to true to let other clients know that saving is
 		// being done
-		yMap.set("saving", true);
+		yMap.set("state", State.Saving);
 
 		// Create a new array to keep track of image ID's as to remove images that do not
 		// appear in the document anymore
-		const images: string[] = [];
+		const ids: string[] = [];
 
 		// Upload all the new images to Cloudflare so they can be shown to users without blobs
-		await Promise.all(
-			content.content!.map(async (node) => {
+		await new Promise(async (res) => {
+			for (const node of content.content!.values()) {
 				if (
 					node.type !== "image" ||
 					!(node.attrs!.src as string).startsWith("blob:")
 				)
-					return;
+					continue;
 
-				const url = blobs[node.attrs!.src as string];
+				let image = images.get(
+					images.get(node.attrs!.src) as string
+				) as App.Image;
 
-				// If the image already existed, switch back to it's already existing blob URL
-				if (url)
-					return (
-						(node.attrs!.src = url) &&
-						images.push(url.split("/")[4])
-					);
+				// If the image already existed, switch back to it's already existing Cloudflare images URL and add it to the
+				// ids. Also if the ID was already seen then don't push it, this way images that are the same use the same
+				// Cloudflare images URL
+				if (image.id) {
+					node.attrs!.src = `https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/${image.id}/banner`;
+
+					if (!ids.includes(image.id)) ids.push(image.id);
+
+					continue;
+				}
 
 				const body = new FormData();
 
@@ -243,17 +489,7 @@
 				body.append("id", project.id);
 
 				// Append the image file
-				body.append(
-					"file",
-					new File(
-						[
-							await fetch(node.attrs!.src).then((res) =>
-								res.blob()
-							)
-						],
-						"image"
-					)
-				);
+				body.append("file", new File([image.blob], "image"));
 
 				await fetch("/api/images", {
 					method: "PUT",
@@ -262,11 +498,14 @@
 					.then((res) => res.json())
 					.then(
 						({ id }: App.ImageUploadResponse) =>
-							images.push(id!) &&
+							ids.push(id!) &&
+							(image.id = id) &&
 							(node.attrs!.src = `https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/${id}/banner`)
 					);
-			})
-		);
+			}
+
+			res(undefined);
+		});
 
 		// Send an update request to the API
 		fetch("/api/project", {
@@ -279,22 +518,31 @@
 					? ({
 							...project,
 							content,
-							images
+							images: ids
 					  } as App.ProjectUpdateRequest)
 					: ({
 							id: project.id,
+							description: project.description,
+							skills: project.skills,
+							theme: project.theme,
+							title: project.title,
 							content,
-							images
+							images: ids
 					  } as App.ProjectUpdateRequest)
 			)
 		}).then(async (res) => {
 			// If the status is 205, it is most likely a title that already exists
-			if (res.status === 205)
-				return (
-					(disableButtons = true) &&
-					(titleError = true) &&
-					(disableForm = false)
-				);
+			if (res.status === 205) {
+				titleError = true;
+				disableButtons = true;
+
+				yMap.set("state", State.Error);
+				yMap.set("state", State.Editing);
+
+				disableForm = false;
+
+				return;
+			}
 
 			// Generate a url based off of the current title
 			const url = project.title
@@ -302,26 +550,49 @@
 				.replaceAll(/\s+/g, "-")
 				.toLowerCase();
 
-			// Otherwise if the title is fine and there is a new URL, switch the users URL to it without reloading and update the local copy of the project
-			if (url !== original.url) {
-				project.url = url;
+			// Switch the users URL to it without reloading
+			if (url !== original.url)
+				(project.url = url) &&
+					yMap.set("project", {
+						...project,
+						date: project.date.toISOString()
+					}) &&
+					history.replaceState(
+						{},
+						"",
+						new URL(
+							`/dashboard/projects/${project.url}`,
+							document.location.href
+						)
+					);
 
-				history.replaceState(
-					{},
-					"",
-					new URL(
-						`/dashboard/projects/${url}`,
-						document.location.href
-					)
-				);
-			}
+			// If successful, update the original data before the request finished
+			original = JSON.parse(
+				JSON.stringify({ ...project, content, images: ids })
+			);
 
-			// If successful, update the original data
-			original = JSON.parse(JSON.stringify({ ...project, content }));
+			project.images = ids;
+
+			// Remove all images that are no longer in the doc, the reason this isn't done
+			// in realtime while editing the doc is the Cloudflare image ID could be lost
+			// and also since all the loops done every transaction is quite heavy
+			images.forEach((value, key) => {
+				if (
+					typeof value !== "object" ||
+					(value.id && ids.includes(value.id))
+				)
+					return;
+
+				value.urls.forEach((url) => images.delete(url));
+				images.delete(key);
+			});
+
+			// Fire off the event with saved so peers know to update the original
+			// data, then switch back to editing
+			yMap.set("state", State.Saved);
+			yMap.set("state", State.Editing);
 
 			disableForm = false;
-
-			yMap.set("saving", false);
 
 			checkConstraints();
 		});
@@ -331,7 +602,7 @@
 
 	// Update the project's banner
 	const updateImage = async () => {
-		if (!banner.files?.length || banner.files[0].size > 1048576) return;
+		if (!banner.files?.length || banner.files[0].size > 2000000) return;
 
 		banner.disabled = true;
 
@@ -452,28 +723,34 @@
 	class="flex flex-col gap-8 p-4 max-w-xl mx-auto mt-2 lg:px-12 lg:max-w-screen-xl xl:items-center"
 >
 	<div
-		disabled={disableForm || !isOwner}
-		class:pointer-events-none={disableForm || !isOwner}
-		class:opacity-60={disableForm || !isOwner}
+		disabled={disableForm}
+		class:pointer-events-none={disableForm}
+		class:opacity-60={disableForm}
 		class="flex flex-col gap-5 w-full transition-opacity duration-200"
 	>
 		<div>
-			<Input
-				bind:value={project.title}
-				title="Title"
-				placeholder="Name your project..."
-				lightBg={false}
-				max={50}
-			/>
+			<div class="flex justify-between items-center">
+				<h1 class="font-semibold text-xl">Title</h1>
 
-			{#if titleError}
-				<p
-					transition:slide
-					class="text-red-light font-semibold text-center text-sm mt-2"
-				>
-					Title already in use!
-				</p>
-			{/if}
+				{#if titleError}
+					<p
+						transition:fly={{ y: 10, duration: 150 }}
+						class="text-red-light font-semibold text-sm"
+					>
+						Title already in use!
+					</p>
+				{/if}
+			</div>
+
+			<div class="flex rounded-lg select-none mt-2 bg-gray-900">
+				<input
+					bind:value={project.title}
+					type="text"
+					class="w-full h-full px-2 bg-transparent focus:outline-none p-4 my-auto"
+					placeholder="Name your project..."
+					maxlength="50"
+				/>
+			</div>
 		</div>
 
 		<TextBox
@@ -487,6 +764,7 @@
 		<AuthorSection
 			bind:authors={project.authors}
 			ownerId={project.ownerId}
+			{isOwner}
 		/>
 
 		<div>
@@ -559,16 +837,78 @@
 		{/if}
 	</div>
 
-	<TipTap
-		bind:ws
-		bind:doc
-		bind:blobs
-		bind:project
-		on:editor={({ detail }) => {
-			// For some reason tiptap re-orders some data once it's lodaded into the editor, so we need to change the original to that
-			original.content = JSON.parse(JSON.stringify(detail.getJSON()));
+	<div class="relative rounded-lg w-full">
+		{#if editor}
+			<div class="absolute inset-0 pointer-events-none">
+				<Scrollable
+					class="sticky bg-black pointer-events-auto top-0 z-20 border-b-2 border-gray-700 before:from-black after:to-black"
+				>
+					<HeadButton {editor} active={isActive.heading} />
 
-			editor = detail;
-		}}
-	/>
+					<EditorButton
+						class="font-bold"
+						active={isActive.bold}
+						on:click={() =>
+							editor.chain().focus().toggleBold().run()}
+					>
+						B
+					</EditorButton>
+
+					<EditorButton
+						class="italic"
+						active={isActive.italic}
+						on:click={() =>
+							editor.chain().focus().toggleItalic().run()}
+					>
+						I
+					</EditorButton>
+
+					<EditorButton
+						class="underline"
+						active={isActive.underline}
+						on:click={() =>
+							editor.chain().focus().toggleUnderline().run()}
+					>
+						U
+					</EditorButton>
+
+					<EditorButton
+						class="line-through"
+						active={isActive.strike}
+						on:click={() =>
+							editor.chain().focus().toggleStrike().run()}
+					>
+						S
+					</EditorButton>
+
+					<EditorButton
+						active={isActive.bulletList}
+						on:click={() =>
+							editor.chain().focus().toggleBulletList().run()}
+					>
+						<UnList class="w-5 h-5 mx-auto" />
+					</EditorButton>
+
+					<EditorButton
+						active={isActive.orderedList}
+						on:click={() =>
+							editor.chain().focus().toggleOrderedList().run()}
+					>
+						<OrList class="w-5 h-5 mx-auto" />
+					</EditorButton>
+
+					<LinkButton {editor} active={isActive.link} />
+
+					<ImageButton
+						bind:images
+						bind:doc
+						{editor}
+						active={isActive.image}
+					/>
+				</Scrollable>
+			</div>
+		{/if}
+
+		<div class="mt-24" bind:this={editorElement} />
+	</div>
 </div>

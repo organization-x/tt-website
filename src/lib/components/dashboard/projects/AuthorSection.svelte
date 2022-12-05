@@ -10,6 +10,7 @@
 	import type { Prisma, User } from "@prisma/client";
 
 	export let ownerId: string;
+	export let isOwner: boolean;
 	export let authors: App.Author[];
 
 	let search = "";
@@ -59,7 +60,12 @@
 		}));
 </script>
 
-<div class="lg:flex lg:justify-between lg:gap-14">
+<div
+	disabled={!isOwner}
+	class:opacity-60={!isOwner}
+	class:pointer-events-none={!isOwner}
+	class="lg:flex lg:justify-between lg:gap-14"
+>
 	<div class="relative lg:w-full">
 		<h1 class="font-semibold text-xl">Authors</h1>
 		<div class="bg-gray-900 p-4 mt-3 rounded-lg after:inset-x-0">

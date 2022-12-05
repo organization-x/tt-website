@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Action } from "$lib/enums";
 	import { FieldType } from "$lib/enums";
+	import { hashBlob } from "$lib/hashBlob";
 	import { validate } from "$lib/validate";
 	import Check from "$lib/components/icons/general/Check.svelte";
 	import Trash from "$lib/components/icons/general/Trash.svelte";
@@ -8,10 +9,13 @@
 	import ImageIcon from "$lib/components/icons/general/ImageIcon.svelte";
 	import ExpandButton from "$lib/components/dashboard/projects/ExpandButton.svelte";
 
+	import type { Doc, Map as YMap } from "yjs";
 	import type { Editor } from "@tiptap/core";
 
+	export let doc: Doc;
 	export let editor: Editor;
 	export let active: boolean;
+	export let images: YMap<App.Image | string>;
 
 	let open = false;
 	let isUploaded = false;
@@ -84,18 +88,48 @@
 		}
 	};
 
-	// Upload an image to Cloudflare images
-	const uploader = () =>
-		upload.files?.length &&
-		upload.files[0].size <= 2000000 &&
+	// Upload an image to Cloudflare images, 2MB max size
+	const uploader = async () => {
+		if (!upload.files?.length || upload.files[0].size > 2000000) return;
+
+		// Turn the file into a SHA-1 hash so the same image doesn't create seperate
+		// entries
+		const key = await hashBlob(upload.files[0]);
+
+		// Since image data isn't deleted until a save occurs, check to see if this image already exists
+		const image = images.get(key) as App.Image;
+		let src = image?.urls.find(async (url) => {
+			try {
+				return await fetch(url).then((res) => res.ok);
+			} catch {
+				return false;
+			}
+		});
+
+		if (!src) src = URL.createObjectURL(upload.files![0]);
+
 		editor
 			.chain()
 			.focus()
-			.setImage({
-				src: URL.createObjectURL(upload.files[0])
-			})
-			.run() &&
-		editor.chain().focus().createParagraphNear().run();
+			.setImage({ src: src! })
+			.createParagraphNear()
+			.run();
+
+		// If there's an image but no valid URL, create a new URL and push it, otherwise, if
+		// there's no previous image at all create a URL and an image. This happens after the editor
+		// adds it since collaborators need to iterate through nodes to set their src attributes
+		if (image && !src) image.urls.push(src) && images.set(src, key);
+		else if (!image) {
+			images.doc = null;
+			images.set(key, { urls: [src], blob: upload.files[0] });
+
+			images.doc = doc;
+			images.set(src, key);
+		}
+
+		// Reset the input
+		upload.value = "";
+	};
 </script>
 
 <ExpandButton
