@@ -120,10 +120,9 @@
 		// adds it since collaborators need to iterate through nodes to set their src attributes
 		if (image && !src) image.urls.push(src) && images.set(src, key);
 		else if (!image) {
-			images.doc = null;
-			images.set(key, { urls: [src], blob: upload.files[0] });
+			// Use the internal map property so it doesn't trigger observers
+			images._map.set(key, { urls: [src], blob: upload.files[0] });
 
-			images.doc = doc;
 			images.set(src, key);
 		}
 

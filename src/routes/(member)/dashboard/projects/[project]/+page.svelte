@@ -90,10 +90,6 @@
 		heading: false
 	};
 
-	// Store whether we should ignore when the project array is changed, this is
-	// to prevent this clients changes looping back
-	let ignoreChange = true;
-
 	let titleError = false;
 	let disableForm = false;
 	let ws: WebsocketProvider;
@@ -199,7 +195,7 @@
 			yMap.observe(async () => {
 				// If we are ignoring changes and the form is disabled, a save is most
 				// likely occuring, so ignore
-				if (ignoreChange && disableForm) return;
+				if (disableForm) return;
 
 				const state = yMap.get("state");
 
@@ -237,8 +233,6 @@
 						}
 				}
 
-				if (ignoreChange || disableForm) return (ignoreChange = false);
-
 				// Get the project and parse all dates
 				const yProject = yMap.get("project")! as App.SharedProject;
 
@@ -255,7 +249,9 @@
 			// TODO: Doc is null, no observe fire
 			// TODO: Live collaborators listing
 
-			images.observe(() =>
+			images.observe(() => {
+				console.log("trigger");
+
 				(project.content as JSONContent).content!.forEach(
 					async (node) => {
 						if (
@@ -277,15 +273,11 @@
 							node.attrs!.src = url;
 							urls.push(url);
 
-							images.doc = null;
-
-							images.set(url, hash);
-
-							images.doc = doc;
+							images._map.set(url, hash);
 						}
 					}
-				)
-			);
+				);
+			});
 
 			editor = new Editor({
 				element: editorElement,
@@ -364,12 +356,11 @@
 	const checkConstraints = () => {
 		if (disableForm) return;
 
-		ignoreChange = true;
 		disableButtons = true;
 
 		// Keep the project updated with peers if the websocket is connected
 		if (ws && ws.wsconnected && !disableForm)
-			yMap.set("project", {
+			yMap._map.set("project", {
 				...project,
 				date: project.date.toISOString()
 			});
@@ -387,21 +378,18 @@
 		)
 			return;
 
+		console.log(JSON.stringify(project) !== JSON.stringify(original));
+
 		// Check that the content has changed, if yes, enable the buttons
 		if (JSON.stringify(project) !== JSON.stringify(original))
 			disableButtons = false;
 	};
 
-	$: if (project.title !== original.title)
-		(titleError = false), checkConstraints();
+	$: {
+		if (project.title !== original.title) titleError = false;
 
-	$: if (project.description !== original.description) checkConstraints();
-
-	$: if (project.authors.length !== original.authors.length)
 		checkConstraints();
-
-	$: if (project.content !== original.content && !disableForm)
-		checkConstraints();
+	}
 
 	const updateSkills = ({
 		detail
@@ -446,7 +434,6 @@
 		project.description = project.description.trim();
 
 		disableForm = true;
-		ignoreChange = true;
 		disableButtons = true;
 
 		const content = editor.getJSON();
@@ -553,7 +540,7 @@
 			// Switch the users URL to it without reloading
 			if (url !== original.url)
 				(project.url = url) &&
-					yMap.set("project", {
+					yMap._map.set("project", {
 						...project,
 						date: project.date.toISOString()
 					}) &&
