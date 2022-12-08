@@ -2,6 +2,7 @@ import { error } from "@sveltejs/kit";
 import { gmail } from "@googleapis/gmail";
 import { OAuth2Client } from "googleapis-common";
 
+import { dev } from "$app/environment";
 import { env } from "$env/dynamic/private";
 
 import type { RequestHandler } from "./$types";
@@ -21,9 +22,7 @@ auth.setCredentials({
 const mail = gmail({ version: "v1", auth: auth });
 
 // Get the proper origin URL for API verification based on the node enviornment
-const origin = import.meta.env.PROD
-	? "https://teamtomorrow.com"
-	: "http://localhost:5173";
+const origin = dev ? "http://localhost:5173" : "https://teamtomorrow.com";
 
 // Insert an email into the hello@ai-camp.org account for contact form submissions
 // * INPUT: MailRequest

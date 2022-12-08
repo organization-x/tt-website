@@ -1,13 +1,14 @@
 import { redirect } from "@sveltejs/kit";
 
 import { prisma } from "$lib/prisma";
+import { dev } from "$app/environment";
 import { env } from "$env/dynamic/private";
 
 import type { RequestHandler } from "./$types";
 
-const redirectUri = import.meta.env.PROD
-	? "https://teamtomorrow.com/login"
-	: "http://localhost:5173/login";
+const redirectUri = dev
+	? "http://localhost:5173/login"
+	: "https://teamtomorrow.com/login";
 
 const redirectUriEncoded = encodeURIComponent(redirectUri);
 

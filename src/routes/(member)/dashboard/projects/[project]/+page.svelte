@@ -10,6 +10,7 @@
 	import { CollaborationCursor } from "@tiptap/extension-collaboration-cursor";
 
 	import { user } from "$lib/stores";
+	import { dev } from "$app/environment";
 	import { techSkills } from "$lib/enums";
 	import { hashBlob } from "$lib/hashBlob";
 	import { extensions } from "$lib/tiptapExtensions";
@@ -101,9 +102,7 @@
 
 	onMount(() => {
 		ws = new WebsocketProvider(
-			import.meta.env.PROD
-				? "wss://teamtomorrow.com"
-				: "ws://localhost:8080",
+			dev ? "ws://localhost:8080" : "wss://teamtomorrow.com",
 			project.id,
 			doc
 		);
