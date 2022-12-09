@@ -5,6 +5,8 @@
 	import { onMount } from "svelte";
 	import { Editor } from "@tiptap/core";
 	import { fly } from "svelte/transition";
+	import { ySyncPlugin } from "y-prosemirror";
+	import { PluginKey } from "prosemirror-state";
 	import { WebsocketProvider } from "y-websocket";
 	import { Collaboration } from "@tiptap/extension-collaboration";
 	import { CollaborationCursor } from "@tiptap/extension-collaboration-cursor";
@@ -12,9 +14,9 @@
 	import { user } from "$lib/stores";
 	import { dev } from "$app/environment";
 	import { techSkills } from "$lib/enums";
-	import { hashBlob } from "$lib/hashBlob";
 	import { extensions } from "$lib/tiptapExtensions";
 	import Dropdown from "$lib/components/Dropdown.svelte";
+	import { hashBlob, baseEncode } from "$lib/imageHandlers";
 	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
@@ -119,9 +121,13 @@
 		// When the websocket connects, check if there's any project data in the shared
 		// array, if not, push the project
 		ws.once("synced", async () => {
+			// Store whether the map had size on initialization so we can determine later if replacing the blobs
+			// is needed
+			const hasProject = Boolean(yMap.size);
+
 			// If the map is empty, this is the first client, so the project needs to be
 			// added
-			if (!yMap.size) {
+			if (!hasProject) {
 				// Transform all images into blobs
 				await Promise.all(
 					(project.content as JSONContent).content!.map(
@@ -145,7 +151,7 @@
 
 							images.set(hash, {
 								id: node.attrs!.src.split("/")[4],
-								blob,
+								data: await baseEncode(new FileReader(), blob),
 								urls: [url]
 							});
 
@@ -161,40 +167,11 @@
 					...project,
 					date: project.date.toISOString()
 				}) && yMap.set("state", State.Editing);
-			} else {
-				const yProject = yMap.get("project")! as App.SharedProject;
-
-				// Transform all blob images into blobs that will work in this browser
-				(project.content as JSONContent).content!.forEach((node) => {
-					if (
-						node.type !== "image" ||
-						!(node.attrs!.src as string).startsWith("blob:")
-					)
-						return;
-
-					const hash = images.get(node.attrs!.src) as string;
-
-					const url = URL.createObjectURL(
-						(images.get(hash) as App.Image).blob
-					);
-
-					node.attrs!.src = url;
-
-					images.set(url, hash);
-				});
-
-				project = {
-					...yProject,
-					date: new Date(yProject.date)
-				};
 			}
 
-			// After we've synced with the other clients, observe changes and create the editor
-
-			yMap.observe(async () => {
-				// If we are ignoring changes and the form is disabled, a save is most
-				// likely occuring, so ignore
-				if (disableForm) return;
+			yMap.observe(async ({ transaction }) => {
+				// If the form is disabled, a save is most likely occuring, so ignore
+				if (disableForm || transaction.local) return;
 
 				const state = yMap.get("state");
 
@@ -245,42 +222,46 @@
 				};
 			});
 
-			// TODO: Doc is null, no observe fire
 			// TODO: Live collaborators listing
 
-			images.observe(() => {
-				console.log("trigger");
+			images.observe(
+				({ transaction }) =>
+					!transaction.local &&
+					(project.content as JSONContent).content!.forEach(
+						async (node) => {
+							if (
+								node.type !== "image" ||
+								!(node.attrs!.src as string).startsWith("blob:")
+							)
+								return;
 
-				(project.content as JSONContent).content!.forEach(
-					async (node) => {
-						if (
-							node.type !== "image" ||
-							!(node.attrs!.src as string).startsWith("blob:")
-						)
-							return;
+							try {
+								return await fetch(node.attrs!.src);
+							} catch {
+								const hash = images.get(
+									node.attrs!.src
+								) as string;
+								const { urls, data } = images.get(
+									hash
+								) as App.Image;
 
-						try {
-							return await fetch(node.attrs!.src);
-						} catch {
-							const hash = images.get(node.attrs!.src) as string;
-							const { urls, blob } = images.get(
-								hash
-							) as App.Image;
+								const url = URL.createObjectURL(
+									await fetch(data).then((res) => res.blob())
+								);
 
-							const url = URL.createObjectURL(blob);
+								node.attrs!.src = url;
+								urls.push(url);
 
-							node.attrs!.src = url;
-							urls.push(url);
-
-							images._map.set(url, hash);
+								images.set(url, hash);
+							}
 						}
-					}
-				);
-			});
+					)
+			);
 
 			editor = new Editor({
 				element: editorElement,
 				content: project.content as JSONContent,
+				editable: false,
 				editorProps: {
 					attributes: {
 						class: "focus-visible:outline-none"
@@ -313,11 +294,55 @@
 					// Get the content for comparison
 					project.content = editor.getJSON();
 				},
-				onCreate: () => {
+				onCreate: async () => {
 					const content = editor.getJSON();
 
+					if (hasProject) {
+						// Transform all blob images into blobs that will work in this browser
+						await Promise.all(
+							content.content!.map(async (node) => {
+								if (
+									node.type !== "image" ||
+									!(node.attrs!.src as string).startsWith(
+										"blob:"
+									)
+								)
+									return;
+
+								console.log(node.attrs!.src);
+
+								const hash = images.get(
+									node.attrs!.src
+								) as string;
+
+								const url = URL.createObjectURL(
+									await fetch(
+										(images.get(hash) as App.Image).data
+									).then((res) => res.blob())
+								);
+
+								node.attrs!.src = url;
+
+								images.set(url, hash);
+							})
+						);
+
+						const yProject = yMap.get(
+							"project"
+						)! as App.SharedProject;
+
+						project = {
+							...yProject,
+							date: new Date(yProject.date),
+							content
+						};
+					} else project.content = content;
+
 					original.content = content;
-					project.content = content;
+
+					editor.setEditable(true);
+
+					// TODO: Use image transaction system and make some general overall improvements to the project
 
 					checkConstraints();
 				},
@@ -359,7 +384,7 @@
 
 		// Keep the project updated with peers if the websocket is connected
 		if (ws && ws.wsconnected && !disableForm)
-			yMap._map.set("project", {
+			yMap.set("project", {
 				...project,
 				date: project.date.toISOString()
 			});
@@ -376,8 +401,6 @@
 			project.skills.length < 2
 		)
 			return;
-
-		console.log(JSON.stringify(project) !== JSON.stringify(original));
 
 		// Check that the content has changed, if yes, enable the buttons
 		if (JSON.stringify(project) !== JSON.stringify(original))
@@ -475,7 +498,13 @@
 				body.append("id", project.id);
 
 				// Append the image file
-				body.append("file", new File([image.blob], "image"));
+				body.append(
+					"file",
+					new File(
+						[await fetch(image.data).then((res) => res.blob())],
+						"image"
+					)
+				);
 
 				await fetch("/api/images", {
 					method: "PUT",
@@ -539,7 +568,7 @@
 			// Switch the users URL to it without reloading
 			if (url !== original.url)
 				(project.url = url) &&
-					yMap._map.set("project", {
+					yMap.set("project", {
 						...project,
 						date: project.date.toISOString()
 					}) &&
@@ -582,8 +611,6 @@
 
 			checkConstraints();
 		});
-
-		disableButtons = true;
 	};
 
 	// Update the project's banner
@@ -885,12 +912,7 @@
 
 					<LinkButton {editor} active={isActive.link} />
 
-					<ImageButton
-						bind:images
-						bind:doc
-						{editor}
-						active={isActive.image}
-					/>
+					<ImageButton bind:images {editor} active={isActive.image} />
 				</Scrollable>
 			</div>
 		{/if}

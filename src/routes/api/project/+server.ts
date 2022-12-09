@@ -366,8 +366,6 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 				const sizesA = a.getAttribute("sizes");
 				const sizesB = b.getAttribute("sizes");
 
-				console.log(a, b);
-
 				if (!sizesA) return 1;
 				if (!sizesB) return -1;
 

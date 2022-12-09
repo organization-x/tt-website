@@ -212,6 +212,7 @@ export const wss = (mode: string): Plugin => ({
 				switch (type) {
 					case Message.Sync:
 						encoding.writeVarUint(encoder, Message.Sync);
+
 						readSyncMessage(
 							decoder,
 							encoder,

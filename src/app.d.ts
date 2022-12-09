@@ -70,7 +70,7 @@ declare global {
 		};
 
 		// Type used for keeping track of images in the project editor
-		type Image = { id?: string; blob: Blob; urls: string[] };
+		type Image = { id?: string; data: string; urls: string[] };
 
 		// Projects combined with their authors for easy access
 		type ProjectWithMetadata = Project & {

@@ -1,23 +1,25 @@
 <script lang="ts">
+	import { onMount } from "svelte";
+
 	import { Action } from "$lib/enums";
 	import { FieldType } from "$lib/enums";
-	import { hashBlob } from "$lib/hashBlob";
 	import { validate } from "$lib/validate";
+	import { baseEncode, hashBlob } from "$lib/imageHandlers";
 	import Check from "$lib/components/icons/general/Check.svelte";
 	import Trash from "$lib/components/icons/general/Trash.svelte";
 	import Upload from "$lib/components/icons/general/Upload.svelte";
 	import ImageIcon from "$lib/components/icons/general/ImageIcon.svelte";
 	import ExpandButton from "$lib/components/dashboard/projects/ExpandButton.svelte";
 
-	import type { Doc, Map as YMap } from "yjs";
+	import type { Map as YMap } from "yjs";
 	import type { Editor } from "@tiptap/core";
 
-	export let doc: Doc;
 	export let editor: Editor;
 	export let active: boolean;
 	export let images: YMap<App.Image | string>;
 
 	let open = false;
+	let reader: FileReader;
 	let isUploaded = false;
 	let input: HTMLInputElement;
 	let upload: HTMLInputElement;
@@ -120,8 +122,10 @@
 		// adds it since collaborators need to iterate through nodes to set their src attributes
 		if (image && !src) image.urls.push(src) && images.set(src, key);
 		else if (!image) {
-			// Use the internal map property so it doesn't trigger observers
-			images._map.set(key, { urls: [src], blob: upload.files[0] });
+			images.set(key, {
+				urls: [src],
+				data: await baseEncode(reader, upload.files[0])
+			});
 
 			images.set(src, key);
 		}
@@ -129,6 +133,8 @@
 		// Reset the input
 		upload.value = "";
 	};
+
+	onMount(() => (reader = new FileReader()));
 </script>
 
 <ExpandButton

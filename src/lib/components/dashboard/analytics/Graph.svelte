@@ -73,9 +73,9 @@
 			{ threshold: [0.7], root: scrollable }
 		);
 
-		Array.from(scrollable.children).forEach((child) =>
-			scrollObserver.observe(child)
-		);
+		for (const child of scrollable.children) {
+			scrollObserver.observe(child);
+		}
 
 		return () => {
 			animObserver.disconnect();

@@ -377,5 +377,11 @@
 		body {
 			overflow: hidden;
 		}
+
+		@screen lg {
+			body {
+				overflow: auto;
+			}
+		}
 	</style>
 {/if}
