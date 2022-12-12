@@ -885,9 +885,24 @@
 	<!-- TODO: Refactor and improve everything -->
 	<!-- TODO: Google search console and buiseness setup -->
 
-	<Scrollable class="before:from-black after:to-black">
-		{#each users as user (user.id)}
-			<h1>{user.name}</h1>
+	<Scrollable class="before:from-black after:to-black -my-6 h-16">
+		{#each users as { id, name } (id)}
+			<div class="flex gap-3 shrink-0">
+				<img
+					class="rounded-full bg-gray-400 w-12 h-12 object-cover object-center"
+					height="512"
+					width="512"
+					src="{PUBLIC_CLOUDFLARE_URL}/avatar-{id}/avatar?{Date.now()}"
+					alt="{name}'s avatar"
+					loading="lazy"
+				/>
+
+				<h1
+					class="font-semibold text-xl overflow-auto scrollbar-hidden max-w-44 lg:max-w-60"
+				>
+					{name.split(" ")[0]}
+				</h1>
+			</div>
 		{/each}
 	</Scrollable>
 

@@ -11,7 +11,7 @@
 
 <a
 	href="/developers/{author.user.url}"
-	class="flex gap-3 pb-4 items-center shrink-0 relative rounded-lg snap-center lg:mx-0
+	class="flex gap-3 pb-4 items-center shrink-0 relative snap-center
 
     after:duration-200 after:transition-transform after:inset-x-2 after:h-0.5 after:absolute after:bottom-1 after:rounded-full after:bg-white after:scale-x-0 hover:after:scale-x-100"
 	rel="noopener noreferrer"
@@ -27,6 +27,7 @@
 		loading="lazy"
 	/>
 
+	<!-- TODO: Update split/change each deconstructions -->
 	<div class="overflow-hidden">
 		<h1
 			class="font-semibold text-xl overflow-auto scrollbar-hidden max-w-44 lg:max-w-60"
