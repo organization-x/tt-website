@@ -4,12 +4,17 @@
 	import { Action } from "$lib/enums";
 	import { FieldType } from "$lib/enums";
 	import { validate } from "$lib/validate";
-	import { baseEncode, hashBlob } from "$lib/imageHandlers";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Check from "$lib/components/icons/general/Check.svelte";
 	import Trash from "$lib/components/icons/general/Trash.svelte";
 	import Upload from "$lib/components/icons/general/Upload.svelte";
 	import ImageIcon from "$lib/components/icons/general/ImageIcon.svelte";
 	import ExpandButton from "$lib/components/dashboard/projects/ExpandButton.svelte";
+	import {
+		hashBlob,
+		checkObjectURL,
+		createObjectURL
+	} from "$lib/imageHandlers";
 
 	import type { Map as YMap } from "yjs";
 	import type { Editor } from "@tiptap/core";
@@ -19,7 +24,6 @@
 	export let images: YMap<App.Image | string>;
 
 	let open = false;
-	let reader: FileReader;
 	let isUploaded = false;
 	let input: HTMLInputElement;
 	let upload: HTMLInputElement;
@@ -47,12 +51,7 @@
 				if (isUploaded) return (open = false);
 
 				// Disallow directly linking to images from our Cloudflare
-				if (
-					value.startsWith(
-						"https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/"
-					)
-				)
-					return;
+				if (value.startsWith(PUBLIC_CLOUDFLARE_URL)) return;
 
 				if (value.length) {
 					// Keep track of whether we start off with an image
@@ -100,22 +99,9 @@
 
 		// Since image data isn't deleted until a save occurs, check to see if this image already exists
 		const image = images.get(key) as App.Image;
-		let src = image?.urls.find(async (url) => {
-			try {
-				return await fetch(url).then((res) => res.ok);
-			} catch {
-				return false;
-			}
-		});
+		let src = image?.urls.find((url) => checkObjectURL(url));
 
-		if (!src) src = URL.createObjectURL(upload.files![0]);
-
-		editor
-			.chain()
-			.focus()
-			.setImage({ src: src! })
-			.createParagraphNear()
-			.run();
+		if (!src) src = createObjectURL(upload.files![0]);
 
 		// If there's an image but no valid URL, create a new URL and push it, otherwise, if
 		// there's no previous image at all create a URL and an image. This happens after the editor
@@ -124,17 +110,22 @@
 		else if (!image) {
 			images.set(key, {
 				urls: [src],
-				data: await baseEncode(reader, upload.files[0])
+				data: [...new Uint8Array(await upload.files[0].arrayBuffer())]
 			});
 
 			images.set(src, key);
 		}
 
+		editor
+			.chain()
+			.focus()
+			.setImage({ src: src! })
+			.createParagraphNear()
+			.run();
+
 		// Reset the input
 		upload.value = "";
 	};
-
-	onMount(() => (reader = new FileReader()));
 </script>
 
 <ExpandButton

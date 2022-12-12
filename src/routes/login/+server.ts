@@ -37,7 +37,6 @@ export const GET: RequestHandler = async (request) => {
 		request.cookies.get("state") === url.searchParams.get("state")
 	) {
 		// Get API token from OAuth code
-
 		const token = (
 			await fetch("https://discord.com/api/v10/oauth2/token", {
 				method: "POST",
@@ -52,7 +51,7 @@ export const GET: RequestHandler = async (request) => {
 				})
 		).access_token as string;
 
-		// Get the users info from Discor. If an error occurs fetching the user data, its
+		// Get the users info from Discord. If an error occurs fetching the user data, its
 		// most likely an invalid token, so redirect back to the login
 		const { id, username, avatar } = (await fetch(
 			"https://discord.com/api/v10/users/@me",
@@ -64,7 +63,7 @@ export const GET: RequestHandler = async (request) => {
 		)
 			.then((res) => res.json())
 			.catch(() => {
-				throw redirect(302, "/discord");
+				throw redirect(302, "/login");
 			})) as {
 			id: string;
 			username: string;
@@ -142,19 +141,17 @@ export const GET: RequestHandler = async (request) => {
 			});
 		}
 
-		// Create a new session for the user, if the session token somehow already exists, recursively generate a new one
-		const createSession = (): Promise<string> =>
-			prisma.session
-				.create({
+		// Create a session and set the session cookie, also remove the state cookie
+		request.cookies.set(
+			"session",
+			(
+				await prisma.session.create({
 					data: { userId: id }
 				})
-				.then((session) => session.token)
-				.catch(() => createSession());
+			).token,
+			{ maxAge: 604800, path: "/" }
+		);
 
-		const session = await createSession();
-
-		// Set session cookie and remove state cookie
-		request.cookies.set("session", session, { maxAge: 604800, path: "/" });
 		request.cookies.delete("state", { path: "/login" });
 
 		// Redirect to the main dashboard page
@@ -169,7 +166,7 @@ export const GET: RequestHandler = async (request) => {
 			path: "/login"
 		});
 
-		// Redirect to oauth screen with state
+		// Redirect to OAuth screen with state
 		throw redirect(
 			302,
 			`https://discord.com/api/oauth2/authorize?redirect_uri=${redirectUriEncoded}&response_type=code&scope=identify&client_id=${env.DISCORD_ID}&state=${state}`

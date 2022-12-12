@@ -1,13 +1,17 @@
+import { error } from "@sveltejs/kit";
 import { PrismaClient } from "@prisma/client";
 
 import type { Prisma } from "@prisma/client";
 
 export const prisma = new PrismaClient();
 
-// Check if session token even exists and if it does grab the user from it.
-// This is used for loading user data with a +page.server.ts file
-export const userAuth = async ({ session }: App.Locals) => {
-	if (!session) return false;
+// Check if session token even exists and if it does grab the user's data from it
+export const userAuth = async ({ session }: App.Locals, throwError = false) => {
+	if (!session) {
+		if (throwError) throw error(401, "Unauthorized");
+
+		return null;
+	}
 
 	const sesh = await prisma.session.findUnique({
 		where: { token: session },
@@ -34,7 +38,9 @@ export const userAuth = async ({ session }: App.Locals) => {
 
 	// Check if the session token is valid
 	if (!sesh) {
-		return false;
+		if (throwError) throw error(401, "Unauthorized");
+
+		return null;
 	}
 
 	return { ...sesh.user } as App.UserWithMetadata;
@@ -58,6 +64,9 @@ export const getProjects = (where: Prisma.ProjectWhereInput) =>
 						position: true
 					}
 				}
+			},
+			orderBy: {
+				date: "desc"
 			}
 		})
 		.then((projects) => projects);

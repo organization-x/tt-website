@@ -3,6 +3,7 @@
 
 	import { user } from "$lib/stores";
 	import { debounce } from "$lib/debounce";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import Search from "$lib/components/icons/general/Search.svelte";
 	import AuthorEditor from "$lib/components/dashboard/projects/AuthorEditor.svelte";
@@ -175,7 +176,7 @@
 									<img
 										width="512"
 										height="512"
-										src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{timestamp}"
+										src="{PUBLIC_CLOUDFLARE_URL}/avatar-{user.id}/avatar?{timestamp}"
 										alt="{user.name}'s avatar"
 										class="w-10 h-10 bg-gray-400 rounded-full object-cover object-center"
 									/>

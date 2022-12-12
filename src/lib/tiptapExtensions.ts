@@ -24,7 +24,6 @@ import ruby from "highlight.js/lib/languages/ruby";
 import yaml from "highlight.js/lib/languages/yaml";
 import { Heading } from "@tiptap/extension-heading";
 import swift from "highlight.js/lib/languages/swift";
-import { Plugin, PluginKey } from "prosemirror-state";
 import { Document } from "@tiptap/extension-document";
 import { ListItem } from "@tiptap/extension-list-item";
 import python from "highlight.js/lib/languages/python";

@@ -70,7 +70,7 @@ declare global {
 		};
 
 		// Type used for keeping track of images in the project editor
-		type Image = { id?: string; data: string; urls: string[] };
+		type Image = { id?: string; data: number[]; urls: string[] };
 
 		// Projects combined with their authors for easy access
 		type ProjectWithMetadata = Project & {
@@ -91,9 +91,15 @@ declare global {
 			date?: Date;
 			skills?: TechSkill[];
 			content?: Prisma.InputJsonValue;
-			images: string[];
+			images: Record<string, Image | string>;
 			visible?: boolean;
 			authors?: Author[];
+		}
+
+		// Interface for project update response data
+		interface ProjectUpdateResponse {
+			images: Record<string, string>;
+			url: string;
 		}
 
 		// Interface for project creation response data

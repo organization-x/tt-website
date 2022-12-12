@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { getContext } from "svelte";
+
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import GradientText from "$lib/components/GradientText.svelte";
 
 	let className = "";
@@ -29,7 +31,7 @@
 	<img
 		width="512"
 		height="512"
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{kudo.id}/avatar?{timestamp}"
+		src="{PUBLIC_CLOUDFLARE_URL}/avatar-{kudo.id}/avatar?{timestamp}"
 		alt="{kudo.name}'s avatar"
 		class="w-24 h-24 bg-gray-400 rounded-full md:w-20 md:h-20"
 	/>

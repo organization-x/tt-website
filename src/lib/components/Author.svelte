@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { getContext } from "svelte";
 
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
+
 	export let theme = "";
 	export let author: App.Author;
 
@@ -20,8 +22,7 @@
 		style={theme.length ? `border-color: #${theme}` : ""}
 		height="512"
 		width="512"
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
-			.user.id}/avatar?{timestamp}"
+		src="{PUBLIC_CLOUDFLARE_URL}/avatar-{author.user.id}/avatar?{timestamp}"
 		alt="{author.user.name}'s avatar"
 		loading="lazy"
 	/>

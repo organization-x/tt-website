@@ -3,6 +3,7 @@
 	import { fly } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 
 	// Provide a special view for profile pages where the author user is hidden from the preview
 	// if they're the only author, also the fly transition is disabled for the project search
@@ -26,7 +27,7 @@
 >
 	<div class="relative">
 		<img
-			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{project.id}/banner?{timestamp}"
+			src="{PUBLIC_CLOUDFLARE_URL}/banner-{project.id}/banner?{timestamp}"
 			width="1920"
 			height="1080"
 			loading="lazy"
@@ -42,8 +43,8 @@
 					<img
 						width="512"
 						height="512"
-						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
-							.user.id}/avatar?{timestamp}"
+						src="{PUBLIC_CLOUDFLARE_URL}/avatar-{author.user
+							.id}/avatar?{timestamp}"
 						alt="{author.user.name}'s avatar"
 						class="w-10 h-10 bg-gray-400 object-cover object-center shrink-0 -mr-5 rounded-full border-2 sm:-mr-7 sm:w-12 sm:h-12 sm:border-4 md:w-14 md:h-14"
 						style="border-color: #{project.theme}; z-index: {project

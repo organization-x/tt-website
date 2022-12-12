@@ -1,22 +1,21 @@
-import { error } from "@sveltejs/kit";
+import { error, type HttpError } from "@sveltejs/kit";
 import { parse } from "node-html-parser";
 
 import { env } from "$env/dynamic/private";
+import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 import { prisma, userAuth, getProjects } from "$lib/prisma";
 
 import type { Prisma } from "@prisma/client";
 import type { RequestHandler } from "./$types";
+import type { JSONContent } from "@tiptap/core";
 
 // Request handlers for managing project data in prisma, it uses the users session token to verify the API call
 
 // Update project information
 // * INPUT: ProjectUpdateRequest
-// * OUTPUT: None
+// * OUTPUT: ProjectUpdateResponse
 export const PATCH: RequestHandler = async ({ locals, request }) => {
-	const user = await userAuth(locals);
-
-	// If the session token is invalid, throw unauthorized
-	if (!user) throw error(401, "Unauthorized");
+	const user = (await userAuth(locals, true))!;
 
 	try {
 		const data: App.ProjectUpdateRequest = await request.json();
@@ -43,67 +42,26 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				(data.skills && data.skills.length < 2) ||
 				(data.authors &&
 					(data.authors.length < 1 ||
-						(user.role !== "Admin" &&
-							!data.authors.some(
-								(author) => author.user.id === project.ownerId
-							))))
+						!data.authors.some(
+							(author) => author.user.id === project.ownerId
+						)))
 			)
 				throw error(400, "Bad Request");
 		} else if (
+			// Check if this user is a collaborator
 			project.authors.some((author) => author.userId === user.id)
 		) {
-			// Check if this user is an author and is submitting any author or visibility data
+			// Make sure collaborators can't update the visibility or authors
 			if (
 				Object.keys(data).some(
-					(key) => key === "authors" || key === "visible"
+					(key) => key === "visibility" || key === "authors"
 				)
 			)
-				throw error(400, "Bad Request");
+				throw error(401, "Unauthorized");
 		} else throw error(401, "Unauthorized");
 
-		// Basic check to make sure every image ID starts with the project ID
-		if (
-			data.images &&
-			!data.images.every((image) => image.startsWith(project.id))
-		) {
-			throw error(400, "Bad Request");
-		}
+		let url: string;
 
-		// Update the image IDs inside of the project content
-		if (data.images) {
-			// Check if the newly submitted images exist on Cloudflare
-			await Promise.all(
-				data.images.map(
-					async (image) =>
-						!project.images.includes(image) &&
-						(await fetch(
-							`https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/${image}/banner`
-						).catch(() => {
-							throw error(400, "Bad Request");
-						}))
-				)
-			);
-
-			// Delete all images that are no longer included in the project. This
-			// doesn't need to be awaited since it doesn't interact with the postgres database
-			project.images.map(
-				(image) =>
-					!data.images.includes(image) &&
-					fetch(
-						`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1/${image}`,
-						{
-							method: "DELETE",
-							headers: {
-								Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
-							}
-						}
-					).catch(() => {}) // Ignore errors if one somehow occurs
-			);
-		}
-
-		let url: string | undefined;
-
-		// If the title is being changed, do some more input validation
 		if (data.title) {
 			// Create a url out of the title if it exists
 			url = data.title
@@ -123,6 +81,94 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				});
 		} else url = project.url;
 
+		// Create a hash to Cloudflare images ID map to return to the client, this way the client-side
+		// images map can be properly updated
+
+		const images: Record<string, string> = {};
+
+		// Find all images in the content and use the image data provided to upload them, if there is an image in the content that
+		// isn't in the image data, throw a bad request. Also, all provided ids will be checked to make sure they still exist on
+		// Cloudflare images, if they don't they will be re-uploaded
+		await Promise.all(
+			(data.content as JSONContent).content!.map(async (node) => {
+				if (
+					node.type !== "image" ||
+					!node.attrs!.src.startsWith("blob:")
+				)
+					return;
+
+				const hash = data.images[node.attrs!.src] as string;
+
+				if (!hash) throw error(400, "Bad Request");
+
+				const image = data.images[hash] as App.Image;
+
+				if (!image) throw error(400, "Bad Request");
+
+				// If the file size of the image is over 2MB, throw a bad request
+				if (image.data.length > 2000000)
+					throw error(400, "Bad Request");
+
+				// If provided, check if the image ID exists, if so, use that already existing cloudflare URL
+				if (
+					image.id &&
+					(await fetch(
+						`${PUBLIC_CLOUDFLARE_URL}/${image.id}/banner`,
+						{
+							method: "HEAD"
+						}
+					).then((res) => res.ok))
+				)
+					return (
+						(node.attrs!.src = `${PUBLIC_CLOUDFLARE_URL}/${image.id}/banner`) &&
+						(images[hash] = image.id)
+					);
+
+				// Otherwise, if it doesn't exist or doesn't have an ID, upload it to cloudflare
+				// Then upload the new image to Cloudflare
+
+				const body = new FormData();
+
+				body.set("file", new Blob([new Uint8Array(image.data)]));
+
+				const id = `${project.id}-${Date.now()}`;
+
+				// Set the ID to include the project ID
+				body.set("id", id);
+
+				await fetch(
+					`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1`,
+					{
+						method: "POST",
+						headers: {
+							Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+						},
+						body
+					}
+				);
+
+				node.attrs!.src = `${PUBLIC_CLOUDFLARE_URL}/${id}/banner`;
+				images[hash] = id;
+			})
+		);
+
+		// Delete images that no longer exist in the content. This
+		// doesn't need to be awaited since nothing depends on it
+		const ids = Object.values(images);
+		project.images.map(
+			(image) =>
+				!ids.includes(image) &&
+				fetch(
+					`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1/${image}`,
+					{
+						method: "DELETE",
+						headers: {
+							Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+						}
+					}
+				)
+		);
+
 		// Update the project
 		await prisma.project.update({
 			where: { id: project.id },
@@ -134,7 +180,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				date: new Date(),
 				skills: data.skills,
 				content: data.content,
-				images: data.images,
+				images: ids,
 				visible: data.visible,
 				authors: data.authors
 					? {
@@ -152,27 +198,37 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			}
 		});
 
-		return new Response(undefined, { status: 200 });
-	} catch {
+		return new Response(
+			JSON.stringify({ images, url } as App.ProjectUpdateResponse),
+			{ status: 200 }
+		);
+	} catch (err) {
+		// Catch errors and propogate the proper error codes
+		if (
+			(err as HttpError).status === 401 ||
+			(err as HttpError).status === 400
+		)
+			throw err;
+
 		throw error(400, "Bad Request");
 	}
 };
 
-// Search for projects, otherwise a +page.server.ts should be used
+// Search for projects
 // * INPUT: where=Prisma.ProjectWhereInput
 // * OUTPUT: ProjectWithAuthors[]
 export const GET: RequestHandler = async ({ request }) => {
 	try {
-		const projects = await getProjects(
-			JSON.parse(
-				new URL(request.url).searchParams.get("where")!
-			) as Prisma.ProjectWhereInput
+		return new Response(
+			JSON.stringify(
+				await getProjects(
+					JSON.parse(
+						new URL(request.url).searchParams.get("where")!
+					) as Prisma.ProjectWhereInput
+				)
+			),
+			{ status: 200 }
 		);
-
-		// Sort projects by most recently updated
-		projects.sort((p, n) => (p.date.getDate() < n.date.getDate() ? 1 : -1));
-
-		return new Response(JSON.stringify(projects), { status: 200 });
 	} catch {
 		throw error(400, "Bad Request");
 	}
@@ -182,13 +238,11 @@ export const GET: RequestHandler = async ({ request }) => {
 // * INPUT: None
 // * OUTPUT: ProjectCreateResponse
 export const POST: RequestHandler = async ({ locals }) => {
-	const user = await userAuth(locals);
-
-	if (!user) throw error(401, "Unauthorized");
+	const user = (await userAuth(locals, true))!;
 
 	try {
 		// Remove any spaces from the name for url encoding
-		const name = user.name.replaceAll(/\s/g, "-");
+		const name = user.name.replaceAll(/\s+/g, "-");
 
 		// Check for other projects and postfix this one
 		const postfix = await prisma.project
@@ -207,7 +261,8 @@ export const POST: RequestHandler = async ({ locals }) => {
 					try {
 						const url = project.url.split("-");
 						const int = parseInt(url[url.length - 1]);
-						int > biggest && (biggest = int);
+
+						if (int > biggest) biggest = int;
 					} catch {
 						return;
 					}
@@ -253,9 +308,12 @@ export const POST: RequestHandler = async ({ locals }) => {
 			}
 		);
 
-		return new Response(JSON.stringify({ url: project.url }), {
-			status: 200
-		});
+		return new Response(
+			JSON.stringify({ url: project.url } as App.ProjectCreateResponse),
+			{
+				status: 200
+			}
+		);
 	} catch {
 		throw error(400, "Bad Request");
 	}
@@ -265,25 +323,24 @@ export const POST: RequestHandler = async ({ locals }) => {
 // * INPUT: ProjectDeleteRequest
 // * OUTPUT: None
 export const DELETE: RequestHandler = async ({ locals, request }) => {
-	const user = await userAuth(locals);
-
-	if (!user) throw error(401, "Unauthorized");
+	const user = (await userAuth(locals, true))!;
 
 	try {
 		const data: App.ProjectDeleteRequest = await request.json();
 
-		// Check if the project exists and owns the project
+		// Check if the project exists and this user owns the project
 		const project = await prisma.project.findFirst({
 			where: { id: data.id, ownerId: user.id }
 		});
 
 		if (!project) throw error(400, "Bad Request");
 
-		// Before he project gets deleted, make sure it isn't pinned
-		await prisma.user.update({
-			where: { id: user.id },
-			data: { pinnedProjectId: null }
-		});
+		// Before the project gets deleted, make sure it isn't pinned
+		if (user.pinnedProjectId === project.id)
+			await prisma.user.update({
+				where: { id: user.id },
+				data: { pinnedProjectId: null }
+			});
 
 		// Delete the projects authors
 		await prisma.projectAuthor.deleteMany({
@@ -295,7 +352,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 			where: { id: data.id }
 		});
 
-		// Delete the banner
+		// Delete the banner. This isn't awaited since nothing relies on it
 		fetch(
 			`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1/banner-${project.id}`,
 			{

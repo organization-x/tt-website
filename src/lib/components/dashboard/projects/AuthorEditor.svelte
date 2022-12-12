@@ -4,13 +4,14 @@
 
 	import { positions } from "$lib/enums";
 	import { getIcon } from "$lib/getIcon";
+	import Dropdown from "$lib/components/Dropdown.svelte";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Trash from "$lib/components/icons/general/Trash.svelte";
 	import DropdownItem from "$lib/components/DropdownItem.svelte";
+	import Search from "$lib/components/icons/general/Search.svelte";
 	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
 
 	import type { Position } from "@prisma/client";
-	import Search from "$lib/components/icons/general/Search.svelte";
-	import Dropdown from "$lib/components/Dropdown.svelte";
 
 	export let author: App.Author;
 	export let cantRemove: boolean;
@@ -51,8 +52,8 @@
 		<img
 			width="512"
 			height="512"
-			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
-				.user.id}/avatar?{new Date().getTime()}"
+			src="{PUBLIC_CLOUDFLARE_URL}/avatar-{author.user
+				.id}/avatar?{new Date().getTime()}"
 			alt="{author.user.name}'s avatar"
 			class="w-10 h-10 rounded-full object-cover object-center"
 		/>

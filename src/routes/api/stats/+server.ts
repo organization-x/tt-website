@@ -1,50 +1,48 @@
 import Redis from "ioredis";
 import { error } from "@sveltejs/kit";
+import { createHash } from "node:crypto";
 import { BetaAnalyticsDataClient } from "@google-analytics/data";
 
 import { colors } from "$lib/enums";
-import { createHash } from "node:crypto";
+import { dev } from "$app/environment";
 import { env } from "$env/dynamic/private";
 import { prisma, userAuth } from "$lib/prisma";
 
 import type { RequestHandler } from "./$types";
 import type { SoftSkill, TechSkill } from "@prisma/client";
 
-// Request handlers for managing user data in prisma, it uses the users session token to verify the API call
+// Request handlers for getting Google Analytics data, with a Redis cash to prevent exceeding the API limit
 
-const redis = new Redis(env.REDIS_URL);
+const redis = new Redis(env.REDIS_URL, { family: dev ? 4 : 6 });
 
 // Create google analytics fetching client
 const analytics = new BetaAnalyticsDataClient({
 	credentials: {
 		client_email: env.GOOGLE_EMAIL,
-		// Replace \n characters with actual newlines because google is wack
+		// Replace newline characters in API key with actual newlines
 		private_key: env.GOOGLE_KEY.replaceAll(/\\n/gm, "\n")
 	}
 });
 
 // Get analytics data for the specific user
-// * INPUT: startDate=string, endDate=string, mode=string, ids?=string[]
+// * INPUT: startDate=string, endDate=string, mode=global|personal|users, ids?=string[]
 // * OUTPUT: AnalyticsResponse | UsersAnalyticsResponse
 export const GET: RequestHandler = async ({ locals, request }) => {
-	const user = await userAuth(locals);
+	const user = (await userAuth(locals, true))!;
 
-	if (!user) throw error(401, "Unauthorized");
+	const query = new URL(request.url).searchParams;
+
+	const mode = query.get("mode") as "users" | "global" | "personal" | null;
+
+	// If the mode is on anything but personal and the user isn't an admin, throw unauthorized
+	if ((mode === "users" || mode === "global") && user.role !== "Admin")
+		throw error(401, "Unauthorized");
 
 	try {
-		const query = new URL(request.url).searchParams;
-
-		const isPersonal = query.get("mode") === "Personal";
-
-		// If the query includes a mode other than personal and the user isn't an admin, throw bad request
-		if (!isPersonal && user.role !== "Admin")
-			throw error(400, "Bad Request");
-
-		// If the user is an admin, check if id's are provided to grab other users data. Otherwise
-		// proceed as normal
+		// If the mode is users, get all the user id's provided
 		let ids = query.get("ids")?.split(",");
 
-		if (user.role === "Admin" && ids) {
+		if (user.role === "Admin" && mode === "users" && ids) {
 			const data: App.UsersAnalyticsResponse = {};
 			const requests: Parameters<typeof analytics.runReport>[0][] = [];
 
@@ -54,6 +52,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 					// Get the cached data from redis, the hash is different from the normal analytics since we keep them
 					// seperate. The reason for this is because this request only gets view data while the others get much
 					// more for per-user analytics and we can't keep partial data under the same hash
+
 					const cached = await redis.get(
 						createHash("shake128", { outputLength: 10 })
 							.update("users" + id)
@@ -205,16 +204,18 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 			return new Response(JSON.stringify(data), { status: 200 });
 		}
 
-		const data = {
+		const dates = {
 			startDate: query.get("startDate")!,
 			endDate: query.get("endDate")!
 		};
+
+		const isPersonal = mode === "personal";
 
 		// Create a unique hash of this request, if it's an admin add a boolean to the has to differentiate
 		// global data to their personal data
 		const hash = createHash("shake128", { outputLength: 10 })
 			.update(
-				data.startDate + data.endDate + user.id + String(isPersonal)
+				dates.startDate + dates.endDate + (isPersonal ? user.id : mode)
 			)
 			.digest("hex");
 
@@ -234,10 +235,10 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 
 		// Provide comparisons to the previous data within the same selected time period. For example if month
 		// is selected provide a comparison to the previous month, if week is then compare to the previous week
-		const end = new Date(data.endDate).getTime();
+		const start = new Date(dates.startDate).getTime();
 		let previous: string | { startDate: string; endDate: string } =
 			new Date(
-				end - (new Date(data.startDate).getTime() - end)
+				start - (new Date(dates.endDate).getTime() - start)
 			).toLocaleDateString("en-CA");
 		previous = { startDate: previous, endDate: previous };
 
@@ -246,7 +247,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 			// Grab the users views across all their pages and new vs returning users for the date range selected
 			// and the previous based on that date range
 			{
-				dateRanges: [data, previous],
+				dateRanges: [dates, previous],
 				metrics: [
 					{
 						name: "eventCount"
@@ -286,7 +287,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 			},
 			// Grab the users top soft skills filters in search
 			{
-				dateRanges: [data, previous],
+				dateRanges: [dates, previous],
 				metrics: [
 					{
 						name: "eventCount"
@@ -342,7 +343,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 			requests.push(
 				// Grab the users project views along with the percent scrolled on each project
 				{
-					dateRanges: [data],
+					dateRanges: [dates],
 					metrics: [
 						{
 							name: "eventCount"
@@ -389,7 +390,7 @@ export const GET: RequestHandler = async ({ locals, request }) => {
 				},
 				// Grab the users project clicks in search results along with the tech skills
 				{
-					dateRanges: [data, previous],
+					dateRanges: [dates, previous],
 					metrics: [
 						{
 							name: "eventCount"

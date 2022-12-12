@@ -5,6 +5,7 @@
 	import Dropdown from "$lib/components/Dropdown.svelte";
 	import Id from "$lib/components/icons/general/Id.svelte";
 	import Input from "$lib/components/dashboard/Input.svelte";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Devto from "$lib/components/icons/logos/Devto.svelte";
 	import Group from "$lib/components/icons/general/Group.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
@@ -246,7 +247,7 @@
 			/>
 		{:else}
 			<img
-				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{$original.id}/banner?{new Date().getTime()}"
+				src="{PUBLIC_CLOUDFLARE_URL}/banner-{$original.id}/banner?{new Date().getTime()}"
 				width="1920"
 				height="1080"
 				alt="{$original.name}'s banner"
@@ -290,7 +291,7 @@
 					<img
 						width="512"
 						height="512"
-						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$original.id}/avatar?{new Date().getTime()}"
+						src="{PUBLIC_CLOUDFLARE_URL}/avatar-{$original.id}/avatar?{new Date().getTime()}"
 						alt="{$original.name}'s avatar"
 						class="w-28 h-28 bg-gray-400 object-cover object-center rounded-full row-start-1 col-start-1 lg:w-32 lg:h-32"
 					/>

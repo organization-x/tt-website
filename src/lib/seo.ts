@@ -1,6 +1,8 @@
 // This file contains functions related to generating SEO data or similar, all function names are based off of
 // schema.org types
 
+import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
+
 // Generate breadcrumb structured data
 export const breadcrumb = (
 	title: string,
@@ -49,7 +51,7 @@ export const article = (
 			value: modified
 		},
 		keywords: skills,
-		image: `https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-${id}/banner`,
+		image: `${PUBLIC_CLOUDFLARE_URL}/banner-${id}/banner`,
 		description: description,
 		name: title,
 		url: `https://teamtomorrow.com/projects/${url}`

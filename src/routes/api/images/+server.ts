@@ -12,10 +12,7 @@ import type { RequestHandler } from "./$types";
 // * INPUT: FormData: file, type, id
 // * OUTPUT: ImageUploadResponse
 export const PATCH: RequestHandler = async ({ locals, request }) => {
-	const user = await userAuth(locals);
-
-	// If the session token is invalid, throw unauthorized
-	if (!user) throw error(401, "Unauthorized");
+	const user = (await userAuth(locals, true))!;
 
 	const data = await request
 		.formData()
@@ -25,9 +22,10 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		});
 
 	const id = data.get("id") as string;
+	const file = data.get("file") as File;
+	let type = data.get("type") as string;
 
 	let theme: string;
-	let type = data.get("type") as string;
 
 	// If the data includes an invalid type, if there's no ID provided, or if the image size is greater than
 	// 2MB then throw a bad request
@@ -36,7 +34,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		(type !== "user-avatar" &&
 			type !== "user-banner" &&
 			type !== "project-banner") ||
-		(data.get("file") as File).size >= 2000000
+		file.size >= 2000000
 	)
 		throw error(400, "Bad Request");
 
@@ -46,11 +44,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	// If it's a user avatar or banner remove the user prefix and set the id
 	if (type === "user-avatar" || type === "user-banner") {
 		// Check if user being edited matches or the editor is an admin
-		if (
-			(type === "user-avatar" || type === "user-banner") &&
-			id !== user.id &&
-			user.role !== "Admin"
-		)
+		if (id !== user.id && user.role !== "Admin")
 			throw error(401, "Unauthorized");
 
 		type = type.split("-")[1];
@@ -144,6 +138,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				result = color;
 		}
 
+		// Convert from RGB to Hex
 		theme =
 			result.r.toString(16).padStart(2, "0") +
 			result.g.toString(16).padStart(2, "0") +
@@ -190,14 +185,13 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	);
 };
 
+// TODO: Upload pictures in the actual project update request
+
 // Upload an image for a project's content
 // * INPUT: FormData: file, id
 // * OUTPUT: ImageUploadResponse
 export const PUT: RequestHandler = async ({ locals, request }) => {
-	const user = await userAuth(locals);
-
-	// If the session token is invalid, throw unauthorized
-	if (!user) throw error(401, "Unauthorized");
+	const user = (await userAuth(locals, true))!;
 
 	try {
 		const data = await request.formData();
@@ -217,7 +211,7 @@ export const PUT: RequestHandler = async ({ locals, request }) => {
 			throw error(400, "Bad Request");
 
 		// Set the ID to include the project ID
-		data.set("id", `${project.id}-${new Date().toISOString()}`);
+		data.set("id", `${project.id}-${Date.now()}`);
 
 		// Upload the image to Cloudflare
 		const id = (
@@ -232,10 +226,6 @@ export const PUT: RequestHandler = async ({ locals, request }) => {
 				}
 			).then((res) => res.json())
 		).result.id;
-
-		// We don't add it to the project here, instead it is stored locally until the content has
-		// been saved by the user. If the user doesn't save with the newly uploaded images, they will be
-		// deleted from Cloudflare
 
 		return new Response(JSON.stringify({ id }), { status: 200 });
 	} catch {

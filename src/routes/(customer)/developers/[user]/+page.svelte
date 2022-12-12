@@ -8,6 +8,7 @@
 	import { developers } from "$lib/stores";
 	import Kudo from "$lib/components/Kudo.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import Plus from "$lib/components/icons/general/Plus.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
@@ -99,7 +100,7 @@
 		[...data.userPage.techSkills, ...data.userPage.softSkills].map(
 			(skill) => [skill, []]
 		)
-	) as { [key: string]: { id: number; from: App.Endorser }[] };
+	) as Record<string, { id: number; from: App.Endorser }[]>;
 
 	// Add each endorsement to the correct skill
 	data.userPage.endorsementsReceived.forEach((endorsement) =>
@@ -222,13 +223,11 @@
 	<meta name="og:description" content={data.userPage.about} />
 	<meta
 		name="og:image"
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
-			.userPage.id}/avatar"
+		src="{PUBLIC_CLOUDFLARE_URL}/avatar-{data.userPage.id}/avatar"
 	/>
 	<meta
 		name="og:image:secure_url"
-		content="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
-			.userPage.id}/avatar"
+		content="{PUBLIC_CLOUDFLARE_URL}/avatar-{data.userPage.id}/avatar"
 	/>
 	<meta name="og:image:width" content="512" />
 	<meta name="og:image:height" content="512" />
@@ -243,8 +242,7 @@
 	<meta name="twitter:card" content="summary" />
 	<meta
 		name="twitter:image"
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
-			.userPage.id}/avatar"
+		src="{PUBLIC_CLOUDFLARE_URL}/avatar-{data.userPage.id}/avatar"
 	/>
 
 	{@html breadcrumb(data.userPage.name, data.userPage.url, "developers")}
@@ -252,8 +250,8 @@
 
 <div class="relative pt-18 px-4 lg:px-10">
 	<img
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data
-			.userPage.id}/banner?{timestamp}"
+		src="{PUBLIC_CLOUDFLARE_URL}/banner-{data.userPage
+			.id}/banner?{timestamp}"
 		width="1920"
 		height="1080"
 		alt="{data.userPage.name}'s banner"
@@ -269,8 +267,8 @@
 			<img
 				width="512"
 				height="512"
-				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
-					.userPage.id}/avatar?{timestamp}"
+				src="{PUBLIC_CLOUDFLARE_URL}/avatar-{data.userPage
+					.id}/avatar?{timestamp}"
 				alt="{data.userPage.name}'s avatar"
 				class="border-4 mt-4 border-black bg-gray-400 box-content object-cover object-center w-28 h-28 rounded-full lg:w-32 lg:mx-0 lg:h-32 lg:mb-2 lg:-ml-[4px]"
 			/>

@@ -1,15 +1,3 @@
-// This file contains functions for handling images during project editing, this is so images on seperate clients
-// can be shown in the editor even if not uploaded to Cloudflare images
-
-// Encode a blob into base64
-export const baseEncode = (reader: FileReader, blob: Blob): Promise<string> =>
-	new Promise((res) => {
-		reader.addEventListener("load", () => res(reader.result as string)),
-			{ once: true };
-
-		reader.readAsDataURL(blob);
-	});
-
 // Hash a blob using SHA-1, then convert it to a hex string. This is used
 // for identifying images during project collaboration
 export const hashBlob = async (blob: Blob) =>
@@ -20,3 +8,14 @@ export const hashBlob = async (blob: Blob) =>
 	)
 		.map((byte) => byte.toString(16).padStart(2, "0"))
 		.join("");
+
+const urls: string[] = [];
+
+export const checkObjectURL = (url: string) => urls.includes(url);
+
+export const createObjectURL = (blob: Blob) => {
+	const url = URL.createObjectURL(blob);
+	urls.push(url);
+
+	return url;
+};

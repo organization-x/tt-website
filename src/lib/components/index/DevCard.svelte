@@ -2,6 +2,7 @@
 	import { getContext } from "svelte";
 
 	import { getIcon } from "$lib/getIcon";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import GradientText from "$lib/components/GradientText.svelte";
 
 	export let developer: App.Developer;
@@ -19,7 +20,7 @@
 			<img
 				height="512"
 				width="512"
-				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{developer.id}/avatar?{timestamp}"
+				src="{PUBLIC_CLOUDFLARE_URL}/avatar-{developer.id}/avatar?{timestamp}"
 				alt="{developer.name}'s avatar"
 				loading="lazy"
 				class="rounded-full bg-gray-400 w-20 h-20 object-cover object-center"

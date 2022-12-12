@@ -6,6 +6,7 @@
 	import DevTag from "$lib/components/DevTag.svelte";
 	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import DevSection from "$lib/components/DevSection.svelte";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Bulb from "$lib/components/icons/general/Bulb.svelte";
 	import Star from "$lib/components/icons/general/Star.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
@@ -28,7 +29,7 @@
 			<img
 				height="512"
 				width="512"
-				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{timestamp}"
+				src="{PUBLIC_CLOUDFLARE_URL}/avatar-{user.id}/avatar?{timestamp}"
 				alt="{user.name}'s avatar"
 				loading="lazy"
 				class="rounded-full bg-gray-400 w-20 h-20 object-cover object-center"
@@ -76,8 +77,8 @@
 					style="border-color: #{user.pinnedProject.theme}"
 				>
 					<img
-						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{user
-							.pinnedProject.id}/banner?{timestamp}"
+						src="{PUBLIC_CLOUDFLARE_URL}/banner-{user.pinnedProject
+							.id}/banner?{timestamp}"
 						width="1920"
 						height="1080"
 						loading="lazy"

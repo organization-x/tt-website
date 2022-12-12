@@ -3,7 +3,7 @@ import { Plugin } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
 
 // Placeholders for different node types
-const placeholders: { [key: string]: string } = {
+const placeholders: Record<string, string> = {
 	heading: "Title..."
 };
 

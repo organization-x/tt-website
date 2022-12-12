@@ -2,9 +2,8 @@ import { prisma } from "$lib/prisma.js";
 
 import type { RequestHandler } from "@sveltejs/kit";
 
-// On logout remove any cookies by setting the session cookie to expire immediatley and
-// removing the session from postgres, then redirect to home page
-export const GET: RequestHandler = async (request) => {
+// Create a sitemap for SEO indexing
+export const GET: RequestHandler = async () => {
 	const users = await prisma.user.findMany({
 		select: { url: true, lastUpdated: true }
 	});

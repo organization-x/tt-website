@@ -6,9 +6,10 @@ import type { PageServerLoad } from "./$types";
 
 // Grab the user that the admin is editing, if the logged in user
 // is the same as the user being edited, redirect to the profile editor
-export const load: PageServerLoad<{
-	pageUser: App.UserWithMetadata;
-}> = async ({ params, parent }) => {
+export const load: PageServerLoad<App.UserWithMetadata> = async ({
+	params,
+	parent
+}) => {
 	const user = await parent();
 
 	if (user.url === params.user) throw redirect(302, "/dashboard/profile");
@@ -34,5 +35,5 @@ export const load: PageServerLoad<{
 
 	if (!pageUser) throw redirect(302, "/dashboard/users");
 
-	return { pageUser };
+	return pageUser;
 };

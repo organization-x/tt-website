@@ -2,6 +2,7 @@
 	import { getContext } from "svelte";
 
 	import type { Project } from "@prisma/client";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 
 	const timestamp = getContext("timestamp") as string;
 
@@ -22,7 +23,7 @@
 		<img
 			width="512"
 			height="512"
-			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{projectPair[0]
+			src="{PUBLIC_CLOUDFLARE_URL}/banner-{projectPair[0]
 				.id}/avatar?{timestamp}"
 			alt="Random shapes and colors in the formation of a hallway"
 			loading="lazy"
@@ -35,7 +36,7 @@
 			<img
 				width="512"
 				height="512"
-				src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{projectPair[1]
+				src="{PUBLIC_CLOUDFLARE_URL}/banner-{projectPair[1]
 					.id}/avatar?{timestamp}"
 				alt="Random shapes and colors in the formation of a hallway"
 				loading="lazy"

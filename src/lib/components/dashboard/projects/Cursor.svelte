@@ -37,7 +37,7 @@
 	{#if hover}
 		<div
 			transition:slide
-			class="rounded-sm rounded-br-none text-xs -right-[1.5px] px-1 py-0.5 absolute -top-5 whitespace-nowrap select-none pointer-events-none"
+			class="rounded-sm rounded-br-none text-xs -right-[1.5px] px-1 py-0.5 absolute -top-5 whitespace-nowrap w-max select-none pointer-events-none"
 			style="background-color: {color};"
 			contenteditable="false"
 		>

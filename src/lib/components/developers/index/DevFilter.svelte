@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { getContext } from "svelte";
 
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
+
 	import type { User } from "@prisma/client";
 
 	const timestamp = getContext("timestamp") as string;
@@ -20,7 +22,7 @@
 	<img
 		height="512"
 		width="512"
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{timestamp}"
+		src="{PUBLIC_CLOUDFLARE_URL}/avatar-{user.id}/avatar?{timestamp}"
 		loading="lazy"
 		alt="{user.name}'s avatar"
 		class="rounded-full w-10 h-10 object-cover object-center bg-gray-400"

@@ -4,6 +4,7 @@
 
 	import { user } from "$lib/stores";
 	import { getIcon } from "$lib/getIcon";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import Trash from "$lib/components/icons/general/Trash.svelte";
 	import Check from "$lib/components/icons/general/Check.svelte";
@@ -73,7 +74,7 @@
 >
 	<div class="relative">
 		<img
-			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{project.id}/banner?{timestamp}"
+			src="{PUBLIC_CLOUDFLARE_URL}/banner-{project.id}/banner?{timestamp}"
 			width="1920"
 			height="1080"
 			alt="Banner for '{project.title}'"
@@ -88,8 +89,8 @@
 					<img
 						width="512"
 						height="512"
-						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{author
-							.user.id}/avatar?{timestamp}"
+						src="{PUBLIC_CLOUDFLARE_URL}/avatar-{author.user
+							.id}/avatar?{timestamp}"
 						alt="{author.user.name}'s avatar"
 						class="w-10 h-10 bg-gray-400 object-cover object-center -mr-6 sm:-mr-8 rounded-full border-2 sm:w-14 sm:h-14 sm:border-4"
 						style="border-color: #{project.theme}; z-index: {project
@@ -111,7 +112,7 @@
 			{#each project.skills as icon}
 				<svelte:component
 					this={getIcon(icon)}
-					class="w-7 h-7 md:max-lg:w-8 md:max-lg:h-8"
+					class="w-6 h-6 sm:w-7 sm:h-7 md:max-lg:w-8 md:max-lg:h-8"
 				/>
 			{/each}
 

@@ -11,10 +11,7 @@ import type { RequestHandler } from "./$types";
 // * INPUT: UserUpdateRequest
 // * OUTPUT: None
 export const PATCH: RequestHandler = async ({ locals, request }) => {
-	const user = await userAuth(locals);
-
-	// If the session token is invalid, throw unauthorized
-	if (!user) throw error(401, "Unauthorized");
+	const user = (await userAuth(locals, true))!;
 
 	const data: App.UserUpdateRequest = await request.json().catch(() => {
 		throw error(400, "Bad Request");
@@ -47,7 +44,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		const name = data.name?.trim();
 		const url = name?.toLowerCase().replaceAll(/\s+/g, "-");
 
-		// Check if the user has the same URL as another, and throw an error if so
+		// Check if the user has the same URL as another and throw an error if so
 		if (
 			url &&
 			(await prisma.user.count({ where: { url, id: { not: data.id } } }))
@@ -61,7 +58,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			where: { id: data.id },
 			data: {
 				name,
-				url: name?.toLowerCase().replaceAll(/\s+/g, "-"),
+				url,
 				role: data.role,
 				about: data.about?.trim(),
 				team: data.team,
@@ -90,7 +87,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	}
 };
 
-// Search for users, otherwise a +page.server.ts should be used
+// Search for users
 // * INPUT: where=Prisma.UserWhereInput
 // * OUTPUT: UserWithMetadata[]
 export const GET: RequestHandler = async ({ request }) => {
@@ -127,13 +124,11 @@ export const GET: RequestHandler = async ({ request }) => {
 	}
 };
 
-// Add/remove endorsements on one of a user's skills
+// Add or remove endorsements on one of a user's skills
 // * INPUT: EndorsementRequest
 // * OUTPUT: EndorsementWithMetadata | undefined
 export const POST: RequestHandler = async ({ locals, request }) => {
-	const user = await userAuth(locals);
-
-	if (!user) throw error(401, "Unauthorized");
+	const user = (await userAuth(locals, true))!;
 
 	try {
 		const data: App.EndorsementRequest = await request.json();
@@ -170,7 +165,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			)
 				throw error(400, "Bad Request");
 
-			const endorsement = await prisma.endorsement.create({
+			const { id, from } = await prisma.endorsement.create({
 				data: {
 					fromId: user.id,
 					toId: data.id as string,
@@ -187,19 +182,9 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 				}
 			});
 
-			return new Response(
-				JSON.stringify({
-					id: endorsement.id,
-					from: {
-						id: endorsement.from.id,
-						url: endorsement.from.url,
-						name: endorsement.from.name
-					}
-				}),
-				{
-					status: 200
-				}
-			);
+			return new Response(JSON.stringify({ id, from }), {
+				status: 200
+			});
 		} else {
 			await prisma.endorsement.delete({
 				where: { id: data.id as number }

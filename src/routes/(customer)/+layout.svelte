@@ -12,6 +12,7 @@
 	import FootLink from "$lib/components/FootLink.svelte";
 	import AICamp from "$lib/components/index/AICamp.svelte";
 	import Logo from "$lib/components/icons/logos/Logo.svelte";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Burger from "$lib/components/icons/general/Burger.svelte";
 	import YouTube from "$lib/components/icons/logos/YouTube.svelte";
 	import LogOut from "$lib/components/icons/general/LogOut.svelte";
@@ -139,7 +140,7 @@
 								<img
 									width="512"
 									height="512"
-									src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
+									src="{PUBLIC_CLOUDFLARE_URL}/avatar-{data
 										.user.id}/avatar?{new Date().getTime()}"
 									alt="{data.user.name}'s avatar"
 									class="w-14 h-14 object-cover object-center rounded-full bg-gray-400"
@@ -266,8 +267,8 @@
 							<img
 								width="512"
 								height="512"
-								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{data
-									.user.id}/avatar?{new Date().getTime()}"
+								src="{PUBLIC_CLOUDFLARE_URL}/avatar-{data.user
+									.id}/avatar?{new Date().getTime()}"
 								alt="{data.user.name}'s avatar"
 								class="w-8 h-8 object-cover object-center rounded-full bg-gray-400"
 							/>

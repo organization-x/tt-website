@@ -33,6 +33,7 @@
 	import Button from "$lib/components/Button.svelte";
 	import Author from "$lib/components/Author.svelte";
 	import Separator from "$lib/components/Separator.svelte";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	import type { PageData } from "./$types";
@@ -94,11 +95,11 @@
 	<meta name="og:description" content={data.description} />
 	<meta
 		name="og:image"
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.id}/banner"
+		src="{PUBLIC_CLOUDFLARE_URL}/banner-{data.id}/banner"
 	/>
 	<meta
 		name="og:image:secure_url"
-		content="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.id}/banner"
+		content="{PUBLIC_CLOUDFLARE_URL}/banner-{data.id}/banner"
 	/>
 	<meta name="og:image:width" content="512" />
 	<meta name="og:image:height" content="512" />
@@ -109,7 +110,7 @@
 	<meta name="twitter:description" content={data.description} />
 	<meta
 		name="twitter:image"
-		src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.id}/banner"
+		src="{PUBLIC_CLOUDFLARE_URL}/banner-{data.id}/banner"
 	/>
 
 	{@html breadcrumb(data.title, data.url, "projects")}
@@ -129,7 +130,7 @@
 </svelte:head>
 
 <img
-	src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{data.id}/banner?{timestamp}"
+	src="{PUBLIC_CLOUDFLARE_URL}/banner-{data.id}/banner?{timestamp}"
 	width="1920"
 	height="1080"
 	alt="Banner for '{data.title}'"

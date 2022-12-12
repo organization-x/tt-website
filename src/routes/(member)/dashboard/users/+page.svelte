@@ -3,6 +3,7 @@
 	import { fly, scale } from "svelte/transition";
 
 	import SearchBar from "$lib/components/SearchBar.svelte";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import User from "$lib/components/dashboard/users/User.svelte";
 	import Trash from "$lib/components/icons/general/Trash.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
@@ -31,7 +32,9 @@
 				if (!data.length) return Promise.reject();
 
 				const analytics = await fetch(
-					`/api/stats?ids=${data.map((user) => user.id).join(",")}`
+					`/api/stats?ids=${data
+						.map((user) => user.id)
+						.join(",")}&mode=users`
 				).then((res) => res.json());
 
 				return data.map((user) => ({
@@ -76,7 +79,7 @@
 								<img
 									height="512"
 									width="512"
-									src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{Date.now()}"
+									src="{PUBLIC_CLOUDFLARE_URL}/avatar-{user.id}/avatar?{Date.now()}"
 									alt="{user.name}'s avatar"
 									loading="lazy"
 									class="rounded-full object-cover object-center bg-gray-400 w-10 h-10"

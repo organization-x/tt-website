@@ -26,8 +26,8 @@
 	let percent: Tweened<number>;
 
 	// Store the mode that the analytics are in, admins can switch between personal and global analytics
-	let mode: "Global" | "Personal" =
-		$user.role === "Admin" ? "Personal" : "Personal";
+	let mode: "global" | "personal" =
+		$user.role === "Admin" ? "global" : "personal";
 
 	// Encode dates based on the selected option
 	const encodeDate = (option: DateOption) => {
@@ -112,10 +112,10 @@
 			class="flex gap-4 justify-center max-w-sm mx-auto mb-8 lg:mb-12 lg:-mt-4"
 		>
 			<DashButton
-				on:click={() => (mode = "Global") && changeMode()}
-				disabled={mode === "Global"}
+				on:click={() => (mode = "global") && changeMode()}
+				disabled={mode === "global"}
 				class="flex-1 bg-gray-900 hover:bg-gray-900/60 disabled:hover:bg-gray-900 disabled:opacity-100{mode ===
-				'Global'
+				'global'
 					? ''
 					: ' opacity-60'}"
 			>
@@ -123,10 +123,10 @@
 			</DashButton>
 
 			<DashButton
-				on:click={() => (mode = "Personal") && changeMode()}
-				disabled={mode === "Personal"}
+				on:click={() => (mode = "personal") && changeMode()}
+				disabled={mode === "personal"}
 				class="flex-1 bg-gray-900 hover:bg-gray-900/60 disabled:hover:bg-gray-900 disabled:opacity-100{mode ===
-				'Personal'
+				'personal'
 					? ''
 					: ' opacity-60'}"
 			>

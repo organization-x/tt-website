@@ -9,7 +9,7 @@
 	export let data: PageData;
 
 	// Create a seperate user store with the grabbed user
-	const user = writable(data.pageUser);
+	const user = writable(data);
 
 	// If the name of the user changes, update the active URL along with it
 	onMount(() =>

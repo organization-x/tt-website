@@ -6,8 +6,10 @@
 	import Kudo from "$lib/components/Kudo.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
 	import Id from "$lib/components/icons/general/Id.svelte";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import DevSection from "$lib/components/DevSection.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 	import Bulb from "$lib/components/icons/general/Bulb.svelte";
 	import Plus from "$lib/components/icons/general/Plus.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
@@ -32,17 +34,10 @@
 	import ProjectEditPreview from "$lib/components/dashboard/ProjectEditPreview.svelte";
 
 	import type { PageData } from "./$types";
-	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	export let data: PageData;
 
 	const timestamp = getContext("timestamp");
-
-	const greet = (hour: number) => {
-		if (hour < 12) return "Good morning";
-		if (hour < 17) return "Good afternoon";
-		return "Good evening";
-	};
 
 	let visible = $user.visible;
 
@@ -55,7 +50,7 @@
 	let playing = new Set<number>();
 
 	// Create set to determine whether all of this user's skills are endorsed
-	const endorsed = new Set(
+	const endorsedCount = new Set(
 		data.endorsementsReceived.map(
 			(endorsement) => endorsement.softSkill || endorsement.techSkill
 		)
@@ -67,18 +62,13 @@
 	).length;
 
 	// Transform links into an array so it's easily iterable
-	const links: { key: string; link: string }[] = [];
-	Object.keys($user.links).map(
-		(key) =>
-			$user.links[key as keyof typeof $user.links] &&
-			links.push({
-				key: key,
-				link: $user.links[key as keyof typeof $user.links]!
-			})
+	const links = Object.entries($user.links).reduce(
+		(result: { key: string; link: string }[], [key, link]) =>
+			link ? [{ key, link }, ...result] : result,
+		[]
 	);
 
-	// Split the name to get the first name and rest of the name seperated
-	$: nameSplit = $user.name.split(/ (.*)/);
+	const firstName = getContext<string[]>("name")[0];
 
 	// Define the pinned project, the reason we don't use the user store for this is so that it stays
 	// updated with the database and also because updating the user store causes a refresh on the projects page
@@ -137,25 +127,28 @@
 	};
 
 	onMount(() => {
-		const children = Array.from(badges.children);
-
 		const observer: IntersectionObserver = new IntersectionObserver(
 			(entries) =>
-				playing.size === children.length
+				playing.size === badges.children.length
 					? observer.disconnect()
 					: entries.forEach(
 							(entry) =>
 								entry.isIntersecting &&
-								playing.add(children.indexOf(entry.target)) &&
+								playing.add(
+									Array.prototype.indexOf.call(
+										badges.children,
+										entry.target
+									)
+								) &&
 								(playing = playing)
 					  ),
 			{ threshold: 0.9 }
 		);
 
 		// Get all badges as children and observe them for the scrolling animation
-		children.forEach((badge) => {
-			observer.observe(badge);
-		});
+		for (const child of badges.children) {
+			observer.observe(child);
+		}
 
 		return () => observer.disconnect();
 	});
@@ -166,7 +159,15 @@
 </svelte:head>
 
 <DashWrap>
-	<DashHero title="{greet(new Date().getHours())}, {nameSplit[0]}" />
+	<DashHero
+		title="{(() => {
+			const hour = new Date().getHours();
+
+			if (hour < 12) return 'Good morning';
+			if (hour < 17) return 'Good afternoon';
+			return 'Good evening';
+		})()}, {firstName}"
+	/>
 
 	<div class="flex flex-col gap-12">
 		<DashSection
@@ -278,7 +279,7 @@
 							<img
 								height="512"
 								width="512"
-								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{timestamp}"
+								src="{PUBLIC_CLOUDFLARE_URL}/avatar-{$user.id}/avatar?{timestamp}"
 								alt="{$user.name}'s avatar"
 								loading="lazy"
 								class="rounded-full w-20 h-20 object-cover object-center bg-gray-400 lg:w-24 lg:h-24"
@@ -335,7 +336,7 @@
 							style="border-color: #{pinnedProject.theme}"
 						>
 							<img
-								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{pinnedProject.id}/banner?{timestamp}"
+								src="{PUBLIC_CLOUDFLARE_URL}/banner-{pinnedProject.id}/banner?{timestamp}"
 								width="1920"
 								height="1080"
 								loading="lazy"
@@ -487,7 +488,7 @@
 				<BadgeProgress
 					name="All Endorsed"
 					playing={playing.has(2)}
-					progress={endorsed / 10}
+					progress={endorsedCount / 10}
 					class="bg-purple-light"
 				>
 					<AllEndorsed slot="badge" />

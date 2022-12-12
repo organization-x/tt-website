@@ -4,6 +4,7 @@ import { OAuth2Client } from "googleapis-common";
 
 import { dev } from "$app/environment";
 import { env } from "$env/dynamic/private";
+import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 
 import type { RequestHandler } from "./$types";
 
@@ -19,9 +20,8 @@ auth.setCredentials({
 	refresh_token: env.GOOGLE_REFRESH
 });
 
-const mail = gmail({ version: "v1", auth: auth });
+const mail = gmail({ version: "v1", auth });
 
-// Get the proper origin URL for API verification based on the node enviornment
 const origin = dev ? "http://localhost:5173" : "https://teamtomorrow.com";
 
 // Insert an email into the hello@ai-camp.org account for contact form submissions
@@ -172,7 +172,7 @@ export const POST: RequestHandler = async ({ request }) => {
 													style="border-radius:999px;width:3rem;height:3rem;object-fit:cover;object-position:center;"
 													height="512"
 													width="512"
-													src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-${id}/avatar"
+													src="${PUBLIC_CLOUDFLARE_URL}/avatar-${id}/avatar"
 													alt="${name}'s avatar"
 													loading="lazy"
 												/>

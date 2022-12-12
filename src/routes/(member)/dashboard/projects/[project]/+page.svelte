@@ -5,8 +5,6 @@
 	import { onMount } from "svelte";
 	import { Editor } from "@tiptap/core";
 	import { fly } from "svelte/transition";
-	import { ySyncPlugin } from "y-prosemirror";
-	import { PluginKey } from "prosemirror-state";
 	import { WebsocketProvider } from "y-websocket";
 	import { Collaboration } from "@tiptap/extension-collaboration";
 	import { CollaborationCursor } from "@tiptap/extension-collaboration-cursor";
@@ -16,7 +14,7 @@
 	import { techSkills } from "$lib/enums";
 	import { extensions } from "$lib/tiptapExtensions";
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import { hashBlob, baseEncode } from "$lib/imageHandlers";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import TextBox from "$lib/components/dashboard/TextBox.svelte";
@@ -28,6 +26,11 @@
 	import Cursor from "$lib/components/dashboard/projects/Cursor.svelte";
 	import LinkButton from "$lib/components/dashboard/projects/LinkButton.svelte";
 	import HeadButton from "$lib/components/dashboard/projects/HeadButton.svelte";
+	import {
+		hashBlob,
+		checkObjectURL,
+		createObjectURL
+	} from "$lib/imageHandlers";
 	import ImageButton from "$lib/components/dashboard/projects/ImageButton.svelte";
 	import EditorButton from "$lib/components/dashboard/projects/EditorButton.svelte";
 	import AuthorSection from "$lib/components/dashboard/projects/AuthorSection.svelte";
@@ -57,22 +60,25 @@
 	// syncing across clients
 	const yMap = doc.getMap<App.SharedProject | State>("project");
 
-	// Create a shared map for storing the Cloudflare images ID and Blob of images in the document so we can
+	// Create a shared map for storing the Cloudflare images ID and buffers of images in the document so we can
 	// determine which images are to be uploaded, kept or deleted and also so that collaborators
-	// can see the images without having to upload them. For efficiency, some entries are blob URLs that
-	// give keys to the actual image object, this allows for collaborators who are just joining to quickly
-	// get image data and create blob links for their browser. The image object also holds all URLS pointing
-	// to it so that the same image isn't uploaded twice
+	// can see the images without having to upload them
 	let images: YMap<App.Image | string> = doc.getMap("images");
+
+	// Keep track of all currently conencted collaboration users
+	let users: { id: string; name: string }[] = [];
 
 	// Isolate the project data from the rest of the parent data and parse the date
 	// into an actual javascript date
 	let project = data.project;
 
 	// Store an original copy of the data
-	let original = JSON.parse(
-		JSON.stringify(project)
-	) as App.ProjectWithMetadata;
+	let original = {
+		...project,
+		skills: [...project.skills],
+		authors: [...project.authors],
+		content: JSON.parse(JSON.stringify(project.content))
+	};
 
 	// Parse original date into actual date
 	original.date = new Date(original.date);
@@ -81,7 +87,7 @@
 	const isOwner = $user.id === project.ownerId || $user.role === "Admin";
 
 	// Reassigning the editor variable doesnt update svelte, so this is a workaround
-	const isActive: { [key: string]: boolean } = {
+	const isActive: Record<string, boolean> = {
 		bold: false,
 		italic: false,
 		underline: false,
@@ -121,21 +127,20 @@
 		// When the websocket connects, check if there's any project data in the shared
 		// array, if not, push the project
 		ws.once("synced", async () => {
-			// Store whether the map had size on initialization so we can determine later if replacing the blobs
-			// is needed
-			const hasProject = Boolean(yMap.size);
+			const peer = Boolean(yMap.size);
 
-			// If the map is empty, this is the first client, so the project needs to be
-			// added
-			if (!hasProject) {
-				// Transform all images into blobs
+			let yProject: App.SharedProject | undefined;
+
+			// If this is the first client, convert all the Cloudflare image URLs to blobs
+			// and set the shared project and state
+			if (!peer) {
 				await Promise.all(
 					(project.content as JSONContent).content!.map(
 						async (node) => {
 							if (
 								node.type !== "image" ||
 								!(node.attrs!.src as string).startsWith(
-									"https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/"
+									PUBLIC_CLOUDFLARE_URL
 								)
 							)
 								return;
@@ -143,15 +148,15 @@
 							const blob = await fetch(node.attrs!.src).then(
 								(res) => res.blob()
 							);
-							const url = URL.createObjectURL(blob);
+							const url = createObjectURL(blob);
 
-							// Turn the file into a SHA-1 hash so the same image doesn't create seperate
-							// entries
 							const hash = await hashBlob(blob);
 
 							images.set(hash, {
 								id: node.attrs!.src.split("/")[4],
-								data: await baseEncode(new FileReader(), blob),
+								data: [
+									...new Uint8Array(await blob.arrayBuffer())
+								],
 								urls: [url]
 							});
 
@@ -163,15 +168,17 @@
 					)
 				);
 
-				yMap.set("project", {
+				yProject = yMap.set("project", {
 					...project,
 					date: project.date.toISOString()
-				}) && yMap.set("state", State.Editing);
+				}) as App.SharedProject;
+
+				yMap.set("state", State.Editing);
 			}
 
 			yMap.observe(async ({ transaction }) => {
-				// If the form is disabled, a save is most likely occuring, so ignore
-				if (disableForm || transaction.local) return;
+				// Ignore local changes
+				if (transaction.local) return;
 
 				const state = yMap.get("state");
 
@@ -181,11 +188,16 @@
 						disableForm = true;
 						disableButtons = true;
 
+						editor.setEditable(false);
+
 						break;
 					case State.Saved:
-						original = JSON.parse(
-							JSON.stringify(yMap.get("project"))
-						);
+						original = {
+							...project,
+							skills: [...project.skills],
+							authors: [...project.authors],
+							content: JSON.parse(JSON.stringify(project.content))
+						};
 
 						// Switch the users URL to it without reloading
 						history.replaceState(
@@ -205,62 +217,36 @@
 					case State.Editing:
 						if (disableForm) {
 							disableForm = false;
+							editor.setEditable(true);
+							editor.commands.focus();
 							checkConstraints();
 						}
 				}
 
-				// Get the project and parse all dates
-				const yProject = yMap.get("project")! as App.SharedProject;
+				const yProject = yMap.get("project") as App.SharedProject;
 
-				// If the data matches what we currently have, ignore it
-				if (JSON.stringify(project) === JSON.stringify(yProject))
+				if (
+					project.title === yProject.title &&
+					project.description === yProject.description &&
+					project.skills.toString() === yProject.skills.toString() &&
+					project.authors.every(
+						(author, i) =>
+							yProject.authors[i]?.user.id === author.user.id
+					)
+				)
 					return;
 
 				project = {
 					...yProject,
-					date: new Date(yProject.date)
+					date: project.date
 				};
 			});
 
-			// TODO: Live collaborators listing
-
-			images.observe(
-				({ transaction }) =>
-					!transaction.local &&
-					(project.content as JSONContent).content!.forEach(
-						async (node) => {
-							if (
-								node.type !== "image" ||
-								!(node.attrs!.src as string).startsWith("blob:")
-							)
-								return;
-
-							try {
-								return await fetch(node.attrs!.src);
-							} catch {
-								const hash = images.get(
-									node.attrs!.src
-								) as string;
-								const { urls, data } = images.get(
-									hash
-								) as App.Image;
-
-								const url = URL.createObjectURL(
-									await fetch(data).then((res) => res.blob())
-								);
-
-								node.attrs!.src = url;
-								urls.push(url);
-
-								images.set(url, hash);
-							}
-						}
-					)
-			);
+			if (!yProject) yProject = yMap.get("project") as App.SharedProject;
 
 			editor = new Editor({
 				element: editorElement,
-				content: project.content as JSONContent,
+				content: yProject.content as JSONContent,
 				editable: false,
 				editorProps: {
 					attributes: {
@@ -270,9 +256,7 @@
 				onTransaction: ({ editor, transaction }) => {
 					// Add bottom padding to the editor by measuring the height off all child nodes and adding to it.
 					// The reason it's done this way instead of padding is it allows the editor to be clicked on in this
-					// virtual padding.
-
-					// Hacky fix since clientHeight and clientHeight don't seem to get the correct height immediately
+					// virtual padding
 					setTimeout(() => {
 						let height = 0;
 
@@ -284,12 +268,64 @@
 					});
 
 					// Update active items
-					Object.keys(isActive).forEach(
-						(key) => (isActive[key] = editor.isActive(key))
-					);
+					for (const key in isActive) {
+						isActive[key] = editor.isActive(key);
+					}
 
-					// Check if the doc content changed, if not, don't update the variable
-					if (!transaction.docChanged) return;
+					// Check if the doc content changed and the editor is editable
+					if (!transaction.docChanged || !editor.isEditable) return;
+
+					// This may seem slow, but since the number of steps is usually between 1-2 it's not that
+					// bad. The real looping occurs in the step map
+					transaction.steps.forEach((step) =>
+						step.getMap().forEach((_, __, start, end) => {
+							editor.state.doc.nodesBetween(
+								start,
+								end,
+								(node) => {
+									if (
+										node.type.name !== "image" ||
+										!(node.attrs!.src as string).startsWith(
+											"blob:"
+										)
+									)
+										return;
+
+									const hash = images.get(
+										node.attrs!.src
+									) as string;
+
+									const image = images.get(hash) as App.Image;
+
+									let url: string | undefined;
+
+									// Check if there's already a blob that works in this browser
+									url = image.urls.find(checkObjectURL);
+
+									// If it's already set to the working blob, return
+									if (node.attrs!.src === url) return;
+
+									// If there's no working blobs, create one using the image data
+									if (!url)
+										(url = createObjectURL(
+											new Blob([
+												new Uint8Array(image.data)
+											])
+										)) &&
+											images.set(url, hash) &&
+											image.urls.push(url);
+
+									// Update the HTML but not the actual node, if we update the doc content that will then
+									// send the invalid blob URL to all other clients and create an infinite loop
+									document
+										.querySelector(
+											`img[src="${node.attrs!.src}"`
+										)
+										?.setAttribute("src", url);
+								}
+							);
+						})
+					);
 
 					// Get the content for comparison
 					project.content = editor.getJSON();
@@ -297,54 +333,63 @@
 				onCreate: async () => {
 					const content = editor.getJSON();
 
-					if (hasProject) {
-						// Transform all blob images into blobs that will work in this browser
-						await Promise.all(
-							content.content!.map(async (node) => {
-								if (
-									node.type !== "image" ||
-									!(node.attrs!.src as string).startsWith(
-										"blob:"
-									)
-								)
-									return;
+					let yProject: App.SharedProject | undefined;
 
-								console.log(node.attrs!.src);
+					// Transform all peer blob images into blobs that will work in this browser
+					if (peer)
+						content.content!.forEach((node) => {
+							if (
+								node.type !== "image" ||
+								!(node.attrs!.src as string).startsWith("blob:")
+							)
+								return;
 
-								const hash = images.get(
-									node.attrs!.src
-								) as string;
+							const hash = images.get(node.attrs!.src) as string;
 
-								const url = URL.createObjectURL(
-									await fetch(
+							const url = createObjectURL(
+								new Blob([
+									new Uint8Array(
 										(images.get(hash) as App.Image).data
-									).then((res) => res.blob())
-								);
+									)
+								])
+							);
 
-								node.attrs!.src = url;
+							// Update the HTML but not the actual node, if we update the doc content that will then
+							// send the invalid blob URL to all other clients and create an infinite loop
+							document
+								.querySelector(`img[src="${node.attrs!.src}"`)
+								?.setAttribute("src", url);
 
-								images.set(url, hash);
-							})
-						);
+							images.set(url, hash);
+						});
+					// Otherwise if this is the initial client, update the project with the rearranged content
+					else
+						yProject = yMap.set("project", {
+							...project,
+							content,
+							date: project.date.toISOString()
+						}) as App.SharedProject;
 
-						const yProject = yMap.get(
-							"project"
-						)! as App.SharedProject;
+					if (!yProject)
+						yProject = yMap.get("project") as App.SharedProject;
 
-						project = {
-							...yProject,
-							date: new Date(yProject.date),
-							content
-						};
-					} else project.content = content;
+					// The original content will be set the current doc state so that we can compare it later
+					original = {
+						...yProject,
+						skills: [...yProject.skills],
+						authors: [...yProject.authors],
+						date: project.date,
+						content: editor.view.state.doc
+					};
 
-					original.content = content;
+					project = {
+						...yProject,
+						skills: [...yProject.skills],
+						authors: [...yProject.authors],
+						date: project.date
+					};
 
 					editor.setEditable(true);
-
-					// TODO: Use image transaction system and make some general overall improvements to the project
-
-					checkConstraints();
 				},
 				extensions: [
 					Collaboration.configure({
@@ -355,18 +400,43 @@
 
 						user: {
 							name: $user.name,
+							id: $user.id,
 							color
 						},
 
-						render(props: { name: string; color: string }) {
+						render({
+							name,
+							color
+						}: {
+							name: string;
+							color: string;
+							id: string;
+						}) {
 							const parent = document.createElement("span");
-							new Cursor({ target: parent, props });
+							new Cursor({
+								target: parent,
+								props: { name, color }
+							});
 
 							return parent.firstElementChild as HTMLElement;
 						}
 					}),
 					...extensions
 				]
+			});
+
+			ws.awareness.on("change", () => {
+				const currentUsers: typeof users = [];
+
+				ws.awareness
+					.getStates()
+					.forEach(
+						(state) =>
+							state.user.id !== $user.id &&
+							currentUsers.push(state.user)
+					);
+
+				users = currentUsers;
 			});
 		});
 
@@ -377,8 +447,10 @@
 		};
 	});
 
+	$: console.log(users);
+
 	const checkConstraints = () => {
-		if (disableForm) return;
+		if (disableForm || !editor || !editor.isEditable) return;
 
 		disableButtons = true;
 
@@ -402,9 +474,19 @@
 		)
 			return;
 
-		// Check that the content has changed, if yes, enable the buttons
-		if (JSON.stringify(project) !== JSON.stringify(original))
-			disableButtons = false;
+		// Check that the content has changed
+		if (
+			project.title === original.title &&
+			project.description === original.description &&
+			project.skills.toString() === original.skills.toString() &&
+			project.authors.every(
+				(author, i) => original.authors[i]?.user.id === author.user.id
+			) &&
+			editor.view.state.doc.eq(original.content)
+		)
+			return;
+
+		disableButtons = false;
 	};
 
 	$: {
@@ -442,8 +524,21 @@
 	const cancel = () => {
 		disableButtons = true;
 		editor.commands.setContent(original.content as Content);
-		project = JSON.parse(JSON.stringify(original));
-		project.date = new Date(project.date);
+
+		// Create a transaction that replaces the current state with the old stored state
+		editor.view.state.applyTransaction(
+			editor.view.state.tr.replaceWith(
+				0,
+				editor.view.state.doc.content.size,
+				original.content
+			)
+		);
+
+		project = {
+			...original,
+			skills: [...original.skills],
+			authors: [...original.authors]
+		};
 	};
 
 	const save = async () => {
@@ -458,69 +553,13 @@
 		disableForm = true;
 		disableButtons = true;
 
-		const content = editor.getJSON();
+		editor.setEditable(false);
+
+		const content = editor.view.state.doc;
 
 		// Set the saving state to true to let other clients know that saving is
 		// being done
 		yMap.set("state", State.Saving);
-
-		// Create a new array to keep track of image ID's as to remove images that do not
-		// appear in the document anymore
-		const ids: string[] = [];
-
-		// Upload all the new images to Cloudflare so they can be shown to users without blobs
-		await new Promise(async (res) => {
-			for (const node of content.content!.values()) {
-				if (
-					node.type !== "image" ||
-					!(node.attrs!.src as string).startsWith("blob:")
-				)
-					continue;
-
-				let image = images.get(
-					images.get(node.attrs!.src) as string
-				) as App.Image;
-
-				// If the image already existed, switch back to it's already existing Cloudflare images URL and add it to the
-				// ids. Also if the ID was already seen then don't push it, this way images that are the same use the same
-				// Cloudflare images URL
-				if (image.id) {
-					node.attrs!.src = `https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/${image.id}/banner`;
-
-					if (!ids.includes(image.id)) ids.push(image.id);
-
-					continue;
-				}
-
-				const body = new FormData();
-
-				// Append the project ID for imge uploading
-				body.append("id", project.id);
-
-				// Append the image file
-				body.append(
-					"file",
-					new File(
-						[await fetch(image.data).then((res) => res.blob())],
-						"image"
-					)
-				);
-
-				await fetch("/api/images", {
-					method: "PUT",
-					body
-				})
-					.then((res) => res.json())
-					.then(
-						({ id }: App.ImageUploadResponse) =>
-							ids.push(id!) &&
-							(image.id = id) &&
-							(node.attrs!.src = `https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/${id}/banner`)
-					);
-			}
-
-			res(undefined);
-		});
 
 		// Send an update request to the API
 		fetch("/api/project", {
@@ -532,8 +571,8 @@
 				isOwner
 					? ({
 							...project,
-							content,
-							images: ids
+							content: content.toJSON(),
+							images: Object.fromEntries(images.entries())
 					  } as App.ProjectUpdateRequest)
 					: ({
 							id: project.id,
@@ -541,8 +580,8 @@
 							skills: project.skills,
 							theme: project.theme,
 							title: project.title,
-							content,
-							images: ids
+							content: content.toJSON(),
+							images: Object.fromEntries(images.entries())
 					  } as App.ProjectUpdateRequest)
 			)
 		}).then(async (res) => {
@@ -559,15 +598,11 @@
 				return;
 			}
 
-			// Generate a url based off of the current title
-			const url = project.title
-				.replaceAll(/[^a-zA-Z0-9\s]/g, "")
-				.replaceAll(/\s+/g, "-")
-				.toLowerCase();
+			const data = (await res.json()) as App.ProjectUpdateResponse;
 
 			// Switch the users URL to it without reloading
-			if (url !== original.url)
-				(project.url = url) &&
+			if (data.url !== original.url)
+				(project.url = data.url) &&
 					yMap.set("project", {
 						...project,
 						date: project.date.toISOString()
@@ -581,26 +616,18 @@
 						)
 					);
 
-			// If successful, update the original data before the request finished
-			original = JSON.parse(
-				JSON.stringify({ ...project, content, images: ids })
+			// Update the images data to correspond with the new IDs
+			Object.entries(data.images).forEach(
+				([hash, id]) => ((images.get(hash) as App.Image).id = id)
 			);
 
-			project.images = ids;
-
-			// Remove all images that are no longer in the doc, the reason this isn't done
-			// in realtime while editing the doc is the Cloudflare image ID could be lost
-			// and also since all the loops done every transaction is quite heavy
-			images.forEach((value, key) => {
-				if (
-					typeof value !== "object" ||
-					(value.id && ids.includes(value.id))
-				)
-					return;
-
-				value.urls.forEach((url) => images.delete(url));
-				images.delete(key);
-			});
+			// If successful, update the original data before the request finished
+			original = {
+				...project,
+				skills: [...project.skills],
+				authors: [...project.authors],
+				content
+			};
 
 			// Fire off the event with saved so peers know to update the original
 			// data, then switch back to editing
@@ -608,6 +635,9 @@
 			yMap.set("state", State.Editing);
 
 			disableForm = false;
+
+			editor.setEditable(true);
+			editor.commands.focus();
 
 			checkConstraints();
 		});
@@ -706,7 +736,7 @@
 		/>
 	{:else}
 		<img
-			src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/banner-{original.id}/banner?{new Date().getTime()}"
+			src="{PUBLIC_CLOUDFLARE_URL}/banner-{original.id}/banner?{new Date().getTime()}"
 			width="1920"
 			height="1080"
 			alt="Banner for '{project.title}'"
@@ -737,8 +767,8 @@
 >
 	<div
 		disabled={disableForm}
-		class:pointer-events-none={disableForm}
 		class:opacity-60={disableForm}
+		class:pointer-events-none={disableForm}
 		class="flex flex-col gap-5 w-full transition-opacity duration-200"
 	>
 		<div>
@@ -850,7 +880,23 @@
 		{/if}
 	</div>
 
-	<div class="relative rounded-lg w-full">
+	<!-- TODO: Active collaborators design -->
+	<!-- TODO: Fix normal username widths -->
+	<!-- TODO: Refactor and improve everything -->
+	<!-- TODO: Google search console and buiseness setup -->
+
+	<Scrollable class="before:from-black after:to-black">
+		{#each users as user (user.id)}
+			<h1>{user.name}</h1>
+		{/each}
+	</Scrollable>
+
+	<div
+		disabled={disableForm}
+		class:opacity-60={disableForm}
+		class:pointer-events-none={disableForm}
+		class="relative rounded-lg w-full transition-opacity duration-200"
+	>
 		{#if editor}
 			<div class="absolute inset-0 pointer-events-none">
 				<Scrollable

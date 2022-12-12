@@ -4,6 +4,7 @@
 
 	import { getIcon } from "$lib/getIcon";
 	import { user as login } from "$lib/stores";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Home from "$lib/components/icons/general/Home.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import Pencil from "$lib/components/icons/general/Pencil.svelte";
@@ -72,7 +73,7 @@
 					<img
 						height="512"
 						width="512"
-						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{user.id}/avatar?{getContext(
+						src="{PUBLIC_CLOUDFLARE_URL}/avatar-{user.id}/avatar?{getContext(
 							'timestamp'
 						)}"
 						alt="{user.name}'s avatar"

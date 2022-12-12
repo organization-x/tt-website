@@ -4,6 +4,7 @@
 
 	import { getIcon } from "$lib/getIcon";
 	import Scrollable from "$lib/components/Scrollable.svelte";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Plus from "$lib/components/icons/general/Plus.svelte";
 	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
 
@@ -157,7 +158,7 @@
 						<img
 							width="512"
 							height="512"
-							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{endorsement
+							src="{PUBLIC_CLOUDFLARE_URL}/avatar-{endorsement
 								.from.id}/avatar?{timestamp}"
 							alt="{endorsement.from.name}'s avatar"
 							class="w-10 h-10 object-cover object-center rounded-full"

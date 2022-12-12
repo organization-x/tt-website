@@ -9,6 +9,7 @@
 	import { page } from "$app/stores";
 	import { afterNavigate } from "$app/navigation";
 	import NavLink from "$lib/components/NavLink.svelte";
+	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Logo from "$lib/components/icons/logos/Logo.svelte";
 	import Burger from "$lib/components/icons/general/Burger.svelte";
 	import LogOut from "$lib/components/icons/general/LogOut.svelte";
@@ -22,8 +23,9 @@
 	// Layout gets rendered early before user is set, so make sure it's set
 	user.set(data);
 
-	// Get first name of user for overflow prevention
-	$: firstName = $user.name.split(" ")[0];
+	// Create a name split for overflow prevention
+	$: name = $user.name.split(/\s+/);
+	$: setContext("name", name);
 
 	let userOpen = false;
 	let burgerOpen = false;
@@ -86,14 +88,14 @@
 					<img
 						width="512"
 						height="512"
-						src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{new Date().getTime()}"
+						src="{PUBLIC_CLOUDFLARE_URL}/avatar-{$user.id}/avatar?{new Date().getTime()}"
 						alt="{$user.name}'s avatar"
 						class="w-9 h-9 rounded-full object-cover object-center bg-gray-400"
 					/>
 					<h1
 						class="font-semibold text-sm overflow-auto scrollbar-hidden max-w-[7rem]"
 					>
-						{firstName}
+						{name[0]}
 					</h1>
 				</div>
 			{/if}
@@ -124,7 +126,7 @@
 							<img
 								width="512"
 								height="512"
-								src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{new Date().getTime()}"
+								src="{PUBLIC_CLOUDFLARE_URL}/avatar-{$user.id}/avatar?{new Date().getTime()}"
 								alt="{$user.name}'s avatar"
 								class="w-14 h-14 rounded-full object-cover object-center bg-gray-400"
 							/>
@@ -132,7 +134,7 @@
 							<h1
 								class="font-semibold text-xl overflow-auto scrollbar-hidden max-w-44"
 							>
-								{firstName}
+								{name[0]}
 							</h1>
 						</div>
 						<ul
@@ -250,7 +252,7 @@
 						<img
 							width="512"
 							height="512"
-							src="https://imagedelivery.net/XcWbJUZNkBuRbJx1pRJDvA/avatar-{$user.id}/avatar?{new Date().getTime()}"
+							src="{PUBLIC_CLOUDFLARE_URL}/avatar-{$user.id}/avatar?{new Date().getTime()}"
 							alt="{$user.name}'s avatar"
 							class="w-8 h-8 rounded-full object-cover object-center bg-gray-400"
 						/>
@@ -260,7 +262,7 @@
 							class:max-w-[7rem]={$user.role === "Admin"}
 							class="font-semibold overflow-auto scrollbar-hidden"
 						>
-							{firstName}
+							{name[0]}
 						</span>
 
 						<DropArrow open={userOpen} class="w-3 h-3 shrink-0" />

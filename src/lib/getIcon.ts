@@ -139,7 +139,7 @@ import Responsible from "$lib/components/icons/general/Responsible.svelte";
 
 import type { ComponentType } from "svelte";
 
-const icons: { [key: string]: ComponentType } = {
+const icons: Record<string, ComponentType> = {
 	Marketing: TrendUp,
 	Engineering: Cog,
 	Design: Pen,
