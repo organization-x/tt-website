@@ -4,20 +4,18 @@ FROM node:alpine
 
 WORKDIR /app
 
-COPY --link ["package.json", "yarn.lock", "./"]
+COPY --link ["package.json", "pnpm-lock.yaml", "./"]
 
-RUN yarn --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 COPY --link prisma .
-RUN yarn prisma generate
+RUN pnpm run prisma generate
 
 COPY --link . .
 
 ENV PUBLIC_NODE_ENV=production
 
-RUN yarn build
-
-RUN yarn --frozen-lockfile --production
+RUN pnpm run build
 
 EXPOSE 3000
 CMD ["node", "./build"]
