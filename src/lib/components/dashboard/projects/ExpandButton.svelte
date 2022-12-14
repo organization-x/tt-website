@@ -30,7 +30,7 @@
 					behavior: "smooth"
 				});
 		}}
-		class="flex gap-3 justify-center transition-widpad overflow-hidden h-full {open
+		class="flex gap-3 justify-center transition-transform overflow-hidden h-full {open
 			? className
 			: 'w-0'}"
 	>

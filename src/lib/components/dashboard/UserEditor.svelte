@@ -39,9 +39,16 @@
 
 	export let original: Writable<App.UserWithMetadata>;
 
-	// Since the data object is shared across all pages, we need to make a copy of it so
-	// that unmade changes arent shown on other pages
-	let user = JSON.parse(JSON.stringify($original)) as App.UserWithMetadata;
+	let user = {
+		...$original,
+		positions: [...$original.positions],
+		softSkills: [...$original.softSkills],
+		techSkills: [...$original.techSkills],
+		links: Object.assign({}, $original.links)
+	};
+
+	// Store the keys of the links so that they can be iterated over for comparison and updating
+	const linkKeys = Object.keys(user.links) as (keyof App.UserLinks)[];
 
 	let nameError = false;
 	let disableForm = false;
@@ -58,10 +65,11 @@
 
 		disableButtons = true;
 
-		const name = user.name.trim();
+		const name = user.name?.trim();
 		const about = user.about.trim();
 
 		if (
+			!name ||
 			name.length < 1 ||
 			name.length > 25 ||
 			about.length > 150 ||
@@ -72,8 +80,28 @@
 			return;
 
 		// Check if the data has changed from its original content
-		if (JSON.stringify($original) !== JSON.stringify(user))
-			disableButtons = false;
+		if (
+			$original.role === user.role &&
+			$original.name === user.name &&
+			$original.about === user.about &&
+			$original.team === user.team &&
+			$original.positions.length === user.positions.length &&
+			$original.positions.every(
+				(position, i) => user.positions[i] === position
+			) &&
+			$original.softSkills.length === user.softSkills.length &&
+			$original.softSkills.every(
+				(softSkill, i) => user.softSkills[i] === softSkill
+			) &&
+			$original.techSkills.length === user.techSkills.length &&
+			$original.techSkills.every(
+				(techSkill, i) => user.techSkills[i] === techSkill
+			) &&
+			linkKeys.every((link) => $original.links[link] === user.links[link])
+		)
+			return;
+
+		disableButtons = false;
 	};
 
 	// For updating dropdown arrays
@@ -110,22 +138,14 @@
 		previous: string | undefined;
 	}>) => (user.role = detail.selected as Role) && checkConstraints();
 
-	$: user.name,
-		(nameError = false),
-		(user.name = user.name.replaceAll(/[^a-zA-Z\s-]/g, ""));
+	$: {
+		if (user.name && user.name !== $original.name) {
+			nameError = false;
+			user.name = user.name.replaceAll(/[^a-zA-Z\s-]/g, "");
+		}
 
-	$: user.about, checkConstraints();
-
-	$: user.links,
-		Object.keys(user.links).forEach((key) => {
-			const link =
-				user.links[key as keyof App.UserLinks] &&
-				user.links[key as keyof App.UserLinks]!.trim();
-
-			user.links[key as keyof App.UserLinks] =
-				link && link.length ? link : null;
-		}),
 		checkConstraints();
+	}
 
 	// On cancel, revert the values to their originals and disable the save/cancel buttons
 	const cancel = () => {

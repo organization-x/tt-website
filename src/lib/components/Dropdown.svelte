@@ -27,7 +27,7 @@
 	let parent: HTMLDivElement;
 	let filteredOptions: string[] = [];
 
-	// Create a seperate array of filtered options for the search and also sort them
+	// Create a separate array of filtered options for the search and also sort them
 	// based of whether they are selected or not
 	$: {
 		// Filter based on search
@@ -132,10 +132,10 @@
 		</div>
 
 		<Scrollable
-			verticle={true}
+			vertical={true}
 			class={lightBg
-				? "before:from-gray-700 after:to-gray-700"
-				: "before:from-gray-900 after:to-gray-900"}
+				? "before:from-gray-700 after:to-gray-700 before:rounded-t-lg after:rounded-b-lg"
+				: "before:from-gray-900 after:to-gray-900 before:rounded-t-lg after:rounded-b-lg"}
 			innerClass="h-60 scrollbar gap-0"
 		>
 			{#if !required && radio}

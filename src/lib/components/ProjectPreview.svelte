@@ -38,14 +38,13 @@
 		<div
 			class="absolute flex w-full justify-end items-center top-2 right-1 pr-6 sm:pr-8"
 		>
-			{#each project.authors.slice(0, 5) as author, i}
-				{#if project.authors.length === 1 && !(userId && author.user.id === userId)}
+			{#each project.authors.slice(0, 5) as { user }, i}
+				{#if project.authors.length === 1 && !(userId && user.id === userId)}
 					<img
 						width="512"
 						height="512"
-						src="{PUBLIC_CLOUDFLARE_URL}/avatar-{author.user
-							.id}/avatar?{timestamp}"
-						alt="{author.user.name}'s avatar"
+						src="{PUBLIC_CLOUDFLARE_URL}/avatar-{user.id}/avatar?{timestamp}"
+						alt="{user.name}'s avatar"
 						class="w-10 h-10 bg-gray-400 object-cover object-center shrink-0 -mr-5 rounded-full border-2 sm:-mr-7 sm:w-12 sm:h-12 sm:border-4 md:w-14 md:h-14"
 						style="border-color: #{project.theme}; z-index: {project
 							.authors.length - i}"

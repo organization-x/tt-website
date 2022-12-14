@@ -1,9 +1,10 @@
 <script lang="ts">
 	import "highlight.js/styles/atom-one-dark.css";
 
-	import { Doc } from "yjs";
+	import { Doc, YMapEvent } from "yjs";
 	import { onMount } from "svelte";
 	import { Editor } from "@tiptap/core";
+	import { techSkills } from "$lib/enums";
 	import { fly } from "svelte/transition";
 	import { WebsocketProvider } from "y-websocket";
 	import { Collaboration } from "@tiptap/extension-collaboration";
@@ -11,7 +12,7 @@
 
 	import { user } from "$lib/stores";
 	import { dev } from "$app/environment";
-	import { techSkills } from "$lib/enums";
+	import { Node } from "prosemirror-model";
 	import { extensions } from "$lib/tiptapExtensions";
 	import Dropdown from "$lib/components/Dropdown.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
@@ -38,12 +39,13 @@
 	import type { Map as YMap } from "yjs";
 	import type { PageData } from "./$types";
 	import type { TechSkill } from "@prisma/client";
-	import type { Content, JSONContent } from "@tiptap/core";
+	import type { JSONContent } from "@tiptap/core";
 
 	export let data: PageData;
 
 	// State used for collaboration data syncing
 	const enum State {
+		Loading,
 		Editing,
 		Saving,
 		Saved,
@@ -56,29 +58,27 @@
 	// Store a reference to the editor for generation of the content
 	let editor: Editor;
 
-	// Create a shared map with the only item being the project data for
-	// syncing across clients
+	// Create a shared map with the current project data and the state that the editor is in so we can
+	// update the UI based on saving or loading events
 	const yMap = doc.getMap<App.SharedProject | State>("project");
 
-	// Create a shared map for storing the Cloudflare images ID and buffers of images in the document so we can
-	// determine which images are to be uploaded, kept or deleted and also so that collaborators
-	// can see the images without having to upload them
+	// Create a shared map for storing the Cloudflare images ID, buffers of images, and blob urls
+	// associated with images in the document so we can determine which images are to be uploaded, kept or deleted
+	// and also so that collaborators can see the images without them having to be uploaded to Cloudflare
 	let images: YMap<App.Image | string> = doc.getMap("images");
 
-	// Keep track of all currently conencted collaboration users
+	// Keep track of all currently connected collaboration users for a live view of who is editing
 	let users: { id: string; name: string }[] = [];
 
-	// Isolate the project data from the rest of the parent data and parse the date
-	// into an actual javascript date
 	let project = data.project;
 
-	// Store an original copy of the data
+	// Store an original copy of the data for comparison
 	let original = {
 		...project,
 		skills: [...project.skills],
-		authors: [...project.authors],
+		authors: [...project.authors.map((author) => ({ ...author }))],
 		content: JSON.parse(JSON.stringify(project.content))
-	};
+	} as App.ProjectWithMetadata;
 
 	// Parse original date into actual date
 	original.date = new Date(original.date);
@@ -86,7 +86,8 @@
 	// Keep track whether this the user is the owner, a collaborator, or an admin
 	const isOwner = $user.id === project.ownerId || $user.role === "Admin";
 
-	// Reassigning the editor variable doesnt update svelte, so this is a workaround
+	// Keep track of what nodes or marks are currently active so the buttons can reflect
+	// their status
 	const isActive: Record<string, boolean> = {
 		bold: false,
 		italic: false,
@@ -100,13 +101,298 @@
 	};
 
 	let titleError = false;
+	let wasFocused = false;
 	let disableForm = false;
+	let ignoreChange = false;
 	let ws: WebsocketProvider;
 	let disableButtons = true;
 	let banner: HTMLInputElement;
 	let visible = original.visible;
 	let editorElement: HTMLDivElement;
 	let pinned = $user.pinnedProjectId === original.id;
+
+	const checkConstraints = () => {
+		if (disableForm || !editor || !editor.isEditable) return;
+
+		disableButtons = true;
+
+		// Keep the project updated with peers if the websocket is connected
+		if (ws && ws.wsconnected && !ignoreChange)
+			yMap.set("project", {
+				...project,
+				content: original.content,
+				date: project.date.toISOString()
+			});
+
+		ignoreChange = false;
+
+		const title = project.title.trim();
+		const description = project.description.trim();
+
+		if (
+			title.length < 1 ||
+			title.length > 50 ||
+			description.length < 1 ||
+			description.length > 300 ||
+			project.description.trim().length < 1 ||
+			project.skills.length < 2
+		)
+			return;
+
+		// Check if the content has changed
+		if (
+			project.title === original.title &&
+			project.description === original.description &&
+			project.skills.toString() === original.skills.toString() &&
+			project.authors.length === original.authors.length &&
+			project.authors.every(
+				(author, i) =>
+					original.authors[i]?.user.id === author.user.id &&
+					original.authors[i]?.position === author.position
+			) &&
+			editor.view.state.doc.eq(
+				Node.fromJSON(editor.schema, original.content)
+			)
+		)
+			return;
+
+		disableButtons = false;
+	};
+
+	$: {
+		if (project.title !== original.title) titleError = false;
+
+		checkConstraints();
+	}
+
+	const updateSkills = ({
+		detail
+	}: CustomEvent<{
+		selected: string | undefined;
+		previous: string | undefined;
+	}>) => {
+		const index = project.skills.indexOf(detail.previous as TechSkill);
+
+		// If the newly selected value is the same ignore
+		if (project.skills[index] === detail.selected) return;
+
+		// If there is a found value for that dropdown, and a selected value then update it, otherwise delete it.
+		// If there isn't a found value for that dropdown then push it to the array.
+		if (index !== -1) {
+			detail.selected
+				? (project.skills[index] = detail.selected as TechSkill)
+				: project.skills.splice(index, 1);
+		} else if (detail.selected)
+			project.skills.push(detail.selected as TechSkill);
+
+		project.skills = project.skills;
+
+		checkConstraints();
+	};
+
+	// On cancel, revert the values to their originals
+	const cancel = () => {
+		disableButtons = true;
+		editor.commands.setContent(original.content as JSONContent);
+
+		// Since nodes are always re-created instead of mutated, set the original state to the new state
+		original.content = editor.view.state.doc.toJSON();
+
+		project = {
+			...original,
+			skills: [...original.skills],
+			authors: isOwner ? [...original.authors] : project.authors,
+			content: project.content
+		};
+	};
+
+	const save = () => {
+		checkConstraints();
+
+		if (disableButtons || disableForm) return;
+
+		// Trim title and description whitespace
+		project.title = project.title.trim();
+		project.description = project.description.trim();
+
+		disableForm = true;
+		disableButtons = true;
+
+		// Keep track if the editor was focused before the save so it can re-focus
+		// after the save is complete and the editor re-enabled
+		wasFocused = editor.isFocused;
+
+		editor.setEditable(false);
+
+		const content = editor.view.state.doc.toJSON();
+
+		// Set the saving state to true to let other clients know that saving is
+		// being done
+		yMap.set("state", State.Saving);
+
+		// Send an update request to the API
+		fetch("/api/project", {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(
+				isOwner
+					? ({
+							...project,
+							content,
+							images: Object.fromEntries(images.entries())
+					  } as App.ProjectUpdateRequest)
+					: ({
+							id: project.id,
+							description: project.description,
+							skills: project.skills,
+							theme: project.theme,
+							title: project.title,
+							content,
+							images: Object.fromEntries(images.entries())
+					  } as App.ProjectUpdateRequest)
+			)
+		}).then(async (res) => {
+			// If the status is 205, it is a title that already exists
+			if (res.status === 205) {
+				titleError = true;
+				disableButtons = true;
+
+				yMap.set("state", State.Error);
+				yMap.set("state", State.Editing);
+
+				disableForm = false;
+
+				return;
+			}
+
+			const data = (await res.json()) as App.ProjectUpdateResponse;
+
+			// Switch the users URL to it without reloading, if it has changed
+			if (data.url !== original.url)
+				(project.url = data.url) &&
+					history.replaceState(
+						{},
+						"",
+						new URL(
+							`/dashboard/projects/${project.url}`,
+							document.location.href
+						)
+					);
+
+			// Update the images data to correspond with the new IDs of the images
+			// uploaded during this save request
+			Object.entries(data.images).forEach(
+				([hash, id]) => ((images.get(hash) as App.Image).id = id)
+			);
+
+			// Update the original data
+			original = {
+				...project,
+				skills: [...project.skills],
+				authors: isOwner
+					? [...project.authors.map((author) => ({ ...author }))]
+					: original.authors,
+				content
+			};
+
+			// Change the state to saved and update the project data so that the original data on this client stays the same as the peer
+			// without having to create a seperate map. This way if a collaborator, who can not edit the authors data, does a save the
+			// peer won't assume that the authors data has changed and will keep an accurate comparison. This also ensures the project
+			// content stays accurate and the same across all clients for comparison as well
+			yMap.set("state", State.Saved);
+			yMap.set("project", {
+				...original,
+				date: original.date.toISOString()
+			});
+			yMap.set("state", State.Editing);
+
+			disableForm = false;
+
+			editor.setEditable(true);
+			if (wasFocused) editor.commands.focus();
+
+			wasFocused = false;
+
+			checkConstraints();
+		});
+	};
+
+	// Update the project's banner
+	const updateImage = async () => {
+		if (!banner.files?.length || banner.files[0].size > 2000000) return;
+
+		banner.disabled = true;
+
+		const body = new FormData();
+
+		// Append the newly uploaded image to the body
+		body.append("file", new File([banner.files![0]], "banner"));
+
+		// Append the type
+		body.append("type", "project-banner");
+
+		// Add the project ID
+		body.append("id", original.id);
+
+		// Update the image
+		await fetch("/api/images", {
+			method: "PATCH",
+			body
+		})
+			.then((res) => res.json())
+			.then(
+				({ theme }: App.ImageUploadResponse) =>
+					(original.theme = theme!) && (project.theme = theme!)
+			)
+			.catch(() => {}); // Ignore errors, the avatar will just stay the same
+
+		// Reset the selected input value and enabled it
+		banner.value = "";
+		banner.disabled = false;
+	};
+
+	// Update visibility of the project
+	const toggleVisible = () => {
+		fetch("/api/project", {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				id: original.id,
+				visible: visible
+			} as App.ProjectUpdateRequest)
+		}).then(() => {
+			original.visible = visible;
+			project.visible = visible;
+		});
+	};
+
+	// Update whether the user has the project pinned
+	const togglePinned = () => {
+		const pinnedProjectId = pinned ? original.id : null;
+
+		fetch("/api/user", {
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify({
+				id: $user.id,
+				pinnedProjectId
+			} as App.UserUpdateRequest)
+		}).then(() => ($user.pinnedProjectId = pinnedProjectId));
+	};
+
+	// When the user does CTRL/CMD + S, save the data
+	const onKeydown = (e: KeyboardEvent) => {
+		if ((e.metaKey && e.key === "s") || (e.ctrlKey && e.key === "s")) {
+			e.preventDefault();
+			save();
+		}
+	};
 
 	onMount(() => {
 		ws = new WebsocketProvider(
@@ -124,6 +410,21 @@
 			).toString(16)}`.slice(-2);
 		}
 
+		// Update the currently connected users
+		const updateConnected = () => {
+			const currentUsers: typeof users = [];
+
+			ws.awareness
+				.getStates()
+				.forEach(
+					(state) =>
+						state.user.id !== $user.id &&
+						currentUsers.push(state.user)
+				);
+
+			users = currentUsers;
+		};
+
 		// When the websocket connects, check if there's any project data in the shared
 		// array, if not, push the project
 		ws.once("synced", async () => {
@@ -132,8 +433,12 @@
 			let yProject: App.SharedProject | undefined;
 
 			// If this is the first client, convert all the Cloudflare image URLs to blobs
-			// and set the shared project and state
+			// and set the shared project and state. The first state is loading so that if
+			// a peer connects while this is happening, they won't assume being first and instead
+			// wait until this process has finished
 			if (!peer) {
+				yMap.set("state", State.Loading);
+
 				await Promise.all(
 					(project.content as JSONContent).content!.map(
 						async (node) => {
@@ -172,31 +477,33 @@
 					...project,
 					date: project.date.toISOString()
 				}) as App.SharedProject;
-
-				yMap.set("state", State.Editing);
 			}
 
-			yMap.observe(async ({ transaction }) => {
+			yMap.observe(({ transaction }) => {
 				// Ignore local changes
 				if (transaction.local) return;
 
 				const state = yMap.get("state");
 
-				// Based on the state, either disable the form and buttons, show the title error, or revert back to editing mode
 				switch (state) {
+					// Set once when a save has started, to update the UI
 					case State.Saving:
 						disableForm = true;
 						disableButtons = true;
+						wasFocused = editor.isFocused;
 
 						editor.setEditable(false);
 
 						break;
+					// Set before the project data is set so that the original data is updated
 					case State.Saved:
+						const yProject = yMap.get(
+							"project"
+						) as App.SharedProject;
+
 						original = {
-							...project,
-							skills: [...project.skills],
-							authors: [...project.authors],
-							content: JSON.parse(JSON.stringify(project.content))
+							...yProject,
+							date: original.date
 						};
 
 						// Switch the users URL to it without reloading
@@ -210,37 +517,59 @@
 						);
 
 						break;
+					// Set if a title error occurs so all clients see the error
 					case State.Error:
 						titleError = true;
 
 						break;
+					// Set after a save has occured or once the first client has finished
+					// it's initial setup, if the form is disabled that means a save occured and the UI
+					// state needs to be update once again
 					case State.Editing:
 						if (disableForm) {
 							disableForm = false;
 							editor.setEditable(true);
-							editor.commands.focus();
+							if (wasFocused) editor.commands.focus();
+							wasFocused = false;
+
 							checkConstraints();
 						}
 				}
 
 				const yProject = yMap.get("project") as App.SharedProject;
 
-				if (
-					project.title === yProject.title &&
-					project.description === yProject.description &&
-					project.skills.toString() === yProject.skills.toString() &&
-					project.authors.every(
-						(author, i) =>
-							yProject.authors[i]?.user.id === author.user.id
-					)
-				)
-					return;
+				// Tell the constraint checking to not update the yMap with this, as it's already
+				ignoreChange = true;
 
 				project = {
 					...yProject,
 					date: project.date
 				};
 			});
+
+			// If a non-peer client is still loading and still connected, wait until it has finished so that all data is loaded
+			// in the correct fashion
+			if (
+				yMap.get("state") !== State.Editing &&
+				ws.awareness.getStates().size > 1
+			)
+				await new Promise((res) => {
+					if (yMap.get("state") === State.Editing)
+						return res(undefined);
+
+					const handler: Parameters<typeof yMap.observe>[0] = ({
+						transaction
+					}) => {
+						if (transaction.local) return;
+
+						if (yMap.get("state") === State.Editing) {
+							yMap.unobserve(handler);
+							res(undefined);
+						}
+					};
+
+					yMap.observe(handler);
+				});
 
 			if (!yProject) yProject = yMap.get("project") as App.SharedProject;
 
@@ -275,8 +604,11 @@
 					// Check if the doc content changed and the editor is editable
 					if (!transaction.docChanged || !editor.isEditable) return;
 
-					// This may seem slow, but since the number of steps is usually between 1-2 it's not that
-					// bad. The real looping occurs in the step map
+					// Go through all the changed portions of the doc, and for any images, verify that they are using a blob
+					// that is valid in this browser. This is needed because a user could, for instance, remove an image in the doc Before
+					// a peer joins, then undo it after the peer has joined, causing them to have a non-valid image. It's also better than
+					// implementing different checks in many different places. It may seem slow, but since the number of steps is usually between
+					// 1-2 it's not thatbad. The real looping occurs in the step map
 					transaction.steps.forEach((step) =>
 						step.getMap().forEach((_, __, start, end) => {
 							editor.state.doc.nodesBetween(
@@ -324,19 +656,21 @@
 										?.setAttribute("src", url);
 								}
 							);
+
+							checkConstraints();
 						})
 					);
-
-					// Get the content for comparison
-					project.content = editor.getJSON();
 				},
-				onCreate: async () => {
-					const content = editor.getJSON();
+				onCreate: () => {
+					// TipTap re-arranges and modifies content after it has been put in the editor, so we need to make sure
+					// all peer clients and this client have that updated information for comparison
+					const content =
+						editor.view.state.doc.toJSON() as JSONContent;
 
 					let yProject: App.SharedProject | undefined;
 
 					// Transform all peer blob images into blobs that will work in this browser
-					if (peer)
+					if (peer) {
 						content.content!.forEach((node) => {
 							if (
 								node.type !== "image" ||
@@ -362,25 +696,33 @@
 
 							images.set(url, hash);
 						});
+
+						yProject = yMap.get("project") as App.SharedProject;
+
+						// Set the original content to the peer's so that we can compare it properly
+						original = {
+							...original,
+							content: yProject.content
+						};
+
+						updateConnected();
+					}
 					// Otherwise if this is the initial client, update the project with the rearranged content
-					else
+					else {
 						yProject = yMap.set("project", {
 							...project,
 							content,
 							date: project.date.toISOString()
 						}) as App.SharedProject;
 
-					if (!yProject)
-						yProject = yMap.get("project") as App.SharedProject;
+						original = {
+							...original,
+							content
+						};
 
-					// The original content will be set the current doc state so that we can compare it later
-					original = {
-						...yProject,
-						skills: [...yProject.skills],
-						authors: [...yProject.authors],
-						date: project.date,
-						content: editor.view.state.doc
-					};
+						// Change the state from loading so peers can finally load, but now with the correct information
+						yMap.set("state", State.Editing);
+					}
 
 					project = {
 						...yProject,
@@ -425,19 +767,7 @@
 				]
 			});
 
-			ws.awareness.on("change", () => {
-				const currentUsers: typeof users = [];
-
-				ws.awareness
-					.getStates()
-					.forEach(
-						(state) =>
-							state.user.id !== $user.id &&
-							currentUsers.push(state.user)
-					);
-
-				users = currentUsers;
-			});
+			ws.awareness.on("change", updateConnected);
 		});
 
 		// Destroy the editor and websocket on unmount
@@ -446,277 +776,6 @@
 			editor.destroy();
 		};
 	});
-
-	$: console.log(users);
-
-	const checkConstraints = () => {
-		if (disableForm || !editor || !editor.isEditable) return;
-
-		disableButtons = true;
-
-		// Keep the project updated with peers if the websocket is connected
-		if (ws && ws.wsconnected && !disableForm)
-			yMap.set("project", {
-				...project,
-				date: project.date.toISOString()
-			});
-
-		const title = project.title.trim();
-		const description = project.description.trim();
-
-		if (
-			title.length < 1 ||
-			title.length > 50 ||
-			description.length < 1 ||
-			description.length > 300 ||
-			project.description.trim().length < 1 ||
-			project.skills.length < 2
-		)
-			return;
-
-		// Check that the content has changed
-		if (
-			project.title === original.title &&
-			project.description === original.description &&
-			project.skills.toString() === original.skills.toString() &&
-			project.authors.every(
-				(author, i) => original.authors[i]?.user.id === author.user.id
-			) &&
-			editor.view.state.doc.eq(original.content)
-		)
-			return;
-
-		disableButtons = false;
-	};
-
-	$: {
-		if (project.title !== original.title) titleError = false;
-
-		checkConstraints();
-	}
-
-	const updateSkills = ({
-		detail
-	}: CustomEvent<{
-		selected: string | undefined;
-		previous: string | undefined;
-	}>) => {
-		const index = project.skills.indexOf(detail.previous as TechSkill);
-
-		// If the newly selected value is the same ignore
-		if (project.skills[index] === detail.selected) return;
-
-		// If there is a found value for that dropdown, and a selected value then update it, otherwise delete it.
-		// If there isn't a found value for that dropdown then push it to the array.
-		if (index !== -1) {
-			detail.selected
-				? (project.skills[index] = detail.selected as TechSkill)
-				: project.skills.splice(index, 1);
-		} else if (detail.selected)
-			project.skills.push(detail.selected as TechSkill);
-
-		project.skills = project.skills;
-
-		checkConstraints();
-	};
-
-	// On cancel, revert the values to their originals and disable the save/cancel buttons
-	const cancel = () => {
-		disableButtons = true;
-		editor.commands.setContent(original.content as Content);
-
-		// Create a transaction that replaces the current state with the old stored state
-		editor.view.state.applyTransaction(
-			editor.view.state.tr.replaceWith(
-				0,
-				editor.view.state.doc.content.size,
-				original.content
-			)
-		);
-
-		project = {
-			...original,
-			skills: [...original.skills],
-			authors: [...original.authors]
-		};
-	};
-
-	const save = async () => {
-		checkConstraints();
-
-		if (disableButtons || disableForm) return;
-
-		// Trim title and description whitespace
-		project.title = project.title.trim();
-		project.description = project.description.trim();
-
-		disableForm = true;
-		disableButtons = true;
-
-		editor.setEditable(false);
-
-		const content = editor.view.state.doc;
-
-		// Set the saving state to true to let other clients know that saving is
-		// being done
-		yMap.set("state", State.Saving);
-
-		// Send an update request to the API
-		fetch("/api/project", {
-			method: "PATCH",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(
-				isOwner
-					? ({
-							...project,
-							content: content.toJSON(),
-							images: Object.fromEntries(images.entries())
-					  } as App.ProjectUpdateRequest)
-					: ({
-							id: project.id,
-							description: project.description,
-							skills: project.skills,
-							theme: project.theme,
-							title: project.title,
-							content: content.toJSON(),
-							images: Object.fromEntries(images.entries())
-					  } as App.ProjectUpdateRequest)
-			)
-		}).then(async (res) => {
-			// If the status is 205, it is most likely a title that already exists
-			if (res.status === 205) {
-				titleError = true;
-				disableButtons = true;
-
-				yMap.set("state", State.Error);
-				yMap.set("state", State.Editing);
-
-				disableForm = false;
-
-				return;
-			}
-
-			const data = (await res.json()) as App.ProjectUpdateResponse;
-
-			// Switch the users URL to it without reloading
-			if (data.url !== original.url)
-				(project.url = data.url) &&
-					yMap.set("project", {
-						...project,
-						date: project.date.toISOString()
-					}) &&
-					history.replaceState(
-						{},
-						"",
-						new URL(
-							`/dashboard/projects/${project.url}`,
-							document.location.href
-						)
-					);
-
-			// Update the images data to correspond with the new IDs
-			Object.entries(data.images).forEach(
-				([hash, id]) => ((images.get(hash) as App.Image).id = id)
-			);
-
-			// If successful, update the original data before the request finished
-			original = {
-				...project,
-				skills: [...project.skills],
-				authors: [...project.authors],
-				content
-			};
-
-			// Fire off the event with saved so peers know to update the original
-			// data, then switch back to editing
-			yMap.set("state", State.Saved);
-			yMap.set("state", State.Editing);
-
-			disableForm = false;
-
-			editor.setEditable(true);
-			editor.commands.focus();
-
-			checkConstraints();
-		});
-	};
-
-	// Update the project's banner
-	const updateImage = async () => {
-		if (!banner.files?.length || banner.files[0].size > 2000000) return;
-
-		banner.disabled = true;
-
-		const body = new FormData();
-
-		// Append the newly uploaded image to the body
-		body.append("file", new File([banner.files![0]], "banner"));
-
-		// Apend the type
-		body.append("type", "project-banner");
-
-		// Add the project ID
-		body.append("id", original.id);
-
-		// Update the image
-		await fetch("/api/images", {
-			method: "PATCH",
-			body
-		})
-			.then((res) => res.json())
-			.then(
-				({ theme }: App.ImageUploadResponse) =>
-					(original.theme = theme!) && (project.theme = theme!)
-			)
-			.catch(() => {}); // Ignore errors, the avatar will just stay the same
-
-		// Reset the selected input value and enabled it
-		banner.value = "";
-		banner.disabled = false;
-	};
-
-	// Update visility of the project
-	const toggleVisible = () => {
-		fetch("/api/project", {
-			method: "PATCH",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify({
-				id: original.id,
-				visible: visible
-			} as App.ProjectUpdateRequest)
-		}).then(() => {
-			original.visible = visible;
-			project.visible = visible;
-		});
-	};
-
-	// Update whether the user has the project pinned
-	const togglePinned = () => {
-		const pinnedProjectId = pinned ? original.id : null;
-
-		fetch("/api/user", {
-			method: "PATCH",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify({
-				id: $user.id,
-				pinnedProjectId
-			} as App.UserUpdateRequest)
-		}).then(() => ($user.pinnedProjectId = pinnedProjectId));
-	};
-
-	// When the user does CTRL/CMD + S, save the data
-	const onKeydown = (e: KeyboardEvent) => {
-		if ((e.metaKey && e.key === "s") || (e.ctrlKey && e.key === "s")) {
-			e.preventDefault();
-			save();
-		}
-	};
 </script>
 
 <svelte:head>
@@ -880,43 +939,45 @@
 		{/if}
 	</div>
 
-	<!-- TODO: Active collaborators design -->
-	<!-- TODO: Fix normal username widths -->
 	<!-- TODO: Refactor and improve everything -->
-	<!-- TODO: Google search console and buiseness setup -->
-
-	<Scrollable class="before:from-black after:to-black -my-6 h-16">
-		{#each users as { id, name } (id)}
-			<div class="flex gap-3 shrink-0">
-				<img
-					class="rounded-full bg-gray-400 w-12 h-12 object-cover object-center"
-					height="512"
-					width="512"
-					src="{PUBLIC_CLOUDFLARE_URL}/avatar-{id}/avatar?{Date.now()}"
-					alt="{name}'s avatar"
-					loading="lazy"
-				/>
-
-				<h1
-					class="font-semibold text-xl overflow-auto scrollbar-hidden max-w-44 lg:max-w-60"
-				>
-					{name.split(" ")[0]}
-				</h1>
-			</div>
-		{/each}
-	</Scrollable>
+	<!-- TODO: Google search console and business setup -->
 
 	<div
 		disabled={disableForm}
 		class:opacity-60={disableForm}
 		class:pointer-events-none={disableForm}
-		class="relative rounded-lg w-full transition-opacity duration-200"
+		class="w-full transition-opacity duration-200"
 	>
 		{#if editor}
-			<div class="absolute inset-0 pointer-events-none">
+			<div class="sticky top-0 z-20 border-b-2 border-gray-700 bg-black">
 				<Scrollable
-					class="sticky bg-black pointer-events-auto top-0 z-20 border-b-2 border-gray-700 before:from-black after:to-black"
+					class="before:from-black after:to-black transition-transform duration-200 {users.length
+						? 'h-18 py-1'
+						: 'h-0'}"
 				>
+					{#each users as { id, name } (id)}
+						<div
+							class="flex gap-3 items-center shrink-0 bg-gray-900 rounded-lg px-4 py-2"
+						>
+							<img
+								class="rounded-full bg-gray-400 w-10 h-10 object-cover object-center"
+								height="512"
+								width="512"
+								src="{PUBLIC_CLOUDFLARE_URL}/avatar-{id}/avatar?{Date.now()}"
+								alt="{name}'s avatar"
+								loading="lazy"
+							/>
+
+							<h1
+								class="font-semibold text-lg overflow-auto scrollbar-hidden max-w-44 lg:max-w-60"
+							>
+								{name.split(/\s+/g)[0]}
+							</h1>
+						</div>
+					{/each}
+				</Scrollable>
+
+				<Scrollable class="before:from-black after:to-black">
 					<HeadButton {editor} active={isActive.heading} />
 
 					<EditorButton
@@ -978,6 +1039,6 @@
 			</div>
 		{/if}
 
-		<div class="mt-24" bind:this={editorElement} />
+		<div class="mt-4" bind:this={editorElement} />
 	</div>
 </div>

@@ -2,8 +2,17 @@
 	export let title = "";
 	export let lightBg = true;
 	export let placeholder = "";
-	export let value: string | null = "";
+	export let value: string | null;
 	export let max: number | null = null;
+
+	let input = value || "";
+
+	$: {
+		const trim = input?.trim();
+
+		if (trim && trim.length) value = trim;
+		else value = null;
+	}
 </script>
 
 {#if title.length}
@@ -15,7 +24,7 @@
 			class="flex rounded-lg select-none mt-2"
 		>
 			<input
-				bind:value
+				bind:value={input}
 				type="text"
 				class="w-full h-full px-2 bg-transparent focus:outline-none p-4 my-auto"
 				{placeholder}
@@ -37,7 +46,7 @@
 			<slot />
 		</div>
 		<input
-			bind:value
+			bind:value={input}
 			type="text"
 			class="w-full h-full px-2 py-4 bg-transparent focus:outline-none my-auto"
 			{placeholder}

@@ -80,14 +80,14 @@
 	{#if !$page.route.id?.includes("[")}
 		<meta
 			name="description"
-			content="Team Tomorrow works towards bringing developers to companies in need of a workforce. Experience rapid deployment, indsutry leading skills, and robust teams to help you bring your product forward."
+			content="Team Tomorrow brings developers to companies in need of a robust workforce. Experience rapid deployment, industry-leading skills, and teams that bring your product forward. Procure an incredible team through various profiles and beat your deadline."
 		/>
 
 		<!-- OpenGraph data with Team Tomorrow info -->
 		<meta property="og:title" content="Team Tomorrow" />
 		<meta
 			property="og:description"
-			content="Team Tomorrow works towards bringing developers to companies in need of a workforce. Experience rapid deployment, indsutry leading skills, and robust teams to help you bring your product forward."
+			content="Team Tomorrow brings developers to companies in need of a robust workforce. Experience rapid deployment, industry-leading skills, and teams that bring your product forward. Procure an incredible team through various profiles and beat your deadline."
 		/>
 		<meta name="og:image" content="/assets/favicon.png" />
 		<meta name="og:image:secure_url" content="/assets/favicon.png" />
@@ -99,7 +99,7 @@
 		<meta property="twitter:title" content="Team Tomorrow" />
 		<meta
 			property="twitter:description"
-			content="Team Tomorrow works towards bringing developers to companies in need of a workforce. Experience rapid deployment, indsutry leading skills, and robust teams to help you bring your product forward."
+			content="Team Tomorrow brings developers to companies in need of a robust workforce. Experience rapid deployment, industry-leading skills, and teams that bring your product forward. Procure an incredible team through various profiles and beat your deadline."
 		/>
 		<meta name="twitter:card" content="summary" />
 		<meta name="twitter:image" content="/assets/favicon.png" />

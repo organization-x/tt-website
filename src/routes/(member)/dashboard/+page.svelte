@@ -45,7 +45,7 @@
 	let pinDebounce: NodeJS.Timeout;
 	let pinnedProjectId = $user.pinnedProjectId;
 
-	// Store badges parent element and the indicies of the active badges for scroll progress effect
+	// Store badges parent element and the indices of the active badges for scroll progress effect
 	let badges: HTMLDivElement;
 	let playing = new Set<number>();
 
@@ -77,7 +77,7 @@
 		? data.projects.find((project) => project.id === pinnedProjectId)
 		: null;
 
-	// Update visility of user
+	// Update visibility of user
 	const toggleVisible = () => {
 		fetch("/api/user", {
 			method: "PATCH",
@@ -399,19 +399,19 @@
 					>
 						<LinkIcon slot="icon" class="w-5 h-5" />
 
-						{#each links as link}
+						{#each links as { link, key }}
 							<div
 								class="flex justify-center items-center font-semibold bg-gray-700 rounded-lg gap-3 p-4"
 							>
 								<svelte:component
-									this={getIcon(link.key)}
+									this={getIcon(key)}
 									class="w-6 h-6 shrink-0"
 								/>
 
 								<h1
 									class="text-sm overflow-auto scrollbar-hidden"
 								>
-									{link.link}
+									{link}
 								</h1>
 							</div>
 						{/each}
@@ -563,9 +563,11 @@
 
 		<DashSection title="Your Kudos" class="bg-gray-900 rounded-lg p-4">
 			<Scrollable
-				verticle={true}
+				vertical={true}
 				class="before:from-gray-900 after:to-gray-900 h-120 md:h-[29rem]"
-				innerClass="gap-10 {data.kudos.length ? 'pt-4' : 'lg:pt-8'}"
+				innerClass="gap-10 scrollbar-hidden {data.kudos.length
+					? 'pt-4'
+					: 'lg:pt-8'}"
 			>
 				{#each data.kudos.slice(0, 10) as kudo}
 					<Kudo {kudo} />

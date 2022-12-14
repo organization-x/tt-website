@@ -10,9 +10,24 @@
 
 	import type { Prisma, User } from "@prisma/client";
 
-	export let ownerId: string;
 	export let isOwner: boolean;
+	export let ownerId: string;
 	export let authors: App.Author[];
+
+	// Keep a copy of the previous authors array so a search is triggered only when the authors change
+	let oldAuthors = authors;
+
+	// When the authors change, re-query the search
+	$: if (
+		isOwner &&
+		(oldAuthors.length !== authors.length ||
+			!authors.every(
+				(author, i) =>
+					oldAuthors[i]?.user.id === author.user.id &&
+					oldAuthors[i]?.position === author.position
+			))
+	)
+		(oldAuthors = authors) && onSearch();
 
 	let search = "";
 	let request: Promise<Pick<User, "id" | "name" | "url">[]> = new Promise(
@@ -71,9 +86,9 @@
 		<h1 class="font-semibold text-xl">Authors</h1>
 		<div class="bg-gray-900 p-4 mt-3 rounded-lg after:inset-x-0">
 			<Scrollable
-				verticle={true}
-				class="before:from-gray-900 after:to-gray-900"
-				innerClass="gap-0 max-lg:max-h-[27.5rem] lg:grid lg:grid-cols-2 lg:gap-x-4 lg:overflow-visible"
+				vertical={true}
+				class="before:from-gray-900 after:to-gray-900 lg:overflow-visible"
+				innerClass="gap-0 scrollbar-hidden max-lg:max-h-[27.5rem] lg:grid lg:grid-cols-2 lg:gap-x-4 lg:overflow-visible"
 			>
 				{#each authors as author (author.user.id)}
 					{@const cantRemove =
@@ -89,9 +104,6 @@
 							authors = authors.filter(
 								(user) => author.user.id !== user.user.id
 							);
-
-							// Requery the search
-							onSearch();
 						}}
 					/>
 				{/each}
@@ -104,7 +116,7 @@
 						class:px-0={search.length}
 						class:px-4={!search.length}
 						class:w-14={!search.length}
-						class="bg-gray-500 py-4 rounded-l-lg overflow-hidden transition-widpad"
+						class="bg-gray-500 py-4 rounded-l-lg overflow-hidden transition-transform"
 					>
 						<Search class="w-5 h-5 mx-auto" />
 					</div>
@@ -125,9 +137,17 @@
 				{#if search.length}
 					<div
 						transition:slide={{ duration: 200 }}
-						class="h-32 flex flex-col gap-4 p-4 overflow-auto"
+						class="h-[11.5rem] flex flex-col gap-4 p-4 overflow-auto scrollbar"
 					>
 						{#await request}
+							<div class="animate-pulse flex gap-3 items-center">
+								<div
+									class="rounded-full w-10 h-10 bg-gray-500"
+								/>
+								<div
+									class="rounded-full w-32 h-4 bg-gray-500"
+								/>
+							</div>
 							<div class="animate-pulse flex gap-3 items-center">
 								<div
 									class="rounded-full w-10 h-10 bg-gray-500"
@@ -147,7 +167,7 @@
 						{:then users}
 							{@const timestamp = Date.now()}
 
-							{#each users as user}
+							{#each users as user (user.id)}
 								<button
 									on:click={() => {
 										// If the user is already in the authors, ignore
@@ -160,15 +180,13 @@
 											return;
 
 										// Default position is frontend since it's at the top
-										authors.push({
-											position: "Frontend",
-											user
-										});
-
-										authors = authors;
-
-										// Requery the search
-										onSearch();
+										authors = [
+											...authors,
+											{
+												position: "Frontend",
+												user
+											}
+										];
 									}}
 									in:fly={{ y: 20, duration: 200 }}
 									class="flex gap-3 items-center"

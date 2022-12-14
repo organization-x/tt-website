@@ -84,7 +84,7 @@
 	});
 </script>
 
-<!-- setTimeout hack since innerWidth loves to be innacurate randomly -->
+<!-- setTimeout hack since innerWidth is inaccurate randomly -->
 <svelte:window
 	on:resize={() => {
 		if (!data.length) return;
@@ -148,12 +148,8 @@
 					class:lg:hidden={i !== page * 2 && i !== page * 2 + 1}
 					class="flex flex-col gap-2 w-full shrink-0 snap-center lg:w-1/2 lg:gap-4"
 				>
-					{#each data as item}
-						<DataKey
-							label={item.label}
-							className={item.color}
-							value={item.value}
-						/>
+					{#each data as { label, value, color }}
+						<DataKey {label} className={color} {value} />
 					{/each}
 				</div>
 			{/each}

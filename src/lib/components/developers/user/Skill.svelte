@@ -53,7 +53,7 @@
 	class="rounded-lg overflow-hidden transition-colors duration-200 md:flex lg:max-w-[26rem]"
 >
 	<div
-		class="flex shrink-0 transition-widpad duration-200 {endorsements.length
+		class="flex shrink-0 transition-transform duration-200 {endorsements.length
 			? 'md:w-1/2'
 			: 'md:w-full'}"
 	>
@@ -73,7 +73,7 @@
 		>
 			<div
 				class:md:ml-12={!isEndorsed && endorser}
-				class="flex items-center gap-4 transition-[margin] md:ml-12"
+				class="flex items-center gap-4 transition-transform md:ml-12"
 			>
 				<svelte:component
 					this={getIcon(name)}
@@ -85,7 +85,7 @@
 
 			<DropArrow
 				{open}
-				class="transition-[transform,width] h-3 md:hidden {endorsements.length
+				class="transition-transform transition-tr h-3 md:hidden {endorsements.length
 					? 'w-3'
 					: 'w-0'}"
 			/>
@@ -108,7 +108,7 @@
 				class="rounded-lg bg-gray-700 shrink-0 py-4 px-5 border-4 transition-border duration-200"
 			>
 				<Plus
-					class="w-4 h-4 transition-[opacity,transform] {endorsing
+					class="w-4 h-4 transition-transpacity {endorsing
 						? ' opacity-70'
 						: ''}{isEndorsed ? ' rotate-45' : ''}"
 				/>
@@ -121,7 +121,7 @@
 			transition:slide={{ duration: innerWidth < 600 ? 200 : 0 }}
 			class:m-2={innerWidth < 600}
 			class:mx-2={innerWidth >= 600 && endorsements.length}
-			class="md:flex md:items-center md:transition-[width,margin] md:duration-200 {endorsements.length
+			class="md:flex md:items-center md:transition-transform md:duration-200 {endorsements.length
 				? 'md:w-1/2'
 				: 'md:w-0'}"
 		>
@@ -148,9 +148,9 @@
 					{message}
 				</h1>
 
-				{#each endorsements as endorsement (endorsement.from.id)}
+				{#each endorsements as { from } (from.id)}
 					<a
-						href="/developers/{endorsement.from.url}"
+						href="/developers/{from.url}"
 						target="_blank"
 						rel="noreferrer noopener"
 						class="shrink-0"
@@ -158,9 +158,8 @@
 						<img
 							width="512"
 							height="512"
-							src="{PUBLIC_CLOUDFLARE_URL}/avatar-{endorsement
-								.from.id}/avatar?{timestamp}"
-							alt="{endorsement.from.name}'s avatar"
+							src="{PUBLIC_CLOUDFLARE_URL}/avatar-{from.id}/avatar?{timestamp}"
+							alt="{from.name}'s avatar"
 							class="w-10 h-10 object-cover object-center rounded-full"
 						/>
 					</a>

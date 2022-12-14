@@ -6,6 +6,7 @@
 	import { getIcon } from "$lib/getIcon";
 	import Dropdown from "$lib/components/Dropdown.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 	import Trash from "$lib/components/icons/general/Trash.svelte";
 	import DropdownItem from "$lib/components/DropdownItem.svelte";
 	import Search from "$lib/components/icons/general/Search.svelte";
@@ -23,13 +24,13 @@
 		click: { id: string };
 	}>();
 
-	// Create a seperate array of filtered options
+	// Create a separate array of filtered options
 	$: filteredPositions = positions.filter((position) =>
 		position.toLowerCase().includes(search.trim().toLowerCase())
 	);
 
 	// Change variable on dropdown selection.
-	// Have to do it in a seperate function since svelte doesn't allow for typescript within the on directive
+	// Have to do it in a separate function since svelte doesn't allow for typescript within the on directive
 	const onChange = ({
 		detail
 	}: CustomEvent<{
@@ -58,8 +59,8 @@
 			class="w-10 h-10 rounded-full object-cover object-center"
 		/>
 
-		<h1 class="overflow-auto scrollbar-hidden lg:text-lg">
-			{author.user.name.split(" ")[0]}
+		<h1 class="overflow-auto scrollbar-hidden lg:text-lg lg:select-all">
+			{author.user.name.split(/\s+/g)[0]}
 		</h1>
 
 		<DropArrow class="w-3 h-3 ml-auto shrink-0 mt-0.5 lg:hidden" {open} />
@@ -87,7 +88,11 @@
 				/>
 			</div>
 
-			<div class="pl-2 pb-2 overflow-auto scrollbar h-44">
+			<Scrollable
+				vertical={true}
+				class="before:from-gray-700 after:to-gray-700 after:rounded-b-lg"
+				innerClass="h-44 scrollbar gap-0 pl-2 pb-2"
+			>
 				{#each filteredPositions as position (position)}
 					<DropdownItem
 						on:click={() => (author.position = position)}
@@ -105,7 +110,7 @@
 				{:else}
 					<div class="text-center mt-4">No results</div>
 				{/each}
-			</div>
+			</Scrollable>
 		</div>
 	{/if}
 

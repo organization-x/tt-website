@@ -36,7 +36,7 @@
 		class:border-transparent={!changed || !required || radio}
 		class:border-red-light={changed && !isValid && required && !radio}
 		class:border-green-light={changed && isValid && required && !radio}
-		class="rounded-lg border-2 mt-2 max-h-[4.5rem] transition-[border-color]"
+		class="rounded-lg border-2 mt-2 max-h-18 transition-colors"
 	>
 		<Dropdown
 			bind:open
@@ -55,7 +55,7 @@
 			class:border-transparent={!changed || !required || radio}
 			class:border-red-light={changed && !isValid && required && !radio}
 			class:border-green-light={changed && isValid && required && !radio}
-			class="absolute z-10 pointer-events-none inset-0 top-8 border-2 transition-[border-color] rounded-[0.65rem] h-[22.75rem] sm:top-9"
+			class="absolute z-10 pointer-events-none inset-0 top-8 border-2 transition-colors rounded-[0.65rem] h-[22.75rem] sm:top-9"
 		/>
 	{/if}
 </div>

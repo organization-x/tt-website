@@ -49,8 +49,9 @@
 				<SearchBar bind:search placeholder="Search projects..." />
 
 				<Scrollable
-					verticle={true}
+					vertical={true}
 					class="h-[37.3rem] mt-6 before:from-gray-900 after:to-gray-900"
+					innerClass="scrollbar-hidden"
 				>
 					{#each filteredProjects as project}
 						<ProjectPreview {project} {userId} />

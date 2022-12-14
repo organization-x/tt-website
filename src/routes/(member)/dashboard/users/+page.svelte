@@ -69,7 +69,7 @@
 
 			<div class="mt-6 flex flex-col gap-4 relative lg:w-1/2 lg:mt-0">
 				<div class="flex flex-col gap-4 absolute inset-0 z-10">
-					{#each data.homeUsers as user (user.id)}
+					{#each data.homeUsers as { id, name } (id)}
 						<div animate:flip={{ duration: 400 }}>
 							<div
 								out:scale|local={{ duration: 200 }}
@@ -79,8 +79,8 @@
 								<img
 									height="512"
 									width="512"
-									src="{PUBLIC_CLOUDFLARE_URL}/avatar-{user.id}/avatar?{Date.now()}"
-									alt="{user.name}'s avatar"
+									src="{PUBLIC_CLOUDFLARE_URL}/avatar-{id}/avatar?{Date.now()}"
+									alt="{name}'s avatar"
 									loading="lazy"
 									class="rounded-full object-cover object-center bg-gray-400 w-10 h-10"
 								/>
@@ -88,14 +88,14 @@
 								<h1
 									class="text-lg font-semibold overflow-auto scrollbar-hidden lg:text-base"
 								>
-									{user.name.split(" ")[0]}
+									{name.split(/\s+/g)[0]}
 								</h1>
 
 								<button
 									class="ml-auto"
 									on:click={() =>
 										(data.homeUsers = data.homeUsers.filter(
-											({ id }) => id !== user.id
+											(user) => id !== user.id
 										))}
 								>
 									<Trash class="w-4 h-4" />
@@ -202,7 +202,7 @@
 							<div class="rounded-full h-5 w-8 bg-gray-400" />
 
 							<div
-								class="rounded-full ml-auto h-5 w-[4.5rem] bg-gray-400"
+								class="rounded-full ml-auto h-5 w-18 bg-gray-400"
 							/>
 						</div>
 					</div>
@@ -279,7 +279,7 @@
 							<div class="rounded-full h-5 w-8 bg-gray-400" />
 
 							<div
-								class="rounded-full ml-auto h-5 w-[4.5rem] bg-gray-400"
+								class="rounded-full ml-auto h-5 w-18 bg-gray-400"
 							/>
 						</div>
 					</div>

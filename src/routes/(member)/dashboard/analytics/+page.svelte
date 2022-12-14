@@ -22,7 +22,7 @@
 	let modeDebounce: NodeJS.Timeout;
 	let request: Promise<App.AnalyticsResponse> = new Promise(() => {});
 
-	// Custom animation for circular view ratio gradient
+	// Custom animation for the circular ratio view
 	let percent: Tweened<number>;
 
 	// Store the mode that the analytics are in, admins can switch between personal and global analytics
@@ -75,7 +75,7 @@
 			});
 	};
 
-	// Show loading animation on mode switch while waiting for debounce also
+	// Show loading animation on mode switch while waiting for debounce and also
 	// set animation percentage to zero
 	$: mode,
 		(request = new Promise(() => {})),

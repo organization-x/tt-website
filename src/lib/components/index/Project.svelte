@@ -49,9 +49,9 @@
 	</div>
 
 	<Scrollable
-		verticle={true}
+		vertical={true}
 		class="hidden before:from-gray-900 after:to-gray-900 lg:block lg:bg-gray-900 lg:rounded-lg lg:shrink-0 lg:max-h-[26rem] lg:px-4"
-		innerClass="lg:gap-3"
+		innerClass="lg:gap-3 lg:scrollbar-hidden"
 	>
 		<h1 class="font-semibold mt-4 text-lg">Developers</h1>
 

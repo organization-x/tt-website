@@ -25,7 +25,7 @@
 
 	let open = false;
 
-	// Store the visible and homepage state in a seperate variable so svelte doesn't fire the user object
+	// Store the visible and homepage state in a separate variable so svelte doesn't fire the user object
 	// and mess up debounces
 	let visible = user.visible;
 	$: homepage = homeUsers.some((u) => u.id === user.id);
@@ -206,7 +206,7 @@
 	<div
 		class:scale-x-0={!open}
 		class:scale-x-100={open}
-		class="w-full mx-auto rounded-full mt-4 bg-gray-700 h-0.5 transition-[margin,transform]"
+		class="w-full mx-auto rounded-full mt-4 bg-gray-700 h-0.5 transition-transform"
 	/>
 
 	{#if open}

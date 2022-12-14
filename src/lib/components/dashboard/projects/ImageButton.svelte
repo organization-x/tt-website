@@ -93,27 +93,31 @@
 	const uploader = async () => {
 		if (!upload.files?.length || upload.files[0].size > 2000000) return;
 
-		// Turn the file into a SHA-1 hash so the same image doesn't create seperate
+		// Turn the file into a SHA-1 hash so the same image doesn't create separate
 		// entries
-		const key = await hashBlob(upload.files[0]);
+		const hash = await hashBlob(upload.files[0]);
 
 		// Since image data isn't deleted until a save occurs, check to see if this image already exists
-		const image = images.get(key) as App.Image;
+		const image = images.get(hash) as App.Image;
 		let src = image?.urls.find((url) => checkObjectURL(url));
-
-		if (!src) src = createObjectURL(upload.files![0]);
 
 		// If there's an image but no valid URL, create a new URL and push it, otherwise, if
 		// there's no previous image at all create a URL and an image. This happens after the editor
 		// adds it since collaborators need to iterate through nodes to set their src attributes
-		if (image && !src) image.urls.push(src) && images.set(src, key);
-		else if (!image) {
-			images.set(key, {
+		if (image && !src) {
+			src = createObjectURL(upload.files![0]);
+
+			image.urls.push(src);
+			images.set(src, hash);
+		} else if (!image) {
+			src = createObjectURL(upload.files![0]);
+
+			images.set(hash, {
 				urls: [src],
 				data: [...new Uint8Array(await upload.files[0].arrayBuffer())]
 			});
 
-			images.set(src, key);
+			images.set(src, hash);
 		}
 
 		editor

@@ -11,7 +11,7 @@
 	}>("LayerCake");
 </script>
 
-{#each $data as item, i}
+{#each $data as item}
 	{@const h = $yRange[0] - $yGet(item)}
 	{@const colHeight = Math.abs($custom.rise * h - 3.5)}
 	{@const colWidth = $xScale.bandwidth() - 5}

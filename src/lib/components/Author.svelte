@@ -27,12 +27,11 @@
 		loading="lazy"
 	/>
 
-	<!-- TODO: Update split/change each deconstructions -->
 	<div class="overflow-hidden">
 		<h1
 			class="font-semibold text-xl overflow-auto scrollbar-hidden max-w-44 lg:max-w-60"
 		>
-			{author.user.name.split(" ")[0]}
+			{author.user.name.split(/\s+/)[0]}
 		</h1>
 
 		<p class="text-xs -mt-1">{author.position.replaceAll("_", " ")}</p>

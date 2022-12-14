@@ -151,7 +151,7 @@
 		</div>
 	</div>
 
-	<h1 class="font-bold text-3xl break-words" style="color: #{data.theme}">
+	<h1 class="font-bold text-3xl break-words">
 		{data.title}
 	</h1>
 

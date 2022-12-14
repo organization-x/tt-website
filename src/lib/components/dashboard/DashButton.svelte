@@ -25,7 +25,7 @@
 	class:py-4={icon}
 	class:lg:px-3.5={icon}
 	class:lg:py-3.5={icon}
-	class="rounded-lg relative px-4 text-center shrink-0 leading-none transition-[background-color,opacity] duration-200 disabled:opacity-60 disabled:pointer-events-none {className}"
+	class="rounded-lg relative px-4 text-center shrink-0 leading-none transition-backpacity transition-op duration-200 disabled:opacity-60 disabled:pointer-events-none {className}"
 >
 	<slot />
 </button>

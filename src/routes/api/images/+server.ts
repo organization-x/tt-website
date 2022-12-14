@@ -6,7 +6,7 @@ import { prisma, userAuth } from "$lib/prisma";
 
 import type { RequestHandler } from "./$types";
 
-// Request handlers for interacting with Cloudlare images
+// Request handler for interacting with Cloudflare images
 
 // Update a user's avatar/banner or a project's banner
 // * INPUT: FormData: file, type, id
@@ -183,52 +183,4 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		type === "banner" ? JSON.stringify({ theme: theme! }) : undefined,
 		{ status: 200 }
 	);
-};
-
-// TODO: Upload pictures in the actual project update request
-
-// Upload an image for a project's content
-// * INPUT: FormData: file, id
-// * OUTPUT: ImageUploadResponse
-export const PUT: RequestHandler = async ({ locals, request }) => {
-	const user = (await userAuth(locals, true))!;
-
-	try {
-		const data = await request.formData();
-
-		// Check if the project exists and if the user owns it
-		const project = await prisma.project.findFirst({
-			where: {
-				id: data.get("id") as string,
-				ownerId: user.id
-			}
-		});
-
-		if (!project) throw error(400, "Bad Request");
-
-		// If the image size is greater than 2MB throw a bad request
-		if ((data.get("file") as File).size >= 2000000)
-			throw error(400, "Bad Request");
-
-		// Set the ID to include the project ID
-		data.set("id", `${project.id}-${Date.now()}`);
-
-		// Upload the image to Cloudflare
-		const id = (
-			await fetch(
-				`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1`,
-				{
-					method: "POST",
-					headers: {
-						Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
-					},
-					body: data
-				}
-			).then((res) => res.json())
-		).result.id;
-
-		return new Response(JSON.stringify({ id }), { status: 200 });
-	} catch {
-		throw error(400, "Bad Request");
-	}
 };

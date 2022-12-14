@@ -167,7 +167,7 @@
 		When contacting us, please make sure to fill out every part with
 		exclusive information so we can respond swiftly with accurate
 		information. On the subject field of this form, primarily explain what
-		times are availible to meet, who you are interested in and for what
+		times are available to meet, who you are interested in and for what
 		reason, and any other detail you wish to include that could help the
 		both of us as a team.
 	</Text>
@@ -276,9 +276,9 @@
 					<h1 class="font-semibold">Saved Developers</h1>
 
 					<Scrollable
-						verticle={true}
+						vertical={true}
 						class="mt-2 rounded-lg h-32 before:from-gray-900 after:to-gray-900 sm:h-36 lg:h-48"
-						innerClass="lg:grid lg:grid-cols-2 lg:gap-x-6"
+						innerClass="scrollbar-hidden lg:grid lg:grid-cols-2 lg:gap-x-6"
 					>
 						{#each $developers as developer}
 							{@const index =
@@ -304,7 +304,7 @@
 								<h1
 									class="font-semibold overflow-auto -ml-2 scrollbar-hidden"
 								>
-									{developer.name.split(" ")[0]}
+									{developer.name.split(/\s+/g)[0]}
 								</h1>
 
 								<a

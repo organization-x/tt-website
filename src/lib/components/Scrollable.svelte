@@ -6,7 +6,7 @@
 	let className: string;
 	export let arrows = false;
 	export let innerClass = "";
-	export let verticle = false;
+	export let vertical = false;
 
 	export { className as class };
 
@@ -26,15 +26,16 @@
 	const checkScroll = () => {
 		if (
 			clientWidth ===
-			(verticle ? scrollable.scrollHeight : scrollable.scrollWidth)
+				(vertical ? scrollable.scrollHeight : scrollable.scrollWidth) ||
+			(vertical && getComputedStyle(scrollable).overflow === "visible")
 		)
 			disabledSide = Side.Both;
 		else if (
-			verticle ? scrollable.scrollTop === 0 : scrollable.scrollLeft === 0
+			vertical ? scrollable.scrollTop === 0 : scrollable.scrollLeft === 0
 		)
 			disabledSide = Side.Left;
 		else if (
-			verticle
+			vertical
 				? scrollable.scrollTop -
 						(scrollable.scrollHeight - clientWidth) >=
 				  -0.5
@@ -59,9 +60,9 @@
 			behavior: "smooth"
 		});
 
-	// Verticle scroll without holding shift for desktop
+	// Vertical scroll without holding shift for desktop
 	const onWheel = (event: WheelEvent) => {
-		// Prevent trackpads from trigeering this since horizontal scrolling is built-in
+		// Prevent trackpads from triggering this since horizontal scrolling is built-in
 		if (
 			((event.deltaX >= 2 || event.deltaX <= -2) && event.deltaY === 0) ||
 			disabledSide === Side.Both
@@ -79,8 +80,8 @@
 	};
 
 	// Update the gradients based off of content in them on mount, this is needed
-	// for verticle mode only since in horizontal the scroll event fires by itself
-	if (verticle)
+	// for vertical mode only since in horizontal the scroll event fires by itself
+	if (vertical)
 		onMount(() => {
 			// Create an observer to update the gradient on scrollHeight change
 			const observer = new MutationObserver(checkScroll);
@@ -96,8 +97,8 @@
 		});
 </script>
 
-<!-- When in verticle mode left is considered the top and right bottom -->
-{#if verticle}
+<!-- When in vertical mode left is considered the top and right bottom -->
+{#if vertical}
 	<div
 		class:before:opacity-0={disabledSide === Side.Left ||
 			disabledSide === Side.Both}
@@ -116,7 +117,7 @@
 			bind:clientHeight={clientWidth}
 			bind:this={scrollable}
 			on:scroll={checkScroll}
-			class="flex flex-col gap-4 overflow-auto scrollbar-hidden h-full {innerClass}"
+			class="flex flex-col gap-4 overflow-auto h-full {innerClass}"
 		>
 			<slot />
 		</div>

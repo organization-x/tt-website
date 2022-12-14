@@ -40,7 +40,7 @@
 	class:pointer-events-none={!$active}
 	on:mouseenter={() => set(true)}
 	on:mouseleave={() => set(false)}
-	class="w-72 bg-gray-900 rounded-lg left-0 p-3.5 flex items-center select-none gap-2.5 z-10 top-full absolute transition-[opacity,transform] duration-100"
+	class="w-72 bg-gray-900 rounded-lg left-0 p-3.5 flex items-center select-none gap-2.5 z-10 top-full absolute transition-transpacity duration-100"
 >
 	{#await request}
 		<div class="bg-gray-400 w-5 h-5 rounded-sm animate-pulse my-0.5" />

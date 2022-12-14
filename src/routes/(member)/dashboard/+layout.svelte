@@ -245,7 +245,7 @@
 						class:rounded-t-lg={userOpen}
 						class:duration-200={!disableTransition}
 						class:transition-colors={!disableTransition}
-						class="flex gap-3 items-center p-3 justify-center w-full hover:bg-gray-900"
+						class="flex gap-3 items-center p-3 justify-center min-w-[10rem] w-full hover:bg-gray-900"
 						on:transitionend={() => (disableTransition = false)}
 						on:click={() => (userOpen = !userOpen)}
 					>

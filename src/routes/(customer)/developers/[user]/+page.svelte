@@ -292,14 +292,14 @@
 				<div
 					class="py-3 w-full flex items-center justify-center gap-6 lg:justify-start lg:gap-4"
 				>
-					{#each links as link}
+					{#each links as { link, key }}
 						<a
-							href={createLink(link.key, link.link)}
+							href={createLink(key, link)}
 							rel="noopener noreferrer"
 							target="_blank"
 						>
 							<svelte:component
-								this={getIcon(link.key)}
+								this={getIcon(key)}
 								class="w-6 h-6"
 							/>
 						</a>
@@ -562,8 +562,9 @@
 						/>
 
 						<Scrollable
-							verticle={true}
+							vertical={true}
 							class="h-120 before:from-gray-900 after:to-gray-900 md:h-[28rem] 3xl:h-full"
+							innerClass="scrollbar-hidden"
 						>
 							{#if kudos.length}
 								<div

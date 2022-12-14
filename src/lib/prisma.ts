@@ -74,6 +74,9 @@ export const getProjects = (where: Prisma.ProjectWhereInput) =>
 // Grab kudos data, the reason this is in here is since it falls under the same
 // category of backend getters
 export const getKudos = async (id: string) => {
+	// TODO: Temporary until kudos API is fixed
+	return [];
+
 	// Grab the kudos data from the Discord bot API
 	const data: App.KudosResponse = await fetch(
 		`https://ai-camp-data-layer.fly.dev/ck/${id}?pageSize=9999`
