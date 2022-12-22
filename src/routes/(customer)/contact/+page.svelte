@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { getContext } from "svelte";
 
+	import Field from "./Field.svelte";
+	import Select from "./Select.svelte";
 	import { developers } from "$lib/stores";
+	import FormButton from "./FormButton.svelte";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Header from "$lib/components/Header.svelte";
-	import Field from "$lib/components/contact/Field.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import Section from "$lib/components/index/Section.svelte";
-	import Select from "$lib/components/contact/Select.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Plus from "$lib/components/icons/general/Plus.svelte";
 	import { FieldType, techSkills, softSkills } from "$lib/enums";
-	import FormButton from "$lib/components/contact/FormButton.svelte";
 	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
 
 	// Titles for each page of the contact form

@@ -1,7 +1,7 @@
 <script lang="ts">
 	export let pos: string;
-	export let name: string;
 	export let src: string;
+	export let name: string;
 </script>
 
 <div class="shrink-0 w-32">

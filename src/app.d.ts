@@ -87,7 +87,6 @@ declare global {
 			id: string;
 			title?: string;
 			description?: string;
-			theme?: string;
 			date?: Date;
 			skills?: TechSkill[];
 			content?: Prisma.InputJsonValue;
@@ -192,7 +191,7 @@ declare global {
 
 		// Interface for Discord bot kudos response
 		interface KudosResponse {
-			ck: {
+			kudos: {
 				id: number;
 				reason: string;
 				receiver: {
@@ -210,12 +209,6 @@ declare global {
 			page: number;
 			pageSize: number;
 			totalPages: number;
-		}
-
-		// Interface for URL metadata responses
-		interface UrlMetadataResponse {
-			title: string;
-			icon: string | null;
 		}
 
 		// interface Platform {}

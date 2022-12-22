@@ -17,6 +17,7 @@
 		>
 			<h1 class="m-auto">{num}</h1>
 		</div>
+
 		<h1 class="text-xl">{title}</h1>
 	</div>
 

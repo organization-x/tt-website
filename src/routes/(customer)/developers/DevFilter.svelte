@@ -28,5 +28,5 @@
 		class="rounded-full w-10 h-10 object-cover object-center bg-gray-400"
 	/>
 
-	<h1 class="overflow-auto scrollbar-hidden">{user.name.split(" ")[0]}</h1>
+	<h1 class="overflow-auto scrollbar-hidden">{user.name.split(/\s+/g)[0]}</h1>
 </button>

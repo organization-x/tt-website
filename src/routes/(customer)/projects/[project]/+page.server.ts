@@ -10,6 +10,7 @@ export const load: PageServerLoad<App.ProjectWithMetadata> = async ({
 }) => {
 	return await getProjects({ url: params.project }).then((projects) => {
 		if (!projects.length) throw redirect(302, "/projects");
+
 		return projects[0];
 	});
 };

@@ -2,19 +2,20 @@
 	import { getContext, onMount } from "svelte";
 	import { fly, slide } from "svelte/transition";
 
+	import Badge from "./Badge.svelte";
+	import Skill from "./Skill.svelte";
 	import { breadcrumb } from "$lib/seo";
 	import { getIcon } from "$lib/getIcon";
 	import { DateOption } from "$lib/enums";
 	import { developers } from "$lib/stores";
 	import Kudo from "$lib/components/Kudo.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
+	import ProjectSection from "./ProjectSection.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import Plus from "$lib/components/icons/general/Plus.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import DateDropdown from "$lib/components/DateDropdown.svelte";
-	import Skill from "$lib/components/developers/user/Skill.svelte";
-	import Badge from "$lib/components/developers/user/Badge.svelte";
 	import ProfileSection from "$lib/components/ProfileSection.svelte";
 	import TenKudos from "$lib/components/icons/badges/TenKudos.svelte";
 	import Question from "$lib/components/icons/general/Question.svelte";
@@ -23,7 +24,6 @@
 	import AllEndorsed from "$lib/components/icons/badges/AllEndorsed.svelte";
 	import HundredKudos from "$lib/components/icons/badges/HundredKudos.svelte";
 	import TwentyProjects from "$lib/components/icons/badges/TwentyProjects.svelte";
-	import ProjectSection from "$lib/components/developers/user/ProjectSection.svelte";
 
 	import type { PageData } from "./$types";
 	import type { SoftSkill, TechSkill } from "@prisma/client";
@@ -47,9 +47,6 @@
 		data.kudos.length >= 100
 	];
 
-	// Get top 3 projects
-	const previewedProjects = data.projects?.slice(0, 3);
-
 	// Create a timestamp so the images from Cloudflare don't cache
 	const timestamp = getContext("timestamp") as string;
 
@@ -63,9 +60,6 @@
 	// Keep track of the current projects being endorsed by the current user so
 	// animations play correctly
 	let endorsingSkills = new Set<TechSkill | SoftSkill>();
-
-	if (data.userPage.pinnedProject)
-		previewedProjects.unshift(data.userPage.pinnedProject);
 
 	// Make links into an array of objects with the link name and the link if it exists
 	const links = Object.entries(data.userPage.links)
@@ -160,20 +154,6 @@
 		endorsingSkills = endorsingSkills;
 	};
 
-	// Add analytics tracking for user views
-	onMount(async () => {
-		if (!data.track) return;
-
-		import("$lib/analytics")
-			.then(
-				async ({ analytics }) =>
-					await await analytics.track("user_view", {
-						id: data.userPage.id
-					})
-			)
-			.catch(() => {});
-	});
-
 	// Filter kudos data based on date selected
 	const onSearch = () => {
 		switch (selected) {
@@ -211,6 +191,20 @@
 				break;
 		}
 	};
+
+	// Add analytics tracking for user views
+	onMount(async () => {
+		if (!data.track) return;
+
+		import("$lib/analytics")
+			.then(
+				async ({ analytics }) =>
+					await await analytics.track("user_view", {
+						id: data.userPage.id
+					})
+			)
+			.catch(() => {});
+	});
 </script>
 
 <svelte:head>

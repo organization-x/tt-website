@@ -4,20 +4,21 @@
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
 
-	import type { TechSkill } from "@prisma/client";
-
 	export let userId: string;
 	export let projects: App.ProjectWithMetadata[];
 	export let pinnedProject: App.ProjectWithMetadata | undefined;
 
 	let search = "";
-	let filters: TechSkill[] = [];
+
+	// Transform all project titles to lowercase so that the search query is case-insensitive
+	projects = projects.map((project) => ({
+		...project,
+		title: project.title.toLowerCase()
+	}));
 
 	// Create an array of filtered projects based on the search query
-	$: filteredProjects = projects.filter(({ title, skills, id }) =>
-		title.toLowerCase().includes(search.trim().toLowerCase()) &&
-		filters.every((skill) => skills.includes(skill)) &&
-		pinnedProject
+	$: filteredProjects = projects.filter(({ title, id }) =>
+		title.includes(search.trim().toLowerCase()) && pinnedProject
 			? pinnedProject.id !== id
 			: true
 	);

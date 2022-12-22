@@ -36,9 +36,16 @@ const sharedDocs = new Map<string, SharedDoc>();
 const close = (sharedDoc: SharedDoc, socket: WebSocket) => {
 	const controlledIds = sharedDoc.sockets.get(socket)!;
 
-	sharedDoc.sockets.delete(socket);
+	// Check if the socket exists still, since sometimes this causes issues
+	if (controlledIds) {
+		sharedDoc.sockets.delete(socket);
 
-	removeAwarenessStates(sharedDoc.awareness, Array.from(controlledIds), null);
+		removeAwarenessStates(
+			sharedDoc.awareness,
+			Array.from(controlledIds),
+			null
+		);
+	}
 
 	socket.close();
 

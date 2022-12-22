@@ -13,8 +13,8 @@ export const load: LayoutServerLoad<{
 	const user = (await userAuth(locals)) || null;
 
 	// If a user is logged in or if they're identified as a bot, don't track them
-	if (locals.session || isbot(request.headers.get("user-agent")))
-		return { track: false, user };
+	// if (locals.session || isbot(request.headers.get("user-agent")))
+	// 	return { track: false, user };
 
 	return { track: true, user };
 };

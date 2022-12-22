@@ -18,7 +18,7 @@
 	class:bg-gray-800={!current}
 	class="h-14 flex items-center gap-4 justify-center rounded-lg py-4 px-6 snap-center shrink-0"
 >
-	<!-- The avatar variant of the images is used here since it's only a very small preview of the banenr -->
+	<!-- The avatar variant of the images is used here since it's only a very small preview of the banner -->
 	<div class="rounded-full w-10 h-10 overflow-hidden">
 		<img
 			width="512"

@@ -21,6 +21,7 @@
 
 	<div class:text-right={side !== "left"}>
 		<h1 class="font-semibold text-lg">{title}</h1>
+
 		<p class="mt-1">
 			<slot />
 		</p>

@@ -35,9 +35,9 @@
 			{ root: scrollable, threshold: 0.5 }
 		);
 
-		Array.from(scrollable.children).forEach((child) =>
-			observer.observe(child)
-		);
+		for (const child of scrollable.children) {
+			observer.observe(child);
+		}
 
 		return () => observer.disconnect();
 	});
@@ -61,6 +61,7 @@
 	>
 		<slot />
 	</div>
+
 	<div class="flex gap-3 mt-6 justify-center lg:hidden">
 		{#each { length: 3 } as _, i}
 			<CarouselDot active={page === i} on:click={() => onClick(i)} />

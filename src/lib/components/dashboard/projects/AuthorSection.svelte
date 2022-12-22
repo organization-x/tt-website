@@ -37,11 +37,11 @@
 	// Update search value on input
 	const onSearch = () =>
 		(request = new Promise((res, rej) => {
-			const req = search.trim();
+			const request = search.trim();
 
 			// Avoid uncaught rejects
-			if (!req.length && search.length) return rej();
-			else if (!req.length) return;
+			if (!request.length && search.length) return rej();
+			else if (!request.length) return;
 
 			fetch(
 				`/api/user?where=${JSON.stringify({

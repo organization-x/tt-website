@@ -2,8 +2,11 @@
 	import { onMount } from "svelte";
 	import { fly } from "svelte/transition";
 
+	import HireStep from "./HireStep.svelte";
+	import Developer from "./Developer.svelte";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
+	import DeveloperFilter from "./DevFilter.svelte";
 	import Header from "$lib/components/Header.svelte";
 	import { softSkills, techSkills } from "$lib/enums";
 	import Dropdown from "$lib/components/Dropdown.svelte";
@@ -15,9 +18,6 @@
 	import Star from "$lib/components/icons/general/Star.svelte";
 	import DevTagLoading from "$lib/components/DevTagLoading.svelte";
 	import Wrench from "$lib/components/icons/general/Wrench.svelte";
-	import HireStep from "$lib/components/developers/index/HireStep.svelte";
-	import Developer from "$lib/components/developers/index/Developer.svelte";
-	import DeveloperFilter from "$lib/components/developers/index/DevFilter.svelte";
 
 	import type { PageData } from "./$types";
 	import type { AnalyticsInstance } from "analytics";

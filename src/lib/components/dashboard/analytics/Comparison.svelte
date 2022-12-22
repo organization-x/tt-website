@@ -8,7 +8,8 @@
 
 	export { className as class };
 
-	// If the previous views are 0 then set it to 100% higher or if the are the same as the current set it to even
+	// If the previous views are 0 then set it to 100% higher or if the are the same as the current set it to even.
+	// Percentage is in 0-1 decimal form until formatted later
 	const percent =
 		previous === current
 			? 1
@@ -24,7 +25,7 @@
 		{#if percent === 1}
 			No Change
 		{:else}
-			<!-- Thes ternary operations are for formatting if the number is 100% down from previous, in which case prevPercent is -->
+			<!-- These ternary operations are for formatting if the number is 100% down from previous, in which case prevPercent is -->
 			<!-- 0, or if prevPercent comes out to be above 1000% where then it is capped at 999% -->
 			Now
 			<span class={color}>
@@ -45,11 +46,13 @@
 			{previous}
 			{label}
 		</h1>
+
 		{#if percent === 1}
 			<div class="bg-gray-700 h-1 w-5 rounded-full" />
 		{:else}
-			<Arrow class="w-4 h-4 {color}" />
+			<Arrow class="w-4 h-4 {color}{percent < 1 ? ' rotate-180' : ''}" />
 		{/if}
+
 		<h1 class="font-normal">
 			{current}
 			{label}

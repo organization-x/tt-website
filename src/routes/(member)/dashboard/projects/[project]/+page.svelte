@@ -1,18 +1,19 @@
 <script lang="ts">
 	import "highlight.js/styles/atom-one-dark.css";
 
-	import { Doc, YMapEvent } from "yjs";
+	import { Doc } from "yjs";
 	import { onMount } from "svelte";
 	import { Editor } from "@tiptap/core";
 	import { techSkills } from "$lib/enums";
 	import { fly } from "svelte/transition";
+	import { writable } from "svelte/store";
 	import { WebsocketProvider } from "y-websocket";
 	import { Collaboration } from "@tiptap/extension-collaboration";
-	import { CollaborationCursor } from "@tiptap/extension-collaboration-cursor";
 
 	import { user } from "$lib/stores";
 	import { dev } from "$app/environment";
 	import { Node } from "prosemirror-model";
+	import { CollaborationCursor } from "$lib/cursor";
 	import { extensions } from "$lib/tiptapExtensions";
 	import Dropdown from "$lib/components/Dropdown.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
@@ -24,17 +25,16 @@
 	import OrList from "$lib/components/icons/general/OrList.svelte";
 	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
 	import DashButton from "$lib/components/dashboard/DashButton.svelte";
-	import Cursor from "$lib/components/dashboard/projects/Cursor.svelte";
 	import LinkButton from "$lib/components/dashboard/projects/LinkButton.svelte";
 	import HeadButton from "$lib/components/dashboard/projects/HeadButton.svelte";
+	import ImageButton from "$lib/components/dashboard/projects/ImageButton.svelte";
+	import EditorButton from "$lib/components/dashboard/projects/EditorButton.svelte";
+	import AuthorSection from "$lib/components/dashboard/projects/AuthorSection.svelte";
 	import {
 		hashBlob,
 		checkObjectURL,
 		createObjectURL
 	} from "$lib/imageHandlers";
-	import ImageButton from "$lib/components/dashboard/projects/ImageButton.svelte";
-	import EditorButton from "$lib/components/dashboard/projects/EditorButton.svelte";
-	import AuthorSection from "$lib/components/dashboard/projects/AuthorSection.svelte";
 
 	import type { Map as YMap } from "yjs";
 	import type { PageData } from "./$types";
@@ -68,7 +68,7 @@
 	let images: YMap<App.Image | string> = doc.getMap("images");
 
 	// Keep track of all currently connected collaboration users for a live view of who is editing
-	let users: { id: string; name: string }[] = [];
+	let users = writable<{ id: string; name: string; color: string }[]>([]);
 
 	let project = data.project;
 
@@ -104,6 +104,7 @@
 	let wasFocused = false;
 	let disableForm = false;
 	let ignoreChange = false;
+	let disableEditor = true;
 	let ws: WebsocketProvider;
 	let disableButtons = true;
 	let banner: HTMLInputElement;
@@ -111,8 +112,12 @@
 	let editorElement: HTMLDivElement;
 	let pinned = $user.pinnedProjectId === original.id;
 
+	// Use a variable to keep track of the editor's edit status, this way things can be reactive without
+	// having to force re-render by reassigning the editor variable
+	$: if (editor) editor.setEditable(!disableEditor);
+
 	const checkConstraints = () => {
-		if (disableForm || !editor || !editor.isEditable) return;
+		if (disableForm || !editor || disableEditor) return;
 
 		disableButtons = true;
 
@@ -209,7 +214,7 @@
 	const save = () => {
 		checkConstraints();
 
-		if (disableButtons || disableForm) return;
+		if (disableButtons || disableForm || disableEditor) return;
 
 		// Trim title and description whitespace
 		project.title = project.title.trim();
@@ -222,7 +227,7 @@
 		// after the save is complete and the editor re-enabled
 		wasFocused = editor.isFocused;
 
-		editor.setEditable(false);
+		disableEditor = true;
 
 		const content = editor.view.state.doc.toJSON();
 
@@ -309,8 +314,8 @@
 			yMap.set("state", State.Editing);
 
 			disableForm = false;
+			disableEditor = false;
 
-			editor.setEditable(true);
 			if (wasFocused) editor.commands.focus();
 
 			wasFocused = false;
@@ -410,75 +415,16 @@
 			).toString(16)}`.slice(-2);
 		}
 
-		// Update the currently connected users
-		const updateConnected = () => {
-			const currentUsers: typeof users = [];
-
-			ws.awareness
-				.getStates()
-				.forEach(
-					(state) =>
-						state.user.id !== $user.id &&
-						currentUsers.push(state.user)
-				);
-
-			users = currentUsers;
-		};
-
 		// When the websocket connects, check if there's any project data in the shared
 		// array, if not, push the project
 		ws.once("synced", async () => {
 			const peer = Boolean(yMap.size);
 
-			let yProject: App.SharedProject | undefined;
+			// If this is the first client, let other clients know to wait until the yMap has been
+			// updated
+			if (!peer) yMap.set("state", State.Loading);
 
-			// If this is the first client, convert all the Cloudflare image URLs to blobs
-			// and set the shared project and state. The first state is loading so that if
-			// a peer connects while this is happening, they won't assume being first and instead
-			// wait until this process has finished
-			if (!peer) {
-				yMap.set("state", State.Loading);
-
-				await Promise.all(
-					(project.content as JSONContent).content!.map(
-						async (node) => {
-							if (
-								node.type !== "image" ||
-								!(node.attrs!.src as string).startsWith(
-									PUBLIC_CLOUDFLARE_URL
-								)
-							)
-								return;
-
-							const blob = await fetch(node.attrs!.src).then(
-								(res) => res.blob()
-							);
-							const url = createObjectURL(blob);
-
-							const hash = await hashBlob(blob);
-
-							images.set(hash, {
-								id: node.attrs!.src.split("/")[4],
-								data: [
-									...new Uint8Array(await blob.arrayBuffer())
-								],
-								urls: [url]
-							});
-
-							// Create a pointer for efficiency
-							images.set(url, hash);
-
-							node.attrs!.src = url;
-						}
-					)
-				);
-
-				yProject = yMap.set("project", {
-					...project,
-					date: project.date.toISOString()
-				}) as App.SharedProject;
-			}
-
+			// Observe changes to sync data across clients
 			yMap.observe(({ transaction }) => {
 				// Ignore local changes
 				if (transaction.local) return;
@@ -547,35 +493,9 @@
 				};
 			});
 
-			// If a non-peer client is still loading and still connected, wait until it has finished so that all data is loaded
-			// in the correct fashion
-			if (
-				yMap.get("state") !== State.Editing &&
-				ws.awareness.getStates().size > 1
-			)
-				await new Promise((res) => {
-					if (yMap.get("state") === State.Editing)
-						return res(undefined);
-
-					const handler: Parameters<typeof yMap.observe>[0] = ({
-						transaction
-					}) => {
-						if (transaction.local) return;
-
-						if (yMap.get("state") === State.Editing) {
-							yMap.unobserve(handler);
-							res(undefined);
-						}
-					};
-
-					yMap.observe(handler);
-				});
-
-			if (!yProject) yProject = yMap.get("project") as App.SharedProject;
-
 			editor = new Editor({
 				element: editorElement,
-				content: yProject.content as JSONContent,
+				content: project.content as JSONContent,
 				editable: false,
 				editorProps: {
 					attributes: {
@@ -661,7 +581,81 @@
 						})
 					);
 				},
-				onCreate: () => {
+				onCreate: async () => {
+					// If this is the first client, convert all the Cloudflare image URLs to blobs
+					// and set the shared project
+					if (!peer) {
+						await Promise.all(
+							(project.content as JSONContent).content!.map(
+								async (node) => {
+									if (
+										node.type !== "image" ||
+										!(node.attrs!.src as string).startsWith(
+											PUBLIC_CLOUDFLARE_URL
+										)
+									)
+										return;
+
+									const blob = await fetch(
+										node.attrs!.src
+									).then((res) => res.blob());
+									const url = createObjectURL(blob);
+
+									const hash = await hashBlob(blob);
+
+									images.set(hash, {
+										id: node.attrs!.src.split("/")[4],
+										data: [
+											...new Uint8Array(
+												await blob.arrayBuffer()
+											)
+										],
+										urls: [url]
+									});
+
+									// Create a pointer for efficiency
+									images.set(url, hash);
+
+									node.attrs!.src = url;
+								}
+							)
+						);
+
+						// Set the new content locally
+						editor.commands.setContent(
+							project.content as JSONContent
+						);
+					}
+					// If the first client is still loading and still connected, wait until it has finished so that all data is loaded
+					// in the correct fashion
+					else if (
+						yMap.get("state") !== State.Editing &&
+						ws.awareness.getStates().size > 1
+					) {
+						await new Promise((res) => {
+							if (yMap.get("state") === State.Editing)
+								return res(undefined);
+
+							const handler: Parameters<
+								typeof yMap.observe
+							>[0] = ({ transaction }) => {
+								if (transaction.local) return;
+
+								if (yMap.get("state") === State.Editing) {
+									yMap.unobserve(handler);
+									res(undefined);
+								}
+							};
+
+							yMap.observe(handler);
+						});
+
+						editor.commands.setContent(
+							(yMap.get("project") as App.SharedProject)
+								.content as JSONContent
+						);
+					}
+
 					// TipTap re-arranges and modifies content after it has been put in the editor, so we need to make sure
 					// all peer clients and this client have that updated information for comparison
 					const content =
@@ -704,11 +698,11 @@
 							...original,
 							content: yProject.content
 						};
-
-						updateConnected();
 					}
-					// Otherwise if this is the initial client, update the project with the rearranged content
+					// Otherwise if this is the initial client, set the initial project with the rearranged content
 					else {
+						await new Promise((res) => setTimeout(res, 5000));
+
 						yProject = yMap.set("project", {
 							...project,
 							content,
@@ -731,43 +725,31 @@
 						date: project.date
 					};
 
-					editor.setEditable(true);
+					disableEditor = false;
 				},
 				extensions: [
 					Collaboration.configure({
 						document: doc
 					}),
-					CollaborationCursor.configure({
+					CollaborationCursor.extend({
+						addStorage() {
+							return {
+								update: writable(0),
+								users,
+								cursors: {}
+							};
+						}
+					}).configure({
 						provider: ws,
-
 						user: {
 							name: $user.name,
 							id: $user.id,
 							color
-						},
-
-						render({
-							name,
-							color
-						}: {
-							name: string;
-							color: string;
-							id: string;
-						}) {
-							const parent = document.createElement("span");
-							new Cursor({
-								target: parent,
-								props: { name, color }
-							});
-
-							return parent.firstElementChild as HTMLElement;
 						}
 					}),
 					...extensions
 				]
 			});
-
-			ws.awareness.on("change", updateConnected);
 		});
 
 		// Destroy the editor and websocket on unmount
@@ -939,25 +921,23 @@
 		{/if}
 	</div>
 
-	<!-- TODO: Refactor and improve everything -->
-	<!-- TODO: Google search console and business setup -->
-
 	<div
-		disabled={disableForm}
-		class:opacity-60={disableForm}
-		class:pointer-events-none={disableForm}
+		disabled={disableEditor}
+		class:opacity-60={disableEditor}
+		class:pointer-events-none={disableEditor}
 		class="w-full transition-opacity duration-200"
 	>
 		{#if editor}
 			<div class="sticky top-0 z-20 border-b-2 border-gray-700 bg-black">
 				<Scrollable
-					class="before:from-black after:to-black transition-transform duration-200 {users.length
-						? 'h-18 py-1'
+					class="before:from-black after:to-black transition-transform duration-200 {$users.length
+						? 'h-18 py-1 mb-2'
 						: 'h-0'}"
 				>
-					{#each users as { id, name } (id)}
+					{#each $users as { id, name, color } (id)}
 						<div
-							class="flex gap-3 items-center shrink-0 bg-gray-900 rounded-lg px-4 py-2"
+							class="flex gap-3 items-center shrink-0 bg-gray-900 rounded-lg px-4 py-2 border-2"
+							style="border-color: {color};"
 						>
 							<img
 								class="rounded-full bg-gray-400 w-10 h-10 object-cover object-center"
@@ -1039,6 +1019,6 @@
 			</div>
 		{/if}
 
-		<div class="mt-4" bind:this={editorElement} />
+		<div class="mt-6" bind:this={editorElement} />
 	</div>
 </div>

@@ -22,11 +22,11 @@
 			(entries) => {
 				if (!entries[0].isIntersecting) return;
 
-				Array.from({ length: amount }).forEach((_, i) =>
+				for (let i = 0; i < amount; i++) {
 					setTimeout(() => {
-						count = i + 1;
-					}, quintIn(i / amount) * 2000)
-				);
+						count += 1;
+					}, quintIn(i / amount) * 2000);
+				}
 
 				observer.disconnect();
 			},

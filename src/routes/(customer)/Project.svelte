@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { getIcon } from "$lib/getIcon";
-	import Scrollable from "../Scrollable.svelte";
 	import Button from "$lib/components/Button.svelte";
 	import Author from "$lib/components/Author.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	export let project: App.ProjectWithMetadata;
 	export let trackClick: (name: string) => void;

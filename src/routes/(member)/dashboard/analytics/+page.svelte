@@ -114,10 +114,7 @@
 			<DashButton
 				on:click={() => (mode = "global") && changeMode()}
 				disabled={mode === "global"}
-				class="flex-1 bg-gray-900 hover:bg-gray-900/60 disabled:hover:bg-gray-900 disabled:opacity-100{mode ===
-				'global'
-					? ''
-					: ' opacity-60'}"
+				class="flex-1 opacity-60 bg-gray-900 hover:bg-gray-900/60 disabled:hover:bg-gray-900 disabled:opacity-100"
 			>
 				Global
 			</DashButton>
@@ -125,10 +122,7 @@
 			<DashButton
 				on:click={() => (mode = "personal") && changeMode()}
 				disabled={mode === "personal"}
-				class="flex-1 bg-gray-900 hover:bg-gray-900/60 disabled:hover:bg-gray-900 disabled:opacity-100{mode ===
-				'personal'
-					? ''
-					: ' opacity-60'}"
+				class="flex-1 opacity-60 bg-gray-900 hover:bg-gray-900/60 disabled:hover:bg-gray-900 disabled:opacity-100"
 			>
 				Personal
 			</DashButton>

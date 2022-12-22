@@ -5,7 +5,7 @@ import { getKudos, prisma } from "$lib/prisma";
 import type { PageServerLoad } from "./$types";
 import type { User, Endorsement } from "@prisma/client";
 
-// Grab project data using slug, if the project doesn't exist, redirect to the projects page.
+// Grab user data using slug, if the user doesn't exist, redirect to the developers page.
 // The reason the typing on this is so weird is because we are selecting only specific properties of each
 // object and there isn't an easy way to type it
 export const load: PageServerLoad<{

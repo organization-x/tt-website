@@ -6,11 +6,11 @@
 	import { onMount, setContext } from "svelte";
 
 	import { page } from "$app/stores";
+	import AICamp from "./AICamp.svelte";
 	import { developers } from "$lib/stores";
 	import { afterNavigate } from "$app/navigation";
 	import NavLink from "$lib/components/NavLink.svelte";
 	import FootLink from "$lib/components/FootLink.svelte";
-	import AICamp from "$lib/components/index/AICamp.svelte";
 	import Logo from "$lib/components/icons/logos/Logo.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Burger from "$lib/components/icons/general/Burger.svelte";
@@ -26,7 +26,7 @@
 	export let data: LayoutServerData;
 
 	// Get first name of user for overflow prevention
-	const firstName = data.user && data.user.name.split(" ")[0];
+	const firstName = data.user && data.user.name.split(/\s+/g)[0];
 
 	let userOpen = false;
 	let burgerOpen = false;
@@ -260,7 +260,7 @@
 							class:rounded-t-lg={userOpen}
 							class:duration-200={!disableTransition}
 							class:transition-colors={!disableTransition}
-							class="flex gap-3 items-center justify-center p-3 w-full hover:bg-gray-900"
+							class="flex gap-3 items-center justify-center min-w-40 p-3 w-full hover:bg-gray-900"
 							on:transitionend={() => (disableTransition = false)}
 							on:click={() => (userOpen = !userOpen)}
 						>
@@ -331,7 +331,9 @@
 <footer
 	class="flex flex-col justify-center gap-7 p-6 text-2xl mt-10 md:items-center lg:justify-between lg:flex-row xl:gap-12 xl:justify-center"
 >
-	<ul class="flex flex-wrap justify-center gap-6 text-base md:justify-center">
+	<ul
+		class="flex flex-wrap justify-center gap-6 text-base sm:max-w-sm sm:max-md:mx-auto md:max-w-none md:justify-center"
+	>
 		<FootLink href="/">Home</FootLink>
 		<FootLink href="/about">About</FootLink>
 		<FootLink href="/contact">Contact Us</FootLink>
@@ -339,6 +341,7 @@
 		<FootLink href="/projects">Projects</FootLink>
 		<FootLink href="https://ai-camp.org">AI Camp</FootLink>
 	</ul>
+
 	<div class="flex justify-center gap-8 lg:flex-row-reverse">
 		<div class="flex gap-4 items-center">
 			<Logo class="w-8 h-8" />
@@ -375,13 +378,13 @@
 
 {#if burgerOpen}
 	<style>
-		body {
-			overflow: hidden;
+		:global(body) {
+			@apply overflow-hidden;
 		}
 
 		@screen lg {
 			body {
-				overflow: auto;
+				@apply overflow-auto;
 			}
 		}
 	</style>

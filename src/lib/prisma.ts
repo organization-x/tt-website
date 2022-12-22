@@ -74,16 +74,13 @@ export const getProjects = (where: Prisma.ProjectWhereInput) =>
 // Grab kudos data, the reason this is in here is since it falls under the same
 // category of backend getters
 export const getKudos = async (id: string) => {
-	// TODO: Temporary until kudos API is fixed
-	return [];
-
 	// Grab the kudos data from the Discord bot API
 	const data: App.KudosResponse = await fetch(
-		`https://ai-camp-data-layer.fly.dev/ck/${id}?pageSize=9999`
+		`https://ai-camp-data-layer.fly.dev/kudos/${id}?pageSize=9999`
 	).then((res) => res.json());
 
 	// If there's not kudos for this user return an empty array
-	if (!data.ck.length) return [];
+	if (!data.kudos.length) return [];
 
 	// Get the name and id data for the kudos unless the sender is the
 	// current user
@@ -92,7 +89,7 @@ export const getKudos = async (id: string) => {
 			id: {
 				in: [
 					...new Set(
-						data.ck.reduce((result: string[], kudo) => {
+						data.kudos.reduce((result: string[], kudo) => {
 							if (kudo.senderId !== id)
 								result.push(kudo.senderId);
 
@@ -115,7 +112,7 @@ export const getKudos = async (id: string) => {
 	if (!users.length) return [];
 
 	// Refine the kudos data to be more usable
-	return data.ck.reduce((result: App.Kudo[], kudo) => {
+	return data.kudos.reduce((result: App.Kudo[], kudo) => {
 		const isSender = kudo.senderId === id;
 
 		// Grab the user from the collected data

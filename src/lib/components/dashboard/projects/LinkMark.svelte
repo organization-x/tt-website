@@ -5,6 +5,7 @@
 	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
 
 	import type { Writable } from "svelte/store";
+	import { createObjectURL } from "$lib/imageHandlers";
 
 	export let href: string;
 	export let active: Writable<boolean>;
@@ -19,15 +20,16 @@
 	const request = fetch(`/api/project?url=${href}`, {
 		method: "PUT"
 	})
-		.then((res) => res.json())
-		.then(
-			async ({ icon, title }: App.UrlMetadataResponse) =>
-				(url.title = title) &&
-				icon &&
-				(url.icon = URL.createObjectURL(
-					await fetch(icon).then((res) => res.blob())
-				))
-		);
+		.then((res) => res.formData())
+		.then(async (data) => {
+			url.title = data.get("title") as string;
+
+			const icon = data.get("icon") as Blob | undefined;
+
+			if (!icon) return;
+
+			url.icon = URL.createObjectURL(icon);
+		});
 
 	onDestroy(() => URL.revokeObjectURL(url.icon));
 </script>

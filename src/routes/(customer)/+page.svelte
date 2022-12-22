@@ -1,26 +1,26 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 
+	import Aiot from "./Aiot.svelte";
+	import Step from "./Step.svelte";
+	import Hippo from "./Hippo.svelte";
 	import { carousel } from "$lib/seo";
+	import AicBot from "./AICBot.svelte";
+	import Caption from "./Caption.svelte";
+	import Company from "./Company.svelte";
+	import DevCard from "./DevCard.svelte";
+	import Project from "./Project.svelte";
+	import Section from "./Section.svelte";
+	import GitMerge from "./GitMerge.svelte";
+	import Carousel from "./Carousel.svelte";
+	import GitCommit from "./GitCommit.svelte";
+	import GitDeploy from "./GitDeploy.svelte";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Button from "$lib/components/Button.svelte";
 	import Header from "$lib/components/Header.svelte";
-	import Step from "$lib/components/index/Step.svelte";
-	import Aiot from "$lib/components/index/Aiot.svelte";
-	import Hippo from "$lib/components/index/Hippo.svelte";
-	import AicBot from "$lib/components/index/AICBot.svelte";
-	import Caption from "$lib/components/index/Caption.svelte";
 	import Logo from "$lib/components/icons/logos/Logo.svelte";
-	import Company from "$lib/components/index/Company.svelte";
-	import DevCard from "$lib/components/index/DevCard.svelte";
-	import Project from "$lib/components/index/Project.svelte";
-	import Section from "$lib/components/index/Section.svelte";
-	import Carousel from "$lib/components/index/Carousel.svelte";
-	import GitMerge from "$lib/components/index/GitMerge.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
-	import GitDeploy from "$lib/components/index/GitDeploy.svelte";
-	import GitCommit from "$lib/components/index/GitCommit.svelte";
 
 	import type { PageData } from "./$types";
 	import type { AnalyticsInstance } from "analytics";
@@ -51,7 +51,7 @@
 	{@html carousel(data.items)}
 </svelte:head>
 
-<!-- TODO: Put Adarsh's proper rendered video here-->
+<!-- TODO: Create graphic for landing -->
 
 <Hero
 	class="from-teal-light to-teal-dark"
@@ -358,5 +358,7 @@
 <Button
 	on:click={() => trackClick("explore_developers")}
 	href="/developers"
-	class="mt-8">Discover Developers</Button
+	class="mt-8"
 >
+	Discover Developers
+</Button>

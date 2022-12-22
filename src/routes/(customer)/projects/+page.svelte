@@ -5,6 +5,7 @@
 	import { techSkills } from "$lib/enums";
 	import Text from "$lib/components/Text.svelte";
 	import Hero from "$lib/components/Hero.svelte";
+	import ProjectFilter from "./ProjectFilter.svelte";
 	import Header from "$lib/components/Header.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
 	import Separator from "$lib/components/Separator.svelte";
@@ -15,7 +16,6 @@
 	import Wrench from "$lib/components/icons/general/Wrench.svelte";
 	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
-	import ProjectFilter from "$lib/components/projects/ProjectFilter.svelte";
 
 	import type { PageData } from "./$types";
 	import type { AnalyticsInstance } from "analytics";
@@ -72,6 +72,15 @@
 		);
 	};
 
+	// Track if a project was clicked on and what filters were used
+	const trackProject = async (id: string) =>
+		filters.length &&
+		analytics &&
+		(await analytics.track("project_click", {
+			id,
+			tech_skills: filters
+		}));
+
 	// Once mounted check if there's any URL search params, if so, input them
 	onMount(async () => {
 		const param = new URLSearchParams(window.location.search).get("search");
@@ -83,15 +92,6 @@
 			.then(({ analytics }) => analytics)
 			.catch(() => undefined);
 	});
-
-	// Track if a project was clicked on and what filters were used
-	const trackProject = async (id: string) =>
-		filters.length &&
-		analytics &&
-		(await analytics.track("project_click", {
-			id,
-			tech_skills: filters
-		}));
 </script>
 
 <svelte:head>

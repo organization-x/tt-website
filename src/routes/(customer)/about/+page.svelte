@@ -1,9 +1,9 @@
 <script lang="ts">
+	import Stat from "./Stat.svelte";
+	import Member from "./Member.svelte";
 	import Hero from "$lib/components/Hero.svelte";
 	import Text from "$lib/components/Text.svelte";
 	import Header from "$lib/components/Header.svelte";
-	import Stat from "$lib/components/about/Stat.svelte";
-	import Member from "$lib/components/about/Member.svelte";
 	import Section from "$lib/components/index/Section.svelte";
 </script>
 

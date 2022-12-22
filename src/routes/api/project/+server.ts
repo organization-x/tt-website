@@ -12,13 +12,13 @@ import type { JSONContent } from "@tiptap/core";
 // Request handlers for managing project data in prisma, it uses the users session token to verify the API call
 
 // Update project information
-// * INPUT: ProjectUpdateRequest
+// * INPUT: FormData: project, images
 // * OUTPUT: ProjectUpdateResponse
 export const PATCH: RequestHandler = async ({ locals, request }) => {
 	const user = (await userAuth(locals, true))!;
 
 	try {
-		const data: App.ProjectUpdateRequest = await request.json();
+		const data = (await request.json()) as App.ProjectUpdateRequest;
 
 		// Grab the project from the database for validation
 		const project = await prisma.project.findUnique({
@@ -81,102 +81,108 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 				});
 		} else url = project.url;
 
-		// Create a hash to Cloudflare images ID map to return to the client, this way the client-side
-		// images map can be properly updated
+		// Keep track of the image ids so when this project is deleted or the images are deleted they
+		// do not stay on Cloudflare images
+		let ids: string[] | undefined;
 
+		// Keep track of images with their hash and correspoding Cloudflare images ID so the connectd clients
+		// stay updated
 		const images: Record<string, string> = {};
 
-		// Find all images in the content and use the image data provided to upload them, if there is an image in the content that
-		// isn't in the image data, throw a bad request. Also, all provided ids will be checked to make sure they still exist on
-		// Cloudflare images, if they don't they will be re-uploaded
-		await Promise.all(
-			(data.content as JSONContent).content!.map(async (node) => {
-				if (
-					node.type !== "image" ||
-					!node.attrs!.src.startsWith("blob:")
-				)
-					return;
+		// If there's content, sync the images with cloudflare images and also send back to ID's of the images to the
+		// clients editing so they can have updated data
+		if (data.content) {
+			// Find all images in the content and use the image data provided to upload them, if there is an image in the content that
+			// isn't in the image data, throw a bad request. Also, all provided ids will be checked to make sure they still exist on
+			// Cloudflare images, if they don't they will be re-uploaded
+			await Promise.all(
+				(data.content as JSONContent).content!.map(async (node) => {
+					if (
+						node.type !== "image" ||
+						!node.attrs!.src.startsWith("blob:")
+					)
+						return;
 
-				const hash = data.images[node.attrs!.src] as string;
+					const hash = data.images[node.attrs!.src] as string;
 
-				if (!hash) throw error(400, "Bad Request");
+					if (!hash) throw error(400, "Bad Request");
 
-				const image = data.images[hash] as App.Image;
+					const image = data.images[hash] as App.Image;
 
-				if (!image) throw error(400, "Bad Request");
+					if (!image) throw error(400, "Bad Request");
 
-				// If the file size of the image is over 2MB, throw a bad request
-				if (image.data.length > 2000000)
-					throw error(400, "Bad Request");
+					// If the file size of the image is over 2MB, throw a bad request
+					if (image.data.length > 2000000)
+						throw error(400, "Bad Request");
 
-				// If provided, check if the image ID exists, if so, use that already existing cloudflare URL
-				if (
-					image.id &&
-					(await fetch(
-						`${PUBLIC_CLOUDFLARE_URL}/${image.id}/banner`,
+					// If provided, check if the image ID exists, if so, use that already existing cloudflare URL
+					if (
+						image.id &&
+						(await fetch(
+							`${PUBLIC_CLOUDFLARE_URL}/${image.id}/banner`,
+							{
+								method: "HEAD"
+							}
+						).then((res) => res.ok))
+					)
+						return (
+							(node.attrs!.src = `${PUBLIC_CLOUDFLARE_URL}/${image.id}/banner`) &&
+							(images[hash] = image.id)
+						);
+
+					// Otherwise, if it doesn't exist or doesn't have an ID, upload it to cloudflare
+					// Then upload the new image to Cloudflare
+
+					const body = new FormData();
+
+					body.set("file", new Blob([new Uint8Array(image.data)]));
+
+					const id = `${project.id}-${Date.now()}`;
+
+					// Set the ID to include the project ID
+					body.set("id", id);
+
+					await fetch(
+						`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1`,
 						{
-							method: "HEAD"
+							method: "POST",
+							headers: {
+								Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+							},
+							body
 						}
-					).then((res) => res.ok))
-				)
-					return (
-						(node.attrs!.src = `${PUBLIC_CLOUDFLARE_URL}/${image.id}/banner`) &&
-						(images[hash] = image.id)
 					);
 
-				// Otherwise, if it doesn't exist or doesn't have an ID, upload it to cloudflare
-				// Then upload the new image to Cloudflare
+					node.attrs!.src = `${PUBLIC_CLOUDFLARE_URL}/${id}/banner`;
+					images[hash] = id;
+				})
+			);
 
-				const body = new FormData();
-
-				body.set("file", new Blob([new Uint8Array(image.data)]));
-
-				const id = `${project.id}-${Date.now()}`;
-
-				// Set the ID to include the project ID
-				body.set("id", id);
-
-				await fetch(
-					`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1`,
-					{
-						method: "POST",
-						headers: {
-							Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
-						},
-						body
-					}
-				);
-
-				node.attrs!.src = `${PUBLIC_CLOUDFLARE_URL}/${id}/banner`;
-				images[hash] = id;
-			})
-		);
-
-		// Delete images that no longer exist in the content. This
-		// doesn't need to be awaited since nothing depends on it
-		const ids = Object.values(images);
-		project.images.map(
-			(image) =>
-				!ids.includes(image) &&
-				fetch(
-					`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1/${image}`,
-					{
-						method: "DELETE",
-						headers: {
-							Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+			// Delete images that no longer exist in the content. This
+			// doesn't need to be awaited since nothing depends on it
+			ids = Object.values(images);
+			project.images.map(
+				(image) =>
+					!ids!.includes(image) &&
+					fetch(
+						`https://api.cloudflare.com/client/v4/accounts/${env.CLOUDFLARE_ID}/images/v1/${image}`,
+						{
+							method: "DELETE",
+							headers: {
+								Authorization: `Bearer ${env.CLOUDFLARE_TOKEN}`
+							}
 						}
-					}
-				)
-		);
+					)
+			);
+		}
 
 		// Update the project
 		await prisma.project.update({
 			where: { id: project.id },
 			data: {
 				url,
-				title: data.title,
+				title: data.title?.trim(),
 				description: data.description,
-				theme: data.theme,
 				date: new Date(),
 				skills: data.skills,
 				content: data.content,
@@ -205,8 +211,8 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 	} catch (err) {
 		// Catch errors and propogate the proper error codes
 		if (
-			(err as HttpError).status === 401 ||
-			(err as HttpError).status === 400
+			(err as HttpError)?.status === 401 ||
+			(err as HttpError)?.status === 400
 		)
 			throw err;
 
@@ -386,7 +392,7 @@ export const DELETE: RequestHandler = async ({ locals, request }) => {
 // Google it would grab the title and description of google.com and display it when active, this is
 // done via an API to bypass CORS errors
 // * INPUT: url=string
-// * OUTPUT: UrlMetadataResponse
+// * OUTPUT: FormData: title, icon
 export const PUT: RequestHandler = async ({ request, locals }) => {
 	if (!locals.session) throw error(401, "Unauthorized");
 
@@ -397,26 +403,27 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 	if (!session) throw error(401, "Unauthorized");
 
 	try {
+		// Use formdata since it's more efficient than JSON for file data
+		const data = new FormData();
+
 		// Fetch the URL given
 		const response = await fetch(
 			new URL(request.url).searchParams.get("url")!
 		).catch(() => null);
 
 		// If the URL is invalid, give placeholder info
-		if (!response)
-			return new Response(
-				JSON.stringify({
-					title: "Unknown"
-				} as App.UrlMetadataResponse),
-				{ status: 200 }
-			);
+		if (!response) {
+			data.append("title", "Unknown");
+
+			return new Response(data, { status: 200 });
+		}
 
 		// Parse the HTML for information extraction
 		const page = parse(await response.text());
 
 		// Find all icon meta tags and then sort them by their resolution, the highest resolution
 		// icon is what we want
-		let icon = page
+		let icon: string | Blob | undefined = page
 			.getElementsByTagName("link")
 			.filter((link) => link.getAttribute("rel")?.includes("icon"))
 			.sort((a, b) => {
@@ -435,43 +442,33 @@ export const PUT: RequestHandler = async ({ request, locals }) => {
 
 		const urlSplit = response.url.split("/");
 
-		// If there's no icon, attempt to grab it using the website URL
+		// If there's no icon, attempt to grab it using the website URL. Otherwise if the icon
+		// is using a relative URL we can construct it while using the same http protocol as the website
 		if (!icon) icon = `https://${urlSplit[2]}/favicon.ico`;
+		else
+			icon = icon.startsWith("http")
+				? icon
+				: `${urlSplit[0]}//${urlSplit[2]}${
+						icon.startsWith("/") ? icon : "/" + icon
+				  }`;
 
-		// If the icon is using a relative URL we can construct it while using the same
-		// protcol as the website
-		icon = icon.startsWith("http")
-			? icon
-			: `${urlSplit[0]}//${urlSplit[2]}${
-					icon.startsWith("/") ? icon : "/" + icon
-			  }`;
-
-		// If there's an icon, fetch the icon URL and convert it to a base64 string
-		// to avoid CORS errors. Otherwise set it to undefined
+		// Try to convert the icon to a blob to avoid CORS errors
 		try {
-			icon = await fetch(icon)
-				.then((res) => res.arrayBuffer())
-				.then(
-					(data) =>
-						`data:image/${icon!
-							.split(".")
-							.slice(-1)};base64,${Buffer.from(data).toString(
-							"base64"
-						)}`
-				);
+			icon = await fetch(icon).then((res) => res.blob());
 		} catch {
 			icon = undefined;
 		}
 
-		return new Response(
-			JSON.stringify({
-				title:
-					page.getElementsByTagName("title")[0]?.innerHTML ||
-					"Unknown",
-				icon
-			} as App.UrlMetadataResponse),
-			{ status: 200 }
+		// Append the title
+		data.append(
+			"title",
+			page.getElementsByTagName("title")[0]?.innerHTML || "Unknown"
 		);
+
+		// Append the icon if it exists
+		if (icon) data.append("icon", icon);
+
+		return new Response(data, { status: 200 });
 	} catch {
 		throw error(400, "Bad Request");
 	}

@@ -7,6 +7,7 @@
 	import DateDropdown from "$lib/components/DateDropdown.svelte";
 	import DashHero from "$lib/components/dashboard/DashHero.svelte";
 	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
+	import DashButton from "$lib/components/dashboard/DashButton.svelte";
 
 	import type { PageData } from "./$types";
 
@@ -15,6 +16,10 @@
 	let custom: Date;
 	let kudos: App.Kudo[] = [];
 	let selected = DateOption.Week;
+
+	// Store the mode that the analytics are in, admins can switch between personal and global analytics
+	let mode: "global" | "personal" =
+		$user.role === "Admin" ? "global" : "personal";
 
 	const onSearch = () => {
 		switch (selected) {
@@ -67,6 +72,33 @@
 			(custom = detail.custom) &&
 			onSearch()}
 	/>
+
+	<!-- TODO: All kudos endpoint -->
+
+	{#if $user.role === "Admin"}
+		<div
+			class="flex gap-4 justify-center max-w-sm mx-auto mb-8 lg:mb-12 lg:-mt-4"
+		>
+			<DashButton
+				on:click={() => (mode = "global")}
+				disabled={mode === "global"}
+				class="flex-1 bg-gray-900 opacity-60 hover:bg-gray-900/60 disabled:hover:bg-gray-900 disabled:opacity-100"
+			>
+				Global
+			</DashButton>
+
+			<DashButton
+				on:click={() => (mode = "personal")}
+				disabled={mode === "personal"}
+				class="flex-1 bg-gray-900 opacity-60 hover:bg-gray-900/60 disabled:hover:bg-gray-900 disabled:opacity-100{mode ===
+				'personal'
+					? ''
+					: ' opacity-60'}"
+			>
+				Personal
+			</DashButton>
+		</div>
+	{/if}
 
 	{#if kudos.length}
 		<div

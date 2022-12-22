@@ -134,6 +134,8 @@ export const GET: RequestHandler = async (request) => {
 				}
 			);
 		} else {
+			console.log(date <= new Date("2022-11-22T00:57:46.607Z"));
+
 			// Otherwise, if they do exists, do some cleanup and check if they have any expired session
 			// tokens inside postgres, if they do, remove them
 			await prisma.session.deleteMany({
