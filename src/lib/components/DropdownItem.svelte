@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Checkbox from "$lib/components/icons/general/Checkbox.svelte";
-	import RadioSelect from "$lib/components/icons/general/RadioSelect.svelte";
+	import Checkbox from "$lib/icons/general/Checkbox.svelte";
+	import RadioSelect from "$lib/icons/general/RadioSelect.svelte";
 
 	export let radio = true;
 	export let selected: boolean;
@@ -8,6 +8,7 @@
 
 <button
 	on:click
+	aria-checked={selected}
 	class="p-4 flex items-center gap-4 w-full rounded-lg cursor-pointer"
 >
 	{#if radio}

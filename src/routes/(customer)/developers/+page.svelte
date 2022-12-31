@@ -2,22 +2,22 @@
 	import { onMount } from "svelte";
 	import { fly } from "svelte/transition";
 
+	import Hero from "../Hero.svelte";
+	import Header from "../Header.svelte";
+	import Section from "../Section.svelte";
 	import HireStep from "./HireStep.svelte";
 	import Developer from "./Developer.svelte";
 	import Text from "$lib/components/Text.svelte";
-	import Hero from "$lib/components/Hero.svelte";
+	import FilterTitle from "../FilterTitle.svelte";
 	import DeveloperFilter from "./DevFilter.svelte";
-	import Header from "$lib/components/Header.svelte";
+	import Star from "$lib/icons/general/Star.svelte";
 	import { softSkills, techSkills } from "$lib/enums";
+	import Wrench from "$lib/icons/general/Wrench.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
 	import Separator from "$lib/components/Separator.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
-	import Section from "$lib/components/index/Section.svelte";
-	import FilterTitle from "$lib/components/FilterTitle.svelte";
-	import Star from "$lib/components/icons/general/Star.svelte";
 	import DevTagLoading from "$lib/components/DevTagLoading.svelte";
-	import Wrench from "$lib/components/icons/general/Wrench.svelte";
 
 	import type { PageData } from "./$types";
 	import type { AnalyticsInstance } from "analytics";
@@ -72,6 +72,16 @@
 		);
 	};
 
+	// Track if a user was clicked on and what filters were used
+	const trackUser = async (id: string) =>
+		analytics &&
+		(softSkillFilter.length || techSkillFilter.length) &&
+		(await analytics.track("user_click", {
+			id,
+			soft_skills: softSkillFilter,
+			tech_skills: techSkillFilter
+		}));
+
 	// Once mounted check if there's any URL search params, if so, input them
 	onMount(async () => {
 		const param = new URLSearchParams(window.location.search).get("search");
@@ -83,16 +93,6 @@
 			.then(({ analytics }) => analytics)
 			.catch(() => undefined);
 	});
-
-	// Track if a user was clicked on and what filters were used
-	const trackUser = async (id: string) =>
-		analytics &&
-		(softSkillFilter.length || techSkillFilter.length) &&
-		(await analytics.track("user_click", {
-			id,
-			soft_skills: softSkillFilter,
-			tech_skills: techSkillFilter
-		}));
 </script>
 
 <svelte:head>
@@ -185,7 +185,7 @@
 				radio={false}
 				required={false}
 				options={softSkills}
-				selectedItems={[]}
+				groupSelected={[]}
 				on:change={onSearch}
 			>
 				<Star class="h-6 w-6" />
@@ -196,7 +196,7 @@
 				radio={false}
 				required={false}
 				options={techSkills}
-				selectedItems={[]}
+				groupSelected={[]}
 				on:change={onSearch}
 			>
 				<Wrench class="h-6 w-6" />
@@ -207,8 +207,9 @@
 
 		<div class="min-h-[165rem] md:min-h-[106rem] lg:min-h-[101rem]">
 			<Scrollable
-				class="before:from-gray-900 after:to-gray-900"
 				arrows={true}
+				class="before:from-gray-900 after:to-gray-900"
+				innerClass="gap-5"
 			>
 				{#await request}
 					<div
@@ -232,7 +233,7 @@
 						<div class="rounded-full bg-gray-400 w-32 h-5" />
 					</div>
 				{:then users}
-					{#each users as user, i}
+					{#each users as user, i (user.id)}
 						<DeveloperFilter
 							{user}
 							current={page === i}
@@ -360,7 +361,7 @@
 						</div>
 					</div>
 				{:then users}
-					{#each users as user, i}
+					{#each users as user, i (user.id)}
 						{#if page === i}
 							<Developer
 								on:click={async () => await trackUser(user.id)}

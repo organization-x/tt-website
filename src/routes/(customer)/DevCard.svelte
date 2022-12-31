@@ -11,7 +11,7 @@
 </script>
 
 <div
-	class="bg-gray-800 p-4 py-8 snap-center shrink-0 mx-auto w-full rounded-lg text-center md:text-start md:p-6 lg:p-8"
+	class="flex flex-col bg-gray-800 p-4 py-8 snap-center shrink-0 mx-auto w-full rounded-lg text-center md:text-start md:p-6 lg:p-8"
 >
 	<div
 		class="flex flex-col gap-6 items-center md:flex-row md:gap-4 lg:max-w-md lg:mx-auto"
@@ -49,14 +49,16 @@
 		</div>
 	</div>
 
-	<p class="mt-6 mb-10 mx-auto max-w-xs md:max-w-none lg:my-8 lg:max-w-md">
+	<p
+		class="mt-6 mb-10 mx-auto max-w-xs break-words w-full md:max-w-none lg:my-8 lg:max-w-md"
+	>
 		{developer.about}
 	</p>
 
 	<div
-		class="grid grid-cols-2 gap-x-8 gap-y-6 px-4 md:px-14 lg:flex lg:justify-center lg:items-center lg:gap-6"
+		class="grid grid-cols-2 gap-x-8 gap-y-6 px-4 mt-auto md:px-14 lg:flex lg:justify-center lg:items-center lg:gap-6"
 	>
-		{#each [...developer.techSkills.slice(0, 2), ...developer.softSkills.slice(0, 2)] as skill}
+		{#each [...developer.techSkills.slice(0, 2), ...developer.softSkills.slice(0, 2)] as skill (skill)}
 			<div class="flex justify-center items-center font-semibold gap-3">
 				<svelte:component
 					this={getIcon(skill)}

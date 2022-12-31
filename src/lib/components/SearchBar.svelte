@@ -1,14 +1,17 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from "svelte";
+	import { createEventDispatcher, onMount, getContext } from "svelte";
 
 	import { debounce } from "$lib/debounce";
-	import Search from "$lib/components/icons/general/Search.svelte";
+	import Search from "$lib/icons/general/Search.svelte";
 
-	const dispatch = createEventDispatcher<{ search: undefined }>();
+	import type { Writable } from "svelte/store";
 
 	export let search = "";
 	export let lightBg = true;
 	export let placeholder: string;
+
+	const tabindex = getContext<Writable<number>>("tabindex");
+	const dispatch = createEventDispatcher<{ search: undefined }>();
 
 	// Dispatch an initial search on page load so content is loaded
 	onMount(() => dispatch("search"));
@@ -33,6 +36,7 @@
 		}}
 		type="text"
 		class="w-full h-full px-2 bg-transparent focus:outline-none"
+		tabindex={$tabindex}
 		{placeholder}
 	/>
 </div>

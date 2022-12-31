@@ -37,6 +37,7 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 			(data.techSkills &&
 				(data.techSkills.length < 2 || data.techSkills.length > 5)) ||
 			(data.homepage &&
+				data.homepage !== user.homepage &&
 				(await prisma.user.count({ where: { homepage: true } })) === 3)
 		)
 			throw error(400, "Bad Request");
@@ -82,7 +83,8 @@ export const PATCH: RequestHandler = async ({ locals, request }) => {
 		});
 
 		return new Response(undefined, { status: 200 });
-	} catch {
+	} catch (e) {
+		console.log(e);
 		throw error(400, "Bad Request");
 	}
 };

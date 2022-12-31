@@ -156,7 +156,8 @@ export const roles: Role[] = ["Admin", "Lead", "User"];
 // Enum for date dropdowns
 export enum DateOption {
 	Week = "Last 7 days",
-	Month = "Last 30 days",
+	Month = "Last month",
+	Half = "Last 6 months",
 	Year = "Last 12 months",
 	Custom = "Custom"
 }

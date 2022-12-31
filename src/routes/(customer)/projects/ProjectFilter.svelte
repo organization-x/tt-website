@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { getContext } from "svelte";
 
-	import type { Project } from "@prisma/client";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 
-	const timestamp = getContext("timestamp") as string;
+	import type { Writable } from "svelte/store";
+	import type { Project } from "@prisma/client";
 
 	export let current: boolean;
 	export let projectPair: Project[];
+
+	const timestamp = getContext("timestamp") as string;
+	const tabindex = getContext<Writable<number>>("tabindex");
 </script>
 
 <button
@@ -17,6 +20,8 @@
 	class:bg-gray-700={current}
 	class:bg-gray-800={!current}
 	class="h-14 flex items-center gap-4 justify-center rounded-lg py-4 px-6 snap-center shrink-0"
+	tabindex={$tabindex}
+	aria-current={current}
 >
 	<!-- The avatar variant of the images is used here since it's only a very small preview of the banner -->
 	<div class="rounded-full w-10 h-10 overflow-hidden">

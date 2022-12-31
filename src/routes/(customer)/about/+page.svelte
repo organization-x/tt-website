@@ -1,10 +1,10 @@
 <script lang="ts">
 	import Stat from "./Stat.svelte";
+	import Hero from "../Hero.svelte";
 	import Member from "./Member.svelte";
-	import Hero from "$lib/components/Hero.svelte";
+	import Header from "../Header.svelte";
+	import Section from "../Section.svelte";
 	import Text from "$lib/components/Text.svelte";
-	import Header from "$lib/components/Header.svelte";
-	import Section from "$lib/components/index/Section.svelte";
 </script>
 
 <svelte:head>

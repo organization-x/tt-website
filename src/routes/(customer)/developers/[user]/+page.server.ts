@@ -81,9 +81,19 @@ export const load: PageServerLoad<{
 		visible: true
 	});
 
+	const startDate = new Date();
+	startDate.setFullYear(startDate.getFullYear() - 1);
+
 	return {
 		userPage,
 		projects,
-		kudos: await getKudos(userPage.id)
+		kudos: (
+			await getKudos(
+				userPage.id,
+				startDate.toISOString(),
+				new Date().toISOString(),
+				"personal"
+			)
+		).kudos
 	};
 };

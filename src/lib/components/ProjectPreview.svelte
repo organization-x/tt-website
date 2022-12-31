@@ -5,6 +5,8 @@
 	import { getIcon } from "$lib/getIcon";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 
+	import type { Writable } from "svelte/store";
+
 	// Provide a special view for profile pages where the author user is hidden from the preview
 	// if they're the only author, also the fly transition is disabled for the project search
 	export let userId: string | null = null;
@@ -13,6 +15,7 @@
 	export let project: App.ProjectWithMetadata;
 
 	const timestamp = getContext("timestamp") as string;
+	const tabindex = getContext<Writable<number>>("tabindex");
 </script>
 
 <a
@@ -24,6 +27,7 @@
 	class:bg-gray-900={!lightBg}
 	class="rounded-lg border-t-4 overflow-hidden w-full block shrink-0"
 	style="border-color: #{project.theme}"
+	tabindex={$tabindex}
 >
 	<div class="relative">
 		<img
@@ -38,7 +42,7 @@
 		<div
 			class="absolute flex w-full justify-end items-center top-2 right-1 pr-6 sm:pr-8"
 		>
-			{#each project.authors.slice(0, 5) as { user }, i}
+			{#each project.authors.slice(0, 5) as { user }, i (user.id)}
 				{#if project.authors.length === 1 && !(userId && user.id === userId)}
 					<img
 						width="512"
@@ -60,8 +64,8 @@
 		<p class="mt-2">{project.description}</p>
 
 		<div class="flex gap-3 mt-auto pt-4">
-			{#each project.skills as icon}
-				<svelte:component this={getIcon(icon)} class="w-8 h-8" />
+			{#each project.skills as skill (skill)}
+				<svelte:component this={getIcon(skill)} class="w-8 h-8" />
 			{/each}
 		</div>
 	</div>

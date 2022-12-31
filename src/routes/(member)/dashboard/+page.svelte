@@ -3,41 +3,82 @@
 
 	import { user } from "$lib/stores";
 	import { getIcon } from "$lib/getIcon";
+	import DashHero from "./DashHero.svelte";
+	import DashWrap from "./DashWrap.svelte";
+	import DashLink from "./DashLink.svelte";
+	import DashButton from "./DashButton.svelte";
+	import Id from "$lib/icons/general/Id.svelte";
+	import DashSection from "./DashSection.svelte";
 	import Kudo from "$lib/components/Kudo.svelte";
+	import Pin from "$lib/icons/general/Pin.svelte";
+	import Bulb from "$lib/icons/general/Bulb.svelte";
+	import Plus from "$lib/icons/general/Plus.svelte";
+	import BadgeProgress from "./BadgeProgress.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
-	import Id from "$lib/components/icons/general/Id.svelte";
+	import Wrench from "$lib/icons/general/Wrench.svelte";
+	import Pencil from "$lib/icons/general/Pencil.svelte";
+	import TrendUp from "$lib/icons/general/TrendUp.svelte";
+	import TenKudos from "$lib/icons/badges/TenKudos.svelte";
+	import LinkIcon from "$lib/icons/general/LinkIcon.svelte";
+	import ShowHide from "$lib/icons/general/ShowHide.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
-	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import DevSection from "$lib/components/DevSection.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
-	import Bulb from "$lib/components/icons/general/Bulb.svelte";
-	import Plus from "$lib/components/icons/general/Plus.svelte";
+	import ProjectEditPreview from "./ProjectEditPreview.svelte";
+	import FiftyKudos from "$lib/icons/badges/FiftyKudos.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
-	import Wrench from "$lib/components/icons/general/Wrench.svelte";
-	import Pencil from "$lib/components/icons/general/Pencil.svelte";
-	import DashHero from "$lib/components/dashboard/DashHero.svelte";
-	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
-	import DashLink from "$lib/components/dashboard/DashLink.svelte";
-	import TrendUp from "$lib/components/icons/general/TrendUp.svelte";
-	import TenKudos from "$lib/components/icons/badges/TenKudos.svelte";
-	import LinkIcon from "$lib/components/icons/general/LinkIcon.svelte";
-	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
-	import DashButton from "$lib/components/dashboard/DashButton.svelte";
-	import DashSection from "$lib/components/dashboard/DashSection.svelte";
-	import FiftyKudos from "$lib/components/icons/badges/FiftyKudos.svelte";
-	import TenProjects from "$lib/components/icons/badges/TenProjects.svelte";
-	import AllEndorsed from "$lib/components/icons/badges/AllEndorsed.svelte";
-	import HundredKudos from "$lib/components/icons/badges/HundredKudos.svelte";
-	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
-	import TwentyProjects from "$lib/components/icons/badges/TwentyProjects.svelte";
-	import BadgeProgress from "$lib/components/dashboard/index/BadgeProgress.svelte";
-	import ProjectEditPreview from "$lib/components/dashboard/ProjectEditPreview.svelte";
+	import TenProjects from "$lib/icons/badges/TenProjects.svelte";
+	import AllEndorsed from "$lib/icons/badges/AllEndorsed.svelte";
+	import HundredKudos from "$lib/icons/badges/HundredKudos.svelte";
+	import ExternalLink from "$lib/icons/general/ExternalLink.svelte";
+	import TwentyProjects from "$lib/icons/badges/TwentyProjects.svelte";
 
 	import type { PageData } from "./$types";
+	import type { Writable } from "svelte/store";
 
 	export let data: PageData;
 
 	const timestamp = getContext("timestamp");
+	const firstName = getContext<string[]>("name")[0];
+	const tabindex = getContext<Writable<number>>("tabindex");
+
+	// Get kudos counts from the last month, six months and twelve months for badges
+	const [month, sixMonths, twelveMonths] = data.kudos.reduce(
+		(
+			result: [
+				number,
+				number,
+				number,
+				null | Date,
+				null | Date,
+				null | Date
+			],
+			kudo,
+			i
+		) => {
+			// If it is the first iteration, assign the date variables for filtering
+			if (!i) {
+				const month = new Date();
+				const sixMonths = new Date();
+				const twelveMonths = new Date();
+
+				month.setMonth(month.getMonth() - 1);
+				sixMonths.setMonth(sixMonths.getMonth() - 6);
+				twelveMonths.setMonth(twelveMonths.getMonth() - 12);
+
+				result[3] = month;
+				result[4] = sixMonths;
+				result[5] = twelveMonths;
+			}
+
+			if (kudo.timestamp >= result[3]!) result[0]++;
+			if (kudo.timestamp >= result[4]!) result[1]++;
+			if (kudo.timestamp >= result[5]!) result[2]++;
+
+			return result;
+		},
+		[0, 0, 0, null, null, null]
+	);
 
 	let visible = $user.visible;
 
@@ -67,8 +108,6 @@
 			link ? [{ key, link }, ...result] : result,
 		[]
 	);
-
-	const firstName = getContext<string[]>("name")[0];
 
 	// Define the pinned project, the reason we don't use the user store for this is so that it stays
 	// updated with the database and also because updating the user store causes a refresh on the projects page
@@ -334,6 +373,7 @@
 							rel="noopener noreferrer"
 							class="block rounded-lg border-t-4 overflow-hidden bg-gray-700 w-full mx-auto mt-4"
 							style="border-color: #{pinnedProject.theme}"
+							tabindex={$tabindex}
 						>
 							<img
 								src="{PUBLIC_CLOUDFLARE_URL}/banner-{pinnedProject.id}/banner?{timestamp}"
@@ -377,11 +417,11 @@
 					<DevSection title="Top Skills" class="lg:w-6/12">
 						<Wrench slot="icon" class="w-5 h-5" />
 
-						{#each $user.techSkills as name}
+						{#each $user.techSkills as name (name)}
 							<DevTag {name} lightBg={false} />
 						{/each}
 
-						{#each $user.softSkills as name}
+						{#each $user.softSkills as name (name)}
 							<DevTag {name} lightBg={false} />
 						{/each}
 
@@ -399,7 +439,7 @@
 					>
 						<LinkIcon slot="icon" class="w-5 h-5" />
 
-						{#each links as { link, key }}
+						{#each links as { link, key } (key)}
 							<div
 								class="flex justify-center items-center font-semibold bg-gray-700 rounded-lg gap-3 p-4"
 							>
@@ -422,7 +462,9 @@
 						{/each}
 					</DevSection>
 
-					<div class="flex gap-4 ml-auto lg:w-6/12 lg:justify-end">
+					<div
+						class="flex items-end gap-4 ml-auto lg:w-6/12 lg:justify-end"
+					>
 						<DashLink
 							icon={true}
 							href="/developers/{data.url}"
@@ -499,41 +541,41 @@
 				<BadgeProgress
 					name="Kudo Starter"
 					playing={playing.has(3)}
-					progress={data.kudos.length / 10}
+					progress={month / 10}
 					class="bg-red-light"
 				>
 					<TenKudos slot="badge" />
 
-					Get 10 kudos from other developers
+					Get 10 kudos in the last month
 				</BadgeProgress>
 
 				<BadgeProgress
 					name="Kudo Master"
 					playing={playing.has(4)}
-					progress={data.kudos.length / 50}
+					progress={sixMonths / 50}
 					class="bg-teal-light"
 				>
 					<FiftyKudos slot="badge" />
 
-					Get 50 kudos from other developers
+					Get 50 kudos in the last six months
 				</BadgeProgress>
 
 				<BadgeProgress
 					name="Kudo Legend"
 					playing={playing.has(5)}
-					progress={data.kudos.length / 100}
+					progress={twelveMonths / 100}
 					class="bg-green-light"
 				>
 					<HundredKudos slot="badge" />
 
-					Get 100 kudos from other developers
+					Get 100 kudos in the last 12 months
 				</BadgeProgress>
 			</div>
 		</div>
 
 		<DashSection title="Your Projects" class="bg-gray-900 rounded-lg p-4">
 			<div
-				class="min-h-[55rem] flex flex-col gap-8 lg:grid lg:grid-cols-2 lg:min-h-0"
+				class="min-h-[58rem] flex flex-col gap-8 xl:grid xl:grid-cols-2 xl:min-h-0"
 			>
 				{#each { length: 2 } as _, i}
 					{@const project = data.projects[i]}
@@ -569,7 +611,7 @@
 					? 'pt-4'
 					: 'lg:pt-8'}"
 			>
-				{#each data.kudos.slice(0, 10) as kudo}
+				{#each data.kudos.slice(0, 10) as kudo (kudo)}
 					<Kudo {kudo} />
 				{:else}
 					<h1 class="text-center font-semibold text-xl pt-1 m-auto">
@@ -579,7 +621,7 @@
 			</Scrollable>
 
 			<DashLink
-				href="/dashboard/projects"
+				href="/dashboard/kudos"
 				class="bg-gray-700 hover:bg-gray-700/60 w-full mx-auto mt-4 lg:mt-6 lg:w-fit lg:mr-0"
 			>
 				All Kudos

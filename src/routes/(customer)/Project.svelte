@@ -1,7 +1,7 @@
 <script lang="ts">
+	import Author from "./Author.svelte";
 	import { getIcon } from "$lib/getIcon";
 	import Button from "$lib/components/Button.svelte";
-	import Author from "$lib/components/Author.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	export let project: App.ProjectWithMetadata;
@@ -25,15 +25,16 @@
 		</p>
 
 		<div class="flex gap-2 items-center justify-center mt-auto mb-6">
-			{#each project.skills as skill}
+			{#each project.skills as skill (skill)}
 				<svelte:component this={getIcon(skill)} class="w-8 h-8" />
 			{/each}
 		</div>
 
 		<Scrollable
 			class="before:from-gray-900 after:to-gray-900 w-full mx-auto lg:hidden"
+			innerClass="gap-5"
 		>
-			{#each project.authors as author}
+			{#each project.authors as author (author.user.id)}
 				<Author {author} />
 			{/each}
 		</Scrollable>
@@ -51,11 +52,11 @@
 	<Scrollable
 		vertical={true}
 		class="hidden before:from-gray-900 after:to-gray-900 lg:block lg:bg-gray-900 lg:rounded-lg lg:shrink-0 lg:max-h-[26rem] lg:px-4"
-		innerClass="lg:gap-3 lg:scrollbar-hidden"
+		innerClass="gap-4 lg:gap-3 lg:scrollbar-hidden"
 	>
 		<h1 class="font-semibold mt-4 text-lg">Developers</h1>
 
-		{#each project.authors as author}
+		{#each project.authors as author (author.user.id)}
 			<Author {author} />
 		{/each}
 	</Scrollable>

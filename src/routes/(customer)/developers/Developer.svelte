@@ -3,18 +3,21 @@
 	import { fly } from "svelte/transition";
 
 	import { getIcon } from "$lib/getIcon";
+	import Pin from "$lib/icons/general/Pin.svelte";
+	import Bulb from "$lib/icons/general/Bulb.svelte";
+	import Star from "$lib/icons/general/Star.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
-	import Pin from "$lib/components/icons/general/Pin.svelte";
+	import Wrench from "$lib/icons/general/Wrench.svelte";
 	import DevSection from "$lib/components/DevSection.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
-	import Bulb from "$lib/components/icons/general/Bulb.svelte";
-	import Star from "$lib/components/icons/general/Star.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
-	import Wrench from "$lib/components/icons/general/Wrench.svelte";
+
+	import type { Writable } from "svelte/store";
 
 	export let user: App.UserWithMetadata;
 
 	const timestamp = getContext("timestamp") as string;
+	const tabindex = getContext<Writable<number>>("tabindex");
 </script>
 
 <a
@@ -23,6 +26,7 @@
 	href="/developers/{user.url}"
 	rel="noreferrer noopener"
 	class="bg-gray-700 flex flex-col gap-6 rounded-lg p-6 max-w-xl mx-auto shrink-0 w-full"
+	tabindex={$tabindex}
 >
 	<div class="flex flex-col gap-6 items-center md:flex-row">
 		<div class="relative shrink-0">
@@ -75,6 +79,7 @@
 					rel="noreferrer noopener"
 					class="block rounded-lg border-t-4 bg-gray-500 w-full mx-auto mt-4 lg:flex lg:p-4"
 					style="border-color: #{user.pinnedProject.theme}"
+					tabindex={$tabindex}
 				>
 					<img
 						src="{PUBLIC_CLOUDFLARE_URL}/banner-{user.pinnedProject
@@ -106,7 +111,7 @@
 		<DevSection title="Positions">
 			<Bulb slot="icon" class="w-5 h-5" />
 
-			{#each user.positions as position}
+			{#each user.positions as position (position)}
 				<DevTag name={position} />
 			{/each}
 		</DevSection>
@@ -114,7 +119,7 @@
 		<DevSection title="Top Soft Skills">
 			<Star slot="icon" class="w-5 h-5" />
 
-			{#each user.softSkills as skill}
+			{#each user.softSkills as skill (skill)}
 				<DevTag name={skill} />
 			{/each}
 		</DevSection>
@@ -122,7 +127,7 @@
 		<DevSection title="Top Tech Skills">
 			<Wrench slot="icon" class="w-5 h-5" />
 
-			{#each user.techSkills as skill}
+			{#each user.techSkills as skill (skill)}
 				<DevTag name={skill} />
 			{/each}
 		</DevSection>

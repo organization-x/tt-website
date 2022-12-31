@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Dropdown from "$lib/components/Dropdown.svelte";
-	import Asterisk from "$lib/components/icons/general/Asterisk.svelte";
+	import Asterisk from "$lib/icons/general/Asterisk.svelte";
 
 	export let title: string;
 	export let radio: boolean;
@@ -44,7 +44,7 @@
 			{options}
 			{radio}
 			{required}
-			selectedItems={[]}
+			groupSelected={[]}
 			icons={false}
 			on:change={() => (changed = true)}
 		/>

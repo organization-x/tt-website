@@ -1,21 +1,24 @@
 <script lang="ts">
-	import { createEventDispatcher, onMount } from "svelte";
+	import { createEventDispatcher, onMount, getContext } from "svelte";
 
 	import { DateOption } from "$lib/enums";
 	import { debounce } from "$lib/debounce";
-	import Arrow from "$lib/components/icons/general/Arrow.svelte";
+	import Arrow from "$lib/icons/general/Arrow.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
+	import DropArrow from "$lib/icons/general/DropArrow.svelte";
 	import DropdownItem from "$lib/components/DropdownItem.svelte";
-	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
 
-	const dispatch = createEventDispatcher<{
-		change: undefined;
-		search: { selected: DateOption; custom: Date };
-	}>();
+	import type { Writable } from "svelte/store";
 
 	// Provide special styling when on the profile page vs the dashboard
 	export let profile = false;
 
 	const options = Object.values(DateOption);
+	const tabindex = getContext<Writable<number>>("tabindex");
+	const dispatch = createEventDispatcher<{
+		change: undefined;
+		search: { selected: DateOption; custom: Date };
+	}>();
 
 	let open = false;
 	let days: Date[];
@@ -85,6 +88,7 @@
 		class:bg-gray-900={!profile}
 		class:bg-gray-700={profile}
 		class="flex items-center justify-between p-5 w-full rounded-t-lg h-16"
+		tabindex={$tabindex}
 	>
 		<h1>
 			{selected === DateOption.Custom
@@ -115,28 +119,36 @@
 
 				{#if childOpen}
 					<div
-						class:bg-gray-700={!profile}
 						class:bg-gray-500={profile}
-						class="absolute w-full h-fit flex flex-col inset-0 top-14 shadow-lg rounded-b-lg max-h-[15rem] overflow-auto z-50"
+						class:bg-gray-700={!profile}
+						class="absolute inset-0 top-14 shadow-lg rounded-b-lg z-50 h-[15rem]"
 					>
-						{#each options as option}
-							<DropdownItem
-								radio={true}
-								on:click={() => (selected = option)}
-								selected={selected === option}
-							>
-								{option.replaceAll("_", " ")}
-							</DropdownItem>
-						{/each}
+						<Scrollable
+							vertical={true}
+							class="before:rounded-t-lg after:rounded-b-lg h-60 {profile
+								? 'before:from-gray-500 after:to-gray-500'
+								: 'before:from-gray-700 after:to-gray-700'}"
+							innerClass="scrollbar"
+						>
+							{#each options as option (option)}
+								<DropdownItem
+									radio={true}
+									on:click={() => (selected = option)}
+									selected={selected === option}
+								>
+									{option}
+								</DropdownItem>
+							{/each}
+						</Scrollable>
 					</div>
 				{/if}
 			</div>
 
 			<div
-				disabled={selected !== DateOption.Custom}
 				class:opacity-70={selected !== DateOption.Custom}
 				class:text-gray-500={selected !== DateOption.Custom}
 				class:pointer-events-none={selected !== DateOption.Custom}
+				aria-disabled={selected !== DateOption.Custom}
 				class="mt-6"
 			>
 				<div class="flex justify-between">
@@ -152,6 +164,9 @@
 								current.setMonth(current.getMonth() - 1);
 								current = current;
 							}}
+							tabindex={selected !== DateOption.Custom
+								? -1
+								: $tabindex}
 						>
 							<Arrow class="w-4 h-4 -rotate-90" />
 						</button>
@@ -160,6 +175,9 @@
 								current.setMonth(current.getMonth() + 1);
 								current = current;
 							}}
+							tabindex={selected !== DateOption.Custom
+								? -1
+								: $tabindex}
 						>
 							<Arrow class="w-4 h-4 rotate-90" />
 						</button>
@@ -167,7 +185,7 @@
 				</div>
 
 				<div class="grid grid-cols-7 grid-rows-5 gap-2 mt-4">
-					{#each days as day, i (i)}
+					{#each days as day, i}
 						{@const active =
 							custom.toLocaleDateString("en-CA") ===
 								day.toLocaleDateString("en-CA") &&
@@ -179,6 +197,9 @@
 							class:md:bg-blue-light={active}
 							class:text-gray-500={selected !== DateOption.Custom}
 							class="font-bold p-1.5 aspect-square sm:text-[1.07rem] md:rounded-lg"
+							tabindex={selected !== DateOption.Custom
+								? -1
+								: $tabindex}
 						>
 							{i + 1}
 						</button>

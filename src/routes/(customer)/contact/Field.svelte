@@ -1,8 +1,11 @@
 <script lang="ts">
+	import { getContext } from "svelte";
+
 	import { validate } from "$lib/validate";
-	import Asterisk from "$lib/components/icons/general/Asterisk.svelte";
+	import Asterisk from "$lib/icons/general/Asterisk.svelte";
 
 	import type { FieldType } from "$lib/enums";
+	import type { Writable } from "svelte/store";
 
 	export let big = false;
 	export let title: string;
@@ -11,6 +14,8 @@
 	export let isValid: boolean;
 	export let placeholder: string;
 	export let type: FieldType | null = null;
+
+	const tabindex = getContext<Writable<number>>("tabindex");
 
 	let isFilled = false;
 
@@ -43,6 +48,7 @@
 			class:border-red-light={isFilled && !isValid}
 			class:border-green-light={isFilled && isValid}
 			class="w-full h-72 bg-gray-700 resize-none flex p-4 pr-1 mt-2 scrollbar overflow-y-scroll rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
+			tabindex={$tabindex}
 			{placeholder}
 		/>
 	{:else}
@@ -52,6 +58,7 @@
 			class:border-red-light={isFilled && !isValid}
 			class:border-green-light={isFilled && isValid}
 			class="w-full px-2 bg-gray-700 flex p-4 mt-2 rounded-lg select-none border-solid border-2 transition-border focus:outline-none"
+			tabindex={$tabindex}
 			{placeholder}
 		/>
 	{/if}

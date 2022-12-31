@@ -3,8 +3,10 @@
 
 	import Aiot from "./Aiot.svelte";
 	import Step from "./Step.svelte";
+	import Hero from "./Hero.svelte";
 	import Hippo from "./Hippo.svelte";
 	import { carousel } from "$lib/seo";
+	import Header from "./Header.svelte";
 	import AicBot from "./AICBot.svelte";
 	import Caption from "./Caption.svelte";
 	import Company from "./Company.svelte";
@@ -16,10 +18,8 @@
 	import GitCommit from "./GitCommit.svelte";
 	import GitDeploy from "./GitDeploy.svelte";
 	import Text from "$lib/components/Text.svelte";
-	import Hero from "$lib/components/Hero.svelte";
+	import Logo from "$lib/icons/logos/Logo.svelte";
 	import Button from "$lib/components/Button.svelte";
-	import Header from "$lib/components/Header.svelte";
-	import Logo from "$lib/components/icons/logos/Logo.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 
 	import type { PageData } from "./$types";
@@ -29,6 +29,13 @@
 
 	let analytics: AnalyticsInstance | undefined;
 
+	// Grab tracking utilities for clicking buttons
+	const trackClick = (name: string) => async () =>
+		analytics &&
+		(await analytics.track("button_click", {
+			id: name
+		}));
+
 	onMount(async () => {
 		if (!data.track) return;
 
@@ -36,13 +43,6 @@
 			.then(({ analytics }) => analytics)
 			.catch(() => undefined);
 	});
-
-	// Grab tracking utilities for clicking buttons
-	const trackClick = (name: string) => async () =>
-		analytics &&
-		(await analytics.track("button_click", {
-			id: name
-		}));
 </script>
 
 <svelte:head>
@@ -55,7 +55,7 @@
 
 <Hero
 	class="from-teal-light to-teal-dark"
-	title="Grasp the top 1% of junior developers"
+	title="Hire the top 1% of junior developers"
 	src="/assets/index/index.webm"
 >
 	Develop something exciting with skills from low-level mastery to meticulous

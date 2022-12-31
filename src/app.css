@@ -14,6 +14,10 @@
 		@apply text-gray-400;
 	}
 
+	*:focus-visible {
+		@apply outline-2 outline-teal-light outline;
+	}
+
 	html {
 		@apply font-main bg-black text-white text-base sm:text-lg lg:text-xl;
 	}
@@ -67,7 +71,7 @@
 		grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
 	}
 
-	.skill-hover:hover > div {
-		@apply opacity-100 -top-9 sm:-top-10;
+	.kudo-cols {
+		grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
 	}
 }

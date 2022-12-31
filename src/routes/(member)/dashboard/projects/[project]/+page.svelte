@@ -1,43 +1,44 @@
 <script lang="ts">
-	import "highlight.js/styles/atom-one-dark.css";
+	import "$lib/tiptap/hljsTheme.css";
 
 	import { Doc } from "yjs";
-	import { onMount } from "svelte";
 	import { Editor } from "@tiptap/core";
 	import { techSkills } from "$lib/enums";
 	import { fly } from "svelte/transition";
 	import { writable } from "svelte/store";
+	import { getContext, onMount } from "svelte";
 	import { WebsocketProvider } from "y-websocket";
 	import { Collaboration } from "@tiptap/extension-collaboration";
 
 	import { user } from "$lib/stores";
 	import { dev } from "$app/environment";
 	import { Node } from "prosemirror-model";
-	import { CollaborationCursor } from "$lib/cursor";
-	import { extensions } from "$lib/tiptapExtensions";
+	import TextBox from "../../TextBox.svelte";
+	import LinkButton from "./LinkButton.svelte";
+	import HeadButton from "./HeadButton.svelte";
+	import ImageButton from "./ImageButton.svelte";
+	import Pin from "$lib/icons/general/Pin.svelte";
+	import EditorButton from "./EditorButton.svelte";
+	import DashButton from "../../DashButton.svelte";
+	import AuthorSection from "./AuthorSection.svelte";
+	import { extensions } from "$lib/tiptap/extensions";
+	import Pencil from "$lib/icons/general/Pencil.svelte";
+	import UnList from "$lib/icons/general/UnList.svelte";
+	import OrList from "$lib/icons/general/OrList.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
+	import { CollaborationCursor } from "$lib/tiptap/cursor";
+	import ShowHide from "$lib/icons/general/ShowHide.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
-	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
-	import TextBox from "$lib/components/dashboard/TextBox.svelte";
-	import Pencil from "$lib/components/icons/general/Pencil.svelte";
-	import UnList from "$lib/components/icons/general/UnList.svelte";
-	import OrList from "$lib/components/icons/general/OrList.svelte";
-	import ShowHide from "$lib/components/icons/general/ShowHide.svelte";
-	import DashButton from "$lib/components/dashboard/DashButton.svelte";
-	import LinkButton from "$lib/components/dashboard/projects/LinkButton.svelte";
-	import HeadButton from "$lib/components/dashboard/projects/HeadButton.svelte";
-	import ImageButton from "$lib/components/dashboard/projects/ImageButton.svelte";
-	import EditorButton from "$lib/components/dashboard/projects/EditorButton.svelte";
-	import AuthorSection from "$lib/components/dashboard/projects/AuthorSection.svelte";
 	import {
 		hashBlob,
 		checkObjectURL,
 		createObjectURL
-	} from "$lib/imageHandlers";
+	} from "$lib/tiptap/imageHandlers";
 
 	import type { Map as YMap } from "yjs";
 	import type { PageData } from "./$types";
+	import type { Writable } from "svelte/store";
 	import type { TechSkill } from "@prisma/client";
 	import type { JSONContent } from "@tiptap/core";
 
@@ -51,6 +52,8 @@
 		Saved,
 		Error
 	}
+
+	const tabindex = getContext<Writable<number>>("tabindex");
 
 	// Register document for syncing across clients with yjs
 	let doc = new Doc();
@@ -701,8 +704,6 @@
 					}
 					// Otherwise if this is the initial client, set the initial project with the rearranged content
 					else {
-						await new Promise((res) => setTimeout(res, 5000));
-
 						yProject = yMap.set("project", {
 							...project,
 							content,
@@ -798,7 +799,9 @@
 			on:change={updateImage}
 			type="file"
 			accept=".png, .jpg, .jpeg, .webp, .avif"
-			class="hidden"
+			class="opacity-0 w-0 h-0"
+			alt="Upload a banner"
+			tabindex={$tabindex}
 		/>
 	{/if}
 </label>
@@ -807,10 +810,10 @@
 	class="flex flex-col gap-8 p-4 max-w-xl mx-auto mt-2 lg:px-12 lg:max-w-screen-xl xl:items-center"
 >
 	<div
-		disabled={disableForm}
 		class:opacity-60={disableForm}
 		class:pointer-events-none={disableForm}
 		class="flex flex-col gap-5 w-full transition-opacity duration-200"
+		aria-disabled={disableForm}
 	>
 		<div>
 			<div class="flex justify-between items-center">
@@ -819,6 +822,7 @@
 				{#if titleError}
 					<p
 						transition:fly={{ y: 10, duration: 150 }}
+						id="title-error"
 						class="text-red-light font-semibold text-sm"
 					>
 						Title already in use!
@@ -833,6 +837,8 @@
 					class="w-full h-full px-2 bg-transparent focus:outline-none p-4 my-auto"
 					placeholder="Name your project..."
 					maxlength="50"
+					tabindex={$tabindex}
+					aria-errormessage="title-error"
 				/>
 			</div>
 		</div>
@@ -861,7 +867,7 @@
 						{i}
 						required={i < 2}
 						options={techSkills}
-						selectedItems={project.skills}
+						groupSelected={project.skills}
 						on:change={updateSkills}
 					/>
 				{/each}
@@ -922,10 +928,10 @@
 	</div>
 
 	<div
-		disabled={disableEditor}
 		class:opacity-60={disableEditor}
 		class:pointer-events-none={disableEditor}
 		class="w-full transition-opacity duration-200"
+		aria-disabled={disableEditor}
 	>
 		{#if editor}
 			<div class="sticky top-0 z-20 border-b-2 border-gray-700 bg-black">
@@ -933,6 +939,7 @@
 					class="before:from-black after:to-black transition-transform duration-200 {$users.length
 						? 'h-18 py-1 mb-2'
 						: 'h-0'}"
+					innerClass="gap-5"
 				>
 					{#each $users as { id, name, color } (id)}
 						<div
@@ -957,7 +964,10 @@
 					{/each}
 				</Scrollable>
 
-				<Scrollable class="before:from-black after:to-black">
+				<Scrollable
+					class="before:from-black after:to-black"
+					innerClass="gap-5"
+				>
 					<HeadButton {editor} active={isActive.heading} />
 
 					<EditorButton
@@ -1019,6 +1029,10 @@
 			</div>
 		{/if}
 
-		<div class="mt-6" bind:this={editorElement} />
+		<div
+			bind:this={editorElement}
+			class:hidden={$tabindex === -1}
+			class="mt-6"
+		/>
 	</div>
 </div>

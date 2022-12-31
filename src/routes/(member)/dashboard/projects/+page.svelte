@@ -1,16 +1,20 @@
 <script lang="ts">
+	import { getContext } from "svelte";
 	import { fly } from "svelte/transition";
 
 	import { user } from "$lib/stores";
 	import { goto } from "$app/navigation";
+	import DashHero from "../DashHero.svelte";
+	import DashWrap from "../DashWrap.svelte";
+	import Plus from "$lib/icons/general/Plus.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
-	import Plus from "$lib/components/icons/general/Plus.svelte";
-	import DashHero from "$lib/components/dashboard/DashHero.svelte";
-	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
+	import ProjectEditPreview from "../ProjectEditPreview.svelte";
 	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
-	import ProjectEditPreview from "$lib/components/dashboard/ProjectEditPreview.svelte";
 
 	import type { Prisma } from "@prisma/client";
+	import type { Writable } from "svelte/store";
+
+	const tabindex = getContext<Writable<number>>("tabindex");
 
 	let search = "";
 	let creatingProject = false;
@@ -121,6 +125,13 @@
 			});
 		}, 300);
 	};
+
+	// Handle the animation when projects are deleted by making the last
+	// project responsible for re-querying the search
+	const onEnd = (id: string) =>
+		deletingProjects.includes(id) &&
+		deletingProjects[deletingProjects.length - 1] === id &&
+		onSearch();
 </script>
 
 <svelte:head>
@@ -146,6 +157,7 @@
 			class:opacity-70={creatingProject}
 			on:click={createProject}
 			class="bg-gray-900 rounded-lg w-full p-4 flex items-center transition-backpacity justify-center gap-2 hover:bg-gray-900/60 lg:w-40 lg:shrink-0"
+			tabindex={$tabindex}
 		>
 			<Plus class="w-4 h-4{creatingProject ? ' animate-spin' : ''}" />
 			New Project
@@ -159,26 +171,14 @@
 			</div>
 		{:then projects}
 			<div in:fly={{ duration: 300, y: 30 }}>
-				{#each projects as project}
+				{#each projects as project (project.id)}
 					{#if !deletingProjects.includes(project.id)}
 						<ProjectEditPreview
 							bind:pinnedProject
 							{project}
 							on:delete={() => deleteProject(project.id)}
 							on:pinned={togglePinned}
-							on:outroend={async () => {
-								// If this project isn't being deleted, ignore
-								if (!deletingProjects.includes(project.id))
-									return;
-
-								// If it's the latest project being deleted then make it responsible for updating the search
-								if (
-									deletingProjects[
-										deletingProjects.length - 1
-									] === project.id
-								)
-									onSearch();
-							}}
+							on:outroend={() => onEnd(project.id)}
 							lightBg={false}
 						/>
 					{/if}

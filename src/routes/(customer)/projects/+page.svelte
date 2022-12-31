@@ -2,18 +2,18 @@
 	import { onMount } from "svelte";
 	import { fly } from "svelte/transition";
 
+	import Hero from "../Hero.svelte";
+	import Header from "../Header.svelte";
 	import { techSkills } from "$lib/enums";
+	import Section from "../Section.svelte";
 	import Text from "$lib/components/Text.svelte";
-	import Hero from "$lib/components/Hero.svelte";
+	import FilterTitle from "../FilterTitle.svelte";
 	import ProjectFilter from "./ProjectFilter.svelte";
-	import Header from "$lib/components/Header.svelte";
+	import Wrench from "$lib/icons/general/Wrench.svelte";
 	import Dropdown from "$lib/components/Dropdown.svelte";
 	import Separator from "$lib/components/Separator.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
-	import Section from "$lib/components/index/Section.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
-	import FilterTitle from "$lib/components/FilterTitle.svelte";
-	import Wrench from "$lib/components/icons/general/Wrench.svelte";
 	import ProjectLoading from "$lib/components/ProjectLoading.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
 
@@ -147,7 +147,7 @@
 			radio={false}
 			required={false}
 			options={techSkills}
-			selectedItems={[]}
+			groupSelected={[]}
 			on:change={onSearch}
 		>
 			<Wrench class="h-6 w-6" />
@@ -157,8 +157,9 @@
 
 		<div class="min-h-[87rem]">
 			<Scrollable
-				class="before:from-gray-900 after:to-gray-900"
 				arrows={true}
+				class="before:from-gray-900 after:to-gray-900"
+				innerClass="gap-5"
 			>
 				{#await request}
 					<div

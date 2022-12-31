@@ -1,6 +1,6 @@
 <script lang="ts">
+	import Pin from "$lib/icons/general/Pin.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
-	import Pin from "$lib/components/icons/general/Pin.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import ProjectPreview from "$lib/components/ProjectPreview.svelte";
 
@@ -9,19 +9,17 @@
 	export let pinnedProject: App.ProjectWithMetadata | undefined;
 
 	let search = "";
-
-	// Transform all project titles to lowercase so that the search query is case-insensitive
-	projects = projects.map((project) => ({
-		...project,
-		title: project.title.toLowerCase()
-	}));
+	let filteredProjects: App.ProjectWithMetadata[] = [];
 
 	// Create an array of filtered projects based on the search query
-	$: filteredProjects = projects.filter(({ title, id }) =>
-		title.includes(search.trim().toLowerCase()) && pinnedProject
-			? pinnedProject.id !== id
-			: true
-	);
+	$: {
+		const query = search.trim().toLowerCase();
+
+		filteredProjects = projects.filter(
+			({ title, id }) =>
+				title.toLowerCase().includes(query) && pinnedProject?.id !== id
+		);
+	}
 </script>
 
 <div class="w-full mx-auto lg:max-w-screen-xl">
@@ -52,9 +50,9 @@
 				<Scrollable
 					vertical={true}
 					class="h-[37.3rem] mt-6 before:from-gray-900 after:to-gray-900"
-					innerClass="scrollbar-hidden"
+					innerClass="scrollbar-hidden gap-4"
 				>
-					{#each filteredProjects as project}
+					{#each filteredProjects as project (project.id)}
 						<ProjectPreview {project} {userId} />
 					{:else}
 						<h1 class="text-center font-semibold text-xl">
@@ -63,7 +61,7 @@
 					{/each}
 				</Scrollable>
 			{:else if projects.length || pinnedProject}
-				{#each filteredProjects as project}
+				{#each filteredProjects as project (project.id)}
 					<ProjectPreview {project} {userId} />
 				{/each}
 			{:else}

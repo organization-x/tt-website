@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
 	import { writable } from "svelte/store";
 
-	import UserEditor from "$lib/components/dashboard/UserEditor.svelte";
+	import UserEditor from "../../UserEditor.svelte";
 
 	import type { PageData } from "./$types";
 

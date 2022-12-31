@@ -182,33 +182,19 @@ declare global {
 
 		// Interface for a singular kudo with stripped data
 		interface Kudo {
-			id: string;
-			name: string;
+			senderId: string;
+			receiverId: string;
+			senderName: string;
+			receiverName: string;
 			reason: string;
-			type: "sent" | "received";
-			timestamp: string;
+			timestamp: Date;
 		}
 
-		// Interface for Discord bot kudos response
+		// Interface for kudos response data
 		interface KudosResponse {
-			kudos: {
-				id: number;
-				reason: string;
-				receiver: {
-					id: string;
-					hippoId?: string;
-				};
-				receiverId: string;
-				sender: {
-					id: string;
-					hippoId?: string;
-				};
-				senderId: string;
-				timestamp: string;
-			}[];
+			pages: number;
 			page: number;
-			pageSize: number;
-			totalPages: number;
+			kudos: App.Kudo[];
 		}
 
 		// interface Platform {}

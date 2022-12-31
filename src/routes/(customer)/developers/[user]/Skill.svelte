@@ -3,12 +3,18 @@
 	import { createEventDispatcher, getContext, onMount } from "svelte";
 
 	import { getIcon } from "$lib/getIcon";
+	import Plus from "$lib/icons/general/Plus.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
-	import Plus from "$lib/components/icons/general/Plus.svelte";
-	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
+	import DropArrow from "$lib/icons/general/DropArrow.svelte";
 
+	import type { Writable } from "svelte/store";
 	import type { SoftSkill, TechSkill } from "@prisma/client";
+
+	export let endorsing: boolean;
+	export let endorser: string | null;
+	export let name: TechSkill | SoftSkill;
+	export let endorsements: { id: number; from: App.Endorser }[];
 
 	const dispatch = createEventDispatcher<{
 		endorsement: {
@@ -17,15 +23,11 @@
 		};
 	}>();
 
-	export let endorsing: boolean;
-	export let endorser: string | null;
-	export let name: TechSkill | SoftSkill;
-	export let endorsements: { id: number; from: App.Endorser }[];
+	const timestamp = getContext("timestamp");
+	const tabindex = getContext<Writable<number>>("tabindex");
 
 	let open = false;
 	let innerWidth: number;
-
-	const timestamp = getContext("timestamp");
 
 	// Create a message based on how many endorsements there are
 	$: message = endorsements.length
@@ -51,6 +53,7 @@
 	class:bg-teal-dark={3 < endorsements.length && endorsements.length <= 10}
 	class:bg-green-light={endorsements.length > 10}
 	class="rounded-lg overflow-hidden transition-colors duration-200 md:flex lg:max-w-[26rem]"
+	aria-expanded={Boolean(endorsements.length && open)}
 >
 	<div
 		class="flex shrink-0 transition-transform duration-200 {endorsements.length
@@ -70,6 +73,7 @@
 				endorsements.length <= 10}
 			class:border-green-light={endorsements.length > 10}
 			class="flex w-full select-text items-center transition-[border,padding] font-semibold bg-gray-700 rounded-lg duration-200 border-4 p-4 overflow-hidden md:justify-center md:cursor-auto"
+			tabindex={endorser && endorsements.length ? $tabindex : -1}
 		>
 			<div
 				class:md:ml-12={!isEndorsed && endorser}
@@ -106,6 +110,8 @@
 					endorsements.length <= 10}
 				class:border-green-light={endorsements.length > 10}
 				class="rounded-lg bg-gray-700 shrink-0 py-4 px-5 border-4 transition-border duration-200"
+				tabindex={$tabindex}
+				aria-checked={isEndorsed}
 			>
 				<Plus
 					class="w-4 h-4 transition-transpacity {endorsing
@@ -139,6 +145,7 @@
 					: 'before:from-green-light after:to-green-light'}{endorsing
 					? ' opacity-0'
 					: ''}"
+				innerClass="gap-5"
 			>
 				<h1
 					class:md:mx-auto={!endorsements.length}
@@ -153,6 +160,7 @@
 						href="/developers/{from.url}"
 						target="_blank"
 						rel="noreferrer noopener"
+						tabindex={$tabindex}
 						class="shrink-0"
 					>
 						<img

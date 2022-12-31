@@ -4,11 +4,13 @@
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 
 	import type { User } from "@prisma/client";
-
-	const timestamp = getContext("timestamp") as string;
+	import type { Writable } from "svelte/store";
 
 	export let user: User;
 	export let current: boolean;
+
+	const timestamp = getContext("timestamp") as string;
+	const tabindex = getContext<Writable<number>>("tabindex");
 </script>
 
 <button
@@ -18,6 +20,8 @@
 	class:bg-gray-700={current}
 	class:bg-gray-800={!current}
 	class="font-semibold flex jsutify-center gap-4 justify-center items-center h-14 transition-colors rounded-lg px-4 snap-center shrink-0 select-none w-56"
+	tabindex={$tabindex}
+	aria-current={current}
 >
 	<img
 		height="512"

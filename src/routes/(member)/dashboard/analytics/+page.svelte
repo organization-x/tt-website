@@ -1,24 +1,22 @@
 <script lang="ts">
 	import { user } from "$lib/stores";
+	import Graph from "./Graph.svelte";
+	import DataKey from "./DataKey.svelte";
 	import { tweened } from "svelte/motion";
 	import { DateOption } from "$lib/enums";
+	import DashHero from "../DashHero.svelte";
+	import DashWrap from "../DashWrap.svelte";
 	import { quintInOut } from "svelte/easing";
+	import Comparison from "./Comparison.svelte";
+	import DashButton from "../DashButton.svelte";
+	import DashSection from "../DashSection.svelte";
+	import GraphLoading from "./GraphLoading.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
 	import DateDropdown from "$lib/components/DateDropdown.svelte";
-	import DashHero from "$lib/components/dashboard/DashHero.svelte";
-	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 	import DevTagLoading from "$lib/components/DevTagLoading.svelte";
-	import Graph from "$lib/components/dashboard/analytics/Graph.svelte";
-	import DashButton from "$lib/components/dashboard/DashButton.svelte";
-	import DashSection from "$lib/components/dashboard/DashSection.svelte";
-	import DataKey from "$lib/components/dashboard/analytics/DataKey.svelte";
-	import Comparison from "$lib/components/dashboard/analytics/Comparison.svelte";
-	import GraphLoading from "$lib/components/dashboard/analytics/GraphLoading.svelte";
 
 	import type { Tweened } from "svelte/motion";
 
-	let custom: Date;
-	let selected = DateOption.Week;
 	let modeDebounce: NodeJS.Timeout;
 	let request: Promise<App.AnalyticsResponse> = new Promise(() => {});
 
@@ -29,36 +27,20 @@
 	let mode: "global" | "personal" =
 		$user.role === "Admin" ? "global" : "personal";
 
-	// Encode dates based on the selected option
-	const encodeDate = (option: DateOption) => {
-		const now = new Date();
-
-		switch (option) {
-			case DateOption.Week:
-				now.setDate(now.getDate() - 7);
-
-				break;
-			case DateOption.Month:
-				now.setDate(now.getDate() - 30);
-
-				break;
-			case DateOption.Year:
-				now.setMonth(now.getMonth() - 12);
-
-				break;
-			case DateOption.Custom:
-				const date = custom.toLocaleDateString("en-CA");
-
-				return `startDate=${date}&endDate=${date}`;
-		}
-
-		return `startDate=${now.toLocaleDateString(
-			"en-CA"
-		)}&endDate=${new Date().toLocaleDateString("en-CA")}`;
+	// Store the selected start and end dates
+	let dates: { startDate: Date | null; endDate: Date | null } = {
+		startDate: null,
+		endDate: null
 	};
 
 	const onSearch = () => {
-		request = fetch(`/api/stats?${encodeDate(selected)}&mode=${mode}`)
+		request = fetch(
+			`/api/stats?startDate=${dates.startDate!.toLocaleDateString(
+				"en-CA"
+			)}&endDate=${dates.endDate!.toLocaleDateString(
+				"en-CA"
+			)}&mode=${mode}`
+		)
 			.then((res) => res.json())
 			.then((analytics: App.AnalyticsResponse) => {
 				percent.set(
@@ -101,10 +83,37 @@
 
 	<DateDropdown
 		on:change={() => (request = new Promise(() => {}))}
-		on:search={({ detail }) =>
-			(selected = detail.selected) &&
-			(custom = detail.custom) &&
-			onSearch()}
+		on:search={({ detail }) => {
+			const startDate =
+				detail.selected === DateOption.Custom
+					? detail.custom
+					: new Date();
+
+			switch (detail.selected) {
+				case DateOption.Week:
+					startDate.setDate(startDate.getDate() - 7);
+
+					break;
+				case DateOption.Month:
+					startDate.setMonth(startDate.getMonth() - 1);
+
+					break;
+				case DateOption.Half:
+					startDate.setMonth(startDate.getMonth() - 6);
+
+					break;
+				case DateOption.Year:
+					startDate.setFullYear(startDate.getFullYear() - 1);
+			}
+
+			dates.startDate = startDate;
+			dates.endDate =
+				detail.selected === DateOption.Custom
+					? detail.custom
+					: new Date();
+
+			onSearch();
+		}}
 	/>
 
 	{#if $user.role === "Admin"}

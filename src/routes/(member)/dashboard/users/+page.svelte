@@ -1,18 +1,22 @@
 <script lang="ts">
+	import { getContext } from "svelte";
 	import { flip } from "svelte/animate";
 	import { fly, scale } from "svelte/transition";
 
+	import User from "./User.svelte";
+	import DashHero from "../DashHero.svelte";
+	import DashWrap from "../DashWrap.svelte";
+	import Trash from "$lib/icons/general/Trash.svelte";
 	import SearchBar from "$lib/components/SearchBar.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
-	import User from "$lib/components/dashboard/users/User.svelte";
-	import Trash from "$lib/components/icons/general/Trash.svelte";
-	import DashHero from "$lib/components/dashboard/DashHero.svelte";
-	import DashWrap from "$lib/components/dashboard/DashWrap.svelte";
 
 	import type { Prisma } from "@prisma/client";
+	import type { Writable } from "svelte/store";
 	import type { PageServerData } from "./$types";
 
 	export let data: PageServerData;
+
+	const tabindex = getContext<Writable<number>>("tabindex");
 
 	let search = "";
 	let request: Promise<
@@ -92,11 +96,12 @@
 								</h1>
 
 								<button
-									class="ml-auto"
 									on:click={() =>
 										(data.homeUsers = data.homeUsers.filter(
 											(user) => id !== user.id
 										))}
+									class="ml-auto"
+									tabindex={$tabindex}
 								>
 									<Trash class="w-4 h-4" />
 								</button>
@@ -289,7 +294,7 @@
 					in:fly={{ duration: 300, y: 30 }}
 					class="flex flex-col gap-14"
 				>
-					{#each users as user}
+					{#each users as user (user.id)}
 						<User bind:homeUsers={data.homeUsers} {user} />
 					{/each}
 				</div>

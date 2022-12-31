@@ -13,5 +13,18 @@ export const load: PageServerLoad<{
 		ownerId: user.id
 	});
 
-	return { projects, kudos: await getKudos(user.id) };
+	const startDate = new Date();
+	startDate.setFullYear(startDate.getFullYear() - 1);
+
+	return {
+		projects,
+		kudos: (
+			await getKudos(
+				user.id,
+				startDate.toISOString(),
+				new Date().toISOString(),
+				"personal"
+			)
+		).kudos
+	};
 };

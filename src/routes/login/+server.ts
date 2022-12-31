@@ -76,6 +76,17 @@ export const GET: RequestHandler = async (request) => {
 		});
 
 		if (!prismaUser) {
+			// Check if the user is eligible to create an account, if not, redirect
+			// them to the home page
+			if (
+				!(
+					await fetch(
+						`https://ai-camp-data-layer.fly.dev/istt/${id}`
+					).then((res) => res.json())
+				).isTT
+			)
+				throw redirect(302, "/");
+
 			// If the user doesnt exist, create them
 			prismaUser = await prisma.user.create({
 				data: {
@@ -134,8 +145,6 @@ export const GET: RequestHandler = async (request) => {
 				}
 			);
 		} else {
-			console.log(date <= new Date("2022-11-22T00:57:46.607Z"));
-
 			// Otherwise, if they do exists, do some cleanup and check if they have any expired session
 			// tokens inside postgres, if they do, remove them
 			await prisma.session.deleteMany({

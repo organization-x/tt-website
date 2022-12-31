@@ -1,8 +1,7 @@
 <script lang="ts">
-	import "$lib/hljsTheme.css";
+	import "$lib/tiptap/hljsTheme.css";
 
 	import hljs from "highlight.js/lib/core";
-	import { generateHTML } from "@tiptap/html";
 	import { onMount, getContext } from "svelte";
 	import c from "highlight.js/lib/languages/c";
 	import go from "highlight.js/lib/languages/go";
@@ -23,21 +22,22 @@
 	import kotlin from "highlight.js/lib/languages/kotlin";
 	import csharp from "highlight.js/lib/languages/csharp";
 	import graphql from "highlight.js/lib/languages/graphql";
+	import { generateHTML, generateText } from "@tiptap/core";
 	import markdown from "highlight.js/lib/languages/markdown";
 	import typescript from "highlight.js/lib/languages/typescript";
 	import javascript from "highlight.js/lib/languages/javascript";
 
 	import { getIcon } from "$lib/getIcon";
+	import Author from "../../Author.svelte";
 	import { breadcrumb, article } from "$lib/seo";
-	import { extensions } from "$lib/tiptapExtensions";
 	import Button from "$lib/components/Button.svelte";
-	import Author from "$lib/components/Author.svelte";
+	import { extensions } from "$lib/tiptap/extensions";
 	import Separator from "$lib/components/Separator.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Scrollable from "$lib/components/Scrollable.svelte";
 
 	import type { PageData } from "./$types";
-	import { generateText, type JSONContent } from "@tiptap/core";
+	import type { JSONContent } from "@tiptap/core";
 
 	export let data: PageData;
 
@@ -95,7 +95,7 @@
 	<meta name="og:description" content={data.description} />
 	<meta
 		name="og:image"
-		src="{PUBLIC_CLOUDFLARE_URL}/banner-{data.id}/banner"
+		content="{PUBLIC_CLOUDFLARE_URL}/banner-{data.id}/banner"
 	/>
 	<meta
 		name="og:image:secure_url"
@@ -110,7 +110,7 @@
 	<meta name="twitter:description" content={data.description} />
 	<meta
 		name="twitter:image"
-		src="{PUBLIC_CLOUDFLARE_URL}/banner-{data.id}/banner"
+		content="{PUBLIC_CLOUDFLARE_URL}/banner-{data.id}/banner"
 	/>
 
 	{@html breadcrumb(data.title, data.url, "projects")}
@@ -142,11 +142,8 @@
 	<div class="flex justify-between items-center">
 		<p>{data.date.toLocaleDateString("en-US")}</p>
 		<div class="flex gap-2">
-			{#each data.skills as skill}
-				<svelte:component
-					this={getIcon(skill)}
-					class="w-6 h-6 lg:w-7 lg:h-7"
-				/>
+			{#each data.skills as skill (skill)}
+				<svelte:component this={getIcon(skill)} class="w-6 h-6" />
 			{/each}
 		</div>
 	</div>
@@ -160,7 +157,7 @@
 	</p>
 
 	<Scrollable class="before:from-black after:to-black" innerClass="gap-7">
-		{#each data.authors as author}
+		{#each data.authors as author (author.user.id)}
 			<Author theme={data.theme} {author} />
 		{/each}
 	</Scrollable>

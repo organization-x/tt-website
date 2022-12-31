@@ -1,12 +1,9 @@
-import preprocess from "svelte-preprocess";
 import adapter from "@sveltejs/adapter-node";
+import { vitePreprocess } from "@sveltejs/kit/vite";
 
 /** @type {import("@sveltejs/kit").Config} */
 export default {
-	preprocess: preprocess({
-		postcss: true,
-		preserve: ["ld+json"]
-	}),
+	preprocess: vitePreprocess(),
 
 	kit: {
 		adapter: adapter({

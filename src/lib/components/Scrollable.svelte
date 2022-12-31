@@ -1,7 +1,9 @@
 <script lang="ts">
-	import { onMount } from "svelte";
+	import { onMount, getContext, createEventDispatcher } from "svelte";
 
-	import CarouselArrow from "$lib/components/icons/general/CarouselArrow.svelte";
+	import Arrow from "$lib/icons/general/Arrow.svelte";
+
+	import type { Writable } from "svelte/store";
 
 	let className: string;
 	export let arrows = false;
@@ -17,6 +19,9 @@
 		Both,
 		None
 	}
+
+	const tabindex = getContext<Writable<number>>("tabindex");
+	const dispatch = createEventDispatcher<{ scroll: HTMLDivElement }>();
 
 	let clientWidth: number;
 	let disabledSide = Side.Left;
@@ -45,6 +50,8 @@
 		)
 			disabledSide = Side.Right;
 		else disabledSide = Side.None;
+
+		dispatch("scroll", scrollable);
 	};
 
 	$: clientWidth, scrollable && checkScroll();
@@ -117,18 +124,27 @@
 			bind:clientHeight={clientWidth}
 			bind:this={scrollable}
 			on:scroll={checkScroll}
-			class="flex flex-col gap-4 overflow-auto h-full {innerClass}"
+			class="flex flex-col overflow-auto h-full {innerClass}"
 		>
 			<slot />
 		</div>
 	</div>
 {:else if arrows}
 	<div class:justify-center={disabledSide === Side.Both} class="flex gap-4">
-		<CarouselArrow
+		<button
 			on:click={() => scroller(Side.Left)}
+			class="shrink-0 my-auto"
+			tabindex={$tabindex}
 			disabled={disabledSide === Side.Left}
-			hidden={disabledSide === Side.Both}
-		/>
+		>
+			<Arrow
+				class="w-5 h-5 -rotate-90{disabledSide !== Side.Both
+					? ' transition-opacity'
+					: ''}{disabledSide === Side.Both
+					? ' opacity-0'
+					: ''}{disabledSide === Side.Left ? ' opacity-50' : ''}"
+			/>
+		</button>
 
 		<div
 			class:before:opacity-0={disabledSide === Side.Left ||
@@ -148,18 +164,26 @@
 				bind:clientWidth
 				bind:this={scrollable}
 				on:scroll={checkScroll}
-				class="flex gap-5 w-full overflow-auto py-2 scrollbar-hidden snap-x snap-proximity {innerClass}"
+				class="flex w-full overflow-auto py-2 scrollbar-hidden snap-x snap-proximity {innerClass}"
 			>
 				<slot />
 			</div>
 		</div>
 
-		<CarouselArrow
+		<button
 			on:click={() => scroller(Side.Right)}
+			class="shrink-0 my-auto"
+			tabindex={$tabindex}
 			disabled={disabledSide === Side.Right}
-			hidden={disabledSide === Side.Both}
-			class="rotate-180"
-		/>
+		>
+			<Arrow
+				class="w-5 h-5 rotate-90{disabledSide !== Side.Both
+					? ' transition-opacity'
+					: ''}{disabledSide === Side.Both
+					? ' opacity-0'
+					: ''}{disabledSide === Side.Right ? ' opacity-50' : ''}"
+			/>
+		</button>
 	</div>
 {:else}
 	<div
@@ -181,7 +205,7 @@
 			bind:this={scrollable}
 			on:scroll={checkScroll}
 			on:wheel|nonpassive={onWheel}
-			class="flex gap-5 overflow-auto py-2 scrollbar-hidden {innerClass}"
+			class="flex overflow-auto py-2 scrollbar-hidden {innerClass}"
 		>
 			<slot />
 		</div>

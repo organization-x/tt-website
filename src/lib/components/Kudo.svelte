@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getContext } from "svelte";
+	import { fly } from "svelte/transition";
 
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import GradientText from "$lib/components/GradientText.svelte";
@@ -14,42 +15,31 @@
 </script>
 
 <div
+	in:fly={{ duration: 300, y: 30 }}
 	class:bg-gray-700={lightBg}
 	class:bg-gray-900={!lightBg}
-	class:border-green-light={kudo.type === "received"}
-	class:border-blue-light={kudo.type === "sent"}
-	class="rounded-lg flex flex-col relative items-center gap-4 text-center p-4 pt-8 border-4 md:flex-row md:items-start md:text-start md:pt-6 {className}"
+	class="rounded-lg flex min-h-[16rem] flex-col items-center justify-center gap-4 text-center p-4 md:flex-row md:text-start md:min-h-[9rem] {className}"
 >
-	<h1
-		class:bg-green-light={kudo.type === "received"}
-		class:bg-blue-light={kudo.type === "sent"}
-		class="font-black rounded-sm py-0.5 px-2 text-sm absolute -top-3.5 select-none"
-	>
-		{kudo.type.toUpperCase()}
-	</h1>
-
 	<img
 		width="512"
 		height="512"
-		src="{PUBLIC_CLOUDFLARE_URL}/avatar-{kudo.id}/avatar?{timestamp}"
-		alt="{kudo.name}'s avatar"
-		class="w-24 h-24 bg-gray-400 rounded-full md:w-20 md:h-20"
+		src="{PUBLIC_CLOUDFLARE_URL}/avatar-{kudo.senderId}/avatar?{timestamp}"
+		alt="{kudo.senderName}'s avatar"
+		class="w-20 h-20 object-cover object-center bg-gray-400 rounded-full md:w-20 md:h-20 md:mt-1"
 	/>
 
 	<div
-		class="flex flex-col gap-2 md:gap-0 items-center md:items-start w-full overflow-hidden md:mt-2"
+		class="flex flex-col gap-2 items-center w-full overflow-hidden md:gap-0 md:items-start"
 	>
 		<GradientText
-			class="text-2xl font-semibold overflow-hidden shrink-0 {kudo.type ===
-			'received'
-				? 'from-green-light to-green-dark'
-				: 'from-blue-light to-blue-dark'}"
+			class="text-2xl font-semibold overflow-hidden shrink-0 from-green-light to-green-dark"
 		>
-			{kudo.name}
+			{kudo.senderName}
 		</GradientText>
 
+		<!-- Replace discord emojis with a unicode emojis -->
 		<p class="break-words max-w-xs w-full md:max-w-sm lg:max-w-none">
-			{kudo.reason}
+			{kudo.reason.replaceAll(/<:[^<:>]+?:\d+?>/g, "👍")}
 		</p>
 	</div>
 </div>

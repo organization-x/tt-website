@@ -116,5 +116,8 @@ module.exports = {
 			}
 		}
 	},
-	plugins: []
+	plugins: [],
+	experimental: {
+		optimizeUniversalDefaults: true
+	}
 };

@@ -1,19 +1,20 @@
 <script lang="ts">
 	import { getContext } from "svelte";
 
+	import Hero from "../Hero.svelte";
 	import Field from "./Field.svelte";
 	import Select from "./Select.svelte";
+	import Header from "../Header.svelte";
+	import Section from "../Section.svelte";
 	import { developers } from "$lib/stores";
-	import FormButton from "./FormButton.svelte";
 	import Text from "$lib/components/Text.svelte";
-	import Hero from "$lib/components/Hero.svelte";
-	import Header from "$lib/components/Header.svelte";
+	import Plus from "$lib/icons/general/Plus.svelte";
 	import Scrollable from "$lib/components/Scrollable.svelte";
-	import Section from "$lib/components/index/Section.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
-	import Plus from "$lib/components/icons/general/Plus.svelte";
 	import { FieldType, techSkills, softSkills } from "$lib/enums";
-	import ExternalLink from "$lib/components/icons/general/ExternalLink.svelte";
+	import ExternalLink from "$lib/icons/general/ExternalLink.svelte";
+
+	import type { Writable } from "svelte/store";
 
 	// Titles for each page of the contact form
 	const titles = [
@@ -24,6 +25,7 @@
 	];
 
 	const timestamp = getContext("timestamp");
+	const tabindex = getContext<Writable<number>>("tabindex");
 
 	let pageNum = 0;
 	let element: HTMLDivElement;
@@ -57,7 +59,7 @@
 			page: 0
 		},
 		talent: {
-			selected: [],
+			selected: ["Teamwork"],
 			valid: false,
 			page: 1
 		},
@@ -67,7 +69,7 @@
 			page: 1
 		},
 		doing: {
-			selected: [],
+			selected: ["Creating a brand new product"],
 			valid: true,
 			page: 1
 		},
@@ -143,6 +145,16 @@
 			field.value ? (field.value = "") : (field.selected = []);
 		});
 	};
+
+	// Handle a developer being added/remove
+	const onClick = (index: number, developer: typeof $developers[0]) =>
+		index > -1
+			? fields.developers.selected.splice(index, 1) &&
+			  (fields.developers.selected = fields.developers.selected)
+			: ((fields.developers.selected as typeof developer[]) = [
+					...fields.developers.selected,
+					developer
+			  ]);
 </script>
 
 <svelte:head>
@@ -278,19 +290,20 @@
 					<Scrollable
 						vertical={true}
 						class="mt-2 rounded-lg h-32 before:from-gray-900 after:to-gray-900 sm:h-36 lg:h-48"
-						innerClass="scrollbar-hidden lg:grid lg:grid-cols-2 lg:gap-x-6"
+						innerClass="scrollbar-hidden gap-4 lg:grid lg:grid-cols-2 lg:gap-x-6"
 					>
-						{#each $developers as developer}
+						{#each $developers as developer (developer.id)}
 							{@const index =
 								fields.developers.selected.findIndex(
 									({ id }) => id === developer.id
 								)}
 
 							<div
-								class:bg-white={index !== -1}
-								class:text-black={index !== -1}
+								class:bg-white={index > -1}
+								class:text-black={index > -1}
 								class:bg-gray-700={index === -1}
 								class="flex gap-5 p-4 items-center rounded-lg transition-colors lg:h-min"
+								aria-checked={index > -1}
 							>
 								<img
 									class="rounded-full bg-gray-400 w-12 h-12 object-cover object-center"
@@ -317,22 +330,8 @@
 								</a>
 
 								<button
-									on:click={() =>
-										index > -1
-											? fields.developers.selected.splice(
-													index,
-													1
-											  ) &&
-											  (fields.developers.selected =
-													fields.developers.selected)
-											: (fields.developers.selected = [
-													// Typing isn't supported in Svelte HTML
-													// @ts-ignore
-													...fields.developers
-														.selected,
-													// @ts-ignore
-													developer
-											  ])}
+									on:click={() => onClick(index, developer)}
+									tabindex={$tabindex}
 								>
 									<Plus
 										class="w-4 h-4 transition-transform{index >
@@ -368,21 +367,25 @@
 	</div>
 
 	<div class="flex justify-between max-w-xl mx-auto w-full lg:max-w-4xl">
-		<FormButton
-			disabled={pageNum === 0}
-			hidden={pageNum === 0 || pageNum === 3}
+		<button
 			on:click={() => (pageNum -= 1)}
+			disabled={pageNum === 0}
+			class:opacity-0={pageNum === 0 || pageNum === 3}
+			class="px-4 py-3 mt-8 bg-white text-black transition-colors rounded-lg w-24 disabled:bg-gray-500"
+			tabindex={$tabindex}
 		>
 			Back
-		</FormButton>
+		</button>
 
-		<FormButton
-			disabled={!isValid || pageNum === 3}
-			hidden={pageNum === 3}
+		<button
 			on:click={() =>
 				isValid && (pageNum += 1) && pageNum === 3 && submit()}
+			disabled={!isValid || pageNum === 3}
+			class:opacity-0={pageNum === 3}
+			class="px-4 py-3 mt-8 bg-white text-black transition-colors rounded-lg w-24 disabled:bg-gray-500"
+			tabindex={$tabindex}
 		>
 			{pageNum === 2 ? "Send" : "Next"}
-		</FormButton>
+		</button>
 	</div>
 </Section>

@@ -9,23 +9,25 @@
 	import { DateOption } from "$lib/enums";
 	import { developers } from "$lib/stores";
 	import Kudo from "$lib/components/Kudo.svelte";
+	import Plus from "$lib/icons/general/Plus.svelte";
 	import DevTag from "$lib/components/DevTag.svelte";
 	import ProjectSection from "./ProjectSection.svelte";
+	import TenKudos from "$lib/icons/badges/TenKudos.svelte";
+	import Question from "$lib/icons/general/Question.svelte";
 	import { PUBLIC_CLOUDFLARE_URL } from "$env/static/public";
 	import Scrollable from "$lib/components/Scrollable.svelte";
-	import Plus from "$lib/components/icons/general/Plus.svelte";
+	import FiftyKudos from "$lib/icons/badges/FiftyKudos.svelte";
+	import KudoLoading from "$lib/components/KudoLoading.svelte";
 	import GradientText from "$lib/components/GradientText.svelte";
 	import DateDropdown from "$lib/components/DateDropdown.svelte";
+	import TenProjects from "$lib/icons/badges/TenProjects.svelte";
+	import AllEndorsed from "$lib/icons/badges/AllEndorsed.svelte";
+	import HundredKudos from "$lib/icons/badges/HundredKudos.svelte";
 	import ProfileSection from "$lib/components/ProfileSection.svelte";
-	import TenKudos from "$lib/components/icons/badges/TenKudos.svelte";
-	import Question from "$lib/components/icons/general/Question.svelte";
-	import FiftyKudos from "$lib/components/icons/badges/FiftyKudos.svelte";
-	import TenProjects from "$lib/components/icons/badges/TenProjects.svelte";
-	import AllEndorsed from "$lib/components/icons/badges/AllEndorsed.svelte";
-	import HundredKudos from "$lib/components/icons/badges/HundredKudos.svelte";
-	import TwentyProjects from "$lib/components/icons/badges/TwentyProjects.svelte";
+	import TwentyProjects from "$lib/icons/badges/TwentyProjects.svelte";
 
 	import type { PageData } from "./$types";
+	import type { Writable } from "svelte/store";
 	import type { SoftSkill, TechSkill } from "@prisma/client";
 
 	export let data: PageData;
@@ -41,18 +43,56 @@
 			data.userPage.endorsementsReceived.map(
 				(endorsement) => endorsement.softSkill || endorsement.techSkill
 			)
-		).size === 10,
-		data.kudos.length >= 10,
-		data.kudos.length >= 50,
-		data.kudos.length >= 100
+		).size === 10
 	];
 
-	// Create a timestamp so the images from Cloudflare don't cache
-	const timestamp = getContext("timestamp") as string;
+	// Create a new scope so the kudo counts are dropped once assigned to the badges array
+	{
+		// Get kudos counts from the last month, six months and twelve months for badges
+		const [month, sixMonths, twelveMonths] = data.kudos.reduce(
+			(
+				result: [
+					number,
+					number,
+					number,
+					null | Date,
+					null | Date,
+					null | Date
+				],
+				kudo,
+				i
+			) => {
+				// If it is the first iteration, assign the date variables for filtering
+				if (!i) {
+					const month = new Date();
+					const sixMonths = new Date();
+					const twelveMonths = new Date();
 
-	let custom: Date;
-	let kudos: App.Kudo[] = [];
-	let selected = DateOption.Week;
+					month.setMonth(month.getMonth() - 1);
+					sixMonths.setMonth(sixMonths.getMonth() - 6);
+					twelveMonths.setMonth(twelveMonths.getMonth() - 12);
+
+					result[3] = month;
+					result[4] = sixMonths;
+					result[5] = twelveMonths;
+				}
+
+				if (kudo.timestamp >= result[3]!) result[0]++;
+				if (kudo.timestamp >= result[4]!) result[1]++;
+				if (kudo.timestamp >= result[5]!) result[2]++;
+
+				return result;
+			},
+			[0, 0, 0, null, null, null]
+		);
+
+		badges[3] = month >= 10;
+		badges[4] = sixMonths >= 50;
+		badges[5] = twelveMonths >= 100;
+	}
+
+	const timestamp = getContext("timestamp") as string;
+	const tabindex = getContext<Writable<number>>("tabindex");
 
 	// Keep track of whether the developer saving help section is open
 	let helpOpen = false;
@@ -154,42 +194,46 @@
 		endorsingSkills = endorsingSkills;
 	};
 
+	let kudos: App.Kudo[] = [];
+
+	// Store the selected start and end dates for kudos filtering
+	let dates: { startDate: Date | null; endDate: Date | null } = {
+		startDate: null,
+		endDate: null
+	};
+
+	// As the user scrolls, more kudos will load dynamically so keep track of the page
+	// and the total of amount pages
+	let page = 1;
+	let pages = 0;
+
+	// Keep track of the current request so that we don't fetch pages while another is still loading
+	let request: Promise<void> | null = new Promise(() => {});
+
+	// Keep track of whether this request is because of scrolling or because of a date switch
+	let scroll = false;
+
 	// Filter kudos data based on date selected
 	const onSearch = () => {
-		switch (selected) {
-			case DateOption.Week:
-				kudos = data.kudos.filter(
-					(kudo) =>
-						new Date(kudo.timestamp).getTime() >
-						Date.now() - 1000 * 60 * 60 * 24 * 7
-				);
+		const query = fetch(
+			`/api/kudos?id=${
+				data.userPage.id
+			}&startDate=${dates.startDate!.toISOString()}&endDate=${dates.endDate!.toISOString()}&mode=personal&page=${page}`
+		)
+			.then((res) => res.json())
+			.then((data: App.KudosResponse) => {
+				if (page > 1) kudos = [...kudos, ...data.kudos];
+				else kudos = data.kudos;
 
-				break;
-			case DateOption.Month:
-				kudos = data.kudos.filter(
-					(kudo) =>
-						new Date(kudo.timestamp).getTime() >
-						Date.now() - 1000 * 60 * 60 * 24 * 30
-				);
+				pages = data.pages;
+				request = null;
+				scroll = false;
+			});
 
-				break;
-			case DateOption.Year:
-				kudos = data.kudos.filter(
-					(kudo) =>
-						new Date(kudo.timestamp).getTime() >
-						Date.now() - 1000 * 60 * 60 * 24 * 365
-				);
-
-				break;
-			case DateOption.Custom:
-				kudos = data.kudos.filter(
-					(kudo) =>
-						new Date(kudo.timestamp).toLocaleDateString("en-CA") ===
-						custom.toLocaleDateString("en-CA")
-				);
-
-				break;
-		}
+		// If this is a scroll request dont have the top level await
+		// destroy all the components, instead just play the loading animation
+		// at the end of the scroll
+		request = scroll ? null : query;
 	};
 
 	// Add analytics tracking for user views
@@ -217,7 +261,7 @@
 	<meta name="og:description" content={data.userPage.about} />
 	<meta
 		name="og:image"
-		src="{PUBLIC_CLOUDFLARE_URL}/avatar-{data.userPage.id}/avatar"
+		content="{PUBLIC_CLOUDFLARE_URL}/avatar-{data.userPage.id}/avatar"
 	/>
 	<meta
 		name="og:image:secure_url"
@@ -236,7 +280,7 @@
 	<meta name="twitter:card" content="summary" />
 	<meta
 		name="twitter:image"
-		src="{PUBLIC_CLOUDFLARE_URL}/avatar-{data.userPage.id}/avatar"
+		content="{PUBLIC_CLOUDFLARE_URL}/avatar-{data.userPage.id}/avatar"
 	/>
 
 	{@html breadcrumb(data.userPage.name, data.userPage.url, "developers")}
@@ -286,10 +330,11 @@
 				<div
 					class="py-3 w-full flex items-center justify-center gap-6 lg:justify-start lg:gap-4"
 				>
-					{#each links as { link, key }}
+					{#each links as { link, key } (key)}
 						<a
 							href={createLink(key, link)}
 							rel="noopener noreferrer"
+							tabindex={$tabindex}
 							target="_blank"
 						>
 							<svelte:component
@@ -315,6 +360,8 @@
 					class:text-black={saved}
 					class:bg-gray-900={!saved}
 					class="mb-9 rounded-lg bg-gray-900 w-full py-4 px-5 text-lg transition-colors duration-200 3xl:w-1/2"
+					aria-expanded={helpOpen}
+					aria-checked={saved}
 				>
 					<div class="flex justify-end items-center relative gap-4">
 						<div
@@ -342,6 +389,7 @@
 							<button
 								on:click={() => (helpOpen = true)}
 								class="transition-opacity"
+								tabindex={$tabindex}
 							>
 								<Question class="w-4 h-4" />
 							</button>
@@ -405,7 +453,7 @@
 
 			<div class="flex flex-col gap-8 mb-8 3xl:w-1/2 3xl:mb-0">
 				<ProfileSection title="Positions">
-					{#each data.userPage.positions as name}
+					{#each data.userPage.positions as name (name)}
 						<DevTag {name} lightBg={false} />
 					{/each}
 				</ProfileSection>
@@ -457,7 +505,7 @@
 						<Badge name="Kudo Starter">
 							<TenKudos slot="badge" class="w-12 h-12 shrink-0" />
 
-							Got 10 kudos from other developers
+							Got 10 kudos in the last month
 						</Badge>
 					{/if}
 
@@ -468,7 +516,7 @@
 								class="w-12 h-12 shrink-0"
 							/>
 
-							Got 50 kudos from other developers
+							Got 50 kudos in the last six months
 						</Badge>
 					{/if}
 
@@ -479,7 +527,7 @@
 								class="w-12 h-12 shrink-0"
 							/>
 
-							Got 100 kudos from other developers
+							Got 100 kudos in the last 12 months
 						</Badge>
 					{/if}
 
@@ -501,7 +549,7 @@
 					<div class="flex flex-col gap-6">
 						<h1 class="font-semibold text-xl text-center">Soft</h1>
 
-						{#each data.userPage.softSkills as name}
+						{#each data.userPage.softSkills as name (name)}
 							<Skill
 								{name}
 								{endorser}
@@ -522,7 +570,7 @@
 							Technical
 						</h1>
 
-						{#each data.userPage.techSkills as name}
+						{#each data.userPage.techSkills as name (name)}
 							<Skill
 								{name}
 								{endorser}
@@ -549,38 +597,97 @@
 					>
 						<DateDropdown
 							profile={true}
-							on:search={({ detail }) =>
-								(selected = detail.selected) &&
-								(custom = detail.custom) &&
-								onSearch()}
+							on:search={({ detail }) => {
+								page = 1;
+								scroll = false;
+
+								// Set the promise so it will show the animation
+								request = new Promise(() => {});
+
+								const startDate =
+									detail.selected === DateOption.Custom
+										? detail.custom
+										: new Date();
+
+								switch (detail.selected) {
+									case DateOption.Week:
+										startDate.setDate(
+											startDate.getDate() - 7
+										);
+
+										break;
+									case DateOption.Month:
+										startDate.setMonth(
+											startDate.getMonth() - 1
+										);
+
+										break;
+									case DateOption.Half:
+										startDate.setMonth(
+											startDate.getMonth() - 6
+										);
+
+										break;
+									case DateOption.Year:
+										startDate.setFullYear(
+											startDate.getFullYear() - 1
+										);
+								}
+
+								dates.startDate = startDate;
+								dates.endDate =
+									detail.selected === DateOption.Custom
+										? detail.custom
+										: new Date();
+
+								onSearch();
+							}}
 						/>
 
 						<Scrollable
+							on:scroll={({ detail: scrollable }) =>
+								!request &&
+								!scroll &&
+								kudos.length &&
+								pages > 1 &&
+								page + 1 <= pages &&
+								scrollable.scrollTop / scrollable.clientHeight >
+									0.5 &&
+								(page += 1) &&
+								(scroll = true) &&
+								onSearch()}
 							vertical={true}
 							class="h-120 before:from-gray-900 after:to-gray-900 md:h-[28rem] 3xl:h-full"
-							innerClass="scrollbar-hidden"
+							innerClass="scrollbar-hidden gap-10 pt-4"
 						>
-							{#if kudos.length}
-								<div
-									transition:fly={{ duration: 200, y: 30 }}
-									class="flex flex-col gap-6 md:gap-2"
-								>
-									{#each kudos as kudo}
-										<Kudo {kudo} class="mt-6" />
+							{#await request}
+								{#each { length: 10 } as _}
+									<KudoLoading />
+								{/each}
+							{:then}
+								{#if kudos.length}
+									{#each kudos as kudo (kudo)}
+										<Kudo {kudo} />
 									{/each}
-								</div>
-							{:else}
-								<h1
-									in:fly={{
-										duration: 300,
-										y: 30,
-										delay: 300
-									}}
-									class="font-semibold text-xl text-center mt-2"
-								>
-									No Kudos
-								</h1>
-							{/if}
+
+									{#if scroll}
+										{#each { length: 10 } as _}
+											<KudoLoading />
+										{/each}
+									{/if}
+								{:else}
+									<h1
+										in:fly={{
+											duration: 300,
+											y: 30,
+											delay: 300
+										}}
+										class="font-semibold text-xl text-center mt-2"
+									>
+										No Kudos
+									</h1>
+								{/if}
+							{/await}
 						</Scrollable>
 					</div>
 				</div>

@@ -1,15 +1,13 @@
 <script lang="ts">
 	import { getIcon } from "$lib/getIcon";
-	import { createEventDispatcher } from "svelte";
+	import { createEventDispatcher, getContext } from "svelte";
 
+	import Search from "$lib/icons/general/Search.svelte";
+	import Scrollable from "$lib/components/Scrollable.svelte";
+	import DropArrow from "$lib/icons/general/DropArrow.svelte";
 	import DropdownItem from "$lib/components/DropdownItem.svelte";
-	import Search from "$lib/components/icons/general/Search.svelte";
-	import DropArrow from "$lib/components/icons/general/DropArrow.svelte";
-	import Scrollable from "./Scrollable.svelte";
 
-	const dispatch = createEventDispatcher<{
-		change: { selected: string | undefined; previous: string | undefined };
-	}>();
+	import type { Writable } from "svelte/store";
 
 	// Provides options that should be in the dropdown, and an array of selected items to prevent re-selection of the same thing.
 	// Along with an index to auto select values, since dropdowns normally are near other dropdowns with the same values.
@@ -18,32 +16,18 @@
 	export let icons = true;
 	export let open = false;
 	export let lightBg = true;
-	export let required: boolean;
 	export let options: string[];
+	export let required: boolean;
 	export let selected: string[] = [];
-	export let selectedItems: (string | null)[];
+	export let groupSelected: (string | null)[];
+
+	const dispatch = createEventDispatcher<{
+		change: { selected: string | undefined; previous: string | undefined };
+	}>();
+	const tabindex = getContext<Writable<number>>("tabindex");
 
 	let search = "";
 	let parent: HTMLDivElement;
-	let filteredOptions: string[] = [];
-
-	// Create a separate array of filtered options for the search and also sort them
-	// based of whether they are selected or not
-	$: {
-		// Filter based on search
-		filteredOptions = options.filter((option) =>
-			option.toLowerCase().includes(search.trim().toLowerCase())
-		);
-
-		// If the dropdown isn't in radio mode, put the selected items at the top
-		if (!radio)
-			filteredOptions = filteredOptions.sort((a, b) => {
-				const aSelected = selected.includes(a);
-				const bSelected = selected.includes(b);
-
-				return aSelected === bSelected ? 0 : aSelected ? -1 : 1;
-			});
-	}
 
 	// Check if click is outside of the dropdown, if so, close it
 	const windowClick = ({ target }: Event) =>
@@ -60,21 +44,22 @@
 	// Add or remove the newly selected item from the selected items array, used for when the dropdown is in checkbox
 	// mode. This also dispatches change so that it can be used to trigger searches since search calls break in reactive
 	// statements
-	const checkClick = (clicked: string) =>
-		(selected.includes(clicked)
-			? (selected = selected.filter((item) => item !== clicked))
+	const checkClick = (index: number, clicked: string) =>
+		(index > -1
+			? (selected = selected.filter((_, i) => i !== index))
 			: (selected = [...selected, clicked])) &&
 		dispatch("change", {
 			selected: undefined,
 			previous: undefined
 		});
 
-	// Interactive, when the parent element changes the selected item changes.
-	// This is to prevent gaps between multiple dropdowns
-	$: selectedItems,
+	// When dropdowns are in groups, this keeps them synced together, with i
+	// being the index of this dropdown in that group. This is to prevent gaps
+	// between multiple dropdowns
+	$: groupSelected,
 		(selected =
-			selectedItems[i] && radio
-				? [selectedItems[i]!]
+			groupSelected[i] && radio
+				? [groupSelected[i]!]
 				: required
 				? [options[0]]
 				: []);
@@ -85,13 +70,14 @@
 
 <svelte:window on:click={windowClick} />
 
-<div bind:this={parent} class="relative w-full">
+<div bind:this={parent} class="relative w-full" aria-expanded={open}>
 	<button
 		on:click={() => (open = !open)}
 		class:rounded-b-lg={!open}
 		class:bg-gray-700={lightBg}
 		class:bg-gray-900={!lightBg}
 		class="w-full flex items-center gap-4 p-5 rounded-t-lg"
+		tabindex={$tabindex}
 	>
 		<!-- If the dropdown isn't a radio it should be using the slot -->
 		{#if !$$slots.default && icons}
@@ -133,10 +119,10 @@
 
 		<Scrollable
 			vertical={true}
-			class={lightBg
-				? "before:from-gray-700 after:to-gray-700 before:rounded-t-lg after:rounded-b-lg"
-				: "before:from-gray-900 after:to-gray-900 before:rounded-t-lg after:rounded-b-lg"}
-			innerClass="h-60 scrollbar gap-0"
+			class="before:rounded-t-lg after:rounded-b-lg h-60 {lightBg
+				? 'before:from-gray-700 after:to-gray-700'
+				: 'before:from-gray-900 after:to-gray-900'}"
+			innerClass="scrollbar"
 		>
 			{#if !required && radio}
 				<DropdownItem
@@ -147,50 +133,62 @@
 				</DropdownItem>
 			{/if}
 
-			{#if radio}
-				{#each filteredOptions as option (option)}
-					{#if !(selectedItems.includes(option) && option !== selected[0])}
-						<DropdownItem
-							on:click={() => radioClick([option])}
-							selected={option === selected[0]}
-						>
-							<div class="flex items-center gap-3">
-								{#if icons}
-									<svelte:component
-										this={getIcon(option)}
-										class="w-5 h-5"
-									/>
-								{/if}
+			{#key search}
+				{#if radio}
+					{@const query = search.trim().toLowerCase()}
 
-								{option.replaceAll("_", " ")}
-							</div>
-						</DropdownItem>
-					{/if}
-				{:else}
-					<h1 class="text-center mt-4">No Results</h1>
-				{/each}
-			{:else}
-				{#each filteredOptions as option (option)}
-					<DropdownItem
-						on:click={() => checkClick(option)}
-						selected={selected.includes(option)}
-						radio={false}
-					>
-						<div class="flex items-center gap-3">
-							{#if icons}
-								<svelte:component
-									this={getIcon(option)}
-									class="w-5 h-5"
-								/>
-							{/if}
+					{#each options as option (option)}
+						{#if option
+							.toLowerCase()
+							.includes(query) && (!groupSelected.includes(option) || groupSelected[i] === option)}
+							<DropdownItem
+								on:click={() => radioClick([option])}
+								selected={selected.includes(option)}
+							>
+								<div class="flex items-center gap-3">
+									{#if icons}
+										<svelte:component
+											this={getIcon(option)}
+											class="w-5 h-5"
+										/>
+									{/if}
 
-							{option.replaceAll("_", " ")}
-						</div>
-					</DropdownItem>
+									{option.replaceAll("_", " ")}
+								</div>
+							</DropdownItem>
+						{/if}
+					{:else}
+						<h1 class="text-center mt-4">No Results</h1>
+					{/each}
 				{:else}
-					<h1 class="text-center mt-4">No Results</h1>
-				{/each}
-			{/if}
+					{@const query = search.trim().toLowerCase()}
+
+					{#each options as option (option)}
+						{#if option.toLowerCase().includes(query)}
+							{@const index = selected.indexOf(option)}
+
+							<DropdownItem
+								on:click={() => checkClick(index, option)}
+								selected={index > -1}
+								radio={false}
+							>
+								<div class="flex items-center gap-3">
+									{#if icons}
+										<svelte:component
+											this={getIcon(option)}
+											class="w-5 h-5"
+										/>
+									{/if}
+
+									{option.replaceAll("_", " ")}
+								</div>
+							</DropdownItem>
+						{/if}
+					{:else}
+						<h1 class="text-center mt-4">No Results</h1>
+					{/each}
+				{/if}
+			{/key}
 		</Scrollable>
 	</div>
 </div>
